@@ -1,0 +1,4 @@
+ext.extRepositories = {
+    mavenCentral()
+    jcenter()
+}
