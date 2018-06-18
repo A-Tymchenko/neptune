@@ -54,7 +54,7 @@ public class DBUtils {
             final String username = properties.getProperty("USERNAME");
             final String password = properties.getProperty("PASSWORD");
             connection = DriverManager.getConnection(url, username, password);
-            LOGGER.info("Connection successful!");
+            LOGGER.info("Connection to database successful!");
         } catch (IOException | ClassNotFoundException | SQLException e) {
             LOGGER.error(e.getMessage());
         }
