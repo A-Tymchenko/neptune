@@ -1,10 +1,10 @@
 CREATE TABLE IF NOT EXISTS flight (
   id INT NOT NULL AUTO_INCREMENT UNIQUE,
-  name VARCHAR(255) NOT NULL,
+  name VARCHAR(255),
   carrier VARCHAR(255),
   duration TIME, 
-  meal BOOLEAN,
+  mealOn BOOLEAN DEFAULT FALSE,
   fare DECIMAL,
-  depaparture_date DATETIME,
+  departure_date DATETIME,
   arrival_date DATETIME,
 );

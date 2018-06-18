@@ -7,9 +7,9 @@ import com.ra.courses.airport.entity.Flight;
  */
 public interface FlightDAO {
 
-    Flight create(Flight flight);
+    Flight create();
 
     Flight update(Flight flight);
 
-    boolean delete(Flight flight);
+    boolean delete(Integer flightId);
 }
