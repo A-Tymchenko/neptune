@@ -17,23 +17,18 @@ public final class ConnectionFactory {
 
     private static final ConnectionFactory factoryInstance = new ConnectionFactory();
 
-    private Connection connectionInstance;
-
     private ConnectionFactory() {
     }
 
     public Connection getConnection() {
-        if (connectionInstance == null) {
-            connectionInstance = createConnection();
-        }
-        return connectionInstance;
+        return createConnection();
     }
 
     private Connection createConnection() {
         try {
             Connection result = DriverManager.getConnection(DB_URL, USER, PASSWORD);
             Class.forName(JDBC_DRIVER);
-            result.setAutoCommit(false);
+            result.setAutoCommit(true);
             return result;
         } catch (ClassNotFoundException exception) {
             exception.printStackTrace();

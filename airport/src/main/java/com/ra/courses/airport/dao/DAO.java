@@ -5,11 +5,11 @@ import com.ra.courses.airport.entity.Flight;
 /**
  * Created by anbo06131 on 6/15/2018.
  */
-public interface FlightDAO {
+public interface DAO <T> {
 
-    Flight create();
+    T create();
 
-    Flight update(Flight flight);
+    T update(T entity);
 
     boolean delete(Integer flightId);
 }

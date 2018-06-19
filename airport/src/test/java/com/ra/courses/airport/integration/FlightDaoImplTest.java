@@ -1,14 +1,13 @@
 package com.ra.courses.airport.integration;
 
-import com.ra.courses.airport.dao.FlightDAO;
-import com.ra.courses.airport.dao.impl.FlightDAOImpl;
+import com.ra.courses.airport.dao.DAO;
+import com.ra.courses.airport.dao.impl.FlightDAO;
 import com.ra.courses.airport.entity.Flight;
 import com.ra.courses.airport.factory.ConnectionFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
@@ -34,18 +33,16 @@ public class FlightDaoImplTest {
                     "  arrival_date DATETIME,\n" +
                     ")";
 
-    private FlightDAO dao;
+    private DAO <Flight> dao;
 
     @BeforeEach
     public void beforeTest() throws SQLException,ClassNotFoundException {
         createDataBase();
-        dao = new FlightDAOImpl(ConnectionFactory.getInstance());
+        dao = new FlightDAO(ConnectionFactory.getInstance());
     }
 
-    private void createDataBase() throws SQLException, ClassNotFoundException {
-        //        Connection connection = getConnection();
-        Connection connection = DriverManager.getConnection(DB_URL, USER, PASSWORD);
-        Class.forName(JDBC_DRIVER);
+    private void createDataBase() throws SQLException {
+        Connection connection = ConnectionFactory.getInstance().getConnection();
         PreparedStatement preparedStatement = connection.prepareStatement(CREATE_FLIGHT_TABLE_QUERY);
         preparedStatement.executeUpdate();
     }
