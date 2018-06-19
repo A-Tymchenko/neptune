@@ -24,19 +24,22 @@ public final class ConnectionFactory {
 
     public Connection getConnection() {
         if (connectionInstance == null) {
-            return createConnection();
+            connectionInstance = createConnection();
         }
-        return createConnection();
+        return connectionInstance;
     }
 
     private Connection createConnection() {
-        try (Connection result = DriverManager.getConnection(DB_URL, USER, PASSWORD)) {
+        try {
+            Connection result = DriverManager.getConnection(DB_URL, USER, PASSWORD);
             Class.forName(JDBC_DRIVER);
             result.setAutoCommit(false);
             return result;
         } catch (ClassNotFoundException exception) {
+            exception.printStackTrace();
             //todo add logging here
-        } catch (SQLException ex) {
+        } catch (SQLException exception) {
+            exception.printStackTrace();
             //todo add logging here
         }
         return null;
@@ -48,6 +51,4 @@ public final class ConnectionFactory {
         }
         return factoryInstance;
     }
-
-
 }

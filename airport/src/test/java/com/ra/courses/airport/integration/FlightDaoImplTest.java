@@ -1,9 +1,9 @@
 package com.ra.courses.airport.integration;
 
 import com.ra.courses.airport.dao.FlightDAO;
-import com.ra.courses.airport.factory.ConnectionFactory;
 import com.ra.courses.airport.dao.impl.FlightDAOImpl;
 import com.ra.courses.airport.entity.Flight;
+import com.ra.courses.airport.factory.ConnectionFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -35,14 +35,11 @@ public class FlightDaoImplTest {
                     ")";
 
     private FlightDAO dao;
-    private ConnectionFactory connectionFactory;
-
 
     @BeforeEach
     public void beforeTest() throws SQLException,ClassNotFoundException {
         createDataBase();
-        ConnectionFactory connectionFactory = this.connectionFactory.getInstance();
-        dao = new FlightDAOImpl(connectionFactory);
+        dao = new FlightDAOImpl(ConnectionFactory.getInstance());
     }
 
     private void createDataBase() throws SQLException, ClassNotFoundException {

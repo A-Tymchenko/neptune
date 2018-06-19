@@ -20,6 +20,7 @@ public class FlightDAOImpl implements FlightDAO {
     private ConnectionFactory connectionFactory;
 
     private static final String INSERT_FLIGHT_WITH_DEFAULT_VALUES_SQL = "INSERT INTO Flight DEFAULT VALUES";
+    private static final String SELECT_FLIGHT_SQL = "SELECT * FROM Flight WHERE id=?";
 
     public FlightDAOImpl(ConnectionFactory connectionFactory) {
         this.connectionFactory = connectionFactory;
@@ -34,10 +35,26 @@ public class FlightDAOImpl implements FlightDAO {
              flight = new Flight();
              rowMapper.mapRow(resultSet, flight);
         } catch (SQLException e) {
+            e.printStackTrace();
             //todo add logging here
         }
         return flight;
     }
+
+//    public Flight getById(Integer id) {
+//        try (Connection connection = connectionFactory.getConnection();
+//             PreparedStatement preparedStatement = connection.prepareStatement(INSERT_FLIGHT_WITH_DEFAULT_VALUES_SQL);
+//             ResultSet resultSet = preparedStatement.executeQuery()) {
+//
+//        } catch (SQLException e) {
+//        e.printStackTrace();
+//        //todo add logging here
+//    }
+//        Flight flight = null;
+//        RowMapper<Flight> rowMapper = new FlightRowMapper();
+//        flight = new Flight();
+//        rowMapper.mapRow(resultSet, flight);
+//    }
 
     public Flight update(Flight flight) {
         return null;
