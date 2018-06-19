@@ -14,13 +14,7 @@ import java.sql.SQLException;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class FlightDaoImplTest {
-
-    private static final String JDBC_DRIVER = "org.h2.Driver";
-    private static final String DB_URL = "jdbc:h2:mem:airport";
-
-    private static final String USER = "";
-    private static final String PASSWORD = "";
-
+    
     private static final String CREATE_FLIGHT_TABLE_QUERY =
             "CREATE TABLE IF NOT EXISTS flight (\n" +
                     "  id INT NOT NULL AUTO_INCREMENT UNIQUE,\n" +
