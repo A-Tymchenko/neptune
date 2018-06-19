@@ -30,7 +30,7 @@ public class DBUtils {
 
     /**
      * Method contains a query which executes dropping table.
-     * @return String;
+     * @return String.
      */
     public String dropTable() {
         return "DROP TABLE ORDERS IF EXISTS";

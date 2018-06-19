@@ -1,28 +1,23 @@
 package com.ra.courses.project.model;
 
 import java.io.Serializable;
-import java.util.Date;
-import java.util.HashSet;
 import java.util.Objects;
-import java.util.Set;
 
 public class Order implements Serializable {
 
-    private int id;
-    private int number;
-    private double totalPrice;
-    private boolean deliveryIncluded;
-    private int deliveryCost;
-    private boolean executed;
-    private User user;
-    private Date creationDate;
-    private Set<Good> goods = new HashSet<>();
+    private Long id;
+    private Integer number;
+    private Double totalPrice;
+    private Boolean deliveryIncluded;
+    private Integer deliveryCost;
+    private Boolean executed;
 
     public Order() {
         super();
     }
 
-    public Order(int id, int number, double totalPrice, boolean deliveryIncluded, int deliveryCost, boolean executed) {
+    public Order(Long id, Integer number, Double totalPrice, Boolean deliveryIncluded, Integer deliveryCost, Boolean executed) {
+        super();
         this.id = id;
         this.number = number;
         this.totalPrice = totalPrice;
@@ -31,76 +26,52 @@ public class Order implements Serializable {
         this.executed = executed;
     }
 
-    public int getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
-    public int getNumber() {
+    public Integer getNumber() {
         return number;
     }
 
-    public void setNumber(int number) {
+    public void setNumber(Integer number) {
         this.number = number;
     }
 
-    public double getTotalPrice() {
+    public Double getTotalPrice() {
         return totalPrice;
     }
 
-    public void setTotalPrice(double totalPrice) {
+    public void setTotalPrice(Double totalPrice) {
         this.totalPrice = totalPrice;
     }
 
-    public boolean isDeliveryIncluded() {
+    public Boolean getDeliveryIncluded() {
         return deliveryIncluded;
     }
 
-    public void setDeliveryIncluded(boolean deliveryIncluded) {
+    public void setDeliveryIncluded(Boolean deliveryIncluded) {
         this.deliveryIncluded = deliveryIncluded;
     }
 
-    public int getDeliveryCost() {
+    public Integer getDeliveryCost() {
         return deliveryCost;
     }
 
-    public void setDeliveryCost(int deliveryCost) {
+    public void setDeliveryCost(Integer deliveryCost) {
         this.deliveryCost = deliveryCost;
     }
 
-    public boolean isExecuted() {
+    public Boolean getExecuted() {
         return executed;
     }
 
-    public void setExecuted(boolean executed) {
+    public void setExecuted(Boolean executed) {
         this.executed = executed;
-    }
-
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
-    }
-
-    public Date getCreationDate() {
-        return creationDate;
-    }
-
-    public void setCreationDate(Date creationDate) {
-        this.creationDate = creationDate;
-    }
-
-    public Set<Good> getGoods() {
-        return goods;
-    }
-
-    public void setGoods(Set<Good> goods) {
-        this.goods = goods;
     }
 
     @Override
@@ -136,11 +107,6 @@ public class Order implements Serializable {
                 + ", executed="
                 + executed
                 + ", user="
-                + user
-                + ", creationDate="
-                + creationDate
-                + ", goods="
-                + goods
                 + '}';
     }
 }
