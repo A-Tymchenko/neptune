@@ -227,3 +227,10 @@ project("study") {
     }
 
 }
+
+project("shop") {
+    dependencies {
+
+    }
+
+}
