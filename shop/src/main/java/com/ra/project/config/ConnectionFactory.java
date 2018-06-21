@@ -1,22 +1,47 @@
 package com.ra.project.config;
 
-import java.io.File;
-import java.io.FileInputStream;
+import org.h2.jdbcx.JdbcDataSource;
+
 import java.io.IOException;
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Properties;
 
-import org.apache.log4j.Logger;
-
+/**
+ * Class perform connectionFactory creation.
+ * This factory is needed for performing connections to database.
+ */
 public class ConnectionFactory {
 
-    private static final Logger LOGGER = Logger.getLogger(ConnectionFactory.class);
+    /**
+     * Static field Properties.
+     */
+    private static Properties properties;
+
+    /**
+     * Static field JdbcDataSource.
+     */
+    private static JdbcDataSource dataSource;
+
+    /**
+     * Static field ConnectionFactory.
+     */
+    private static ConnectionFactory connectionFactory;
+
+    /**
+     * Private constructor, that store properties inside and perform configuration loading via ClassLoader.
+     *
+     * @throws IOException if any error occurs.
+     */
+    private ConnectionFactory() throws IOException {
+        properties = new Properties();
+        properties.load(ClassLoader.getSystemResourceAsStream("db.properties"));
+    }
 
     /**
      * Method contains a query for table creation.
-     * @return String.
+     *
+     * @return String query, that perform Orders table creation.
      */
     public String createTable() {
         return "CREATE TABLE ORDERS("
@@ -30,34 +55,50 @@ public class ConnectionFactory {
 
     /**
      * Method contains a query which executes dropping table.
-     * @return String.
+     *
+     * @return String that perform drop of the Orders table.
      */
     public String dropTable() {
         return "DROP TABLE ORDERS IF EXISTS";
     }
 
     /**
-     * Method creates connection to database using driver class, url, username and password,
-     * that stored in db.properties file.
-     * @return Connection.
+     * Singleton that perform creation of the connectionFactory instance.
+     *
+     * @return ConnectionFactory
+     * @throws IOException if any error occurs.
      */
-    public Connection getConnection() {
-        final Properties properties = new Properties();
-        Connection connection = null;
-        FileInputStream fis;
-        try {
-            fis = new FileInputStream(
-                    new File("/home/reed/IdeaProjects/neptune/shop/src/main/resources/db.properties"));
-            properties.load(fis);
-            Class.forName(properties.getProperty("DRIVER_CLASS"));
-            final String url = properties.getProperty("URL");
-            final String username = properties.getProperty("USERNAME");
-            final String password = properties.getProperty("PASSWORD");
-            connection = DriverManager.getConnection(url, username, password);
-            LOGGER.info("Connection to database successful!");
-        } catch (IOException | ClassNotFoundException | SQLException e) {
-            LOGGER.error(e.getMessage());
+    private static ConnectionFactory buildConnectionFactory() throws IOException {
+        synchronized (ConnectionFactory.class) {
+            if (connectionFactory == null) {
+                connectionFactory = new ConnectionFactory();
+                dataSource = new JdbcDataSource();
+                dataSource.setURL(properties.getProperty("URL"));
+                dataSource.setUser(properties.getProperty("USERNAME"));
+                dataSource.setPassword(properties.getProperty("PASSWORD"));
+            }
         }
-        return connection;
+        return connectionFactory;
     }
+
+    /**
+     * Method returns created connectionFactory instance.
+     *
+     * @return ConnectionFactory
+     * @throws IOException if any error occurs.
+     */
+    public static ConnectionFactory getInstance() throws IOException {
+        return buildConnectionFactory();
+    }
+
+    /**
+     * Method returns connection to the database.
+     *
+     * @return Connection instance for interaction with database.
+     * @throws SQLException if ane error occurs.
+     */
+    public Connection getConnection() throws SQLException {
+        return dataSource.getConnection();
+    }
+
 }
