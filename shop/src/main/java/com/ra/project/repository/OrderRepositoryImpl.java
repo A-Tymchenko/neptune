@@ -122,7 +122,7 @@ public class OrderRepositoryImpl implements IRepository<Order> {
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     @Override
     public Integer update(Order newEntity) {
@@ -139,7 +139,7 @@ public class OrderRepositoryImpl implements IRepository<Order> {
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     @Override
     public Integer delete(Long entityId) {
