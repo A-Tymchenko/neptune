@@ -16,7 +16,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
  */
 public class ConnectionFactoryTest {
 
-    private static ConnectionFactory connectionFactory;
+    private ConnectionFactory connectionFactory;
 
     @BeforeEach
     void beforeTest () {
@@ -29,7 +29,4 @@ public class ConnectionFactoryTest {
         assertNotNull(connection);
         assertFalse(connection.isClosed());
     }
-
-
-
 }

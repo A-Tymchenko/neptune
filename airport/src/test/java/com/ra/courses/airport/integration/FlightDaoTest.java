@@ -15,12 +15,11 @@ import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class FlightDaoTest {
     
-    private static final String CREATE_FLIGHT_TABLE_QUERY =
+    private static final String CREATE_FLIGHT_TABLE_SQL =
             "CREATE TABLE IF NOT EXISTS flight (\n" +
                     "  id INT NOT NULL AUTO_INCREMENT UNIQUE,\n" +
                     "  name VARCHAR(255),\n" +
@@ -44,11 +43,11 @@ public class FlightDaoTest {
     private Flight flight;
 
     @BeforeEach
-    public void beforeAll() throws SQLException {
+    public void beforeTest() throws SQLException {
         createDataBaseTable();
         createFlight();
     }
-    
+
     private void createFlight() {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern(DATE_TIME_FORMAT);
         LocalDateTime departureDate = LocalDateTime.parse(DEPARTURE_DATE, formatter);
@@ -66,7 +65,7 @@ public class FlightDaoTest {
 
     private void createDataBaseTable() throws SQLException {
         Connection connection = ConnectionFactory.getInstance().getConnection();
-        PreparedStatement preparedStatement = connection.prepareStatement(CREATE_FLIGHT_TABLE_QUERY);
+        PreparedStatement preparedStatement = connection.prepareStatement(CREATE_FLIGHT_TABLE_SQL);
         preparedStatement.executeUpdate();
     }
 
@@ -88,6 +87,14 @@ public class FlightDaoTest {
         Flight updatedFlight = dao.update(createdFlight);
 
         assertEquals(expectedFlight, updatedFlight);
+    }
+
+    @Test
+    public void whenDeleteThenDeleteObjectAndReturnTrue() {
+        Flight createdFlight = dao.create(flight);
+        boolean result = dao.delete(createdFlight);
+
+        assertTrue(result);
     }
 
     private Flight changeFlight(Flight flight) {

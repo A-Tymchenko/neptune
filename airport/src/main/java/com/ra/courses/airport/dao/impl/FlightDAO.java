@@ -29,7 +29,8 @@ public class FlightDAO implements DAO<Flight> {
                                                     "(name, carrier, duration, meal, fare, departure_date, arrival_date) " +
                                                     " VALUES(?,?,?,?,?,?,?)";
     private static final String UPDATE_FLIGHT_SQL = "UPDATE flight SET name = ?, carrier = ?, duration = ?, meal = ?, fare = ?, departure_date = ?, arrival_date = ? WHERE id = ?";
-    private static final String SELECT_FLIGHT_BY_ID_SQL = "SELECT id, name, carrier, duration, meal, fare, departure_date, arrival_date FROM flight WHERE id=?";
+    private static final String SELECT_FLIGHT_BY_ID_SQL = "SELECT * FROM flight WHERE id = ?";
+    private static final String DELETE_FLIGHT_BY_ID_SQL = "DELETE FROM flight WHERE id = ?";
     private static final String SELECT_LAST_GENERATED_ID_SQL = "SELECT SCOPE_IDENTITY()";
 
     private ConnectionFactory connectionFactory;
@@ -58,7 +59,6 @@ public class FlightDAO implements DAO<Flight> {
     public Flight update(Flight flight) {
         try (Connection connection = connectionFactory.getConnection()) {
             PreparedStatement preparedStatement = connection.prepareStatement(UPDATE_FLIGHT_SQL);
-
             fillPreparedStatement(flight, preparedStatement);
             preparedStatement.executeUpdate();
             getById(Optional.of(flight.getId()));
@@ -69,8 +69,17 @@ public class FlightDAO implements DAO<Flight> {
       return flight;
     }
 
-    public boolean delete(Integer id) {
-        return false;
+    public boolean delete(Flight flight) {
+        boolean result = false;
+        try (Connection connection = connectionFactory.getConnection()) {
+            PreparedStatement preparedStatement = connection.prepareStatement(DELETE_FLIGHT_BY_ID_SQL);
+            preparedStatement.setInt(1, flight.getId());
+            result = preparedStatement.executeUpdate() > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            //todo add logging here
+        }
+        return result;
     }
 
     private void fillPreparedStatement(Flight flight, PreparedStatement preparedStatement) throws SQLException {

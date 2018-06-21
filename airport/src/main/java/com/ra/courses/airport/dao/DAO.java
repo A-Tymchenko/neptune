@@ -9,5 +9,5 @@ public interface DAO <T> {
 
     T update(T entity);
 
-    boolean delete(Integer flightId);
+    boolean delete(T entity);
 }
