@@ -19,8 +19,8 @@ public class Flight {
    private Boolean mealOn;
 
     public Flight() {
+        
     }
-
     public Integer getId() {
         return id;
     }

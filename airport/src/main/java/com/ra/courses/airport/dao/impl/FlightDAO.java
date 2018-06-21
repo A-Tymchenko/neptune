@@ -7,71 +7,104 @@ import com.ra.courses.airport.mapper.FlightRowMapper;
 import com.ra.courses.airport.mapper.RowMapper;
 
 import java.sql.*;
+import java.util.Optional;
 
 
 /**
  * Created by anbo06131 on 6/15/2018.
  */
-public class FlightDAO implements DAO <Flight> {
+public class FlightDAO implements DAO<Flight> {
+
+    private static final int NAME = 1;
+    private static final int CARRIER = 2;
+    private static final int DURATION = 3;
+    private static final int MEAL_ON = 4;
+    private static final int FARE = 5;
+    private static final int DEPARTURE_DATE = 6;
+    private static final int ARRIVAL_DATE = 7;
+    private static final int ID = 8;
+    private static final String FLIGHT_ID_CAN_NOT_BE_NULL = "Flight id can't be null";
+
+    private static final String INSERT_FLIGHT_SQL = "INSERT INTO flight "+
+                                                    "(name, carrier, duration, meal, fare, departure_date, arrival_date) " +
+                                                    " VALUES(?,?,?,?,?,?,?)";
+    private static final String UPDATE_FLIGHT_SQL = "UPDATE flight SET name = ?, carrier = ?, duration = ?, meal = ?, fare = ?, departure_date = ?, arrival_date = ? WHERE id = ?";
+    private static final String SELECT_FLIGHT_BY_ID_SQL = "SELECT id, name, carrier, duration, meal, fare, departure_date, arrival_date FROM flight WHERE id=?";
+    private static final String SELECT_LAST_GENERATED_ID_SQL = "SELECT SCOPE_IDENTITY()";
 
     private ConnectionFactory connectionFactory;
-
-    private static final String INSERT_FLIGHT_WITH_DEFAULT_VALUES_SQL = "INSERT INTO Flight DEFAULT VALUES";
-    private static final String SELECT_FLIGHT_BY_ID_SQL = "SELECT * FROM Flight WHERE id=?";
 
     public FlightDAO(ConnectionFactory connectionFactory) {
         this.connectionFactory = connectionFactory;
     }
 
-    public Flight create() {
-        Flight flight = null;
-        try (Connection connection = connectionFactory.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(INSERT_FLIGHT_WITH_DEFAULT_VALUES_SQL,new String[] {"id"})) {
+    public Flight create(Flight flight) {
+        try (Connection connection = connectionFactory.getConnection()) {
+            PreparedStatement insertPS = connection.prepareStatement(INSERT_FLIGHT_SQL);
+            PreparedStatement selectPS = connection.prepareStatement(SELECT_LAST_GENERATED_ID_SQL);
+            fillPreparedStatement(flight, insertPS);
+            insertPS.executeUpdate();
+            ResultSet generatedIdRS = selectPS.executeQuery();
+            Optional<Integer> id = generatedIdRS.next() ?
+                    Optional.of(generatedIdRS.getInt(1)) : Optional.empty();
+            flight = getById(id);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            //todo add logging here
+        }
+        return flight;
+    }
 
+    public Flight update(Flight flight) {
+        try (Connection connection = connectionFactory.getConnection()) {
+            PreparedStatement preparedStatement = connection.prepareStatement(UPDATE_FLIGHT_SQL);
+
+            fillPreparedStatement(flight, preparedStatement);
             preparedStatement.executeUpdate();
+            getById(Optional.of(flight.getId()));
+        } catch (SQLException e) {
+            e.printStackTrace();
+            //todo add logging here
+        }
+      return flight;
+    }
 
-            ResultSet idResultSet = preparedStatement.getGeneratedKeys();
-            Integer id = idResultSet != null && idResultSet.next() ? idResultSet.getInt("id") : null;
-            if (id != null) {
-                flight = getById(id);
+    public boolean delete(Integer id) {
+        return false;
+    }
+
+    private void fillPreparedStatement(Flight flight, PreparedStatement preparedStatement) throws SQLException {
+        preparedStatement.setString(NAME, flight.getName());
+        preparedStatement.setString(CARRIER, flight.getCarrier());
+        preparedStatement.setTime(DURATION, Time.valueOf(flight.getDuration()));
+        preparedStatement.setBoolean(MEAL_ON, flight.isMealOn());
+        preparedStatement.setDouble(FARE, flight.getFare());
+        preparedStatement.setTimestamp(DEPARTURE_DATE, Timestamp.valueOf(flight.getDepartureDate()));
+        preparedStatement.setTimestamp(ARRIVAL_DATE, Timestamp.valueOf(flight.getArrivalDate()));
+        if (flight.getId() != null) {
+            preparedStatement.setInt(ID, flight.getId());
+        }
+    }
+
+    private Flight getById(Optional<Integer> id) {
+        Flight flight = null;
+        if (!id.isPresent()) {
+            throw new IllegalArgumentException(FLIGHT_ID_CAN_NOT_BE_NULL);
+        }
+        try (Connection connection = connectionFactory.getConnection()) {
+             PreparedStatement preparedStatement = connection.prepareStatement(SELECT_FLIGHT_BY_ID_SQL);
+             preparedStatement.setInt(1,id.get());
+             ResultSet resultSet = preparedStatement.executeQuery();
+
+            if(resultSet.next()) {
+                flight = new Flight();
+                RowMapper<Flight> rowMapper = new FlightRowMapper();
+                flight = rowMapper.mapRow(resultSet, flight);
             }
         } catch (SQLException e) {
             e.printStackTrace();
             //todo add logging here
         }
         return flight;
-    }
-
-    private Flight getById(Integer id) {
-        Flight flight = null;
-        if (id == null) {
-            throw new IllegalArgumentException("Flight id shouldn't be null");
-        }
-        try (Connection connection = connectionFactory.getConnection();
-             PreparedStatement preparedStatement = getPrepareStatement(connection,SELECT_FLIGHT_BY_ID_SQL, id);
-             ResultSet resultSet = preparedStatement.executeQuery()) {
-
-            flight = new Flight();
-            RowMapper<Flight> rowMapper = new FlightRowMapper();
-            rowMapper.mapRow(resultSet, flight);
-        } catch (SQLException e) {
-            e.printStackTrace();
-            //todo add logging here
-        }
-        return flight;
-    }
-
-    public static PreparedStatement getPrepareStatement(Connection connection, String sql, Integer id) throws SQLException {
-        PreparedStatement result = connection.prepareStatement(sql);
-        result.setInt(1,id);
-        return result;
-    }
-
-    public Flight update(Flight flight) {
-        return null;
-    }
-
-    public boolean delete(Integer id) {
-        return false;
     }
 }
