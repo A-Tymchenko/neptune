@@ -86,7 +86,7 @@ public class OrderRepositoryImpl implements IRepository<Order> {
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     @Override
     public Integer create(Order entity) {
@@ -101,7 +101,7 @@ public class OrderRepositoryImpl implements IRepository<Order> {
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     @Override
     public Optional<Order> get(Long entityId) {
