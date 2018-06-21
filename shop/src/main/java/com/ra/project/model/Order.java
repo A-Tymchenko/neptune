@@ -1,13 +1,16 @@
-package com.ra.courses.project.model;
+package com.ra.project.model;
 
 import java.io.Serializable;
 import java.util.Objects;
 
+/**
+ * Entity represents an order that contains all important information.
+ */
 public class Order implements Serializable {
 
     private Long id;
     private Integer number;
-    private Double totalPrice;
+    private Double price;
     private Boolean deliveryIncluded;
     private Integer deliveryCost;
     private Boolean executed;
@@ -16,11 +19,11 @@ public class Order implements Serializable {
         super();
     }
 
-    public Order(Long id, Integer number, Double totalPrice, Boolean deliveryIncluded, Integer deliveryCost, Boolean executed) {
+    public Order(Long id, Integer number, Double price, Boolean deliveryIncluded, Integer deliveryCost, Boolean executed) {
         super();
         this.id = id;
         this.number = number;
-        this.totalPrice = totalPrice;
+        this.price = price;
         this.deliveryIncluded = deliveryIncluded;
         this.deliveryCost = deliveryCost;
         this.executed = executed;
@@ -42,12 +45,12 @@ public class Order implements Serializable {
         this.number = number;
     }
 
-    public Double getTotalPrice() {
-        return totalPrice;
+    public Double getPrice() {
+        return price;
     }
 
-    public void setTotalPrice(Double totalPrice) {
-        this.totalPrice = totalPrice;
+    public void setPrice(Double price) {
+        this.price = price;
     }
 
     public Boolean getDeliveryIncluded() {
@@ -98,8 +101,8 @@ public class Order implements Serializable {
                 + id
                 + ", number="
                 + number
-                + ", totalPrice="
-                + totalPrice
+                + ", price="
+                + price
                 + ", deliveryIncluded="
                 + deliveryIncluded
                 + ", deliveryCost="

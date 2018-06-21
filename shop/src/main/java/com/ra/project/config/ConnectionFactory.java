@@ -1,4 +1,4 @@
-package com.ra.courses.project.utils;
+package com.ra.project.config;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -10,9 +10,9 @@ import java.util.Properties;
 
 import org.apache.log4j.Logger;
 
-public class DBUtils {
+public class ConnectionFactory {
 
-    private static final Logger LOGGER = Logger.getLogger(DBUtils.class);
+    private static final Logger LOGGER = Logger.getLogger(ConnectionFactory.class);
 
     /**
      * Method contains a query for table creation.

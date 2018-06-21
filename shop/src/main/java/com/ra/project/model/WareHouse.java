@@ -1,4 +1,4 @@
-package com.ra.courses.project.model;
+package com.ra.project.model;
 
 import java.io.Serializable;
 

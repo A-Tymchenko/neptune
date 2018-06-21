@@ -14,7 +14,7 @@ public interface IRepository<T> {
      * @param entityId of the searched entity.
      * @return T
      */
-    T get(int entityId);
+    T get(Long entityId);
 
     /**
      * Method returns update entity.
@@ -22,13 +22,13 @@ public interface IRepository<T> {
      * @param newEntity updated version of entity.
      * @return T
      */
-    T update(int entityId, T newEntity);
+    T update(Long entityId, T newEntity);
 
     /**
      * Method will delete entity from the database.
      * @param entityId of entity that will be deleted.
      * @return Boolean.TRUE if entity deleted or Boolean.FALSE if not.
      */
-    Boolean delete(int entityId);
+    Boolean delete(Long entityId);
 
 }
