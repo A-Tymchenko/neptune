@@ -1,34 +1,52 @@
-package com.ra.courses.project.repository;
+package com.ra.project.repository;
 
+import java.util.List;
+import java.util.Optional;
+
+/**
+ * Interface represents simple CRUD-methods, which can be implemented for any entity, because it`s parameterized.
+ *
+ * @param <T> represents an entity.
+ */
 public interface IRepository<T> {
 
     /**
-     * Method creates new entity.
+     * Method inserts new entity to database.
+     *
      * @param entity that will be created.
-     * @return T
+     * @return Integer value display how many rows was inserted to database.
      */
-    T create(T entity);
+    Integer create(T entity);
 
     /**
-     * Method returns entity from database.
-     * @param entityId of the searched entity.
-     * @return T
+     * Method returns Optional wrapper with an entity from database.
+     *
+     * @param entityId - id of searched entity.
+     * @return Optional<T> wrapper for chosen entity.
      */
-    T get(Long entityId);
+    Optional<T> get(Long entityId);
 
     /**
-     * Method returns update entity.
-     * @param entityId of entity, that should be updated.
+     * Method updates existed entity due to it`s new params and send updated entity to database.
+     *
      * @param newEntity updated version of entity.
-     * @return T
+     * @return Integer. Returns an updated rows number.
      */
-    T update(Long entityId, T newEntity);
+    Integer update(T newEntity);
 
     /**
      * Method will delete entity from the database.
+     *
      * @param entityId of entity that will be deleted.
-     * @return Boolean.TRUE if entity deleted or Boolean.FALSE if not.
+     * @return Integer value displays deleted rows number from database.
      */
-    Boolean delete(Long entityId);
+    Integer delete(Long entityId);
+
+    /**
+     * Method returns all entities.
+     *
+     * @return List<T> which contains all existed entities of th type <T>.
+     */
+    List<T> getAll();
 
 }
