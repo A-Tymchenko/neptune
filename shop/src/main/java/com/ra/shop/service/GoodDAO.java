@@ -1,6 +1,5 @@
 package com.ra.shop.service;
 
-import com.ra.shop.daotest.Customer;
 import com.ra.shop.model.Good;
 
 import java.util.HashMap;
