@@ -17,6 +17,9 @@ import java.time.temporal.ChronoUnit;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * Tests for {@link FlightDAO} class
+ */
 public class FlightDaoTest {
     
     private static final String CREATE_FLIGHT_TABLE_SQL =

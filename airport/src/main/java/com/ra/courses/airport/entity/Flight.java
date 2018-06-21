@@ -5,7 +5,7 @@ import java.time.LocalTime;
 import java.util.Objects;
 
 /**
- * Created by anbo06131 on 6/15/2018.
+ * Flight entity correspond to flight table in DB
  */
 public class Flight {
 
@@ -86,15 +86,23 @@ public class Flight {
     }
 
     @Override
-   public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (!(o instanceof Flight)) {
-            return false;
-        }
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
         Flight flight = (Flight) o;
-        return Objects.equals(id, flight.id);
+        return Objects.equals(id, flight.id) &&
+                Objects.equals(name, flight.name) &&
+                Objects.equals(carrier, flight.carrier) &&
+                Objects.equals(duration, flight.duration) &&
+                Objects.equals(departureDate, flight.departureDate) &&
+                Objects.equals(arrivalDate, flight.arrivalDate) &&
+                Objects.equals(fare, flight.fare) &&
+                Objects.equals(mealOn, flight.mealOn);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name, carrier, duration, departureDate, arrivalDate, fare, mealOn);
     }
 
     @Override

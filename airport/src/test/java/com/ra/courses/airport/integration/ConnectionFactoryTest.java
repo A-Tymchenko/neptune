@@ -11,8 +11,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 /**
- * Author: anbo
- * Date: 18.06.2018
+ * Tests for {@link ConnectionFactory} class
  */
 public class ConnectionFactoryTest {
 
@@ -23,6 +22,9 @@ public class ConnectionFactoryTest {
        connectionFactory = ConnectionFactory.getInstance();
     }
 
+    /**
+     * Check that returned {@link Connection} not null and closed
+     */
     @Test
     void whenGetConnectionNewConnectionShouldBeReturned() throws SQLException {
         Connection connection = connectionFactory.getConnection();

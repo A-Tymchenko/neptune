@@ -16,6 +16,13 @@ public class FlightRowMapper implements RowMapper<Flight> {
     private static final String DEPARTURE_DATE = "departure_date";
     private static final String ARRIVAL_DATE = "arrival_date";
 
+    /**
+     * Map {@link ResultSet} to {@link Flight} instance.
+     * @param resultSet
+     * @param flight
+     * @return
+     * @throws SQLException
+     */
     @Override
     public Flight mapRow(ResultSet resultSet, Flight flight) throws SQLException {
         flight.setId(resultSet.getInt(ID));

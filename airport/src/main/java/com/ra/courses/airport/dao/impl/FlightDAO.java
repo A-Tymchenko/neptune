@@ -11,7 +11,7 @@ import java.util.Optional;
 
 
 /**
- * Created by anbo06131 on 6/15/2018.
+ * Implementation of {@link DAO} interface.
  */
 public class FlightDAO implements DAO<Flight> {
 
@@ -82,6 +82,13 @@ public class FlightDAO implements DAO<Flight> {
         return result;
     }
 
+    /**
+     * Fill {@link PreparedStatement} parameters.
+     * Get them from {@link Flight} entity.
+     * @param flight
+     * @param preparedStatement
+     * @throws SQLException
+     */
     private void fillPreparedStatement(Flight flight, PreparedStatement preparedStatement) throws SQLException {
         preparedStatement.setString(NAME, flight.getName());
         preparedStatement.setString(CARRIER, flight.getCarrier());
@@ -95,6 +102,12 @@ public class FlightDAO implements DAO<Flight> {
         }
     }
 
+    /**
+     * Return object from DB or exception if object not exists.
+     *
+     * @param id
+     * @return {@link Flight}
+     */
     private Flight getById(Optional<Integer> id) {
         Flight flight = null;
         if (!id.isPresent()) {

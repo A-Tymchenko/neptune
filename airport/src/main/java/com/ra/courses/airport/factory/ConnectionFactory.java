@@ -8,7 +8,7 @@ import java.sql.SQLException;
 import java.util.Properties;
 
 /**
- * Created by anbo06131 on 6/15/2018.
+ * Singelton factory for connection creation.
  */
 public final class ConnectionFactory {
     
@@ -46,7 +46,7 @@ public final class ConnectionFactory {
     }
 
     /**
-     * Returns new config.
+     * Returns new connection.
      *
      * @return Connection.
      */
