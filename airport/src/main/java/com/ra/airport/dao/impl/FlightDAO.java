@@ -1,6 +1,7 @@
 package com.ra.airport.dao.impl;
 
 import com.ra.airport.dao.DAO;
+import com.ra.airport.dao.exception.DAOException;
 import com.ra.airport.entity.Flight;
 import com.ra.airport.factory.ConnectionFactory;
 import com.ra.airport.mapper.FlightRowMapper;
@@ -25,9 +26,9 @@ public class FlightDAO implements DAO<Flight> {
     private static final int ID = 8;
     private static final String FLIGHT_ID_CAN_NOT_BE_NULL = "Flight id can't be null";
 
-    private static final String INSERT_FLIGHT_SQL = "INSERT INTO flight "+
-                                                    "(name, carrier, duration, meal, fare, departure_date, arrival_date) " +
-                                                    " VALUES(?,?,?,?,?,?,?)";
+    private static final String INSERT_FLIGHT_SQL = "INSERT INTO flight " +
+            "(name, carrier, duration, meal, fare, departure_date, arrival_date) " +
+            " VALUES(?,?,?,?,?,?,?)";
     private static final String UPDATE_FLIGHT_SQL = "UPDATE flight SET name = ?, carrier = ?, duration = ?, meal = ?, fare = ?, departure_date = ?, arrival_date = ? WHERE id = ?";
     private static final String SELECT_FLIGHT_BY_ID_SQL = "SELECT * FROM flight WHERE id = ?";
     private static final String DELETE_FLIGHT_BY_ID_SQL = "DELETE FROM flight WHERE id = ?";
@@ -66,7 +67,7 @@ public class FlightDAO implements DAO<Flight> {
             e.printStackTrace();
             //todo add logging here
         }
-      return flight;
+        return flight;
     }
 
     public boolean delete(Flight flight) {
@@ -85,6 +86,7 @@ public class FlightDAO implements DAO<Flight> {
     /**
      * Fill {@link PreparedStatement} parameters.
      * Get them from {@link Flight} entity.
+     *
      * @param flight
      * @param preparedStatement
      * @throws SQLException
@@ -110,21 +112,24 @@ public class FlightDAO implements DAO<Flight> {
      */
     private Flight getById(Optional<Integer> id) {
         Flight flight = null;
-        if (!id.isPresent()) {
-            throw new IllegalArgumentException(FLIGHT_ID_CAN_NOT_BE_NULL);
-        }
         try (Connection connection = connectionFactory.getConnection()) {
-             PreparedStatement preparedStatement = connection.prepareStatement(SELECT_FLIGHT_BY_ID_SQL);
-             preparedStatement.setInt(1,id.get());
-             ResultSet resultSet = preparedStatement.executeQuery();
+            if (!id.isPresent()) {
+                throw new DAOException(FLIGHT_ID_CAN_NOT_BE_NULL);
+            }
+            PreparedStatement preparedStatement = connection.prepareStatement(SELECT_FLIGHT_BY_ID_SQL);
+            preparedStatement.setInt(1, id.get());
+            ResultSet resultSet = preparedStatement.executeQuery();
 
-            if(resultSet.next()) {
+            if (resultSet.next()) {
                 flight = new Flight();
                 RowMapper<Flight> rowMapper = new FlightRowMapper();
                 flight = rowMapper.mapRow(resultSet, flight);
             }
         } catch (SQLException e) {
             e.printStackTrace();
+            //todo add logging here
+        } catch (DAOException daoException) {
+            daoException.printStackTrace();
             //todo add logging here
         }
         return flight;
