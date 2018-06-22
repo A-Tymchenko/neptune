@@ -1,4 +1,4 @@
-package com.ra.courses.airport.mapper;
+package com.ra.airport.mapper;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;

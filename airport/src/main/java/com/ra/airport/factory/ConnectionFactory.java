@@ -1,4 +1,4 @@
-package com.ra.courses.airport.factory;
+package com.ra.airport.factory;
 
 import org.h2.jdbcx.JdbcDataSource;
 

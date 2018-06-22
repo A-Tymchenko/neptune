@@ -1,4 +1,4 @@
-package com.ra.courses.airport.entity;
+package com.ra.airport.entity;
 
 import java.time.LocalDateTime;
 import java.time.LocalTime;

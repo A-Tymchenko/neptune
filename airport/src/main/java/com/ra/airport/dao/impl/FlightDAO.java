@@ -1,10 +1,10 @@
-package com.ra.courses.airport.dao.impl;
+package com.ra.airport.dao.impl;
 
-import com.ra.courses.airport.dao.DAO;
-import com.ra.courses.airport.entity.Flight;
-import com.ra.courses.airport.factory.ConnectionFactory;
-import com.ra.courses.airport.mapper.FlightRowMapper;
-import com.ra.courses.airport.mapper.RowMapper;
+import com.ra.airport.dao.DAO;
+import com.ra.airport.entity.Flight;
+import com.ra.airport.factory.ConnectionFactory;
+import com.ra.airport.mapper.FlightRowMapper;
+import com.ra.airport.mapper.RowMapper;
 
 import java.sql.*;
 import java.util.Optional;

@@ -1,4 +1,4 @@
-package com.ra.courses.airport.dao;
+package com.ra.airport.dao;
 
 /**
  * DAO interface provide methods for CRUD operations.

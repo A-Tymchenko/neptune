@@ -1,6 +1,6 @@
-package com.ra.courses.airport.integration;
+package com.ra.airport.integration;
 
-import com.ra.courses.airport.factory.ConnectionFactory;
+import com.ra.airport.factory.ConnectionFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

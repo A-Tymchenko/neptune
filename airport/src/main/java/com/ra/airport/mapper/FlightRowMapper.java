@@ -1,6 +1,6 @@
-package com.ra.courses.airport.mapper;
+package com.ra.airport.mapper;
 
-import com.ra.courses.airport.entity.Flight;
+import com.ra.airport.entity.Flight;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;

@@ -1,9 +1,9 @@
-package com.ra.courses.airport.integration;
+package com.ra.airport.integration;
 
-import com.ra.courses.airport.dao.DAO;
-import com.ra.courses.airport.dao.impl.FlightDAO;
-import com.ra.courses.airport.entity.Flight;
-import com.ra.courses.airport.factory.ConnectionFactory;
+import com.ra.airport.dao.DAO;
+import com.ra.airport.dao.impl.FlightDAO;
+import com.ra.airport.entity.Flight;
+import com.ra.airport.factory.ConnectionFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
