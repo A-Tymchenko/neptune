@@ -101,11 +101,6 @@ public class Flight {
     }
 
     @Override
-    public int hashCode() {
-        return Objects.hash(id, name, carrier, duration, departureDate, arrivalDate, fare, mealOn);
-    }
-
-    @Override
     public String toString() {
         return "Flight{" +
                 "id=" + id +

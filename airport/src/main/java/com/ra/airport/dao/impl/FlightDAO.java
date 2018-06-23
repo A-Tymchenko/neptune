@@ -40,7 +40,7 @@ public class FlightDAO implements DAO<Flight> {
         this.connectionFactory = connectionFactory;
     }
 
-    public Flight create(Flight flight) {
+    public Flight create(Flight flight) throws DAOException {
         try (Connection connection = connectionFactory.getConnection()) {
             PreparedStatement insertPS = connection.prepareStatement(INSERT_FLIGHT_SQL);
             PreparedStatement selectPS = connection.prepareStatement(SELECT_LAST_GENERATED_ID_SQL);
@@ -57,7 +57,7 @@ public class FlightDAO implements DAO<Flight> {
         return flight;
     }
 
-    public Flight update(Flight flight) {
+    public Flight update(Flight flight) throws DAOException {
         try (Connection connection = connectionFactory.getConnection()) {
             PreparedStatement preparedStatement = connection.prepareStatement(UPDATE_FLIGHT_SQL);
             fillPreparedStatement(flight, preparedStatement);
@@ -66,12 +66,13 @@ public class FlightDAO implements DAO<Flight> {
         } catch (SQLException e) {
             e.printStackTrace();
             //todo add logging here
+            throw new DAOException(e.getMessage());
         }
         return flight;
     }
 
-    public boolean delete(Flight flight) {
-        boolean result = false;
+    public boolean delete(Flight flight) throws DAOException {
+        boolean result;
         try (Connection connection = connectionFactory.getConnection()) {
             PreparedStatement preparedStatement = connection.prepareStatement(DELETE_FLIGHT_BY_ID_SQL);
             preparedStatement.setInt(1, flight.getId());
@@ -79,6 +80,7 @@ public class FlightDAO implements DAO<Flight> {
         } catch (SQLException e) {
             e.printStackTrace();
             //todo add logging here
+            throw new DAOException(e.getMessage());
         }
         return result;
     }
@@ -110,12 +112,12 @@ public class FlightDAO implements DAO<Flight> {
      * @param id
      * @return {@link Flight}
      */
-    private Flight getById(Optional<Integer> id) {
+    public Flight getById(Optional<Integer> id) throws DAOException {
         Flight flight = null;
+        if (!id.isPresent()) {
+            throw new DAOException(FLIGHT_ID_CAN_NOT_BE_NULL);
+        }
         try (Connection connection = connectionFactory.getConnection()) {
-            if (!id.isPresent()) {
-                throw new DAOException(FLIGHT_ID_CAN_NOT_BE_NULL);
-            }
             PreparedStatement preparedStatement = connection.prepareStatement(SELECT_FLIGHT_BY_ID_SQL);
             preparedStatement.setInt(1, id.get());
             ResultSet resultSet = preparedStatement.executeQuery();
@@ -128,9 +130,7 @@ public class FlightDAO implements DAO<Flight> {
         } catch (SQLException e) {
             e.printStackTrace();
             //todo add logging here
-        } catch (DAOException daoException) {
-            daoException.printStackTrace();
-            //todo add logging here
+            throw new DAOException(e.getMessage());
         }
         return flight;
     }

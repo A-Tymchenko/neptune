@@ -10,7 +10,7 @@ import java.util.Properties;
 /**
  * Singelton factory for connection creation.
  */
-public final class ConnectionFactory {
+public class ConnectionFactory {
     
     private static JdbcDataSource dataSource;
     private static Properties dbProperties;

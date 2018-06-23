@@ -1,6 +1,7 @@
 package com.ra.airport.integration;
 
 import com.ra.airport.dao.DAO;
+import com.ra.airport.dao.exception.DAOException;
 import com.ra.airport.dao.impl.FlightDAO;
 import com.ra.airport.entity.Flight;
 import com.ra.airport.factory.ConnectionFactory;
@@ -73,7 +74,7 @@ public class FlightDaoTest {
     }
 
     @Test
-    public void whenCreateThenNewFlightWithIdShouldBeReturned() {
+    public void whenCreateThenNewFlightWithIdShouldBeReturned() throws DAOException {
         Flight createdFlight = dao.create(flight);
         assertNotNull(createdFlight);
         Integer flightId = createdFlight.getId();
@@ -83,7 +84,7 @@ public class FlightDaoTest {
     }
 
     @Test
-    public void whenUpdateThenUpdatedFlightShouldBeReturned() {
+    public void whenUpdateThenUpdatedFlightShouldBeReturned() throws DAOException {
         Flight createdFlight = dao.create(flight);
         Flight expectedFlight = changeFlight(createdFlight);
 
@@ -93,7 +94,7 @@ public class FlightDaoTest {
     }
 
     @Test
-    public void whenDeleteThenDeleteObjectAndReturnTrue() {
+    public void whenDeleteThenDeleteObjectAndReturnTrue() throws DAOException {
         Flight createdFlight = dao.create(flight);
         boolean result = dao.delete(createdFlight);
 

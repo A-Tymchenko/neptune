@@ -7,8 +7,7 @@ import org.junit.jupiter.api.Test;
 import java.sql.Connection;
 import java.sql.SQLException;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Tests for {@link ConnectionFactory} class
@@ -18,7 +17,7 @@ public class ConnectionFactoryTest {
     private ConnectionFactory connectionFactory;
 
     @BeforeEach
-    void beforeTest () {
+    public void beforeTest () {
        connectionFactory = ConnectionFactory.getInstance();
     }
 
@@ -26,9 +25,16 @@ public class ConnectionFactoryTest {
      * Check that returned {@link Connection} not null and closed
      */
     @Test
-    void whenGetConnectionNewConnectionShouldBeReturned() throws SQLException {
+    public void whenGetConnectionNewConnectionShouldBeReturned() throws SQLException {
         Connection connection = connectionFactory.getConnection();
         assertNotNull(connection);
         assertFalse(connection.isClosed());
+    }
+
+    @Test
+    public void whenConnectionFactoryGetInstanceCallTwiceTheSameInstanceShouldBeReturned() {
+        ConnectionFactory firstInstance = ConnectionFactory.getInstance();
+        ConnectionFactory secondInstance = ConnectionFactory.getInstance();
+        assertTrue(firstInstance == secondInstance);
     }
 }
