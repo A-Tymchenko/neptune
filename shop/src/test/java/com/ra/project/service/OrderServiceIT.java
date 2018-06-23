@@ -22,11 +22,15 @@ class OrdersServiceIT {
 
     private IRepository<Order> orderIRepository;
     private IService<Order> service;
-    private ConnectionFactory connectionFactory;
+    private static ConnectionFactory connectionFactory;
+
+    @BeforeAll
+    static void init() throws IOException {
+        connectionFactory = ConnectionFactory.getInstance();
+    }
 
     @BeforeEach
     void initForEach() throws SQLException, IOException {
-        connectionFactory = ConnectionFactory.getInstance();
         orderIRepository = new OrderRepositoryImpl(connectionFactory);
         service = new OrderServiceImpl(orderIRepository);
         try (Connection connection = connectionFactory.getConnection();
@@ -43,6 +47,10 @@ class OrdersServiceIT {
         }
         service = null;
         orderIRepository = null;
+    }
+
+    @AfterAll
+    static void tearDownAfterClass() {
         connectionFactory = null;
     }
 
