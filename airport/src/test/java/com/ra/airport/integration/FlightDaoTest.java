@@ -15,6 +15,8 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -99,6 +101,17 @@ public class FlightDaoTest {
         boolean result = dao.delete(createdFlight);
 
         assertTrue(result);
+    }
+
+    @Test
+    public void whenGetAllThenFlightsFromDBShouldBeReturned() throws DAOException {
+        List<Flight> expectedResult = new ArrayList<>();
+        expectedResult.add(dao.create(flight));
+        expectedResult.add(dao.create(flight));
+
+        List<Flight> flights = dao.getAll();
+
+        assertEquals(expectedResult, flights);
     }
 
     private Flight changeFlight(Flight flight) {

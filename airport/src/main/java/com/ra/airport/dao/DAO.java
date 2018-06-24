@@ -2,6 +2,7 @@ package com.ra.airport.dao;
 
 import com.ra.airport.dao.exception.DAOException;
 
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -42,4 +43,13 @@ public interface DAO <T> {
      * @throws DAOException
      */
     T getById(Optional<Integer> id) throws DAOException;
+
+    /**
+     * Return all entities from DB by T type.
+     * If entities absent in DB return empty {@link List<T>}
+     *
+     * @return List<T>
+     * @throws DAOException
+     */
+    List<T> getAll() throws DAOException;
 }

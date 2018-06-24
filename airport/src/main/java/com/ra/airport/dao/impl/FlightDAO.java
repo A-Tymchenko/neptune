@@ -8,6 +8,8 @@ import com.ra.airport.mapper.FlightRowMapper;
 import com.ra.airport.mapper.RowMapper;
 
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 
@@ -32,6 +34,7 @@ public class FlightDAO implements DAO<Flight> {
     private static final String UPDATE_FLIGHT_SQL = "UPDATE flight SET name = ?, carrier = ?, duration = ?, meal = ?, fare = ?, departure_date = ?, arrival_date = ? WHERE id = ?";
     private static final String SELECT_FLIGHT_BY_ID_SQL = "SELECT * FROM flight WHERE id = ?";
     private static final String DELETE_FLIGHT_BY_ID_SQL = "DELETE FROM flight WHERE id = ?";
+    private static final String SELECT_ALL_FLIGHTS_SQL ="SELECT * FROM flight";
     private static final String SELECT_LAST_GENERATED_ID_SQL = "SELECT SCOPE_IDENTITY()";
 
     private ConnectionFactory connectionFactory;
@@ -133,5 +136,25 @@ public class FlightDAO implements DAO<Flight> {
             throw new DAOException(e.getMessage());
         }
         return flight;
+    }
+
+    @Override
+    public List<Flight> getAll() throws DAOException {
+        List<Flight> flights = new ArrayList<>();
+        try (Connection connection = connectionFactory.getConnection()) {
+            PreparedStatement preparedStatement = connection.prepareStatement(SELECT_ALL_FLIGHTS_SQL);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()) {
+                Flight flight = new Flight();
+                RowMapper<Flight> rowMapper = new FlightRowMapper();
+                flight = rowMapper.mapRow(resultSet, flight);
+                flights.add(flight);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            //todo add logging here
+            throw new DAOException(e.getMessage());
+        }
+        return flights;
     }
 }
