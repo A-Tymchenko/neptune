@@ -5,6 +5,7 @@ import com.ra.airport.dao.exception.DAOException;
 import com.ra.airport.dao.impl.FlightDAO;
 import com.ra.airport.entity.Flight;
 import com.ra.airport.factory.ConnectionFactory;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -37,6 +38,8 @@ public class FlightDaoTest {
                     "  arrival_date DATETIME,\n" +
                     ")";
 
+    private static final String DROP_TABLE_SQL = "DROP TABLE flight";
+
     private static final String DATE_TIME_FORMAT = "yyyy-MM-dd HH:mm:ss";
     private static final String DEPARTURE_DATE = "2018-06-17 13:15:00";
     private static final String ARRIVAL_DATE = "2018-06-17 15:16:00";
@@ -54,6 +57,17 @@ public class FlightDaoTest {
         createFlight();
     }
 
+    @AfterEach
+    public void afterTest() throws SQLException {
+        deleteTable();
+    }
+
+    private void deleteTable() throws SQLException {
+        Connection connection = ConnectionFactory.getInstance().getConnection();
+        PreparedStatement preparedStatement = connection.prepareStatement(DROP_TABLE_SQL);
+        preparedStatement.executeUpdate();
+    }
+
     private void createFlight() {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern(DATE_TIME_FORMAT);
         LocalDateTime departureDate = LocalDateTime.parse(DEPARTURE_DATE, formatter);
@@ -69,7 +83,7 @@ public class FlightDaoTest {
         flight.setArrivalDate(arrivalDate);
     }
 
-    private void createDataBaseTable() throws SQLException {
+    private static void createDataBaseTable() throws SQLException {
         Connection connection = ConnectionFactory.getInstance().getConnection();
         PreparedStatement preparedStatement = connection.prepareStatement(CREATE_FLIGHT_TABLE_SQL);
         preparedStatement.executeUpdate();
