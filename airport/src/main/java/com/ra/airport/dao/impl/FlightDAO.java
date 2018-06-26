@@ -54,8 +54,7 @@ public class FlightDAO implements DAO<Flight> {
                     Optional.of(generatedIdRS.getInt(1)) : Optional.empty();
             flight = getById(id);
         } catch (SQLException e) {
-            e.printStackTrace();
-            //todo add logging here
+            throw new DAOException("Failed to create new flight");
         }
         return flight;
     }
@@ -67,9 +66,7 @@ public class FlightDAO implements DAO<Flight> {
             preparedStatement.executeUpdate();
             getById(Optional.of(flight.getId()));
         } catch (SQLException e) {
-            e.printStackTrace();
-            //todo add logging here
-            throw new DAOException(e.getMessage());
+            throw new DAOException("Failed to update flight with id "+flight.getId());
         }
         return flight;
     }
@@ -81,32 +78,9 @@ public class FlightDAO implements DAO<Flight> {
             preparedStatement.setInt(1, flight.getId());
             result = preparedStatement.executeUpdate() > 0;
         } catch (SQLException e) {
-            e.printStackTrace();
-            //todo add logging here
-            throw new DAOException(e.getMessage());
+            throw new DAOException("Failed to delete flight with id "+flight.getId());
         }
         return result;
-    }
-
-    /**
-     * Fill {@link PreparedStatement} parameters.
-     * Get them from {@link Flight} entity.
-     *
-     * @param flight
-     * @param preparedStatement
-     * @throws SQLException
-     */
-    private void fillPreparedStatement(Flight flight, PreparedStatement preparedStatement) throws SQLException {
-        preparedStatement.setString(NAME, flight.getName());
-        preparedStatement.setString(CARRIER, flight.getCarrier());
-        preparedStatement.setTime(DURATION, Time.valueOf(flight.getDuration()));
-        preparedStatement.setBoolean(MEAL_ON, flight.isMealOn());
-        preparedStatement.setDouble(FARE, flight.getFare());
-        preparedStatement.setTimestamp(DEPARTURE_DATE, Timestamp.valueOf(flight.getDepartureDate()));
-        preparedStatement.setTimestamp(ARRIVAL_DATE, Timestamp.valueOf(flight.getArrivalDate()));
-        if (flight.getId() != null) {
-            preparedStatement.setInt(ID, flight.getId());
-        }
     }
 
     /**
@@ -131,9 +105,7 @@ public class FlightDAO implements DAO<Flight> {
                 flight = rowMapper.mapRow(resultSet, flight);
             }
         } catch (SQLException e) {
-            e.printStackTrace();
-            //todo add logging here
-            throw new DAOException(e.getMessage());
+            throw new DAOException("Failed to get flight with id "+flight.getId());
         }
         return flight;
     }
@@ -151,10 +123,29 @@ public class FlightDAO implements DAO<Flight> {
                 flights.add(flight);
             }
         } catch (SQLException e) {
-            e.printStackTrace();
-            //todo add logging here
-            throw new DAOException(e.getMessage());
+            throw new DAOException("Failed to get all flights");
         }
         return flights;
+    }
+
+    /**
+     * Fill {@link PreparedStatement} parameters.
+     * Get them from {@link Flight} entity.
+     *
+     * @param flight
+     * @param preparedStatement
+     * @throws SQLException
+     */
+    private void fillPreparedStatement(Flight flight, PreparedStatement preparedStatement) throws SQLException {
+        preparedStatement.setString(NAME, flight.getName());
+        preparedStatement.setString(CARRIER, flight.getCarrier());
+        preparedStatement.setTime(DURATION, Time.valueOf(flight.getDuration()));
+        preparedStatement.setBoolean(MEAL_ON, flight.isMealOn());
+        preparedStatement.setDouble(FARE, flight.getFare());
+        preparedStatement.setTimestamp(DEPARTURE_DATE, Timestamp.valueOf(flight.getDepartureDate()));
+        preparedStatement.setTimestamp(ARRIVAL_DATE, Timestamp.valueOf(flight.getArrivalDate()));
+        if (flight.getId() != null) {
+            preparedStatement.setInt(ID, flight.getId());
+        }
     }
 }

@@ -4,35 +4,18 @@ import com.ra.airport.entity.Flight;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * Tests for the model class {@link com.ra.airport.entity.Flight}
  */
-public class FlightTest {
+public class FlightTest extends AbstractTest {
 
-    private static final String EMPTY = "";
     private Flight flight;
 
     @BeforeEach
     public void initData() {
-        createFlight();
-
-    }
-
-    private void createFlight() {
-        flight = new Flight();
-        flight.setId(1);
-        flight.setName(EMPTY);
-        flight.setCarrier(EMPTY);
-        flight.setDuration(LocalTime.MIDNIGHT);
-        flight.setFare(Double.MIN_VALUE);
-        flight.setMealOn(false);
-        flight.setDepartureDate(LocalDateTime.MIN);
-        flight.setArrivalDate(LocalDateTime.MAX);
+        flight = createFlight();
     }
 
     @Test
