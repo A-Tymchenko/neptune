@@ -8,11 +8,11 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.sql.*;
+import java.util.List;
 import java.util.Optional;
 
 import static com.ra.airport.dao.exception.ExceptionMessage.*;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -89,6 +89,14 @@ public class FlightDaoMockitoTest extends AbstractTest {
 
         boolean result = flightDAO.delete(flight);
         assertEquals(true, result);
+    }
+
+    @Test
+    public void whenGetAllThenCorrectSQLShouldBeExecutedAndCorrectListReturned() throws DAOException, SQLException {
+        when(mockConnection.prepareStatement(SELECT_ALL_FLIGHTS_SQL)).thenReturn(mockStatement);
+        when(mockResultSet.next()).thenReturn(true,false);
+        List<Flight> flights = flightDAO.getAll();
+        assertFalse(flights.isEmpty());
     }
 
     @Test
