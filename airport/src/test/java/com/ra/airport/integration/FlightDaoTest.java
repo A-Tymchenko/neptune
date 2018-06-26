@@ -9,6 +9,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -52,23 +53,23 @@ public class FlightDaoTest {
     private Flight flight;
 
     @BeforeEach
-    public void beforeTest() throws SQLException {
+    public void beforeTest() throws SQLException, IOException {
         createDataBaseTable();
         createFlight();
     }
 
     @AfterEach
-    public void afterTest() throws SQLException {
+    public void afterTest() throws SQLException, IOException {
         deleteTable();
     }
 
-    private void deleteTable() throws SQLException {
+    private void deleteTable() throws SQLException, IOException {
         Connection connection = ConnectionFactory.getInstance().getConnection();
         PreparedStatement preparedStatement = connection.prepareStatement(DROP_TABLE_SQL);
         preparedStatement.executeUpdate();
     }
 
-    private void createFlight() {
+    private void createFlight() throws IOException {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern(DATE_TIME_FORMAT);
         LocalDateTime departureDate = LocalDateTime.parse(DEPARTURE_DATE, formatter);
         LocalDateTime arrivalDate = LocalDateTime.parse(ARRIVAL_DATE, formatter);
@@ -83,7 +84,7 @@ public class FlightDaoTest {
         flight.setArrivalDate(arrivalDate);
     }
 
-    private static void createDataBaseTable() throws SQLException {
+    private static void createDataBaseTable() throws SQLException, IOException {
         Connection connection = ConnectionFactory.getInstance().getConnection();
         PreparedStatement preparedStatement = connection.prepareStatement(CREATE_FLIGHT_TABLE_SQL);
         preparedStatement.executeUpdate();

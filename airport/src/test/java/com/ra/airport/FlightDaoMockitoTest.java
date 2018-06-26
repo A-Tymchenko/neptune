@@ -69,8 +69,8 @@ public class FlightDaoMockitoTest extends AbstractTest {
     public void whenCreateThenCorrectSQLShouldBeExecutedAndCorrectEntityShouldBeReturned() throws SQLException, DAOException {
         when(mockConnection.prepareStatement(INSERT_FLIGHT_SQL)).thenReturn(mockStatement);
         when(mockConnection.prepareStatement(SELECT_LAST_GENERATED_ID_SQL)).thenReturn(mockStatement);
-
         Flight result = flightDAO.create(flight);
+
         assertEquals(flight, result);
     }
 
@@ -86,8 +86,8 @@ public class FlightDaoMockitoTest extends AbstractTest {
     public void whenDeleteThenCorrectSQLShouldBeExecutedAndTrueShouldBeReturned() throws DAOException, SQLException {
         when(mockConnection.prepareStatement(DELETE_FLIGHT_BY_ID_SQL)).thenReturn(mockStatement);
         when(mockStatement.executeUpdate()).thenReturn(1);
-
         boolean result = flightDAO.delete(flight);
+
         assertEquals(true, result);
     }
 
@@ -96,6 +96,7 @@ public class FlightDaoMockitoTest extends AbstractTest {
         when(mockConnection.prepareStatement(SELECT_ALL_FLIGHTS_SQL)).thenReturn(mockStatement);
         when(mockResultSet.next()).thenReturn(true,false);
         List<Flight> flights = flightDAO.getAll();
+
         assertFalse(flights.isEmpty());
     }
 
@@ -104,6 +105,7 @@ public class FlightDaoMockitoTest extends AbstractTest {
         Throwable exception =  assertThrows(DAOException.class,() -> {
             flightDAO.getById(Optional.empty());
         });
+
         assertEquals(exception.getMessage(), FLIGHT_ID_CANNOT_BE_NULL.get());
     }
 
@@ -113,6 +115,7 @@ public class FlightDaoMockitoTest extends AbstractTest {
             when(mockConnection.prepareStatement(INSERT_FLIGHT_SQL)).thenThrow(new SQLException());
             flightDAO.create(flight);
         });
+
         assertEquals(exception.getMessage(), FAILED_TO_CREATE_NEW_FLIGHT.get());
     }
 
@@ -122,6 +125,7 @@ public class FlightDaoMockitoTest extends AbstractTest {
             when(mockConnection.prepareStatement(UPDATE_FLIGHT_SQL)).thenThrow(new SQLException());
             flightDAO.update(flight);
         });
+
         assertEquals(exception.getMessage(), FAILED_TO_UPDATE_FLIGHT_WITH_ID.get()+1);
     }
 
@@ -131,6 +135,7 @@ public class FlightDaoMockitoTest extends AbstractTest {
             when(mockConnection.prepareStatement(DELETE_FLIGHT_BY_ID_SQL)).thenThrow(new SQLException());
             flightDAO.delete(flight);
         });
+
         assertEquals(exception.getMessage(), FAILED_TO_DELETE_FLIGHT_WITH_ID.get()+1);
     }
 
@@ -140,6 +145,7 @@ public class FlightDaoMockitoTest extends AbstractTest {
             when(mockConnection.prepareStatement(SELECT_ALL_FLIGHTS_SQL)).thenThrow(new SQLException());
             flightDAO.getAll();
         });
+
         assertEquals(exception.getMessage(), FAILED_TO_GET_ALL_FLIGHTS.get());
     }
 }

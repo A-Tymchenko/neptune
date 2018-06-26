@@ -4,6 +4,7 @@ import com.ra.airport.factory.ConnectionFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
 
@@ -17,7 +18,7 @@ public class ConnectionFactoryTest {
     private ConnectionFactory connectionFactory;
 
     @BeforeEach
-    public void beforeTest () {
+    public void beforeTest() throws IOException {
        connectionFactory = ConnectionFactory.getInstance();
     }
 
@@ -32,7 +33,7 @@ public class ConnectionFactoryTest {
     }
 
     @Test
-    public void whenConnectionFactoryGetInstanceCallTwiceTheSameInstanceShouldBeReturned() {
+    public void whenConnectionFactoryGetInstanceCallTwiceTheSameInstanceShouldBeReturned() throws IOException {
         ConnectionFactory firstInstance = ConnectionFactory.getInstance();
         ConnectionFactory secondInstance = ConnectionFactory.getInstance();
         assertTrue(firstInstance == secondInstance);

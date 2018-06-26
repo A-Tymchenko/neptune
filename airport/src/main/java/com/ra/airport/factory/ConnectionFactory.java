@@ -27,9 +27,8 @@ public class ConnectionFactory {
      *
      * @return ConnectionFactory instance.
      */
-    public static ConnectionFactory getInstance() {
+    public static ConnectionFactory getInstance() throws IOException {
         synchronized (ConnectionFactory.class) {
-            try {
                 if (factoryInstance == null) {
                     factoryInstance = new ConnectionFactory();
                     dataSource = new JdbcDataSource();
@@ -37,10 +36,6 @@ public class ConnectionFactory {
                     dataSource.setUser(dbProperties.getProperty("jdbc.user"));
                     dataSource.setPassword(dbProperties.getProperty("jdbc.password"));
                 }
-            } catch (IOException e) {
-                e.printStackTrace();
-                //todo add logging here
-            } 
         }
         return factoryInstance;
     }
