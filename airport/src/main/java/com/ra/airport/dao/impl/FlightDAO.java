@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import static com.ra.airport.dao.exception.ExceptionMessage.*;
 
 /**
  * Implementation of {@link DAO} interface.
@@ -26,7 +27,6 @@ public class FlightDAO implements DAO<Flight> {
     private static final int DEPARTURE_DATE = 6;
     private static final int ARRIVAL_DATE = 7;
     private static final int ID = 8;
-    private static final String FLIGHT_ID_CAN_NOT_BE_NULL = "Flight id can't be null";
 
     private static final String INSERT_FLIGHT_SQL = "INSERT INTO flight " +
             "(name, carrier, duration, meal, fare, departure_date, arrival_date) " +
@@ -54,7 +54,7 @@ public class FlightDAO implements DAO<Flight> {
                     Optional.of(generatedIdRS.getInt(1)) : Optional.empty();
             flight = getById(id);
         } catch (SQLException e) {
-            throw new DAOException("Failed to create new flight");
+            throw new DAOException(FAILED_TO_CREATE_NEW_FLIGHT.get());
         }
         return flight;
     }
@@ -66,7 +66,7 @@ public class FlightDAO implements DAO<Flight> {
             preparedStatement.executeUpdate();
             getById(Optional.of(flight.getId()));
         } catch (SQLException e) {
-            throw new DAOException("Failed to update flight with id "+flight.getId());
+            throw new DAOException(FAILED_TO_UPDATE_FLIGHT_WITH_ID.get() + flight.getId());
         }
         return flight;
     }
@@ -78,7 +78,7 @@ public class FlightDAO implements DAO<Flight> {
             preparedStatement.setInt(1, flight.getId());
             result = preparedStatement.executeUpdate() > 0;
         } catch (SQLException e) {
-            throw new DAOException("Failed to delete flight with id "+flight.getId());
+            throw new DAOException(FAILED_TO_DELETE_FLIGHT_WITH_ID.get() + flight.getId());
         }
         return result;
     }
@@ -92,7 +92,7 @@ public class FlightDAO implements DAO<Flight> {
     public Flight getById(Optional<Integer> id) throws DAOException {
         Flight flight = null;
         if (!id.isPresent()) {
-            throw new DAOException(FLIGHT_ID_CAN_NOT_BE_NULL);
+            throw new DAOException(FLIGHT_ID_CANNOT_BE_NULL.get());
         }
         try (Connection connection = connectionFactory.getConnection()) {
             PreparedStatement preparedStatement = connection.prepareStatement(SELECT_FLIGHT_BY_ID_SQL);
@@ -105,7 +105,7 @@ public class FlightDAO implements DAO<Flight> {
                 flight = rowMapper.mapRow(resultSet, flight);
             }
         } catch (SQLException e) {
-            throw new DAOException("Failed to get flight with id "+flight.getId());
+            throw new DAOException(FAILED_TO_GET_FLIGHT_WITH_ID.get() + flight.getId());
         }
         return flight;
     }
@@ -123,7 +123,7 @@ public class FlightDAO implements DAO<Flight> {
                 flights.add(flight);
             }
         } catch (SQLException e) {
-            throw new DAOException("Failed to get all flights");
+            throw new DAOException(FAILED_TO_GET_ALL_FLIGHTS.get());
         }
         return flights;
     }
