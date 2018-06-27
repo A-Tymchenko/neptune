@@ -45,7 +45,7 @@ public class FlightDaoMockitoTest extends AbstractTest {
         mockResultSet = mock(ResultSet.class);
         connectionFactory = mock(ConnectionFactory.class);
         flightDAO = new FlightDAO(connectionFactory);
-        flight = createFlight();
+        flight = createFirstFlight();
         when(connectionFactory.getConnection()).thenReturn(mockConnection);
         createMocksFromGetByIdMethod();
     }
@@ -147,5 +147,15 @@ public class FlightDaoMockitoTest extends AbstractTest {
         });
 
         assertEquals(exception.getMessage(), FAILED_TO_GET_ALL_FLIGHTS.get());
+    }
+
+    @Test
+    public void whenGetByIdThrownSQlExceptionThenDAOExceptionShouldBeThrownToo() {
+        Throwable exception = assertThrows(DAOException.class,() -> {
+            when(mockConnection.prepareStatement(SELECT_FLIGHT_BY_ID_SQL)).thenThrow(new SQLException());
+            flightDAO.getById(Optional.of(1));
+        });
+
+        assertEquals(exception.getMessage(), FAILED_TO_GET_FLIGHT_WITH_ID.get()+1);
     }
 }

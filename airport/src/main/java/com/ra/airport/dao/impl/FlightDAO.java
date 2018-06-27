@@ -105,7 +105,7 @@ public class FlightDAO implements DAO<Flight> {
                 flight = rowMapper.mapRow(resultSet, flight);
             }
         } catch (SQLException e) {
-            throw new DAOException(FAILED_TO_GET_FLIGHT_WITH_ID.get() + flight.getId());
+            throw new DAOException(FAILED_TO_GET_FLIGHT_WITH_ID.get() + id.get());
         }
         return flight;
     }
