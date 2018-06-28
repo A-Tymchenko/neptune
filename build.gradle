@@ -225,5 +225,16 @@ project("study") {
     dependencies {
         compile spring.context
     }
+}
 
+project("airport") {
+    dependencies {
+        compileClasspath db.h2
+    }
+}
+
+project("airport_integration_test") {
+    dependencies {
+        compile project(":airport")
+    }
 }
