@@ -232,3 +232,9 @@ project("airport") {
         compileClasspath db.h2
     }
 }
+
+project("airport_integration_test") {
+    dependencies {
+        compile project(":airport")
+    }
+}
