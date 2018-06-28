@@ -11,7 +11,7 @@ public class FlightRowMapper implements RowMapper<Flight> {
     private static final String NAME = "name";
     private static final String CARRIER = "carrier";
     private static final String DURATION = "duration";
-    private static final String MEAL = "meal";
+    private static final String MEAL_ON = "mealOn";
     private static final String FARE = "fare";
     private static final String DEPARTURE_DATE = "departure_date";
     private static final String ARRIVAL_DATE = "arrival_date";
@@ -29,7 +29,7 @@ public class FlightRowMapper implements RowMapper<Flight> {
         flight.setName(resultSet.getString(NAME));
         flight.setCarrier(resultSet.getString(CARRIER));
         flight.setDuration(resultSet.getTime(DURATION).toLocalTime());
-        flight.setMealOn(resultSet.getBoolean(MEAL));
+        flight.setMealOn(resultSet.getBoolean(MEAL_ON));
         flight.setFare(resultSet.getDouble(FARE));
         flight.setDepartureDate(resultSet.getTimestamp(DEPARTURE_DATE).toLocalDateTime());
         flight.setArrivalDate(resultSet.getTimestamp(ARRIVAL_DATE).toLocalDateTime());

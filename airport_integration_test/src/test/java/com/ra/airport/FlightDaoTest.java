@@ -1,17 +1,18 @@
-package com.ra.airport.integration;
+package com.ra.airport;
 
 import com.ra.airport.dao.DAO;
 import com.ra.airport.dao.exception.DAOException;
 import com.ra.airport.dao.impl.FlightDAO;
 import com.ra.airport.entity.Flight;
 import com.ra.airport.factory.ConnectionFactory;
+import org.h2.tools.RunScript;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.io.FileReader;
 import java.io.IOException;
 import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -26,20 +27,6 @@ import static org.junit.jupiter.api.Assertions.*;
  * Tests for {@link FlightDAO} class
  */
 public class FlightDaoTest {
-    
-    private static final String CREATE_FLIGHT_TABLE_SQL =
-            "CREATE TABLE IF NOT EXISTS flight (\n" +
-                    "  id INT NOT NULL AUTO_INCREMENT UNIQUE,\n" +
-                    "  name VARCHAR(255),\n" +
-                    "  carrier VARCHAR(255),\n" +
-                    "  duration TIME, \n" +
-                    "  meal BOOLEAN DEFAULT FALSE,\n" +
-                    "  fare DECIMAL,\n" +
-                    "  departure_date DATETIME,\n" +
-                    "  arrival_date DATETIME,\n" +
-                    ")";
-
-    private static final String DROP_TABLE_SQL = "DROP TABLE flight";
 
     private static final String DATE_TIME_FORMAT = "yyyy-MM-dd HH:mm:ss";
     private static final String DEPARTURE_DATE = "2018-06-17 13:15:00";
@@ -63,10 +50,14 @@ public class FlightDaoTest {
         deleteTable();
     }
 
+    private void createDataBaseTable() throws SQLException, IOException {
+        Connection connection = ConnectionFactory.getInstance().getConnection();
+        RunScript.execute(connection, new FileReader("src/test/resources/sql/flight_table_backup.sql"));
+    }
+
     private void deleteTable() throws SQLException, IOException {
         Connection connection = ConnectionFactory.getInstance().getConnection();
-        PreparedStatement preparedStatement = connection.prepareStatement(DROP_TABLE_SQL);
-        preparedStatement.executeUpdate();
+        RunScript.execute(connection, new FileReader("src/test/resources/sql/remove_flight_table.sql"));
     }
 
     private void createFlight() throws IOException {
@@ -82,12 +73,6 @@ public class FlightDaoTest {
         flight.setFare(FARE_100);
         flight.setDepartureDate(departureDate);
         flight.setArrivalDate(arrivalDate);
-    }
-
-    private static void createDataBaseTable() throws SQLException, IOException {
-        Connection connection = ConnectionFactory.getInstance().getConnection();
-        PreparedStatement preparedStatement = connection.prepareStatement(CREATE_FLIGHT_TABLE_SQL);
-        preparedStatement.executeUpdate();
     }
 
     @Test

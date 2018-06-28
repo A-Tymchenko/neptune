@@ -1,4 +1,4 @@
-package com.ra.airport.integration;
+package com.ra.airport;
 
 import com.ra.airport.factory.ConnectionFactory;
 import org.junit.jupiter.api.BeforeEach;
