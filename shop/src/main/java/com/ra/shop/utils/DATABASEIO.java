@@ -15,7 +15,9 @@ public final class DATABASEIO {
     private static final Logger LOGGER = Logger.getLogger(DATABASEIO.class);
     private static final DATABASEIO DATASOURSEDB = new DATABASEIO();
     private static JdbcDataSource dataSource;
-    private final String URL_FILE_PROPERTIES = "/home/user/IdeaProjects/neptune/shop/src/main/resources/db.properties";
+    private final ClassLoader classLoader = getClass().getClassLoader();
+    private final String URL_FILE_PROPERTIES = classLoader.getResource("db.properties").getPath();
+    //"/home/user/IdeaProjects/neptune/shop/src/main/resources/db.properties";
 
     private DATABASEIO() {
         InputAndSetProperties();
@@ -23,7 +25,7 @@ public final class DATABASEIO {
     }
 
     public static DataSource getDataSource() {
-      //  LOGGER.info("Use getDataSource");
+        //  LOGGER.info("Use getDataSource");
         return DATASOURSEDB.dataSource;
     }
 

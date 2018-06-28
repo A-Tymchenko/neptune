@@ -1,6 +1,4 @@
-package com.ra.shop.service;
-
-import com.ra.shop.daotest.CustomerSchemaSql;
+package com.ra.shop.servicetest;
 
 import javax.sql.DataSource;
 import java.sql.Connection;

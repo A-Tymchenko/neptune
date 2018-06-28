@@ -1,4 +1,4 @@
-package com.ra.shop.service;
+package com.ra.shop.servicetest;
 
 public final class GoodSchemaSql {
 

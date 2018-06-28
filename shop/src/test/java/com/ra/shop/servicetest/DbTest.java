@@ -2,10 +2,12 @@ package com.ra.shop.servicetest;
 
 import com.ra.shop.model.Good;
 import com.ra.shop.service.GoodDAO;
-import com.ra.shop.service.GoodSchemaSql;
 import com.ra.shop.utils.DATABASEIO;
 import org.junit.jupiter.api.Test;
 
+import java.net.URISyntaxException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -197,6 +199,21 @@ public class DbTest {
 
         System.out.println();
         goodDAO.getAll().forEach(x -> System.out.println(x));
+
+    }
+
+    @Test
+    public void absPath() throws URISyntaxException {
+        // URL resource = Niotest.class.getResource("/rtfZIP");
+        //Paths.get(resource.toURI()).toFile();
+
+        ClassLoader classLoader = getClass().getClassLoader();
+        String path2 = classLoader.getResource("db.properties").getPath();
+
+        Path testFilePath = Paths.get("./Test");
+        System.out.println(testFilePath);
+        System.out.println(path2);
+
 
     }
 
