@@ -5,8 +5,12 @@ import com.ra.project.exceptions.InvalidOrderIdException;
 import com.ra.project.model.Order;
 import com.ra.project.repository.IRepository;
 import com.ra.project.repository.OrderRepositoryImpl;
+import org.h2.tools.RunScript;
 import org.junit.jupiter.api.*;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -33,18 +37,12 @@ class OrdersServiceIT {
     void initForEach() throws SQLException, IOException {
         orderIRepository = new OrderRepositoryImpl(connectionFactory);
         service = new OrderServiceImpl(orderIRepository);
-        try (Connection connection = connectionFactory.getConnection();
-             Statement statement = connection.createStatement()) {
-            statement.execute(connectionFactory.createTable());
-        }
+        RunScript.execute(connectionFactory.getConnection(), new FileReader(new File("/home/reed/IdeaProjects/neptune/shop/src/main/resources/createOrdersTable.sql")));
     }
 
     @AfterEach
-    void tearDown() throws SQLException {
-        try (Connection connection = connectionFactory.getConnection();
-             Statement statement = connection.createStatement()) {
-            statement.execute(connectionFactory.dropTable());
-        }
+    void tearDown() throws SQLException, FileNotFoundException {
+        RunScript.execute(connectionFactory.getConnection(), new FileReader(new File("/home/reed/IdeaProjects/neptune/shop/src/main/resources/dropOrdersTable.sql")));
         service = null;
         orderIRepository = null;
     }
