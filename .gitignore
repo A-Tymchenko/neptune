@@ -5,5 +5,4 @@
 out
 build
 *.log
-.gradle/
 */buildSrc/.gradle
