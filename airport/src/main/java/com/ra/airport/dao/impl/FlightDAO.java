@@ -1,5 +1,16 @@
 package com.ra.airport.dao.impl;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Time;
+import java.sql.Timestamp;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
 import com.ra.airport.dao.AirPortDAO;
 import com.ra.airport.dao.exception.DAOException;
 import com.ra.airport.dao.exception.ExceptionMessage;
@@ -7,11 +18,6 @@ import com.ra.airport.entity.Flight;
 import com.ra.airport.factory.ConnectionFactory;
 import com.ra.airport.mapper.FlightRowMapper;
 import com.ra.airport.mapper.RowMapper;
-
-import java.sql.*;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
 
 /**
  * Implementation of {@link AirPortDAO} interface.

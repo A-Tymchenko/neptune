@@ -1,11 +1,11 @@
 package com.ra.airport.factory;
 
-import org.h2.jdbcx.JdbcDataSource;
-
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Properties;
+
+import org.h2.jdbcx.JdbcDataSource;
 
 /**
  * Singelton factory for connection creation.

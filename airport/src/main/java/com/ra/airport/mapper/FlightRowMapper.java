@@ -1,9 +1,9 @@
 package com.ra.airport.mapper;
 
-import com.ra.airport.entity.Flight;
-
 import java.sql.ResultSet;
 import java.sql.SQLException;
+
+import com.ra.airport.entity.Flight;
 
 public class FlightRowMapper implements RowMapper<Flight> {
 
