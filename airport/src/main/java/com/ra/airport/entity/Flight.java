@@ -5,8 +5,9 @@ import java.time.LocalTime;
 import java.util.Objects;
 
 /**
- * Flight entity correspond to flight table in DB
+ * Flight entity correspond to flight table in DB.
  */
+@SuppressWarnings({"PMD.ShortVariable", "PMD.BeanMembersShouldSerialize"})
 public class Flight {
 
    private Integer id;
@@ -18,14 +19,13 @@ public class Flight {
    private Double fare;
    private Boolean mealOn;
 
-    public Flight() {
-        
-    }
+    public Flight() {}
+
     public Integer getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(final Integer id) {
         this.id = id;
     }
 
@@ -33,7 +33,7 @@ public class Flight {
         return name;
     }
 
-    public void setName(String name) {
+    public void setName(final String name) {
         this.name = name;
     }
 
@@ -41,7 +41,7 @@ public class Flight {
         return carrier;
     }
 
-    public void setCarrier(String carrier) {
+    public void setCarrier(final String carrier) {
         this.carrier = carrier;
     }
 
@@ -49,7 +49,7 @@ public class Flight {
         return duration;
     }
 
-    public void setDuration(LocalTime duration) {
+    public void setDuration(final LocalTime duration) {
         this.duration = duration;
     }
 
@@ -57,23 +57,23 @@ public class Flight {
         return departureDate;
     }
 
-    public void setDepartureDate(LocalDateTime departure_date) {
-        this.departureDate = departure_date;
+    public void setDepartureDate(final LocalDateTime departureDate) {
+        this.departureDate = departureDate;
     }
 
     public LocalDateTime getArrivalDate() {
         return arrivalDate;
     }
 
-    public void setArrivalDate(LocalDateTime arrival_date) {
-        this.arrivalDate = arrival_date;
+    public void setArrivalDate(final LocalDateTime arrivalDate) {
+        this.arrivalDate = arrivalDate;
     }
 
     public Double getFare() {
         return fare;
     }
 
-    public void setFare(Double fare) {
+    public void setFare(final Double fare) {
         this.fare = fare;
     }
 
@@ -81,36 +81,45 @@ public class Flight {
         return mealOn;
     }
 
-    public void setMealOn(Boolean mealOn) {
+    public void setMealOn(final Boolean mealOn) {
         this.mealOn = mealOn;
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Flight flight = (Flight) o;
-        return Objects.equals(id, flight.id) &&
-                Objects.equals(name, flight.name) &&
-                Objects.equals(carrier, flight.carrier) &&
-                Objects.equals(duration, flight.duration) &&
-                Objects.equals(departureDate, flight.departureDate) &&
-                Objects.equals(arrivalDate, flight.arrivalDate) &&
-                Objects.equals(fare, flight.fare) &&
-                Objects.equals(mealOn, flight.mealOn);
+    public boolean equals(final Object object) {
+        if (this == object) {
+            return true;
+        }
+        if (object == null || getClass() != object.getClass()) {
+            return false;
+        }
+        final Flight flight = (Flight) object;
+        return Objects.equals(id, flight.id)
+                && Objects.equals(name, flight.name)
+                && Objects.equals(carrier, flight.carrier)
+                && Objects.equals(duration, flight.duration)
+                && Objects.equals(departureDate, flight.departureDate)
+                && Objects.equals(arrivalDate, flight.arrivalDate)
+                && Objects.equals(fare, flight.fare)
+                && Objects.equals(mealOn, flight.mealOn);
     }
 
     @Override
     public String toString() {
-        return "Flight{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", carrier='" + carrier + '\'' +
-                ", duration=" + duration +
-                ", departure_date=" + departureDate +
-                ", arrival_date=" + arrivalDate +
-                ", fare=" + fare +
-                ", mealOn=" + mealOn +
-                '}';
+        return "Flight{"
+                + "id=" + id
+                + ", name='" + name + '\''
+                + ", carrier='" + carrier + '\''
+                + ", duration=" + duration
+                + ", departureDate=" + departureDate
+                + ", arrivalDate=" + arrivalDate
+                + ", fare=" + fare
+                + ", mealOn=" + mealOn
+                + '}';
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name, carrier, duration, departureDate, arrivalDate, fare, mealOn);
     }
 }

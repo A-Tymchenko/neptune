@@ -14,10 +14,15 @@ public enum ExceptionMessage {
 
     private String message;
 
-    ExceptionMessage(String message) {
+    ExceptionMessage(final String message) {
         this.message = message;
     }
 
+    /**
+     * Return message of Exception.
+     *
+     * @return text of message
+     */
     public String get() {
         return message;
     }

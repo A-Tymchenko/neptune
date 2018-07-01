@@ -1,11 +1,11 @@
 package com.ra.airport.dao.exception;
 
 /**
- * Exception class for DAO layer
+ * Exception class for AirPortDAO layer.
  */
 public class DAOException extends Exception {
 
-    public DAOException(String message) {
+    public DAOException(final String message) {
         super(message);
     }
 }

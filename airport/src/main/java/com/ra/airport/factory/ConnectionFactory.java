@@ -10,8 +10,8 @@ import java.util.Properties;
 /**
  * Singelton factory for connection creation.
  */
+@SuppressWarnings("PMD.ClassWithOnlyPrivateConstructorsShouldBeFinal")
 public class ConnectionFactory {
-    
     private static JdbcDataSource dataSource;
     private static Properties dbProperties;
 

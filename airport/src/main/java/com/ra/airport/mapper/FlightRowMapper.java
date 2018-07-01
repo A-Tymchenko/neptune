@@ -7,7 +7,7 @@ import java.sql.SQLException;
 
 public class FlightRowMapper implements RowMapper<Flight> {
 
-    private static final String ID = "id";
+    private static final String FLIGHT_ID = "id";
     private static final String NAME = "name";
     private static final String CARRIER = "carrier";
     private static final String DURATION = "duration";
@@ -18,14 +18,15 @@ public class FlightRowMapper implements RowMapper<Flight> {
 
     /**
      * Map {@link ResultSet} to {@link Flight} instance.
-     * @param resultSet
-     * @param flight
-     * @return
-     * @throws SQLException
+     *
+     * @param resultSet source {@link ResultSet}
+     * @param flight target {@link Flight} entity
+     * @return {@link Flight} with filled fields
+     * @throws SQLException standard SQL exception
      */
     @Override
-    public Flight mapRow(ResultSet resultSet, Flight flight) throws SQLException {
-        flight.setId(resultSet.getInt(ID));
+    public Flight mapRow(final ResultSet resultSet, final Flight flight) throws SQLException {
+        flight.setId(resultSet.getInt(FLIGHT_ID));
         flight.setName(resultSet.getString(NAME));
         flight.setCarrier(resultSet.getString(CARRIER));
         flight.setDuration(resultSet.getTime(DURATION).toLocalTime());
