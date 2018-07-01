@@ -2,7 +2,7 @@ package com.ra.airport;
 
 import com.ra.airport.dao.AirPortDAO;
 import com.ra.airport.dao.exception.DAOException;
-import com.ra.airport.dao.impl.FlightAirPortDAO;
+import com.ra.airport.dao.impl.FlightDAO;
 import com.ra.airport.entity.Flight;
 import com.ra.airport.factory.ConnectionFactory;
 import org.h2.tools.RunScript;
@@ -24,7 +24,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
- * Tests for {@link FlightAirPortDAO} class
+ * Tests for {@link FlightDAO} class
  */
 public class FlightDaoTest {
 
@@ -64,7 +64,7 @@ public class FlightDaoTest {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern(DATE_TIME_FORMAT);
         LocalDateTime departureDate = LocalDateTime.parse(DEPARTURE_DATE, formatter);
         LocalDateTime arrivalDate = LocalDateTime.parse(ARRIVAL_DATE, formatter);
-        airPortDao = new FlightAirPortDAO(ConnectionFactory.getInstance());
+        airPortDao = new FlightDAO(ConnectionFactory.getInstance());
         flight = new Flight();
         flight.setName(KYIV_ROME);
         flight.setCarrier(WIZZ_AIR);

@@ -16,7 +16,7 @@ import java.util.Optional;
 /**
  * Implementation of {@link AirPortDAO} interface.
  */
-public class FlightAirPortDAO implements AirPortDAO<Flight> {
+public class FlightDAO implements AirPortDAO<Flight> {
 
     private static final int NAME = 1;
     private static final int CARRIER = 2;
@@ -40,7 +40,7 @@ public class FlightAirPortDAO implements AirPortDAO<Flight> {
 
     private static ConnectionFactory connectionFactory;
 
-    public FlightAirPortDAO(final ConnectionFactory connectionFactory) {
+    public FlightDAO(final ConnectionFactory connectionFactory) {
         this.connectionFactory = connectionFactory;
     }
 

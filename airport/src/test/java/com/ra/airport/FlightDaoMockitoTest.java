@@ -1,7 +1,7 @@
 package com.ra.airport;
 
 import com.ra.airport.dao.exception.DAOException;
-import com.ra.airport.dao.impl.FlightAirPortDAO;
+import com.ra.airport.dao.impl.FlightDAO;
 import com.ra.airport.entity.Flight;
 import com.ra.airport.factory.ConnectionFactory;
 import org.junit.jupiter.api.BeforeEach;
@@ -18,7 +18,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 /**
- * Mockito tests for {@link FlightAirPortDAO} class
+ * Mockito tests for {@link FlightDAO} class
  */
 public class FlightDaoMockitoTest extends AbstractTest {
 
@@ -36,7 +36,7 @@ public class FlightDaoMockitoTest extends AbstractTest {
     private Connection mockConnection;
     private PreparedStatement mockStatement;
     private ResultSet mockResultSet;
-    private FlightAirPortDAO flightDAO;
+    private FlightDAO flightDAO;
     private Flight flight;
 
     @BeforeEach
@@ -45,7 +45,7 @@ public class FlightDaoMockitoTest extends AbstractTest {
         mockStatement = mock(PreparedStatement.class);
         mockResultSet = mock(ResultSet.class);
         connectionFactory = mock(ConnectionFactory.class);
-        flightDAO = new FlightAirPortDAO(connectionFactory);
+        flightDAO = new FlightDAO(connectionFactory);
         flight = createFlight();
         flight.setDepartureDate(LocalDateTime.now());
         flight.setArrivalDate(LocalDateTime.now().plusHours(1));
