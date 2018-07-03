@@ -18,13 +18,14 @@ import com.ra.airport.entity.Flight;
 import com.ra.airport.factory.ConnectionFactory;
 import com.ra.airport.mapper.FlightRowMapper;
 import com.ra.airport.mapper.RowMapper;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 
 /**
  * Implementation of {@link AirPortDAO} interface.
  */
-@SuppressWarnings("PMD.GuardLogStatementJavaUtil")
+@SuppressWarnings("PMD")
 public class FlightDAO implements AirPortDAO<Flight> {
 
     private static final int NAME = 1;
@@ -47,7 +48,7 @@ public class FlightDAO implements AirPortDAO<Flight> {
     private static final String GET_ALL_FLIGHTS = "SELECT * FROM flight";
     private static final String GET_FLIGHT_ID = "SELECT SCOPE_IDENTITY()";
 
-    private static final Logger LOGGER = LogManager.getLogger(FlightDAO.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(FlightDAO.class);
 
     private static ConnectionFactory connectionFactory;
 
