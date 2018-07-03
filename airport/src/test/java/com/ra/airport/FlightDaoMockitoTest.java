@@ -4,6 +4,7 @@ import com.ra.airport.dao.exception.DAOException;
 import com.ra.airport.dao.impl.FlightDAO;
 import com.ra.airport.entity.Flight;
 import com.ra.airport.factory.ConnectionFactory;
+import com.ra.airport.helper.DataCreationHelper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -15,12 +16,13 @@ import java.util.Optional;
 import static com.ra.airport.dao.exception.ExceptionMessage.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 /**
  * Mockito tests for {@link FlightDAO} class
  */
-public class FlightDaoMockitoTest extends AbstractTest {
+public class FlightDaoMockitoTest {
 
     private static final String INSERT_FLIGHT_SQL = "INSERT INTO flight " +
             "(name, carrier, duration, mealOn, fare, departure_date, arrival_date) " +
@@ -46,7 +48,7 @@ public class FlightDaoMockitoTest extends AbstractTest {
         mockResultSet = mock(ResultSet.class);
         connectionFactory = mock(ConnectionFactory.class);
         flightDAO = new FlightDAO(connectionFactory);
-        flight = createFlight();
+        flight = DataCreationHelper.createFlight();
         flight.setDepartureDate(LocalDateTime.now());
         flight.setArrivalDate(LocalDateTime.now().plusHours(1));
         when(connectionFactory.getConnection()).thenReturn(mockConnection);

@@ -1,15 +1,15 @@
-package com.ra.airport;
+package com.ra.airport.helper;
 
 import com.ra.airport.entity.Flight;
 
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 
-public abstract class AbstractTest {
+public abstract class DataCreationHelper {
 
     private static final String SPACE = " ";
 
-    protected Flight createFlight() {
+    public static Flight createFlight() {
         Flight flight = new Flight();
         flight.setId(1);
         flight.setName(SPACE);

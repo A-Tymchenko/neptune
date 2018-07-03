@@ -1,6 +1,7 @@
 package com.ra.airport;
 
 import com.ra.airport.entity.Flight;
+import com.ra.airport.helper.DataCreationHelper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -11,7 +12,7 @@ import static org.junit.jupiter.api.Assertions.*;
 /**
  * Tests for the model class {@link com.ra.airport.entity.Flight}
  */
-public class FlightTest extends AbstractTest {
+public class FlightTest {
 
     private Flight firstFlight;
 
@@ -19,8 +20,8 @@ public class FlightTest extends AbstractTest {
 
     @BeforeEach
     public void initData() {
-        firstFlight = createFlight();
-        secondFlight = createFlight();
+        firstFlight = DataCreationHelper.createFlight();
+        secondFlight = DataCreationHelper.createFlight();
     }
 
     @Test
