@@ -75,6 +75,7 @@ public class FlightDAO implements AirPortDAO<Flight> {
                 flightId = Optional.empty();
             }
             flight = getById(flightId);
+            LOGGER.debug("Flight was created {}", flight);
         } catch (SQLException e) {
             LOGGER.error(ExceptionMessage.FAILED_TO_CREATE_NEW_FLIGHT.get(), e);
             throw new DAOException(ExceptionMessage.FAILED_TO_CREATE_NEW_FLIGHT.get());
@@ -117,7 +118,7 @@ public class FlightDAO implements AirPortDAO<Flight> {
             final PreparedStatement preparedStatement = connection.prepareStatement(DELETE_FLIGHT);
             preparedStatement.setInt(1, flight.getId());
             result = preparedStatement.executeUpdate() > 0;
-            LOGGER.debug("Is flight was deleted {}", result);
+            LOGGER.debug("Is flight with id {} was deleted {}", flight.getId(), result);
         } catch (SQLException e) {
             LOGGER.error(ExceptionMessage.FAILED_TO_DELETE_FLIGHT_WITH_ID.get() + flight.getId(), e);
             throw new DAOException(ExceptionMessage.FAILED_TO_DELETE_FLIGHT_WITH_ID.get() + flight.getId());
