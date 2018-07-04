@@ -12,11 +12,13 @@ import java.sql.*;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import org.slf4j.LoggerFactory;
+import ch.qos.logback.classic.Level;
+import ch.qos.logback.classic.Logger;
 
 import static com.ra.airport.dao.exception.ExceptionMessage.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 /**
@@ -167,6 +169,9 @@ public class FlightDaoMockitoTest {
     public void whenDeleteThrownSQlExceptionThenDAOExceptionShouldBeThrownToo() {
         Throwable exception = assertThrows(DAOException.class,() -> {
             when(mockConnection.prepareStatement(DELETE_FLIGHT_BY_ID_SQL)).thenThrow(new SQLException());
+            Logger logger = (Logger)LoggerFactory.getLogger(FlightDAO.class);
+            logger.setLevel(Level.INFO);
+            flightDAO.setLogger(logger);
             flightDAO.delete(flight);
         });
 

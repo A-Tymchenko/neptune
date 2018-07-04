@@ -7,10 +7,9 @@ import java.util.Objects;
 /**
  * Flight entity correspond to flight table in DB.
  */
-@SuppressWarnings({"PMD.ShortVariable", "PMD.BeanMembersShouldSerialize"})
 public class Flight {
 
-   private Integer id;
+   private Integer identifier;
    private String name;
    private String carrier;
    private LocalTime duration;
@@ -22,11 +21,11 @@ public class Flight {
     public Flight() {}
 
     public Integer getId() {
-        return id;
+        return identifier;
     }
 
-    public void setId(final Integer id) {
-        this.id = id;
+    public void setId(final Integer identifier) {
+        this.identifier = identifier;
     }
 
     public String getName() {
@@ -94,7 +93,7 @@ public class Flight {
             return false;
         }
         final Flight flight = (Flight) object;
-        return Objects.equals(id, flight.id)
+        return Objects.equals(identifier, flight.identifier)
                 && Objects.equals(name, flight.name)
                 && Objects.equals(carrier, flight.carrier)
                 && Objects.equals(duration, flight.duration)
@@ -107,7 +106,7 @@ public class Flight {
     @Override
     public String toString() {
         return "Flight{"
-                + "id=" + id
+                + "id=" + identifier
                 + ", name='" + name + '\''
                 + ", carrier='" + carrier + '\''
                 + ", duration=" + duration
@@ -120,6 +119,6 @@ public class Flight {
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, carrier, duration, departureDate, arrivalDate, fare, mealOn);
+        return Objects.hash(identifier, name, carrier, duration, departureDate, arrivalDate, fare, mealOn);
     }
 }
