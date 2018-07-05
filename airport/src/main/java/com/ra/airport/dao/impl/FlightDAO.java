@@ -47,7 +47,7 @@ public class FlightDAO implements AirPortDAO<Flight> {
     private static final String GET_ALL_FLIGHTS = "SELECT * FROM flight";
     private static final String GET_FLIGHT_ID = "SELECT SCOPE_IDENTITY()";
 
-    private static Logger logger = LoggerFactory.getLogger(FlightDAO.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(FlightDAO.class);
 
     private static ConnectionFactory connectionFactory;
 
@@ -57,9 +57,10 @@ public class FlightDAO implements AirPortDAO<Flight> {
 
     /**
      * Create {@link Flight} entity in DB and return it.
+     *
      * @param flight entity to create
      * @return {@link Flight} entity
-     * @throws DAOException exception for AirPortDAO layer
+     * @throws DAOException exception for DAO layer
      */
     public Flight create(Flight flight) throws DAOException {
         try (Connection connection = connectionFactory.getConnection()) {
@@ -69,11 +70,11 @@ public class FlightDAO implements AirPortDAO<Flight> {
             final ResultSet generatedIdRS = connection.prepareStatement(GET_FLIGHT_ID).executeQuery();
             final Optional<Integer> flightId = getGeneratedFlightId(generatedIdRS);
             flight = getById(flightId);
-            logger.debug("Flight was created {}", flight);
         } catch (SQLException e) {
-            logger.error(ExceptionMessage.FAILED_TO_CREATE_NEW_FLIGHT.get(), e);
+            LOGGER.error(ExceptionMessage.FAILED_TO_CREATE_NEW_FLIGHT.get(), e);
             throw new DAOException(ExceptionMessage.FAILED_TO_CREATE_NEW_FLIGHT.get());
         }
+        LOGGER.info("Flight was created {}", flight);
         return flight;
     }
 
@@ -82,19 +83,20 @@ public class FlightDAO implements AirPortDAO<Flight> {
      *
      * @param flight entity to update
      * @return {@link Flight} entity
-     * @throws DAOException exception for AirPortDAO layer
+     * @throws DAOException exception for DAO layer
      */
     public Flight update(Flight flight) throws DAOException {
         try (Connection connection = connectionFactory.getConnection()) {
             final PreparedStatement preparedStatement = connection.prepareStatement(UPDATE_FLIGHT_SQL);
             fillPreparedStatement(flight, preparedStatement);
             preparedStatement.executeUpdate();
-            flight = getById(Optional.of(flight.getId()));
-            logger.debug("Flight was updated {}", flight);
+            flight = getById(Optional.of(flight.getIdentifier()));
         } catch (SQLException e) {
-            logger.error(ExceptionMessage.FAILED_TO_UPDATE_FLIGHT_WITH_ID.get(), e);
-            throw new DAOException(ExceptionMessage.FAILED_TO_UPDATE_FLIGHT_WITH_ID.get() + flight.getId());
+            final String errorMessage = ExceptionMessage.FAILED_TO_UPDATE_FLIGHT_WITH_ID.get() + flight.getIdentifier();
+            LOGGER.error(errorMessage, e);
+            throw new DAOException(errorMessage);
         }
+        LOGGER.info("Flight was updated {}", flight);
         return flight;
     }
 
@@ -104,21 +106,20 @@ public class FlightDAO implements AirPortDAO<Flight> {
      *
      * @param flight entity to delete
      * @return boolean flag
-     * @throws DAOException exception for AirPortDAO layer
+     * @throws DAOException exception for DAO layer
      */
     public boolean delete(final Flight flight) throws DAOException {
         boolean result;
         try (Connection connection = connectionFactory.getConnection()) {
             final PreparedStatement preparedStatement = connection.prepareStatement(DELETE_FLIGHT);
-            preparedStatement.setInt(1, flight.getId());
+            preparedStatement.setInt(1, flight.getIdentifier());
             result = preparedStatement.executeUpdate() > 0;
-            logger.debug("Is flight with id {} was deleted {}", flight.getId(), result);
         } catch (SQLException e) {
-            if (logger.isErrorEnabled()) {
-                logger.error(ExceptionMessage.FAILED_TO_DELETE_FLIGHT_WITH_ID.get() + flight.getId(), e);
-            }
-            throw new DAOException(ExceptionMessage.FAILED_TO_DELETE_FLIGHT_WITH_ID.get() + flight.getId());
+            final String errorMessage = ExceptionMessage.FAILED_TO_DELETE_FLIGHT_WITH_ID.get() + flight.getIdentifier();
+            LOGGER.error(errorMessage, e);
+            throw new DAOException(errorMessage);
         }
+        LOGGER.info("Is flight with id {} was deleted {}", flight.getIdentifier(), result);
         return result;
     }
 
@@ -139,14 +140,12 @@ public class FlightDAO implements AirPortDAO<Flight> {
 
             if (resultSet.next()) {
                 final Flight flight = new FlightRowMapper().mapRow(resultSet, new Flight());
-                logger.debug("Flight by id was got {}", flight);
                 return flight;
             }
         } catch (SQLException e) {
-            if (logger.isErrorEnabled()) {
-                logger.error(ExceptionMessage.FAILED_TO_GET_FLIGHT_WITH_ID.get() + flightId.get(), e);
-            }
-            throw new DAOException(ExceptionMessage.FAILED_TO_GET_FLIGHT_WITH_ID.get() + flightId.get());
+            final String errorMessage = ExceptionMessage.FAILED_TO_GET_FLIGHT_WITH_ID.get() + flightId.get();
+            LOGGER.error(errorMessage, e);
+            throw new DAOException(errorMessage);
         }
         return null;
     }
@@ -156,7 +155,7 @@ public class FlightDAO implements AirPortDAO<Flight> {
      * If entities absent in DB return empty {@link List}.
      *
      * @return List entities
-     * @throws DAOException exception for AirPortDAO layer
+     * @throws DAOException exception for DAO layer
      */
     @Override
     public List<Flight> getAll() throws DAOException {
@@ -167,18 +166,18 @@ public class FlightDAO implements AirPortDAO<Flight> {
             while (resultSet.next()) {
                 createFlight(flights, resultSet);
             }
-            logger.debug("All flights {}", flights);
         } catch (SQLException e) {
-            logger.error(ExceptionMessage.FAILED_TO_GET_ALL_FLIGHTS.get(), e);
+            LOGGER.error(ExceptionMessage.FAILED_TO_GET_ALL_FLIGHTS.get(), e);
             throw new DAOException(ExceptionMessage.FAILED_TO_GET_ALL_FLIGHTS.get());
         }
+        LOGGER.info("All flights {}", flights);
         return flights;
     }
 
     private Optional<Integer> getGeneratedFlightId(final ResultSet generatedIdRS) throws SQLException {
         Optional<Integer> flightId;
         if (generatedIdRS.next()) {
-            flightId =  Optional.of(generatedIdRS.getInt(1));
+            flightId = Optional.of(generatedIdRS.getInt(1));
         } else {
             flightId = Optional.empty();
         }
@@ -198,27 +197,18 @@ public class FlightDAO implements AirPortDAO<Flight> {
      *
      * @param flight entity
      * @param preparedStatement statement for filling
-     * @throws SQLException exception for AirPortDAO layer
+     * @throws SQLException exception for DAO layer
      */
     private void fillPreparedStatement(final Flight flight, final PreparedStatement preparedStatement) throws SQLException {
         preparedStatement.setString(NAME, flight.getName());
         preparedStatement.setString(CARRIER, flight.getCarrier());
         preparedStatement.setTime(DURATION, Time.valueOf(flight.getDuration()));
-        preparedStatement.setBoolean(MEAL_ON, flight.isMealOn());
+        preparedStatement.setBoolean(MEAL_ON, flight.getMealOn());
         preparedStatement.setDouble(FARE, flight.getFare());
         preparedStatement.setTimestamp(DEPARTURE_DATE, Timestamp.valueOf(flight.getDepartureDate()));
         preparedStatement.setTimestamp(ARRIVAL_DATE, Timestamp.valueOf(flight.getArrivalDate()));
-        if (flight.getId() != null) {
-            preparedStatement.setInt(IDENTIFIER, flight.getId());
+        if (flight.getIdentifier() != null) {
+            preparedStatement.setInt(IDENTIFIER, flight.getIdentifier());
         }
-    }
-
-    /**
-     * Need for tests. Logger should be coverage by them.
-     *
-     * @param logger logger
-     */
-    public static void setLogger(Logger logger) {
-        FlightDAO.logger = logger;
     }
 }

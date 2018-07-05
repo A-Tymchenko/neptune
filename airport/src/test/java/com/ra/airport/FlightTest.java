@@ -33,7 +33,7 @@ public class FlightTest {
 
     @Test
     public void whenHashCodeIsTheDifferentForObjectsEqualsShouldReturnFalseForThem() {
-        secondFlight.setId(2);
+        secondFlight.setIdentifier(2);
         assertFalse(firstFlight.hashCode() == secondFlight.hashCode());
 
         assertFalse(this.firstFlight.equals(secondFlight));
@@ -52,7 +52,7 @@ public class FlightTest {
 
     @Test
     public void whenEqualsObjectsWithTheDifferentIdsFalseShouldBeReturned() {
-        secondFlight.setId(2);
+        secondFlight.setIdentifier(2);
         assertFalse(firstFlight.equals(secondFlight));
     }
 

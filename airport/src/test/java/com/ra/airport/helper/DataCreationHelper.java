@@ -11,7 +11,7 @@ public abstract class DataCreationHelper {
 
     public static Flight createFlight() {
         Flight flight = new Flight();
-        flight.setId(1);
+        flight.setIdentifier(1);
         flight.setName(SPACE);
         flight.setCarrier(SPACE);
         flight.setDuration(LocalTime.NOON);

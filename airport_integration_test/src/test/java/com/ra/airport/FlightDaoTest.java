@@ -79,9 +79,9 @@ public class FlightDaoTest {
     public void whenCreateThenNewFlightWithIdShouldBeReturned() throws DAOException {
         Flight createdFlight = airPortDao.create(flight);
         assertNotNull(createdFlight);
-        Integer flightId = createdFlight.getId();
+        Integer flightId = createdFlight.getIdentifier();
         assertNotNull(flightId);
-        flight.setId(flightId);
+        flight.setIdentifier(flightId);
         assertEquals(flight, createdFlight);
     }
 

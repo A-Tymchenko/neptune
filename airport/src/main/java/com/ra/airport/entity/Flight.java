@@ -20,11 +20,11 @@ public class Flight {
 
     public Flight() {}
 
-    public Integer getId() {
+    public Integer getIdentifier() {
         return identifier;
     }
 
-    public void setId(final Integer identifier) {
+    public void setIdentifier(final Integer identifier) {
         this.identifier = identifier;
     }
 
@@ -76,7 +76,7 @@ public class Flight {
         this.fare = fare;
     }
 
-    public Boolean isMealOn() {
+    public Boolean getMealOn() {
         return mealOn;
     }
 

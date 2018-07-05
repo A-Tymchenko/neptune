@@ -12,9 +12,6 @@ import java.sql.*;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
-import org.slf4j.LoggerFactory;
-import ch.qos.logback.classic.Level;
-import ch.qos.logback.classic.Logger;
 
 import static com.ra.airport.dao.exception.ExceptionMessage.*;
 import static org.junit.jupiter.api.Assertions.*;
@@ -61,12 +58,12 @@ public class FlightDaoMockitoTest {
         when(mockConnection.prepareStatement(SELECT_FLIGHT_BY_ID_SQL)).thenReturn(mockStatement);
         when(mockResultSet.next()).thenReturn(true);
         when(mockStatement.executeQuery()).thenReturn(mockResultSet);
-        when(mockResultSet.getInt(1)).thenReturn(flight.getId());
-        when(mockResultSet.getInt("id")).thenReturn(flight.getId());
+        when(mockResultSet.getInt(1)).thenReturn(flight.getIdentifier());
+        when(mockResultSet.getInt("id")).thenReturn(flight.getIdentifier());
         when(mockResultSet.getString("name")).thenReturn(flight.getName());
         when(mockResultSet.getString("carrier")).thenReturn(flight.getCarrier());
         when(mockResultSet.getTime("duration")).thenReturn(Time.valueOf(flight.getDuration()));
-        when(mockResultSet.getBoolean("mealOn")).thenReturn(flight.isMealOn());
+        when(mockResultSet.getBoolean("mealOn")).thenReturn(flight.getMealOn());
         when(mockResultSet.getDouble("fare")).thenReturn(flight.getFare());
         when(mockResultSet.getTimestamp("departure_date")).thenReturn(Timestamp.valueOf(flight.getDepartureDate()));
         when(mockResultSet.getTimestamp("arrival_date")).thenReturn(Timestamp.valueOf(flight.getArrivalDate()));
@@ -169,9 +166,6 @@ public class FlightDaoMockitoTest {
     public void whenDeleteThrownSQlExceptionThenDAOExceptionShouldBeThrownToo() {
         Throwable exception = assertThrows(DAOException.class,() -> {
             when(mockConnection.prepareStatement(DELETE_FLIGHT_BY_ID_SQL)).thenThrow(new SQLException());
-            Logger logger = (Logger)LoggerFactory.getLogger(FlightDAO.class);
-            logger.setLevel(Level.INFO);
-            flightDAO.setLogger(logger);
             flightDAO.delete(flight);
         });
 

@@ -26,7 +26,7 @@ public class FlightRowMapper implements RowMapper<Flight> {
      */
     @Override
     public Flight mapRow(final ResultSet resultSet, final Flight flight) throws SQLException {
-        flight.setId(resultSet.getInt(FLIGHT_ID));
+        flight.setIdentifier(resultSet.getInt(FLIGHT_ID));
         flight.setName(resultSet.getString(NAME));
         flight.setCarrier(resultSet.getString(CARRIER));
         flight.setDuration(resultSet.getTime(DURATION).toLocalTime());

@@ -13,7 +13,7 @@ public interface AirPortDAO<T> {
      * Create entity in DB and return it.
      * @param entity entity to create
      * @return T entity
-     * @throws DAOException exception for AirPortDAO layer
+     * @throws DAOException exception for DAO layer
      */
     T create(T entity) throws DAOException;
 
@@ -22,7 +22,7 @@ public interface AirPortDAO<T> {
      *
      * @param entity entity to update
      * @return T entity
-     * @throws DAOException exception for AirPortDAO layer
+     * @throws DAOException exception for DAO layer
      */
     T update(T entity) throws DAOException;
 
@@ -32,7 +32,7 @@ public interface AirPortDAO<T> {
      *
      * @param entity entity to delete
      * @return boolean flag
-     * @throws DAOException exception for AirPortDAO layer
+     * @throws DAOException exception for DAO layer
      */
     boolean delete(T entity) throws DAOException;
 
@@ -41,7 +41,7 @@ public interface AirPortDAO<T> {
      *
      * @param flightId entity id
      * @return T entity
-     * @throws DAOException exception for AirPortDAO layer
+     * @throws DAOException exception for DAO layer
      */
     T getById(Optional<Integer> flightId) throws DAOException;
 
@@ -50,7 +50,7 @@ public interface AirPortDAO<T> {
      * If entities absent in DB return empty {@link List}.
      *
      * @return List entities
-     * @throws DAOException exception for AirPortDAO layer
+     * @throws DAOException exception for DAO layer
      */
     List<T> getAll() throws DAOException;
 }
