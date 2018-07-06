@@ -1,30 +1,32 @@
 package com.ra.shop.model;
 
 import java.io.Serializable;
-import java.util.Date;
 import java.util.Objects;
+
+/**
+ * Entity good.
+ */
 
 public class Good implements Serializable {
 
-    private Integer id;
+    private Long id;
     private String name;
     private float price;
 
     public Good() {
-
     }
 
-    public Good(Integer id, String name, float price) {
+    public Good(Long id, String name, float price) {
         this.id = id;
         this.name = name;
         this.price = price;
     }
 
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -46,25 +48,30 @@ public class Good implements Serializable {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
         Good good = (Good) o;
-        return Float.compare(good.price, price) == 0 &&
-                Objects.equals(id, good.id) &&
-                Objects.equals(name, good.name);
+        return Float.compare(good.price, price) == 0
+                && Objects.equals(id, good.id)
+                && Objects.equals(name, good.name);
     }
 
     @Override
     public int hashCode() {
-        return getId();
+
+        return Objects.hash(id, name, price);
     }
 
     @Override
     public String toString() {
-        return "Good{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", price=" + price +
-                '}';
+        return "Good{"
+                + "id=" + id
+                + ", name='" + name + '\''
+                + ", price=" + price
+                + '}';
     }
 }
