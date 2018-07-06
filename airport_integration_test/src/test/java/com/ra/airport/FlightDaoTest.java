@@ -1,8 +1,8 @@
 package com.ra.airport;
 
-import com.ra.airport.dao.AirPortDAO;
-import com.ra.airport.dao.exception.DAOException;
-import com.ra.airport.dao.impl.FlightDAO;
+import com.ra.airport.dao.AirPortDao;
+import com.ra.airport.dao.exception.DaoException;
+import com.ra.airport.dao.impl.FlightDao;
 import com.ra.airport.entity.Flight;
 import com.ra.airport.factory.ConnectionFactory;
 import org.h2.tools.RunScript;
@@ -24,7 +24,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
- * Tests for {@link FlightDAO} class
+ * Tests for {@link FlightDao} class
  */
 public class FlightDaoTest {
 
@@ -35,7 +35,7 @@ public class FlightDaoTest {
     private static final String WIZZ_AIR = "Wizz Air";
     private static final Double FARE_100 = 100.0;
 
-    private AirPortDAO<Flight> airPortDao;
+    private AirPortDao<Flight> airPortDao;
 
     private Flight flight;
 
@@ -64,7 +64,7 @@ public class FlightDaoTest {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern(DATE_TIME_FORMAT);
         LocalDateTime departureDate = LocalDateTime.parse(DEPARTURE_DATE, formatter);
         LocalDateTime arrivalDate = LocalDateTime.parse(ARRIVAL_DATE, formatter);
-        airPortDao = new FlightDAO(ConnectionFactory.getInstance());
+        airPortDao = new FlightDao(ConnectionFactory.getInstance());
         flight = new Flight();
         flight.setName(KYIV_ROME);
         flight.setCarrier(WIZZ_AIR);
@@ -76,7 +76,7 @@ public class FlightDaoTest {
     }
 
     @Test
-    public void whenCreateThenNewFlightWithIdShouldBeReturned() throws DAOException {
+    public void whenCreateThenNewFlightWithIdShouldBeReturned() throws DaoException {
         Flight createdFlight = airPortDao.create(flight);
         assertNotNull(createdFlight);
         Integer flightId = createdFlight.getIdentifier();
@@ -86,7 +86,7 @@ public class FlightDaoTest {
     }
 
     @Test
-    public void whenUpdateThenUpdatedFlightShouldBeReturned() throws DAOException {
+    public void whenUpdateThenUpdatedFlightShouldBeReturned() throws DaoException {
         Flight createdFlight = airPortDao.create(flight);
         Flight expectedFlight = changeFlight(createdFlight);
 
@@ -96,7 +96,7 @@ public class FlightDaoTest {
     }
 
     @Test
-    public void whenDeleteThenDeleteObjectAndReturnTrue() throws DAOException {
+    public void whenDeleteThenDeleteObjectAndReturnTrue() throws DaoException {
         Flight createdFlight = airPortDao.create(flight);
         boolean result = airPortDao.delete(createdFlight);
 
@@ -104,7 +104,7 @@ public class FlightDaoTest {
     }
 
     @Test
-    public void whenGetAllThenFlightsFromDBShouldBeReturned() throws DAOException {
+    public void whenGetAllThenFlightsFromDBShouldBeReturned() throws DaoException {
         List<Flight> expectedResult = new ArrayList<>();
         expectedResult.add(airPortDao.create(flight));
         expectedResult.add(airPortDao.create(flight));

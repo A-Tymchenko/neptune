@@ -1,7 +1,7 @@
 package com.ra.airport;
 
-import com.ra.airport.dao.exception.DAOException;
-import com.ra.airport.dao.impl.FlightDAO;
+import com.ra.airport.dao.exception.DaoException;
+import com.ra.airport.dao.impl.FlightDao;
 import com.ra.airport.entity.Flight;
 import com.ra.airport.factory.ConnectionFactory;
 import com.ra.airport.helper.DataCreationHelper;
@@ -19,7 +19,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 /**
- * Mockito tests for {@link FlightDAO} class
+ * Mockito tests for {@link FlightDao} class
  */
 public class FlightDaoMockitoTest {
 
@@ -37,7 +37,7 @@ public class FlightDaoMockitoTest {
     private Connection mockConnection;
     private PreparedStatement mockStatement;
     private ResultSet mockResultSet;
-    private FlightDAO flightDAO;
+    private FlightDao flightDao;
     private Flight flight;
 
     @BeforeEach
@@ -46,7 +46,7 @@ public class FlightDaoMockitoTest {
         mockStatement = mock(PreparedStatement.class);
         mockResultSet = mock(ResultSet.class);
         connectionFactory = mock(ConnectionFactory.class);
-        flightDAO = new FlightDAO(connectionFactory);
+        flightDao = new FlightDao(connectionFactory);
         flight = DataCreationHelper.createFlight();
         flight.setDepartureDate(LocalDateTime.now());
         flight.setArrivalDate(LocalDateTime.now().plusHours(1));
@@ -70,73 +70,73 @@ public class FlightDaoMockitoTest {
     }
 
     @Test
-    public void whenCreateThenCorrectSQLShouldBeExecutedAndCorrectEntityShouldBeReturned() throws SQLException, DAOException {
+    public void whenCreateThenCorrectSQLShouldBeExecutedAndCorrectEntityShouldBeReturned() throws SQLException, DaoException {
         when(mockConnection.prepareStatement(INSERT_FLIGHT_SQL)).thenReturn(mockStatement);
         when(mockConnection.prepareStatement(SELECT_LAST_GENERATED_ID_SQL)).thenReturn(mockStatement);
-        Flight result = flightDAO.create(flight);
+        Flight result = flightDao.create(flight);
 
         assertEquals(flight, result);
     }
 
     @Test
-    public void whenCreateReturnNullGeneratedIdThenDAOExceptionShouldBeThrown() throws SQLException, DAOException {
+    public void whenCreateReturnNullGeneratedIdThenDAOExceptionShouldBeThrown() throws SQLException, DaoException {
         when(mockConnection.prepareStatement(INSERT_FLIGHT_SQL)).thenReturn(mockStatement);
         when(mockConnection.prepareStatement(SELECT_LAST_GENERATED_ID_SQL)).thenReturn(mockStatement);
         when(mockResultSet.next()).thenReturn(false);
-        Throwable exception =  assertThrows(DAOException.class,() -> {
-            flightDAO.create(flight);
+        Throwable exception =  assertThrows(DaoException.class,() -> {
+            flightDao.create(flight);
         });
 
         assertEquals(exception.getMessage(), FLIGHT_ID_CANNOT_BE_NULL.get());
     }
 
     @Test
-    public void whenUpdateThenCorrectSQLShouldBeExecutedAndCorrectEntityShouldBeReturned() throws SQLException, DAOException {
+    public void whenUpdateThenCorrectSQLShouldBeExecutedAndCorrectEntityShouldBeReturned() throws SQLException, DaoException {
         when(mockConnection.prepareStatement(UPDATE_FLIGHT_SQL)).thenReturn(mockStatement);
-        Flight result = flightDAO.update(flight);
+        Flight result = flightDao.update(flight);
 
         assertEquals(flight, result);
     }
 
     @Test
-    public void whenDeleteThenCorrectSQLShouldBeExecutedAndTrueShouldBeReturned() throws DAOException, SQLException {
+    public void whenDeleteThenCorrectSQLShouldBeExecutedAndTrueShouldBeReturned() throws DaoException, SQLException {
         when(mockConnection.prepareStatement(DELETE_FLIGHT_BY_ID_SQL)).thenReturn(mockStatement);
         when(mockStatement.executeUpdate()).thenReturn(1);
-        boolean result = flightDAO.delete(flight);
+        boolean result = flightDao.delete(flight);
 
         assertEquals(true, result);
     }
 
     @Test
-    public void whenDeleteStatementExecuteReturnOThenFalseShouldBeReturned() throws SQLException, DAOException {
+    public void whenDeleteStatementExecuteReturnOThenFalseShouldBeReturned() throws SQLException, DaoException {
         when(mockConnection.prepareStatement(DELETE_FLIGHT_BY_ID_SQL)).thenReturn(mockStatement);
         when(mockStatement.executeUpdate()).thenReturn(0);
-        boolean result = flightDAO.delete(flight);
+        boolean result = flightDao.delete(flight);
 
         assertEquals(false, result);
     }
 
     @Test
-    public void whenGetAllThenCorrectSQLShouldBeExecutedAndCorrectListReturned() throws DAOException, SQLException {
+    public void whenGetAllThenCorrectSQLShouldBeExecutedAndCorrectListReturned() throws DaoException, SQLException {
         when(mockConnection.prepareStatement(SELECT_ALL_FLIGHTS_SQL)).thenReturn(mockStatement);
         when(mockResultSet.next()).thenReturn(true,false);
-        List<Flight> flights = flightDAO.getAll();
+        List<Flight> flights = flightDao.getAll();
 
         assertFalse(flights.isEmpty());
     }
 
     @Test
-    public void whenGetByIdReturnEmptyResultSetThenNullShouldBeReturned() throws DAOException, SQLException {
+    public void whenGetByIdReturnEmptyResultSetThenNullShouldBeReturned() throws DaoException, SQLException {
         when(mockResultSet.next()).thenReturn(false);
-        Flight result = flightDAO.getById(Optional.of(1));
+        Flight result = flightDao.getById(Integer.valueOf(1)).get();
 
         assertNull(result);
     }
 
     @Test
-    public void whenGetByIdEmptyOptionalPassedThenDAOExceptionShouldBeThrown() {
-        Throwable exception =  assertThrows(DAOException.class,() -> {
-            flightDAO.getById(Optional.empty());
+    public void whenGetByIdNullPassedThenDAOExceptionShouldBeThrown() {
+        Throwable exception =  assertThrows(DaoException.class,() -> {
+            flightDao.getById(null);
         });
 
         assertEquals(exception.getMessage(), FLIGHT_ID_CANNOT_BE_NULL.get());
@@ -144,9 +144,9 @@ public class FlightDaoMockitoTest {
 
     @Test
     public void whenCreateThrownSQlExceptionThenDAOExceptionShouldBeThrownToo() {
-        Throwable exception = assertThrows(DAOException.class,() -> {
+        Throwable exception = assertThrows(DaoException.class,() -> {
             when(mockConnection.prepareStatement(INSERT_FLIGHT_SQL)).thenThrow(new SQLException());
-            flightDAO.create(flight);
+            flightDao.create(flight);
         });
 
         assertEquals(exception.getMessage(), FAILED_TO_CREATE_NEW_FLIGHT.get());
@@ -154,9 +154,9 @@ public class FlightDaoMockitoTest {
 
     @Test
     public void whenUpdateThrownSQlExceptionThenDAOExceptionShouldBeThrownToo() {
-        Throwable exception = assertThrows(DAOException.class,() -> {
+        Throwable exception = assertThrows(DaoException.class,() -> {
             when(mockConnection.prepareStatement(UPDATE_FLIGHT_SQL)).thenThrow(new SQLException());
-            flightDAO.update(flight);
+            flightDao.update(flight);
         });
 
         assertEquals(exception.getMessage(), FAILED_TO_UPDATE_FLIGHT_WITH_ID.get()+1);
@@ -164,9 +164,9 @@ public class FlightDaoMockitoTest {
 
     @Test
     public void whenDeleteThrownSQlExceptionThenDAOExceptionShouldBeThrownToo() {
-        Throwable exception = assertThrows(DAOException.class,() -> {
+        Throwable exception = assertThrows(DaoException.class,() -> {
             when(mockConnection.prepareStatement(DELETE_FLIGHT_BY_ID_SQL)).thenThrow(new SQLException());
-            flightDAO.delete(flight);
+            flightDao.delete(flight);
         });
 
         assertEquals(exception.getMessage(), FAILED_TO_DELETE_FLIGHT_WITH_ID.get()+1);
@@ -174,9 +174,9 @@ public class FlightDaoMockitoTest {
 
     @Test
     public void whenGetAllThrownSQlExceptionThenDAOExceptionShouldBeThrownToo() {
-        Throwable exception = assertThrows(DAOException.class,() -> {
+        Throwable exception = assertThrows(DaoException.class,() -> {
             when(mockConnection.prepareStatement(SELECT_ALL_FLIGHTS_SQL)).thenThrow(new SQLException());
-            flightDAO.getAll();
+            flightDao.getAll();
         });
 
         assertEquals(exception.getMessage(), FAILED_TO_GET_ALL_FLIGHTS.get());
@@ -184,9 +184,9 @@ public class FlightDaoMockitoTest {
 
     @Test
     public void whenGetByIdThrownSQlExceptionThenDAOExceptionShouldBeThrownToo() {
-        Throwable exception = assertThrows(DAOException.class,() -> {
+        Throwable exception = assertThrows(DaoException.class,() -> {
             when(mockConnection.prepareStatement(SELECT_FLIGHT_BY_ID_SQL)).thenThrow(new SQLException());
-            flightDAO.getById(Optional.of(1));
+            flightDao.getById(Integer.valueOf(1));
         });
 
         assertEquals(exception.getMessage(), FAILED_TO_GET_FLIGHT_WITH_ID.get()+1);

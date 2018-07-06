@@ -1,7 +1,7 @@
 package com.ra.airport.dao.exception;
 
 /**
- * Contains exception messages for {@link DAOException} class.
+ * Contains exception messages for {@link DaoException} class.
  */
 public enum ExceptionMessage {
 
