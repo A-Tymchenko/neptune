@@ -1,7 +1,7 @@
 package com.ra.airport.dao.exception;
 
 /**
- * Contains exception messages for {@link DaoException} class.
+ * Contains exception messages for {@link AirPortDaoException} class.
  */
 public enum ExceptionMessage {
 
@@ -12,7 +12,7 @@ public enum ExceptionMessage {
     FAILED_TO_GET_ALL_FLIGHTS("Failed to get all flights"),
     FLIGHT_ID_CANNOT_BE_NULL("Flight id can't be null");
 
-    private String message;
+    private final String message;
 
     ExceptionMessage(final String message) {
         this.message = message;

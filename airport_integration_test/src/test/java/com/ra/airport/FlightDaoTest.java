@@ -1,7 +1,7 @@
 package com.ra.airport;
 
 import com.ra.airport.dao.AirPortDao;
-import com.ra.airport.dao.exception.DaoException;
+import com.ra.airport.dao.exception.AirPortDaoException;
 import com.ra.airport.dao.impl.FlightDao;
 import com.ra.airport.entity.Flight;
 import com.ra.airport.factory.ConnectionFactory;
@@ -20,6 +20,7 @@ import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -76,7 +77,7 @@ public class FlightDaoTest {
     }
 
     @Test
-    public void whenCreateThenNewFlightWithIdShouldBeReturned() throws DaoException {
+    public void whenCreateThenNewFlightWithIdShouldBeReturned() throws AirPortDaoException {
         Flight createdFlight = airPortDao.create(flight);
         assertNotNull(createdFlight);
         Integer flightId = createdFlight.getIdentifier();
@@ -86,7 +87,7 @@ public class FlightDaoTest {
     }
 
     @Test
-    public void whenUpdateThenUpdatedFlightShouldBeReturned() throws DaoException {
+    public void whenUpdateThenUpdatedFlightShouldBeReturned() throws AirPortDaoException {
         Flight createdFlight = airPortDao.create(flight);
         Flight expectedFlight = changeFlight(createdFlight);
 
@@ -96,7 +97,7 @@ public class FlightDaoTest {
     }
 
     @Test
-    public void whenDeleteThenDeleteObjectAndReturnTrue() throws DaoException {
+    public void whenDeleteThenDeleteObjectAndReturnTrue() throws AirPortDaoException {
         Flight createdFlight = airPortDao.create(flight);
         boolean result = airPortDao.delete(createdFlight);
 
@@ -104,7 +105,7 @@ public class FlightDaoTest {
     }
 
     @Test
-    public void whenGetAllThenFlightsFromDBShouldBeReturned() throws DaoException {
+    public void whenGetAllThenFlightsFromDBShouldBeReturned() throws AirPortDaoException {
         List<Flight> expectedResult = new ArrayList<>();
         expectedResult.add(airPortDao.create(flight));
         expectedResult.add(airPortDao.create(flight));

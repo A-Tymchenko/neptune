@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.Optional;
 
 import com.ra.airport.dao.AirPortDao;
-import com.ra.airport.dao.exception.DaoException;
+import com.ra.airport.dao.exception.AirPortDaoException;
 import com.ra.airport.dao.exception.ExceptionMessage;
 import com.ra.airport.entity.Flight;
 import com.ra.airport.factory.ConnectionFactory;
@@ -60,9 +60,9 @@ public class FlightDao implements AirPortDao<Flight> {
      *
      * @param flight entity to create
      * @return {@link Flight} entity
-     * @throws DaoException exception for DAO layer
+     * @throws AirPortDaoException exception for DAO layer
      */
-    public Flight create(Flight flight) throws DaoException {
+    public Flight create(Flight flight) throws AirPortDaoException {
         try (Connection connection = connectionFactory.getConnection()) {
             final PreparedStatement preparedStatement = connection.prepareStatement(INSERT_FLIGHT_SQL);
             fillPreparedStatement(flight, preparedStatement);
@@ -74,9 +74,10 @@ public class FlightDao implements AirPortDao<Flight> {
             }
             flight = getById(flightId).get();
         } catch (SQLException e) {
-            LOGGER.error(ExceptionMessage.FAILED_TO_CREATE_NEW_FLIGHT.get(), e);
-            throw new DaoException(ExceptionMessage.FAILED_TO_CREATE_NEW_FLIGHT.get());
+            LOGGER.error(ExceptionMessage.FAILED_TO_CREATE_NEW_FLIGHT.toString(), e);
+            throw new AirPortDaoException(ExceptionMessage.FAILED_TO_CREATE_NEW_FLIGHT.get(), e);
         }
+        LOGGER.debug("Flight with id was created {}", flight.getIdentifier());
         return flight;
     }
 
@@ -85,9 +86,9 @@ public class FlightDao implements AirPortDao<Flight> {
      *
      * @param flight entity to update
      * @return {@link Flight} entity
-     * @throws DaoException exception for DAO layer
+     * @throws AirPortDaoException exception for DAO layer
      */
-    public Flight update(Flight flight) throws DaoException {
+    public Flight update(Flight flight) throws AirPortDaoException {
         try (Connection connection = connectionFactory.getConnection()) {
             final PreparedStatement preparedStatement = connection.prepareStatement(UPDATE_FLIGHT_SQL);
             fillPreparedStatement(flight, preparedStatement);
@@ -96,8 +97,9 @@ public class FlightDao implements AirPortDao<Flight> {
         } catch (SQLException e) {
             final String errorMessage = ExceptionMessage.FAILED_TO_UPDATE_FLIGHT_WITH_ID.get() + flight.getIdentifier();
             LOGGER.error(errorMessage, e);
-            throw new DaoException(errorMessage);
+            throw new AirPortDaoException(errorMessage, e);
         }
+        LOGGER.debug("Flight with id was updated {}", flight.getIdentifier());
         return flight;
     }
 
@@ -107,9 +109,9 @@ public class FlightDao implements AirPortDao<Flight> {
      *
      * @param flight entity to delete
      * @return boolean flag
-     * @throws DaoException exception for DAO layer
+     * @throws AirPortDaoException exception for DAO layer
      */
-    public boolean delete(final Flight flight) throws DaoException {
+    public boolean delete(final Flight flight) throws AirPortDaoException {
         boolean result;
         try (Connection connection = connectionFactory.getConnection()) {
             final PreparedStatement preparedStatement = connection.prepareStatement(DELETE_FLIGHT);
@@ -118,7 +120,7 @@ public class FlightDao implements AirPortDao<Flight> {
         } catch (SQLException e) {
             final String errorMessage = ExceptionMessage.FAILED_TO_DELETE_FLIGHT_WITH_ID.get() + flight.getIdentifier();
             LOGGER.error(errorMessage, e);
-            throw new DaoException(errorMessage);
+            throw new AirPortDaoException(errorMessage, e);
         }
         return result;
     }
@@ -130,12 +132,14 @@ public class FlightDao implements AirPortDao<Flight> {
      * @return {@link Flight}
      */
     @Override
-    public Optional<Flight> getById(final Integer flightId) throws DaoException {
+    public Optional<Flight> getById(final Integer flightId) throws AirPortDaoException {
+        if (flightId == null) {
+            throw new AirPortDaoException(ExceptionMessage.FLIGHT_ID_CANNOT_BE_NULL.get());
+        }
         try (Connection connection = connectionFactory.getConnection()) {
             final PreparedStatement preparedStatement = connection.prepareStatement(GET_FLIGHT_BY_ID);
             preparedStatement.setInt(1, flightId);
             final ResultSet resultSet = preparedStatement.executeQuery();
-
             if (resultSet.next()) {
                 final Flight flight = new FlightRowMapper().mapRow(resultSet, new Flight());
                 return Optional.of(flight);
@@ -143,7 +147,7 @@ public class FlightDao implements AirPortDao<Flight> {
         } catch (SQLException e) {
             final String errorMessage = ExceptionMessage.FAILED_TO_GET_FLIGHT_WITH_ID.get() + flightId;
             LOGGER.error(errorMessage, e);
-            throw new DaoException(errorMessage);
+            throw new AirPortDaoException(errorMessage, e);
         }
         return Optional.empty();
     }
@@ -153,10 +157,10 @@ public class FlightDao implements AirPortDao<Flight> {
      * If entities absent in DB return empty {@link List}.
      *
      * @return List entities
-     * @throws DaoException exception for DAO layer
+     * @throws AirPortDaoException exception for DAO layer
      */
     @Override
-    public List<Flight> getAll() throws DaoException {
+    public List<Flight> getAll() throws AirPortDaoException {
         final List<Flight> flights = new ArrayList<>();
         try (Connection connection = connectionFactory.getConnection()) {
             final PreparedStatement preparedStatement = connection.prepareStatement(GET_ALL_FLIGHTS);
@@ -165,8 +169,9 @@ public class FlightDao implements AirPortDao<Flight> {
                 createFlight(flights, resultSet);
             }
         } catch (SQLException e) {
-            LOGGER.error(ExceptionMessage.FAILED_TO_GET_ALL_FLIGHTS.get(), e);
-            throw new DaoException(ExceptionMessage.FAILED_TO_GET_ALL_FLIGHTS.get());
+            final String message = ExceptionMessage.FAILED_TO_GET_ALL_FLIGHTS.get();
+            LOGGER.error(message, e);
+            throw new AirPortDaoException(message, e);
         }
         return flights;
     }
