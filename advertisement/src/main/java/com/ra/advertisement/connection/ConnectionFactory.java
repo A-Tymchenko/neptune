@@ -55,7 +55,7 @@ public class ConnectionFactory {
 
 
     /**
-     * Returns new config.
+     * This method get Connection from JdbcDataSource.
      *
      * @return Connection.
      */

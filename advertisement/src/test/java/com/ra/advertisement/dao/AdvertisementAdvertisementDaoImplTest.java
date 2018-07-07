@@ -36,6 +36,11 @@ class AdvertisementAdvertisementDaoImplTest {
 
     }
 
+    /**
+     * testing successful result of create method which saves info regarding Advertisement into DB
+     *
+     * @throws Exception
+     */
     @Test
     void insertValidDataReturnTrue() throws Exception {
         providerDao.create(provider);
@@ -43,6 +48,11 @@ class AdvertisementAdvertisementDaoImplTest {
         assertEquals(Integer.valueOf(1), result);
     }
 
+    /**
+     * testing if throws DaoException of create method in case of some troubles
+     *
+     * @throws Exception
+     */
     @Test
     void insertWhenTableAdvertisementDroppedThrowDaoException() throws Exception {
         Connection connection = connectionFactory.getConnection();
@@ -52,6 +62,11 @@ class AdvertisementAdvertisementDaoImplTest {
         });
     }
 
+    /**
+     * testing if throws Exception of create method in case of some troubles
+     *
+     * @throws Exception
+     */
     @Test
     void insertWhenTableDroppedThrowException() throws Exception {
         Connection connection = connectionFactory.getConnection();
@@ -61,6 +76,11 @@ class AdvertisementAdvertisementDaoImplTest {
         });
     }
 
+    /**
+     * testing successful result of getById method which gets info regarding Advertisement from DB
+     *
+     * @throws Exception
+     */
     @Test
     void getObjectByIdWhenExecutedReturnTrue() throws Exception {
         providerDao.create(provider);
@@ -75,12 +95,22 @@ class AdvertisementAdvertisementDaoImplTest {
                 () -> assertEquals(advertisement.getProvId(), actual.getProvId()));
     }
 
+    /**
+     * testing result (null) of getById method which gets info regarding Advertisement from DB when there no such id in DB
+     *
+     * @throws Exception
+     */
     @Test
     void getObjectByIdWhenExecutedNullReturnTrue() throws Exception {
         Advertisement actual = advertisementDao.getById(advertisement.getAdId()).orElse(null);
         assertEquals(null, actual);
     }
 
+    /**
+     * testing if throws DaoException of getById method in case of some troubles
+     *
+     * @throws Exception
+     */
     @Test
     void getObjectByIdWhenTableAdvertisementDroppedThrowDaoException() throws Exception {
         Connection connection = connectionFactory.getConnection();
@@ -90,6 +120,11 @@ class AdvertisementAdvertisementDaoImplTest {
         });
     }
 
+    /**
+     * testing successful result of delete method which delete info regarding Advertisement from DB
+     *
+     * @throws Exception
+     */
     @Test
     void deleteValidDataReturnTrue() throws Exception {
         providerDao.create(provider);
@@ -98,6 +133,11 @@ class AdvertisementAdvertisementDaoImplTest {
         assertEquals(Integer.valueOf(1), actual);
     }
 
+    /**
+     * testing if throws DaoException of delete method in case of some troubles
+     *
+     * @throws Exception
+     */
     @Test
     void deleteObjectByIdWhenTableAdvertisementDroppedThrowDaoException() throws Exception {
         Connection connection = connectionFactory.getConnection();
@@ -107,6 +147,11 @@ class AdvertisementAdvertisementDaoImplTest {
         });
     }
 
+    /**
+     * testing if throws Exception of delete method in case of some troubles
+     *
+     * @throws Exception
+     */
     @Test
     void deleteObjectByIdWhenTableDroppedThrowException() throws Exception {
         Connection connection = connectionFactory.getConnection();
@@ -116,6 +161,11 @@ class AdvertisementAdvertisementDaoImplTest {
         });
     }
 
+    /**
+     * testing if throws Exception of getById method in case of some troubles
+     *
+     * @throws Exception
+     */
     @Test
     void getObjectByIdWhenTableDroppedThrowException() throws Exception {
         Connection connection = connectionFactory.getConnection();
@@ -125,6 +175,11 @@ class AdvertisementAdvertisementDaoImplTest {
         });
     }
 
+    /**
+     * testing successful result of getAll method which gets info regarding all Advertisement from DB
+     *
+     * @throws Exception
+     */
     @Test
     void getAllObjectWhenExecutedAndListIsNotEmptyReturnTrue() throws Exception {
         providerDao.create(provider);
@@ -133,6 +188,11 @@ class AdvertisementAdvertisementDaoImplTest {
         assertEquals(Boolean.valueOf(false), actual);
     }
 
+    /**
+     * testing successful result of getAll method which gets info regarding all Advertisement from DB
+     *
+     * @throws Exception
+     */
     @Test
     void getAllObjectWhenExecutedAndGetListWithSizeTwoReturnTrue() throws Exception {
         providerDao.create(provider);
@@ -142,6 +202,11 @@ class AdvertisementAdvertisementDaoImplTest {
         assertEquals(Integer.valueOf(2), actual);
     }
 
+    /**
+     * testing if throws DaoException of getAll method in case of some troubles
+     *
+     * @throws Exception
+     */
     @Test
     void getAllObjectWhenTableDroppedThrowDaoException() throws Exception {
         Connection connection = connectionFactory.getConnection();
@@ -151,6 +216,11 @@ class AdvertisementAdvertisementDaoImplTest {
         });
     }
 
+    /**
+     * testing if throws Exception of getAll method in case of some troubles
+     *
+     * @throws Exception
+     */
     @Test
     void getAllObjectWhenTableDroppedThrowException() throws Exception {
         Connection connection = connectionFactory.getConnection();
@@ -160,6 +230,11 @@ class AdvertisementAdvertisementDaoImplTest {
         });
     }
 
+    /**
+     * testing successful result of update method which updates info regarding Advertisement in DB
+     *
+     * @throws Exception
+     */
     @Test
     void updateDataWhenExecutedReturnTrue() throws Exception {
         providerDao.create(provider);
@@ -170,6 +245,11 @@ class AdvertisementAdvertisementDaoImplTest {
         assertEquals(Integer.valueOf(1), actual);
     }
 
+    /**
+     * testing successful result of update method which updates info regarding Advertisement in DB
+     *
+     * @throws Exception
+     */
     @Test
     void updateDataWhenExecutedAndGetResultReturnTrue() throws Exception {
         providerDao.create(provider);
@@ -187,6 +267,11 @@ class AdvertisementAdvertisementDaoImplTest {
                 () -> assertEquals(advertisementUpdate.getProvId(), actual.getProvId()));
     }
 
+    /**
+     * testing if throws DaoException of update method in case of some troubles
+     *
+     * @throws Exception
+     */
     @Test
     void updateObjectWhenTableAdvertisementDroppedThrowDaoException() throws Exception {
         Connection connection = connectionFactory.getConnection();
@@ -198,6 +283,11 @@ class AdvertisementAdvertisementDaoImplTest {
         });
     }
 
+    /**
+     * testing if throws Exception of update method in case of some troubles
+     *
+     * @throws Exception
+     */
     @Test
     void updateObjectWhenTableDroppedThrowExeption() throws Exception {
         Connection connection = connectionFactory.getConnection();
