@@ -8,20 +8,21 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import com.ra.shop.model.Good;
+import com.ra.shop.model.Goods;
 import com.ra.shop.utils.ConnectionFactory;
 import org.apache.log4j.Logger;
 
 /**
- * CRUD for Good.
+ * CRUD for Goods.
  */
 
-public class GoodsDao implements IRepository<Good> {
+public class GoodsDao implements IRepository<Goods> {
 
     private static final Logger LOGGER = Logger.getLogger(GoodsDao.class);
     private static final Integer FIRST_INDEX = 1;
     private static final Integer SECOND_INDEX = 2;
     private static final Integer THIRD_INDEX = 3;
+    private static final Integer FOURTH_INDEX = 4;
     private final transient ConnectionFactory connFactory;
 
     public GoodsDao(final ConnectionFactory connFactory) {
@@ -29,24 +30,25 @@ public class GoodsDao implements IRepository<Good> {
     }
 
     /**
-     * Create good in DataBase.
+     * Create goods in DataBase.
      *
      * @param entity that will be created.
      * @return 1 if true else 0.
      */
 
     @Override
-    public Integer create(final Good entity) throws GoodException {
+    public Integer create(final Goods entity) throws GoodException {
         if (get(entity.getId()).isPresent()) {
             return 0;
         }
 
         try (Connection connection = connFactory.getConnection()) {
             final PreparedStatement statement =
-                connection.prepareStatement("INSERT INTO GOODS VALUES (?,?,?)");
+                connection.prepareStatement("INSERT INTO GOODS VALUES (?,?,?,?)");
             statement.setLong(FIRST_INDEX, entity.getId());
             statement.setString(SECOND_INDEX, entity.getName());
-            statement.setFloat(THIRD_INDEX, entity.getPrice());
+            statement.setLong(THIRD_INDEX, entity.getBarcode());
+            statement.setFloat(FOURTH_INDEX, entity.getPrice());
 
             return statement.executeUpdate();
         } catch (SQLException ex) {
@@ -56,7 +58,7 @@ public class GoodsDao implements IRepository<Good> {
     }
 
     /**
-     * Extracted good in DataBase.
+     * Extracted goods in DataBase.
      *
      * @param entityId of entity that will be insert.
      * @return Optional entity.
@@ -83,21 +85,22 @@ public class GoodsDao implements IRepository<Good> {
     }
 
     /**
-     * Update good in DataBase.
+     * Update goods in DataBase.
      *
      * @param newEntity updated version of entity.
      * @return 1 if true else 0.
      */
 
     @Override
-    public Integer update(final Good newEntity) throws GoodException {
+    public Integer update(final Goods newEntity) throws GoodException {
 
         try (Connection connection = connFactory.getConnection()) {
             final PreparedStatement statement =
-                connection.prepareStatement("UPDATE GOODS SET NAME = ?, PRICE = ? WHERE ID = ?");
+                connection.prepareStatement("UPDATE GOODS SET NAME = ?, BARCODE = ?, PRICE = ? WHERE ID = ?");
             statement.setString(FIRST_INDEX, newEntity.getName());
-            statement.setFloat(SECOND_INDEX, newEntity.getPrice());
-            statement.setLong(THIRD_INDEX, newEntity.getId());
+            statement.setLong(SECOND_INDEX, newEntity.getBarcode());
+            statement.setFloat(THIRD_INDEX, newEntity.getPrice());
+            statement.setLong(FOURTH_INDEX, newEntity.getId());
             return statement.executeUpdate();
         } catch (SQLException ex) {
             LOGGER.error(ex.getMessage());
@@ -106,7 +109,7 @@ public class GoodsDao implements IRepository<Good> {
     }
 
     /**
-     * Deleting good in DataBase.
+     * Deleting goods in DataBase.
      *
      * @param entityId of entity that will be deleted.
      * @return 1 if true else 0.
@@ -133,13 +136,12 @@ public class GoodsDao implements IRepository<Good> {
 
     @Override
     public List getAll() throws GoodException {
-        final List<Good> goods = new ArrayList<>();
+        final List<Goods> goods = new ArrayList<>();
         ResultSet resultSet = null;
         try (Connection connection = connFactory.getConnection()) {
             final PreparedStatement statement =
                 connection.prepareStatement("SELECT * FROM GOODS");
             resultSet = statement.executeQuery();
-
             while (resultSet.next()) {
                 goods.add(createGood(resultSet));
             }
@@ -152,15 +154,16 @@ public class GoodsDao implements IRepository<Good> {
     }
 
     /**
-     * Create good.
+     * Create goods.
      *
      * @param resultSet with DataBase.
-     * @return Good.
+     * @return Goods.
      */
 
-    private Good createGood(final ResultSet resultSet) throws SQLException {
-        return new Good(resultSet.getLong("ID"),
+    private Goods createGood(final ResultSet resultSet) throws SQLException {
+        return new Goods(resultSet.getLong("ID"),
             resultSet.getString("NAME"),
+            resultSet.getLong("BARCODE"),
             resultSet.getFloat("PRICE"));
     }
 }

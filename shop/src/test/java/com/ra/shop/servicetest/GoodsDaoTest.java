@@ -1,6 +1,6 @@
 package com.ra.shop.servicetest;
 
-import com.ra.shop.model.Good;
+import com.ra.shop.model.Goods;
 import com.ra.shop.service.GoodException;
 import com.ra.shop.service.GoodsDao;
 import com.ra.shop.utils.ConnectionFactory;
@@ -13,7 +13,6 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
 
-
 import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assumptions.assumeTrue;
 import static org.mockito.Mockito.*;
@@ -21,7 +20,7 @@ import static org.mockito.Mockito.*;
 public class GoodsDaoTest {
 
     private GoodsDao dao;
-    private Good existingGood = new Good(1l, "Freddy", 1.2f);
+    private Goods existingGoods = new Goods(1l, "Camel", 7622210609779l, 1.2f);
 
 
     @BeforeEach
@@ -40,52 +39,53 @@ public class GoodsDaoTest {
         @BeforeEach
         public void setUp() throws Exception {
             dao = new GoodsDao(ConnectionFactory.getInstance());
-            int result = dao.create(existingGood);
+            int result = dao.create(existingGoods);
             Assertions.assertEquals(1, result);
         }
 
         /**
-         * Represents the scenario when DAO operations are being performed on a non existing good.
+         * Represents the scenario when DAO operations are being performed on a non existing goods.
          */
         @Nested
-        public class NonExistingGood {
+        public class NonExistingGoods {
 
             @Test
             public void addingShouldResultInSuccess() throws Exception {
-                List<Good> goods = dao.getAll();
+                List<Goods> goods = dao.getAll();
                 assumeTrue(goods.size() == 1);
 
-                final Good nonExistingGood = new Good(2l, "Robert", 2.6F);
-                int result = dao.create(nonExistingGood);
+                final Goods nonExistingGoods = new Goods(2l, "Parlament", 7622210722416l, 2.6F);
+                int result = dao.create(nonExistingGoods);
                 assertEquals(1, result);
 
-                assertGoodCountIs(2);
-                assertEquals(nonExistingGood, dao.get(nonExistingGood.getId()).get());
+                assertGoodsCountIs(2);
+                assertEquals(nonExistingGoods, dao.get(nonExistingGoods.getId()).get());
             }
 
             @Test
             public void deletionShouldBeFailureAndNotAffectExistingGoods() throws GoodException {
-                final Good nonExistingGood = new Good(2l, "Robert", 3.4f);//????
-                int result = dao.delete(nonExistingGood.getId());
+                final Goods nonExistingGoods = new Goods(2l, "Marlboro", 4050300003924l, 3.4f);
+                int result = dao.delete(nonExistingGoods.getId());
 
                 assertEquals(0, result);
-                assertGoodCountIs(1);
+                assertGoodsCountIs(1);
             }
 
             @Test
             public void updationShouldBeFailureAndNotAffectExistingGoods() throws GoodException {
                 final Long nonExistingId = getNonExistingGoodId();
-                final String newName = "Douglas";
+                final String newName = "Dunhill";
+                final Long newBarcode = 4820005924653l;
                 final Float newPrice = 12.6f;
-                final Good good = new Good(nonExistingId, newName, newPrice);
-                int result = dao.update(good);
+                final Goods goods = new Goods(nonExistingId, newName, newBarcode, newPrice);
+                int result = dao.update(goods);
 
                 assertEquals(0, result);
                 assertFalse(dao.get(nonExistingId).isPresent());
             }
 
             @Test
-            public void retrieveShouldReturnNoCustomer() throws GoodException {
+            public void retrieveShouldReturnNoGoods() throws GoodException {
                 assertFalse(dao.get(getNonExistingGoodId()).isPresent());
             }
         }
@@ -95,39 +95,41 @@ public class GoodsDaoTest {
          * good.
          */
         @Nested
-        public class ExistingGood {
+        public class ExistingGoods {
 
             @Test
             public void addingShouldResultInFailureAndNotAffectExistingGoods() throws GoodException {
-                Good existingGood = new Good(1l, "Freddy", 1.2f);
+                Goods existingGoods = new Goods(1l, "Camel", 7622210609779l, 1.2f);
 
-                int result = dao.create(existingGood);
+                int result = dao.create(existingGoods);
                 assertEquals(0, result);
-                assertGoodCountIs(1);
-                assertEquals(existingGood, dao.get(existingGood.getId()).get());
+                assertGoodsCountIs(1);
+                assertEquals(existingGoods, dao.get(existingGoods.getId()).get());
             }
 
             @Test
-            public void deletionShouldBeSuccessAndGoodShouldBeNonAccessible() throws GoodException {
-                int result = dao.delete(existingGood.getId());
+            public void deletionShouldBeSuccessAndGoodsShouldBeNonAccessible() throws GoodException {
+                int result = dao.delete(existingGoods.getId());
 
                 assertEquals(1, result);
-                assertGoodCountIs(0);
-                assertFalse(dao.get(existingGood.getId()).isPresent());
+                assertGoodsCountIs(0);
+                assertFalse(dao.get(existingGoods.getId()).isPresent());
             }
 
             @Test
-            public void updationShouldBeSuccessAndAccessingTheSameGoodShouldReturnUpdatedInformation() throws GoodException {
-                final String newName = "Bernard";
-                final Float newPrice = 36.7f;
-                final Good good = new Good(existingGood.getId(), newName, newPrice);
-                int result = dao.update(good);
+            public void updationShouldBeSuccessAndAccessingTheSameGoodsShouldReturnUpdatedInformation() throws GoodException {
+                final String newName = "L&M";
+                final Long newBarcode = 740617152326l;
+                final Float newPrice = 32.7f;
+                final Goods goods = new Goods(existingGoods.getId(), newName, newBarcode, newPrice);
+                int result = dao.update(goods);
 
                 assertEquals(1, result);
 
-                final Good good1 = (Good) dao.get(existingGood.getId()).get();
-                assertEquals(newName, good1.getName());
-                assertEquals(newPrice, good1.getPrice(), 0.0002);
+                final Goods goodsGet = (Goods) dao.get(existingGoods.getId()).get();
+                assertEquals(newName, goodsGet.getName());
+                assertEquals(newBarcode, goodsGet.getBarcode(), 0.0002);
+                assertEquals(newPrice, goodsGet.getPrice(), 0.0002);
             }
         }
     }
@@ -148,11 +150,10 @@ public class GoodsDaoTest {
          */
         @BeforeEach
         public void setUp() throws SQLException, IOException {
-            //   dao = null;
             dao = new GoodsDao(mockedConnectionFactory());
         }
 
-        private ConnectionFactory mockedConnectionFactory() throws SQLException, IOException {
+        private ConnectionFactory mockedConnectionFactory() throws SQLException {
             ConnectionFactory mockedConnectionFactory = mock(ConnectionFactory.class);
             Connection mockedConnection = mock(Connection.class);
             SQLException exception = new SQLException(EXCEPTION_CAUSE);
@@ -164,32 +165,33 @@ public class GoodsDaoTest {
         }
 
         @Test
-        public void addingAGoodFailsWithExceptionAsFeedbackToClient() {
+        public void addingAGoodsFailsWithExceptionAsFeedbackToClient() {
             assertThrows(Exception.class, () -> {
-                dao.create(new Good(2l, "Bernard", 36.7f));
+                dao.create(new Goods(2l, "Kent", 4820092770232l, 36.7f));
             });
         }
 
         @Test
-        public void deletingAGoodFailsWithExceptionAsFeedbackToTheClient() {
+        public void deletingAGoodsFailsWithExceptionAsFeedbackToTheClient() {
             assertThrows(Exception.class, () -> {
-                dao.delete(existingGood.getId());
+                dao.delete(existingGoods.getId());
             });
         }
 
         @Test
-        public void updatingAGoodFailsWithFeedbackToTheClient() {
-            final String newName = "Bernard";
+        public void updatingAGoodsFailsWithFeedbackToTheClient() {
+            final String newName = "Lark";
+            final Long newBarcode = 740617153127l;
             final Float newPrice = 34.7f;
             assertThrows(Exception.class, () -> {
-                dao.update(new Good(existingGood.getId(), newName, newPrice));
+                dao.update(new Goods(existingGoods.getId(), newName, newBarcode, newPrice));
             });
         }
 
         @Test
         public void retrievingAGoodByIdFailsWithExceptionAsFeedbackToClient() {
             assertThrows(Exception.class, () -> {
-                dao.get(existingGood.getId());
+                dao.get(existingGoods.getId());
             });
         }
 
@@ -201,8 +203,8 @@ public class GoodsDaoTest {
         }
     }
 
-    private void assertGoodCountIs(int count) throws GoodException {
-        List<Good> allGoods = dao.getAll();
+    private void assertGoodsCountIs(int count) throws GoodException {
+        List<Goods> allGoods = dao.getAll();
         assertTrue(allGoods.size() == count);
 
     }
@@ -210,80 +212,5 @@ public class GoodsDaoTest {
     private Long getNonExistingGoodId() {
         return 999l;
     }
-
-
-//    @Test
-//    public void createSchema1() throws SQLException, IOException {
-//
-//        OnOffSchemaSql.createSchema(ConnectionFactory.getInstance());
-//
-//        Good good1 = new Good(1l, "Adam", 1.2f);
-//        Good good2 = new Good(2l, "Bob", 23.05f);
-//        Good good3 = new Good(3l, "Carl", 123.56f);
-//
-//        List<Good> goods = new ArrayList<>();
-//        goods.add(good1);
-//        goods.add(good2);
-//        goods.add(good3);
-//
-//        try (Connection connection1 = ConnectionFactory.getInstance().getConnection();
-//             PreparedStatement statement1 =
-//                     connection1.prepareStatement("INSERT INTO GOODS VALUES (?,?,?)")) {
-//            for (Good good : goods) {
-//
-//                statement1.setLong(1, good.getId());
-//                statement1.setString(2, good.getName());
-//                statement1.setFloat(3, good.getPrice());
-//                statement1.execute();
-//            }
-//            connection1.close();
-//            statement1.close();
-//
-//        } catch (SQLException ex) {
-//            System.out.println(ex);
-//        }
-//
-//    }
-//
-//    @Test
-//    public void multithreadMAX() throws Exception {
-//
-//        OnOffSchemaSql.createSchema(ConnectionFactory.getInstance());
-//
-//        GoodsDao goodDAO = new GoodsDao(ConnectionFactory.getInstance());
-//
-//        goodDAO.getAll().forEach(x -> System.out.println(x));
-//
-//        ExecutorService goodsThread = Executors.newFixedThreadPool(1000);
-//        for (int i = 0; i < 1000; i++) {
-//
-//            goodsThread.submit(() -> {
-//                String threadName = Thread.currentThread().getName();
-//
-//                try {
-//                    goodDAO.create(new Good((Long) Thread.currentThread().getId(), threadName, 1.2f));
-//                } catch (Exception e) {
-//                    e.printStackTrace();
-//                }
-//                System.out.println(Thread.currentThread().getId() + " " + threadName);
-//            });
-//        }
-//
-//        goodsThread.shutdown();
-//
-//        while (!goodsThread.awaitTermination(1l, TimeUnit.SECONDS)) {
-//            System.out.println("Waiting for termination");
-//        }
-//
-//        System.out.println();
-//        goodDAO.getAll().forEach(x -> System.out.println(x));
-//
-//    }
-//
-//    @Test
-//    public void deleteSchema1() throws IOException, SQLException {
-//
-//        OnOffSchemaSql.deleteSchema(ConnectionFactory.getInstance());
-//    }
-
 }
+

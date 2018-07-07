@@ -22,7 +22,6 @@ public class ConnectionFactory { //NOPMD
     private ConnectionFactory() throws IOException {
         property = new Properties();
         property.load(ClassLoader.getSystemResourceAsStream("db.properties"));
-        LOGGER.info("ConnectionFactory set end");
     }
 
     /**
@@ -39,6 +38,7 @@ public class ConnectionFactory { //NOPMD
                 dataSource.setURL(property.getProperty("URL"));
                 dataSource.setUser(property.getProperty("USERNAME"));
                 dataSource.setPassword(property.getProperty("PASSWORD"));
+                LOGGER.info("ConnectionFactory set end.");
             }
         }
         return connFactory;
@@ -61,7 +61,7 @@ public class ConnectionFactory { //NOPMD
      */
 
     public Connection getConnection() throws SQLException {
-        LOGGER.info("Use getConnection");
+        LOGGER.info("Use getConnection.");
         return dataSource.getConnection();
     }
 }

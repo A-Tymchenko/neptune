@@ -1,8 +1,14 @@
 package com.ra.shop.Utils;
 
+import com.ra.shop.utils.ConnectionFactory;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
@@ -12,18 +18,16 @@ import java.util.concurrent.Future;
 import java.util.function.Supplier;
 
 import static java.time.Duration.ofMillis;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertSame;
-import static org.junit.jupiter.api.Assertions.assertTimeout;
+import static org.junit.jupiter.api.Assertions.*;
 
-public abstract class SingletonTest <S> {
+public abstract class SingletonTest<S> {
     /**
      * The singleton's getInstance method
      */
     private final Supplier<S> singletonInstanceMethod;
 
     /**
-     * Create a new singleton test instance using the given 'getInstance' method
+     * Create a new singleton test instance using the given 'getInstance' method.
      *
      * @param singletonInstanceMethod The singleton's getInstance method
      */
@@ -32,10 +36,10 @@ public abstract class SingletonTest <S> {
     }
 
     /**
-     * Test the singleton in a non-concurrent setting
+     * Test the singleton in a non-concurrent setting.
      */
     @Test
-    public void testMultipleCallsReturnTheSameObjectInSameThread() throws IOException{
+    public void testMultipleCallsReturnTheSameObjectInSameThread() throws IOException {
         // Create several instances in the same calling thread
         S instance1 = this.singletonInstanceMethod.get();
         S instance2 = this.singletonInstanceMethod.get();
@@ -47,7 +51,7 @@ public abstract class SingletonTest <S> {
     }
 
     /**
-     * Test singleton instance in a concurrent setting
+     * Test singleton instance in a concurrent setting.
      */
     @Test
     public void testMultipleCallsReturnTheSameObjectInDifferentThreads() throws Exception, IOException {
@@ -73,6 +77,40 @@ public abstract class SingletonTest <S> {
             // tidy up the executor
             executorService.shutdown();
         });
+    }
 
+    /**
+     * Test ConnectionFactory 'getConnect' method.
+     */
+    @Nested
+    public class ConnectingTests {
+
+        private ConnectionFactory connectionFactory;
+
+        @BeforeEach
+        public void createConnectionFactory() throws IOException {
+            connectionFactory = ConnectionFactory.getInstance();
+        }
+
+        @AfterEach
+        public void deleteConnectionFactory() {
+            connectionFactory = null;
+        }
+
+        @Test
+        public void whenReturnConnectionInstanceConnectionClass() throws SQLException {
+
+            assertTrue(connectionFactory.getConnection() instanceof Connection);
+        }
+
+        @Test
+        public void whenReturnNewConnectionStringEqualsPreviosConnectionString() throws IOException, SQLException {
+            String connection = connectionFactory.getConnection().toString();
+            connectionFactory = null;
+            String newConnection = ConnectionFactory.getInstance().getConnection().toString();
+
+            assertEquals(connection.substring(connection.indexOf(':')),
+                newConnection.substring((newConnection.indexOf(':'))));
+        }
     }
 }

@@ -4,7 +4,7 @@ package com.ra.shop.servicetest;
 import com.ra.shop.service.GoodException;
 import org.junit.jupiter.api.Test;
 
-import java.io.EOFException;
+import java.io.IOException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -23,7 +23,7 @@ public class GoodsExeptionTest {
 
     @Test
     public void whenInsertMessageAndCauceInGoodExeptionExecutedTestWillReturnMessageAndCause() {
-        EOFException e = new EOFException();
+        IOException e = new IOException();
         goodException = new GoodException(EXCEPTION_CAUSE, e);
         assertEquals(EXCEPTION_CAUSE, goodException.getMessage());
         assertEquals(e, goodException.getCause());
