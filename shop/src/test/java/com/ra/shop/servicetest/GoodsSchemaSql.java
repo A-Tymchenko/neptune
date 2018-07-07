@@ -1,8 +1,8 @@
 package com.ra.shop.servicetest;
 
-public final class GoodSchemaSql {
+public final class GoodsSchemaSql {
 
-    public GoodSchemaSql() {
+    public GoodsSchemaSql() {
     }
     public static final String CREATE_SCHEMA_SQL = "CREATE TABLE GOODS (ID BIGINT, NAME VARCHAR(100), "
             + "BARCODE BIGINT, PRICE FLOAT)";

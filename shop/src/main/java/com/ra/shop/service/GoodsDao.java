@@ -37,7 +37,7 @@ public class GoodsDao implements IRepository<Goods> {
      */
 
     @Override
-    public Integer create(final Goods entity) throws GoodException {
+    public Integer create(final Goods entity) throws GoodsException {
         if (get(entity.getId()).isPresent()) {
             return 0;
         }
@@ -53,7 +53,7 @@ public class GoodsDao implements IRepository<Goods> {
             return statement.executeUpdate();
         } catch (SQLException ex) {
             LOGGER.error(ex.getMessage());
-            throw new GoodException(ex.getMessage(), ex);
+            throw new GoodsException(ex.getMessage(), ex);
         }
     }
 
@@ -65,7 +65,7 @@ public class GoodsDao implements IRepository<Goods> {
      */
 
     @Override
-    public Optional get(final Long entityId) throws GoodException {
+    public Optional get(final Long entityId) throws GoodsException {
         ResultSet resultSet = null;
 
         try (Connection connection = connFactory.getConnection()) {
@@ -79,7 +79,7 @@ public class GoodsDao implements IRepository<Goods> {
             }
         } catch (SQLException ex) {
             LOGGER.error(ex.getMessage());
-            throw new GoodException(ex.getMessage(), ex);
+            throw new GoodsException(ex.getMessage(), ex);
         }
         return Optional.empty();
     }
@@ -92,7 +92,7 @@ public class GoodsDao implements IRepository<Goods> {
      */
 
     @Override
-    public Integer update(final Goods newEntity) throws GoodException {
+    public Integer update(final Goods newEntity) throws GoodsException {
 
         try (Connection connection = connFactory.getConnection()) {
             final PreparedStatement statement =
@@ -104,7 +104,7 @@ public class GoodsDao implements IRepository<Goods> {
             return statement.executeUpdate();
         } catch (SQLException ex) {
             LOGGER.error(ex.getMessage());
-            throw new GoodException(ex.getMessage(), ex);
+            throw new GoodsException(ex.getMessage(), ex);
         }
     }
 
@@ -116,7 +116,7 @@ public class GoodsDao implements IRepository<Goods> {
      */
 
     @Override
-    public Integer delete(final Long entityId) throws GoodException {
+    public Integer delete(final Long entityId) throws GoodsException {
         try (Connection connection = connFactory.getConnection()) {
             final PreparedStatement statement =
                 connection.prepareStatement("DELETE FROM GOODS WHERE ID = ?");
@@ -124,7 +124,7 @@ public class GoodsDao implements IRepository<Goods> {
             return statement.executeUpdate();
         } catch (SQLException ex) {
             LOGGER.error(ex.getMessage());
-            throw new GoodException(ex.getMessage(), ex);
+            throw new GoodsException(ex.getMessage(), ex);
         }
     }
 
@@ -135,7 +135,7 @@ public class GoodsDao implements IRepository<Goods> {
      */
 
     @Override
-    public List getAll() throws GoodException {
+    public List getAll() throws GoodsException {
         final List<Goods> goods = new ArrayList<>();
         ResultSet resultSet = null;
         try (Connection connection = connFactory.getConnection()) {
@@ -147,7 +147,7 @@ public class GoodsDao implements IRepository<Goods> {
             }
         } catch (SQLException ex) {
             LOGGER.error(ex.getMessage());
-            throw new GoodException(ex.getMessage(), ex);
+            throw new GoodsException(ex.getMessage(), ex);
         }
         // resultSet.close();
         return goods;

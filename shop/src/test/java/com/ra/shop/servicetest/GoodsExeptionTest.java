@@ -1,7 +1,7 @@
 package com.ra.shop.servicetest;
 
 
-import com.ra.shop.service.GoodException;
+import com.ra.shop.service.GoodsException;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
@@ -12,20 +12,20 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class GoodsExeptionTest {
 
     private static final String EXCEPTION_CAUSE = "Connection not available";
-    private GoodException goodException;
+    private GoodsException goodsException;
 
     @Test
     public void whenInsertMessageInGoodExeptionExecutedTestWillReturnMessage() {
-        goodException = new GoodException(EXCEPTION_CAUSE);
-        assertEquals(EXCEPTION_CAUSE, goodException.getMessage()
+        goodsException = new GoodsException(EXCEPTION_CAUSE);
+        assertEquals(EXCEPTION_CAUSE, goodsException.getMessage()
         );
     }
 
     @Test
     public void whenInsertMessageAndCauceInGoodExeptionExecutedTestWillReturnMessageAndCause() {
         IOException e = new IOException();
-        goodException = new GoodException(EXCEPTION_CAUSE, e);
-        assertEquals(EXCEPTION_CAUSE, goodException.getMessage());
-        assertEquals(e, goodException.getCause());
+        goodsException = new GoodsException(EXCEPTION_CAUSE, e);
+        assertEquals(EXCEPTION_CAUSE, goodsException.getMessage());
+        assertEquals(e, goodsException.getCause());
     }
 }

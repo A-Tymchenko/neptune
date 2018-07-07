@@ -1,7 +1,7 @@
 package com.ra.shop.servicetest;
 
 import com.ra.shop.model.Goods;
-import com.ra.shop.service.GoodException;
+import com.ra.shop.service.GoodsException;
 import com.ra.shop.service.GoodsDao;
 import com.ra.shop.utils.ConnectionFactory;
 import org.junit.jupiter.api.*;
@@ -63,7 +63,7 @@ public class GoodsDaoTest {
             }
 
             @Test
-            public void deletionShouldBeFailureAndNotAffectExistingGoods() throws GoodException {
+            public void deletionShouldBeFailureAndNotAffectExistingGoods() throws GoodsException {
                 final Goods nonExistingGoods = new Goods(2l, "Marlboro", 4050300003924l, 3.4f);
                 int result = dao.delete(nonExistingGoods.getId());
 
@@ -72,7 +72,7 @@ public class GoodsDaoTest {
             }
 
             @Test
-            public void updationShouldBeFailureAndNotAffectExistingGoods() throws GoodException {
+            public void updationShouldBeFailureAndNotAffectExistingGoods() throws GoodsException {
                 final Long nonExistingId = getNonExistingGoodId();
                 final String newName = "Dunhill";
                 final Long newBarcode = 4820005924653l;
@@ -85,7 +85,7 @@ public class GoodsDaoTest {
             }
 
             @Test
-            public void retrieveShouldReturnNoGoods() throws GoodException {
+            public void retrieveShouldReturnNoGoods() throws GoodsException {
                 assertFalse(dao.get(getNonExistingGoodId()).isPresent());
             }
         }
@@ -98,7 +98,7 @@ public class GoodsDaoTest {
         public class ExistingGoods {
 
             @Test
-            public void addingShouldResultInFailureAndNotAffectExistingGoods() throws GoodException {
+            public void addingShouldResultInFailureAndNotAffectExistingGoods() throws GoodsException {
                 Goods existingGoods = new Goods(1l, "Camel", 7622210609779l, 1.2f);
 
                 int result = dao.create(existingGoods);
@@ -108,7 +108,7 @@ public class GoodsDaoTest {
             }
 
             @Test
-            public void deletionShouldBeSuccessAndGoodsShouldBeNonAccessible() throws GoodException {
+            public void deletionShouldBeSuccessAndGoodsShouldBeNonAccessible() throws GoodsException {
                 int result = dao.delete(existingGoods.getId());
 
                 assertEquals(1, result);
@@ -117,7 +117,7 @@ public class GoodsDaoTest {
             }
 
             @Test
-            public void updationShouldBeSuccessAndAccessingTheSameGoodsShouldReturnUpdatedInformation() throws GoodException {
+            public void updationShouldBeSuccessAndAccessingTheSameGoodsShouldReturnUpdatedInformation() throws GoodsException {
                 final String newName = "L&M";
                 final Long newBarcode = 740617152326l;
                 final Float newPrice = 32.7f;
@@ -203,7 +203,7 @@ public class GoodsDaoTest {
         }
     }
 
-    private void assertGoodsCountIs(int count) throws GoodException {
+    private void assertGoodsCountIs(int count) throws GoodsException {
         List<Goods> allGoods = dao.getAll();
         assertTrue(allGoods.size() == count);
 

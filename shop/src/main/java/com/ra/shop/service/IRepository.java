@@ -19,7 +19,7 @@ public interface IRepository<T> {
      * @return Integer value display how many rows was inserted to database.
      */
 
-    Integer create(T entity) throws GoodException;
+    Integer create(T entity) throws GoodsException;
 
 
     /**
@@ -29,7 +29,7 @@ public interface IRepository<T> {
      * @return Optional T wrapper for chosen entity.
      */
 
-    Optional<T> get(Long entityId) throws GoodException;
+    Optional<T> get(Long entityId) throws GoodsException;
 
 
     /**
@@ -39,7 +39,7 @@ public interface IRepository<T> {
      * @return Integer. Returns an updated rows number.
      */
 
-    Integer update(T newEntity) throws GoodException;
+    Integer update(T newEntity) throws GoodsException;
 
 
     /**
@@ -49,7 +49,7 @@ public interface IRepository<T> {
      * @return Integer value displays deleted rows number from database.
      */
 
-    Integer delete(Long entityId) throws GoodException;
+    Integer delete(Long entityId) throws GoodsException;
 
 
     /**
@@ -58,6 +58,6 @@ public interface IRepository<T> {
      * @return List T which contains all existed entities of the type T.
      */
 
-    List<T> getAll() throws GoodException;
+    List<T> getAll() throws GoodsException;
 }
 
