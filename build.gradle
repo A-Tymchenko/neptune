@@ -227,3 +227,8 @@ project("study") {
     }
 
 }
+
+project("advertisement") {
+    dependencies {
+
+    }}
