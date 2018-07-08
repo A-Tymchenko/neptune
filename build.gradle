@@ -196,6 +196,7 @@ allprojects {
     dependencies shared.dataBaseDependencies
     dependencies shared.unitTestDependencies
     dependencies shared.applicationDependencies
+    dependencies shared.log4jDependencies
 }
 
 test {
@@ -227,3 +228,10 @@ project("study") {
     }
 
 }
+
+dependencies {
+    compile 'org.junit.jupiter:junit-jupiter-api'
+    testCompile group: 'org.mockito', name: 'mockito-core', version: '2.19.0'
+}
+
+

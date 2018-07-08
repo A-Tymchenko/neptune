@@ -60,4 +60,10 @@ class SharedDependencies {
         testCompile group: 'org.mockito', name: 'mockito-all', version: '1.10.19'
         testCompile group: 'org.springframework', name: 'spring-test', version: "$springVersion"
     }
+
+    Closure log4jDependencies = {
+        compile group: 'org.apache.logging.log4j', name: 'log4j-core', version: '2.10.0'
+        compile group: 'org.apache.logging.log4j', name: 'log4j-api', version: '2.10.0'
+        compile group: 'com.lmax', name: 'disruptor', version: '3.4.1'
+    }
 }

@@ -5,6 +5,7 @@ apply plugin: 'jdepend'
 apply plugin: "jacoco"
 apply plugin: 'com.palantir.jacoco-coverage'
 
+
 checkstyle {
     ignoreFailures = false
     configProperties.samedir = "${rootProject.projectDir}/buildSrc/checkstyle"
