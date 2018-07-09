@@ -11,7 +11,7 @@ public class FlightRowMapper implements RowMapper<Flight> {
     private static final String NAME = "name";
     private static final String CARRIER = "carrier";
     private static final String DURATION = "duration";
-    private static final String MEAL_ON = "mealOn";
+    private static final String MEAL_ON = "meal_on";
     private static final String FARE = "fare";
     private static final String DEPARTURE_DATE = "departure_date";
     private static final String ARRIVAL_DATE = "arrival_date";

@@ -37,10 +37,10 @@ public class FlightDao implements AirPortDao<Flight> {
     private static final int IDENTIFIER = 8;
 
     private static final String INSERT_FLIGHT_SQL = "INSERT INTO flight "
-            + "(name, carrier, duration, mealOn, fare, departure_date, arrival_date) "
+            + "(name, carrier, duration, meal_on, fare, departure_date, arrival_date) "
             + " VALUES(?,?,?,?,?,?,?)";
     private static final String UPDATE_FLIGHT_SQL = "UPDATE flight "
-            + "SET name = ?, carrier = ?, duration = ?, mealOn = ?, fare = ?, departure_date = ?, arrival_date = ? "
+            + "SET name = ?, carrier = ?, duration = ?, meal_on = ?, fare = ?, departure_date = ?, arrival_date = ? "
             + "WHERE id = ?";
     private static final String GET_FLIGHT_BY_ID = "SELECT * FROM flight WHERE id = ?";
     private static final String DELETE_FLIGHT = "DELETE FROM flight WHERE id = ?";
