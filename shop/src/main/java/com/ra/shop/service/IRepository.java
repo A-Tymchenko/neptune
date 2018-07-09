@@ -16,10 +16,10 @@ public interface IRepository<T> {
      * Method inserts new entity to database.
      *
      * @param entity that will be created.
-     * @return Integer value display how many rows was inserted to database.
+     * @return Entity inserted to database, with added 'ID' from DB.
      */
 
-    Integer create(T entity) throws GoodsException;
+    T create(T entity) throws GoodsException;
 
 
     /**
