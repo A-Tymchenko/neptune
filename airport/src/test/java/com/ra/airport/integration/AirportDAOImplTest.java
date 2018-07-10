@@ -1,8 +1,9 @@
-package com.ra.courses.airport.integration;
+package com.ra.airport.integration;
 
-import com.ra.courses.airport.dao.impl.AirportDAOImpl;
-import com.ra.courses.airport.dao.impl.ConnectionFactory;
-import com.ra.courses.airport.entity.Airport;
+import com.ra.airport.dao.exception.AirPortDaoException;
+import com.ra.airport.entity.Airport;
+import com.ra.airport.dao.impl.AirportDAOImpl;
+import com.ra.airport.factory.ConnectionFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -32,46 +33,62 @@ public class AirportDAOImplTest {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        ap = new Airport("10293","Kenedy", 4949034, "International", "USA New Yourk", 10);
+        ap = new Airport(1,"Kenedy", 4949034, "International", "USA New Yourk", 10);
     }
 
     @Test
     public void addAirport() {
         AirportDAOImpl apim = new AirportDAOImpl(conn);
-        apim.addAirport(ap);
+        try {
+            apim.create(ap);
+        } catch (AirPortDaoException e) {
+            e.printStackTrace();
+        }
     }
 
     @Test
     public void updateAirport() {
         AirportDAOImpl apim = new AirportDAOImpl(conn);
-        apim.updateAirport(ap);
+        try {
+            apim.update(ap);
+        } catch (AirPortDaoException e) {
+            e.printStackTrace();
+        }
     }
 
     @Test
     public void deleteAirport() {
         AirportDAOImpl apim = new AirportDAOImpl(conn);
-        apim.deleteAirport(ap);
+        try {
+            apim.delete(ap);
+        } catch (AirPortDaoException e) {
+            e.printStackTrace();
+        }
     }
 
     @Test
     public void testGetAirport() {
         AirportDAOImpl apim = new AirportDAOImpl(conn);
-        Optional<Airport> ap = apim.getAirport("7");
-        Optional<Airport> ap1 = apim.getAirport("9");
+        try {
+            Optional<Airport> ap = apim.getById(7);
+            Optional<Airport> ap1 = apim.getById(8);
+        } catch (AirPortDaoException e) {
+            e.printStackTrace();
+        }
     }
 
     @Test
     public void getAirports() {
         AirportDAOImpl apim = new AirportDAOImpl(conn);
-        List<Airport> list = apim.getAirports();
+        List<Airport> list = apim.getAll();
 
     }
 
     @Test
     public void testSetMethodsAirport (){
-        Airport ap = new Airport("10293","Kenedy", 4949034, "International", "USA New Yourk", 10);
+        Airport ap = new Airport(10293,"Kenedy", 4949034, "International", "USA New Yourk", 10);
         ap.setAddresses("test");
-        ap.setApid("fsvfvdfvdf");
+        ap.setApid(1);
         ap.setApname("dsfdsfdsf");
         ap.setApnum(332423);
         ap.setAptype("fsdfsdfsdf");

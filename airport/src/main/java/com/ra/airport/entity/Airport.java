@@ -1,15 +1,15 @@
-package com.ra.courses.airport.entity;
+package com.ra.airport.entity;
 
 public class Airport {
 
-    private String apid;
+    private Integer apid;
     private String apname;
     private int apnum;
     private String aptype;
     private String addresses;
     private int terminalcount;
 
-    public Airport(final String apid, final String apname, final int apnum, final String aptype, final String addresses,
+    public Airport(final Integer apid, final String apname, final int apnum, final String aptype, final String addresses,
                    final int terminalcount) {
         this.apid = apid;
         this.apname = apname;
@@ -19,7 +19,7 @@ public class Airport {
         this.terminalcount = terminalcount;
     }
 
-    public String getApid() {
+    public Integer getApid() {
         return apid;
     }
 
@@ -43,7 +43,7 @@ public class Airport {
         return terminalcount;
     }
 
-    public void setApid(final String apid) {
+    public void setApid(final Integer apid) {
         this.apid = apid;
     }
 

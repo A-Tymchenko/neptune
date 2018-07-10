@@ -1,4 +1,4 @@
-package com.ra.courses.airport.dao.impl;
+package com.ra.airport.factory;
 
 import java.io.IOException;
 import java.sql.Connection;
