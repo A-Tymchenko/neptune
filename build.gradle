@@ -230,7 +230,8 @@ project("study") {
 project("airport") {
     dependencies {
         compileClasspath db.h2
-        compile group: 'org.apache.logging.log4j', name: 'log4j-slf4j-impl', version: '2.11.0'
+        compile group: 'org.apache.logging.log4j', name: 'log4j-api', version: '2.11.0'
+        compile group: 'org.apache.logging.log4j', name: 'log4j-core', version: '2.11.0'
         compile group: 'com.lmax', name: 'disruptor', version: '3.4.2'
     }
 }
