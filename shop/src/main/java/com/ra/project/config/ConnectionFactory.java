@@ -1,17 +1,17 @@
 package com.ra.project.config;
 
-import org.h2.jdbcx.JdbcDataSource;
-
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Properties;
 
+import org.h2.jdbcx.JdbcDataSource;
+
 /**
- * Class perform connectionFactory creation.
+ * Class perform factory creation.
  * This factory is needed for performing connections to database.
  */
-public class ConnectionFactory {
+public final class ConnectionFactory {
 
     /**
      * Static field Properties.
@@ -26,7 +26,7 @@ public class ConnectionFactory {
     /**
      * Static field ConnectionFactory.
      */
-    private static ConnectionFactory connectionFactory;
+    private static transient ConnectionFactory factory;
 
     /**
      * Private constructor, that store properties inside and perform configuration loading via ClassLoader.
@@ -39,26 +39,26 @@ public class ConnectionFactory {
     }
 
     /**
-     * Singleton that perform creation of the connectionFactory instance.
+     * Singleton that perform creation of the factory instance.
      *
      * @return ConnectionFactory
      * @throws IOException if any error occurs.
      */
     private static ConnectionFactory buildConnectionFactory() throws IOException {
         synchronized (ConnectionFactory.class) {
-            if (connectionFactory == null) {
-                connectionFactory = new ConnectionFactory();
+            if (factory == null) {
+                factory = new ConnectionFactory();
                 dataSource = new JdbcDataSource();
                 dataSource.setURL(properties.getProperty("URL"));
                 dataSource.setUser(properties.getProperty("USERNAME"));
                 dataSource.setPassword(properties.getProperty("PASSWORD"));
             }
         }
-        return connectionFactory;
+        return factory;
     }
 
     /**
-     * Method returns created connectionFactory instance.
+     * Method returns created factory instance.
      *
      * @return ConnectionFactory
      * @throws IOException if any error occurs.

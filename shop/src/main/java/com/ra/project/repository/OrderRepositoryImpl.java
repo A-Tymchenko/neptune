@@ -1,16 +1,19 @@
 package com.ra.project.repository;
 
-import com.ra.project.config.ConnectionFactory;
-import com.ra.project.model.Order;
-import org.apache.log4j.Logger;
-
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
+
+import com.ra.project.config.ConnectionFactory;
+import com.ra.project.exceptions.RepositoryException;
+import com.ra.project.model.Order;
+import org.apache.log4j.Logger;
 
 /**
  * Implementation of IRepository interface.
@@ -25,7 +28,7 @@ public class OrderRepositoryImpl implements IRepository<Order> {
     /**
      * Constant represents order identifier.
      */
-    private static final Integer ID = 1;
+    private static final Integer ORDER_ID = 1;
 
     /**
      * Constant represents order number.
@@ -55,7 +58,7 @@ public class OrderRepositoryImpl implements IRepository<Order> {
     /**
      * Field connectionFactory.
      */
-    private ConnectionFactory connectionFactory;
+    private final transient ConnectionFactory connectionFactory;
 
     /**
      * Constructs new OrderRepositoryImp instance, as an argument accepts ConnectionFactory instance.
@@ -66,91 +69,91 @@ public class OrderRepositoryImpl implements IRepository<Order> {
         this.connectionFactory = connectionFactory;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
-    public List<Order> getAll() {
-        List<Order> all = new ArrayList<>();
+    public List<Order> getAll() throws RepositoryException {
+        final List<Order> all = new ArrayList<>();
         try (Connection connection = connectionFactory.getConnection();
-                PreparedStatement ps = connection.prepareStatement("SELECT * FROM ORDERS")) {
-            ResultSet resultSet = ps.executeQuery();
+                PreparedStatement statement = connection.prepareStatement("SELECT * FROM ORDERS")) {
+            final ResultSet resultSet = statement.executeQuery();
             while (resultSet.next()) {
-                Order order = getValuesFromResultSet(resultSet);
+                final Order order = fillEntityWithValues(resultSet);
                 all.add(order);
+            }
+            if (all.size() > 0) {
+                return all;
             }
         } catch (SQLException e) {
             LOGGER.error(e.getMessage());
+            throw new RepositoryException("Can`t get order`s list!");
         }
-        return all;
+        return Collections.emptyList();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
-    public Integer create(Order entity) {
+    public Order create(final Order entity) throws RepositoryException {
+        Objects.requireNonNull(entity);
         try (Connection connection = connectionFactory.getConnection();
-             PreparedStatement statement = connection.prepareStatement("INSERT INTO ORDERS VALUES(?, ?, ?, ?, ?, ?)")) {
+             PreparedStatement statement = connection.prepareStatement(
+                     "INSERT INTO ORDERS VALUES(?, ?, ?, ?, ?, ?)")) {
             setStatementValuesForCreation(statement, entity);
-            return statement.executeUpdate();
+            statement.executeUpdate();
         } catch (SQLException e) {
             LOGGER.error(e.getMessage());
+            throw new RepositoryException("Order creation is failed!");
         }
-        return 0;
+        return entity;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
-    public Optional<Order> get(Long entityId) {
+    public Optional<Order> get(final Long entityId) throws RepositoryException {
+        Objects.requireNonNull(entityId);
         Order found;
         try (Connection connection = connectionFactory.getConnection();
-             PreparedStatement statement = connection.prepareStatement("SELECT * FROM ORDERS WHERE ID = ?")) {
-            Integer param = 1;
-            statement.setLong(param, entityId);
-            ResultSet res = statement.executeQuery();
+             PreparedStatement statement = connection.prepareStatement("SELECT * FROM ORDERS WHERE ORDER_ID = ?")) {
+            statement.setLong(1, entityId);
+            final ResultSet res = statement.executeQuery();
             if (res.next()) {
-                found = getValuesFromResultSet(res);
+                found = fillEntityWithValues(res);
                 return Optional.of(found);
             }
         } catch (SQLException e) {
             LOGGER.error(e.getMessage());
+            throw new RepositoryException(String.format("Can`t get an order with id : %d", entityId));
         }
         return Optional.empty();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
-    public Integer update(Order newEntity) {
+    public Order update(final Order newEntity) throws RepositoryException {
+        Objects.requireNonNull(newEntity);
         try (Connection connection = connectionFactory.getConnection();
              PreparedStatement statement = connection.prepareStatement(
                      "UPDATE ORDERS SET NUMBER = ?, PRICE = ?, DELIVERY_INCLUDED = ?, "
-                             + "DELIVERY_COST = ?, EXECUTED = ? WHERE ID = ?")) {
+                             + "DELIVERY_COST = ?, EXECUTED = ? WHERE ORDER_ID = ?")) {
             setStatementValuesForUpdate(statement, newEntity);
-            return statement.executeUpdate();
+            statement.executeUpdate();
         } catch (SQLException e) {
             LOGGER.error(e.getMessage());
+            throw new RepositoryException("Order updating failed!");
         }
-        return 0;
+        return newEntity;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
-    public Integer delete(Long entityId) {
+    public Boolean delete(final Long entityId) throws  RepositoryException {
+        Objects.requireNonNull(entityId);
         try (Connection connection = connectionFactory.getConnection();
-             PreparedStatement statement = connection.prepareStatement("DELETE FROM ORDERS WHERE ID = ?")) {
+             PreparedStatement statement = connection.prepareStatement("DELETE FROM ORDERS WHERE ORDER_ID = ?")) {
             statement.setLong(1, entityId);
-            return statement.executeUpdate();
+            final int deleted = statement.executeUpdate();
+            if (deleted > 0) {
+                return Boolean.TRUE;
+            }
         } catch (SQLException e) {
             LOGGER.error(e.getMessage());
+            throw new RepositoryException("Order deletion failed!");
         }
-        return 0;
+        return Boolean.FALSE;
     }
 
     /**
@@ -160,13 +163,19 @@ public class OrderRepositoryImpl implements IRepository<Order> {
      * @param newEntity - entity that will be updated.
      * @throws SQLException if any error occurs.
      */
-    private void setStatementValuesForUpdate(PreparedStatement statement, Order newEntity) throws SQLException {
-        statement.setInt(1, newEntity.getNumber());
-        statement.setDouble(2, newEntity.getPrice());
-        statement.setBoolean(3, newEntity.getDeliveryIncluded());
-        statement.setInt(4, newEntity.getDeliveryCost());
-        statement.setBoolean(5, newEntity.getExecuted());
-        statement.setLong(6, newEntity.getId());
+    private void setStatementValuesForUpdate(final PreparedStatement statement, final Order newEntity) throws SQLException {
+        final int number = 1;
+        final int price = 2;
+        final int deliveryIncluded = 3;
+        final int deliveryCost = 4;
+        final int isExecuted = 5;
+        final int orderId = 6;
+        statement.setInt(number, newEntity.getNumber());
+        statement.setDouble(price, newEntity.getPrice());
+        statement.setBoolean(deliveryIncluded, newEntity.getDeliveryIncluded());
+        statement.setInt(deliveryCost, newEntity.getDeliveryCost());
+        statement.setBoolean(isExecuted, newEntity.getExecuted());
+        statement.setLong(orderId, newEntity.getId());
     }
 
     /**
@@ -175,8 +184,8 @@ public class OrderRepositoryImpl implements IRepository<Order> {
      * @param order new order.
      * @throws SQLException if any error occurs.
      */
-    private void setStatementValuesForCreation(PreparedStatement preparedStatement, Order order) throws SQLException {
-        preparedStatement.setLong(ID, order.getId());
+    private void setStatementValuesForCreation(final PreparedStatement preparedStatement, final Order order) throws SQLException {
+        preparedStatement.setLong(ORDER_ID, order.getId());
         preparedStatement.setInt(NUMBER, order.getNumber());
         preparedStatement.setDouble(PRICE, order.getPrice());
         preparedStatement.setBoolean(DELIVERY_INCLUDED, order.getDeliveryIncluded());
@@ -191,14 +200,14 @@ public class OrderRepositoryImpl implements IRepository<Order> {
      * @return new Order that filled with values from resultSet.
      * @throws SQLException if any error occurs.
      */
-    private Order getValuesFromResultSet(ResultSet resultSet) throws SQLException {
-        Long id = resultSet.getLong("ID");
-        Integer number = resultSet.getInt("NUMBER");
-        Double price = resultSet.getDouble("PRICE");
-        Boolean deliveryIncluded = resultSet.getBoolean("DELIVERY_INCLUDED");
-        Integer deliveryCost = resultSet.getInt("DELIVERY_COST");
-        Boolean executed = resultSet.getBoolean("EXECUTED");
-        return new Order(id, number, price, deliveryIncluded, deliveryCost, executed);
+    private Order fillEntityWithValues(final ResultSet resultSet) throws SQLException {
+        final Long orderId = resultSet.getLong("ORDER_ID");
+        final Integer number = resultSet.getInt("NUMBER");
+        final Double price = resultSet.getDouble("PRICE");
+        final Boolean deliveryIncluded = resultSet.getBoolean("DELIVERY_INCLUDED");
+        final Integer deliveryCost = resultSet.getInt("DELIVERY_COST");
+        final Boolean executed = resultSet.getBoolean("EXECUTED");
+        return new Order(orderId, number, price, deliveryIncluded, deliveryCost, executed);
     }
 
 }

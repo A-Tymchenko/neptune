@@ -19,7 +19,8 @@ public class Order implements Serializable {
         super();
     }
 
-    public Order(Long id, Integer number, Double price, Boolean deliveryIncluded, Integer deliveryCost, Boolean executed) {
+    public Order(Long id, Integer number, Double price, Boolean deliveryIncluded,
+                 Integer deliveryCost, Boolean executed) {
         super();
         this.id = id;
         this.number = number;
@@ -86,7 +87,7 @@ public class Order implements Serializable {
             return false;
         }
         Order order = (Order) o;
-        return id == order.id;
+        return Objects.equals(id, order.id);
     }
 
     @Override
@@ -109,7 +110,6 @@ public class Order implements Serializable {
                 + deliveryCost
                 + ", executed="
                 + executed
-                + ", user="
                 + '}';
     }
 }
