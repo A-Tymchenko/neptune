@@ -18,8 +18,8 @@ import com.ra.airport.entity.Flight;
 import com.ra.airport.factory.ConnectionFactory;
 import com.ra.airport.mapper.FlightRowMapper;
 import com.ra.airport.mapper.RowMapper;
-import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 
 /**
@@ -27,25 +27,12 @@ import org.apache.logging.log4j.LogManager;
  */
 public class FlightDao implements AirPortDao<Flight> {
 
-    private static final int NAME = 1;
-    private static final int CARRIER = 2;
-    private static final int DURATION = 3;
-    private static final int MEAL_ON = 4;
-    private static final int FARE = 5;
-    private static final int DEPARTURE_DATE = 6;
-    private static final int ARRIVAL_DATE = 7;
-    private static final int IDENTIFIER = 8;
-
     private static final String INSERT_FLIGHT_SQL = "INSERT INTO flight "
             + "(name, carrier, duration, meal_on, fare, departure_date, arrival_date) "
             + " VALUES(?,?,?,?,?,?,?)";
     private static final String UPDATE_FLIGHT_SQL = "UPDATE flight "
             + "SET name = ?, carrier = ?, duration = ?, meal_on = ?, fare = ?, departure_date = ?, arrival_date = ? "
             + "WHERE id = ?";
-    private static final String GET_FLIGHT_BY_ID = "SELECT * FROM flight WHERE id = ?";
-    private static final String DELETE_FLIGHT = "DELETE FROM flight WHERE id = ?";
-    private static final String GET_ALL_FLIGHTS = "SELECT * FROM flight";
-    private static final String GET_FLIGHT_ID = "SELECT SCOPE_IDENTITY()";
 
     private static final Logger LOGGER = LogManager.getLogger(FlightDao.class);
 
@@ -67,7 +54,7 @@ public class FlightDao implements AirPortDao<Flight> {
             final PreparedStatement preparedStatement = connection.prepareStatement(INSERT_FLIGHT_SQL);
             fillPreparedStatement(flight, preparedStatement);
             preparedStatement.executeUpdate();
-            final ResultSet generatedIdRS = connection.prepareStatement(GET_FLIGHT_ID).executeQuery();
+            final ResultSet generatedIdRS = connection.prepareStatement("SELECT SCOPE_IDENTITY()").executeQuery();
             Integer flightId = null;
             if (generatedIdRS.next()) {
                flightId = generatedIdRS.getInt(1);
@@ -114,7 +101,7 @@ public class FlightDao implements AirPortDao<Flight> {
     public boolean delete(final Flight flight) throws AirPortDaoException {
         boolean result;
         try (Connection connection = connectionFactory.getConnection()) {
-            final PreparedStatement preparedStatement = connection.prepareStatement(DELETE_FLIGHT);
+            final PreparedStatement preparedStatement = connection.prepareStatement("DELETE FROM flight WHERE id = ?");
             preparedStatement.setInt(1, flight.getIdentifier());
             result = preparedStatement.executeUpdate() > 0;
         } catch (SQLException e) {
@@ -137,7 +124,7 @@ public class FlightDao implements AirPortDao<Flight> {
             throw new AirPortDaoException(ExceptionMessage.FLIGHT_ID_CANNOT_BE_NULL.get());
         }
         try (Connection connection = connectionFactory.getConnection()) {
-            final PreparedStatement preparedStatement = connection.prepareStatement(GET_FLIGHT_BY_ID);
+            final PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM flight WHERE id = ?");
             preparedStatement.setInt(1, flightId);
             final ResultSet resultSet = preparedStatement.executeQuery();
             if (resultSet.next()) {
@@ -163,7 +150,7 @@ public class FlightDao implements AirPortDao<Flight> {
     public List<Flight> getAll() throws AirPortDaoException {
         final List<Flight> flights = new ArrayList<>();
         try (Connection connection = connectionFactory.getConnection()) {
-            final PreparedStatement preparedStatement = connection.prepareStatement(GET_ALL_FLIGHTS);
+            final PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM flight");
             final ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
                 createFlight(flights, resultSet);
@@ -192,15 +179,15 @@ public class FlightDao implements AirPortDao<Flight> {
      * @throws SQLException exception for DAO layer
      */
     private void fillPreparedStatement(final Flight flight, final PreparedStatement preparedStatement) throws SQLException {
-        preparedStatement.setString(NAME, flight.getName());
-        preparedStatement.setString(CARRIER, flight.getCarrier());
-        preparedStatement.setTime(DURATION, Time.valueOf(flight.getDuration()));
-        preparedStatement.setBoolean(MEAL_ON, flight.getMealOn());
-        preparedStatement.setDouble(FARE, flight.getFare());
-        preparedStatement.setTimestamp(DEPARTURE_DATE, Timestamp.valueOf(flight.getDepartureDate()));
-        preparedStatement.setTimestamp(ARRIVAL_DATE, Timestamp.valueOf(flight.getArrivalDate()));
+        preparedStatement.setString(StatementParameter.NAME.get(), flight.getName());
+        preparedStatement.setString(StatementParameter.CARRIER.get(), flight.getCarrier());
+        preparedStatement.setTime(StatementParameter.DURATION.get(), Time.valueOf(flight.getDuration()));
+        preparedStatement.setBoolean(StatementParameter.MEAL_ON.get(), flight.getMealOn());
+        preparedStatement.setDouble(StatementParameter.FARE.get(), flight.getFare());
+        preparedStatement.setTimestamp(StatementParameter.DEPARTURE_DATE.get(), Timestamp.valueOf(flight.getDepartureDate()));
+        preparedStatement.setTimestamp(StatementParameter.ARRIVAL_DATE.get(), Timestamp.valueOf(flight.getArrivalDate()));
         if (flight.getIdentifier() != null) {
-            preparedStatement.setInt(IDENTIFIER, flight.getIdentifier());
+            preparedStatement.setInt(StatementParameter.IDENTIFIER.get(), flight.getIdentifier());
         }
     }
 }
