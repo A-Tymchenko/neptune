@@ -1,5 +1,7 @@
 package com.ra.airport.entity;
 
+import java.util.Objects;
+
 public class Airport {
 
     private Integer apid;
@@ -65,5 +67,28 @@ public class Airport {
 
     public void setTerminalcount(final int terminalcount) {
         this.terminalcount = terminalcount;
+    }
+
+    @Override
+    public boolean equals(final Object object) {
+        if (this == object) {
+            return true;
+        }
+        if (object == null || getClass() != object.getClass()) {
+            return false;
+        }
+        final Airport airport = (Airport) object;
+        return apnum == airport.apnum
+                && terminalcount == airport.terminalcount
+                && Objects.equals(apid, airport.apid)
+                && Objects.equals(apname, airport.apname)
+                && Objects.equals(aptype, airport.aptype)
+                && Objects.equals(addresses, airport.addresses);
+    }
+
+    @Override
+    public int hashCode() {
+
+        return Objects.hash(apid, apname, apnum, aptype, addresses, terminalcount);
     }
 }

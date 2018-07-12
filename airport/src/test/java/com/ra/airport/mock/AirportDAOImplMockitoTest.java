@@ -10,10 +10,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
 import java.io.IOException;
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -23,142 +20,118 @@ public class AirportDAOImplMockitoTest {
 
     ConnectionFactory conn;
     Airport ap;
-
-    {
-        try {
-            conn = ConnectionFactory.getInstance();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
+    final String query = "INSERT INTO Airport(apname, apnum, aptype, addresses, terminalcount) "
+            + "VALUES(?, ?, ?, ?, ?)";
 
     @BeforeEach
-    public void initH2(){
-        try {
-            conn.getConnection().createStatement().executeUpdate("RUNSCRIPT FROM 'src/main/resources/dbschema.sql'");
-            conn.getConnection().createStatement().executeUpdate("RUNSCRIPT FROM 'src/main/resources/test-data.sql'");
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+    public void initH2() throws SQLException, IOException {
+        conn = ConnectionFactory.getInstance();
+        conn.getConnection().createStatement().executeUpdate("RUNSCRIPT FROM 'src/main/resources/dbschema.sql'");
+        conn.getConnection().createStatement().executeUpdate("RUNSCRIPT FROM 'src/main/resources/test-data.sql'");
         ap = new Airport(8,"Kenedy", 4949034, "International", "USA New Yourk", 10);
     }
 
     @Test
     public void whenGetAirportsExecutedReturnListSizeThree() throws Exception {
+        final String query = "Select * From Airport";
         ResultSet resultSet = Mockito.mock(ResultSet.class);
         ConnectionFactory conn = Mockito.mock(ConnectionFactory.class);
-        Statement stat = Mockito.mock(Statement.class);
+        PreparedStatement stat = Mockito.mock(PreparedStatement.class);
         Connection connection = Mockito.mock(Connection.class);
         AirportDAOImpl ap = new AirportDAOImpl(conn);
         Mockito.when(conn.getConnection()).thenReturn(connection);
-        Mockito.when(connection.createStatement()).thenReturn(stat);
-        Mockito.when(stat.executeQuery("Select * From Airport")).thenReturn(resultSet);
+        Mockito.when(connection.prepareStatement(query)).thenReturn(stat);
+        Mockito.when(stat.executeQuery()).thenReturn(resultSet);
         Mockito.when(resultSet.next()).thenReturn(true).thenReturn(true).thenReturn(true).thenReturn(false);
         List<Airport> result = ap.getAll();
         Assertions.assertEquals(3, result.size());
     }
 
     @Test
-    public void whenAddAirportThenReturnSqlException() throws SQLException {
+    public void whenGetAirportByIdThenReturnSqlException() throws SQLException {
+        final String query = "Select * From Airport Where apid = ?";
         ConnectionFactory conn = Mockito.mock(ConnectionFactory.class);
         Connection connection = Mockito.mock(Connection.class);
         AirportDAOImpl ap = new AirportDAOImpl(conn);
         Mockito.when(conn.getConnection()).thenReturn(connection);
-        Mockito.when(connection.createStatement()).thenThrow(SQLException.class);
-        try {
+        Mockito.when(connection.prepareStatement(query)).thenThrow(SQLException.class);
+        Throwable thrown = assertThrows(AirPortDaoException.class, () -> {
             ap.getById(1);
-        } catch (AirPortDaoException e) {
-            e.printStackTrace();
-        }
-    }
-
-    @Test
-    public void whenAddAirportThenReturnIOException() throws SQLException {
-        ConnectionFactory conn = Mockito.mock(ConnectionFactory.class);
-        Connection connection = Mockito.mock(Connection.class);
-        AirportDAOImpl ap = new AirportDAOImpl(conn);
-        Mockito.when(conn.getConnection()).thenReturn(connection);
-        Mockito.when(connection.createStatement()).thenThrow(IOException.class);
-        try {
-            ap.getById(1);
-        } catch (AirPortDaoException e) {
-            e.printStackTrace();
-        }
+        });
+        assertNotNull(thrown.getMessage());
     }
 
     @Test
     public void whenGetAirportsThenReturnSqlException() throws SQLException {
+        final String query = "Select * From Airport";
         ConnectionFactory conn = Mockito.mock(ConnectionFactory.class);
         Connection connection = Mockito.mock(Connection.class);
         AirportDAOImpl ap = new AirportDAOImpl(conn);
         Mockito.when(conn.getConnection()).thenReturn(connection);
-        Mockito.when(connection.createStatement()).thenThrow(SQLException.class);
-        ap.getAll();
+        Mockito.when(connection.prepareStatement(query)).thenThrow(SQLException.class);
+        Throwable thrown = assertThrows(AirPortDaoException.class, () -> {
+            ap.getAll();
+        });
+        assertNotNull(thrown.getMessage());
     }
 
     @Test
-    public void whenGetAirportsThenReturnIOException() throws SQLException {
-        ConnectionFactory conn = Mockito.mock(ConnectionFactory.class);
-        Connection connection = Mockito.mock(Connection.class);
-        AirportDAOImpl ap = new AirportDAOImpl(conn);
-        Mockito.when(conn.getConnection()).thenReturn(connection);
-        Mockito.when(connection.createStatement()).thenThrow(IOException.class);
-        ap.getAll();
-    }
-
-    @Test
-    public void whenAddAirportsThenReturnSqlException() throws SQLException {
+    public void whenAddAirportThenReturnSqlException() throws SQLException {
         ConnectionFactory conn = Mockito.mock(ConnectionFactory.class);
         Connection connection = Mockito.mock(Connection.class);
         AirportDAOImpl apim = new AirportDAOImpl(conn);
         Mockito.when(conn.getConnection()).thenReturn(connection);
-        Mockito.when(connection.createStatement()).thenThrow(SQLException.class);
-        try {
+        Mockito.when(connection.prepareStatement(query)).thenThrow(SQLException.class);
+        Throwable thrown = assertThrows(AirPortDaoException.class, () -> {
             apim.create(ap);
-        } catch (AirPortDaoException e) {
-            e.printStackTrace();
-        }
+        });
+        assertNotNull(thrown.getMessage());
     }
 
     @Test
-    public void whenAddAirportsThenReturnAirport() throws SQLException {
+    public void whenAddAirportThenReturnAirport() throws SQLException, AirPortDaoException {
         ConnectionFactory conn = Mockito.mock(ConnectionFactory.class);
         Connection connection = Mockito.mock(Connection.class);
-        Statement stat = Mockito.mock(Statement.class);
+        PreparedStatement stat = Mockito.mock(PreparedStatement.class);
         ResultSet resultSet = Mockito.mock(ResultSet.class);
         AirportDAOImpl apim = new AirportDAOImpl(conn);
         Mockito.when(conn.getConnection()).thenReturn(connection);
-        Mockito.when(connection.createStatement()).thenReturn(stat);
-        Mockito.when(stat.executeQuery("Select LAST_INSERT_ID() from Airport")).thenReturn(resultSet);
+        Mockito.when(connection.prepareStatement(query)).thenReturn(stat);
+        Mockito.when(connection.prepareStatement("Select LAST_INSERT_ID() from Airport")).thenReturn(stat);
+        Mockito.when(stat.executeQuery()).thenReturn(resultSet);
         Mockito.when(resultSet.next()).thenReturn(false);
-        try {
-            apim.create(ap);
-        } catch (AirPortDaoException e) {
-            e.printStackTrace();
-        }
+        apim.create(ap);
     }
 
     @Test
-    public void whenUpdateAirportsThenReturnSqlException() throws SQLException {
+    public void whenUpdateAirportThenReturnSqlException() throws SQLException {
+        final String query = "UPDATE Airport SET "
+                + " apname = ?,"
+                + " apnum = ?,"
+                + " aptype = ?,"
+                + " addresses = ?,"
+                + " terminalcount = ?"
+                + " WHERE apid = ?";
         ConnectionFactory conn = Mockito.mock(ConnectionFactory.class);
         Connection connection = Mockito.mock(Connection.class);
         AirportDAOImpl apim = new AirportDAOImpl(conn);
         Mockito.when(conn.getConnection()).thenReturn(connection);
-        Mockito.when(connection.createStatement()).thenThrow(SQLException.class);
-        try {
+        Mockito.when(connection.prepareStatement(query)).thenThrow(SQLException.class);
+        Throwable thrown = assertThrows(AirPortDaoException.class, () -> {
             apim.update(ap);
-        } catch (AirPortDaoException e) {
-            e.printStackTrace();
-        }
+        });
+        assertNotNull(thrown.getMessage());
     }
 
     @Test
-    public void whenDeleteAirportsThenReturnSqlException() throws SQLException {
+    public void whenDeleteAirportThenReturnSqlException() throws SQLException {
+        final String query = "DELETE FROM Airport "
+                + "WHERE apid = ?";
         ConnectionFactory conn = Mockito.mock(ConnectionFactory.class);
         Connection connection = Mockito.mock(Connection.class);
         AirportDAOImpl apim = new AirportDAOImpl(conn);
         Mockito.when(conn.getConnection()).thenReturn(connection);
-        Mockito.when(connection.createStatement()).thenThrow(SQLException.class);
+        Mockito.when(connection.prepareStatement(query)).thenThrow(SQLException.class);
         Throwable thrown = assertThrows(AirPortDaoException.class, () -> {
             apim.delete(ap);
         });
