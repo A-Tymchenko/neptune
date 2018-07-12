@@ -2471,3 +2471,43 @@ INSERT INTO ORDERS VALUES(?, ?, ?, ?, ?, ?) [42102-196]
 org.h2.jdbc.JdbcSQLException: Таблица "ORDERS" не найдена
 Table "ORDERS" not found; SQL statement:
 UPDATE ORDERS SET NUMBER = ?, PRICE = ?, DELIVERY_INCLUDED = ?, DELIVERY_COST = ?, EXECUTED = ? WHERE ORDER_ID = ? [42102-196]
+2018-07-12 12:05:46 jdbc[6]: exception
+org.h2.jdbc.JdbcSQLException: Таблица "ORDERS" не найдена
+Table "ORDERS" not found; SQL statement:
+SELECT * FROM ORDERS WHERE ORDER_ID = ? [42102-196]
+2018-07-12 12:05:46 jdbc[14]: exception
+org.h2.jdbc.JdbcSQLException: Таблица "ORDERS" не найдена
+Table "ORDERS" not found; SQL statement:
+SELECT * FROM ORDERS [42102-196]
+2018-07-12 12:05:46 jdbc[29]: exception
+org.h2.jdbc.JdbcSQLException: Таблица "ORDERS" не найдена
+Table "ORDERS" not found; SQL statement:
+DELETE FROM ORDERS WHERE ORDER_ID = ? [42102-196]
+2018-07-12 12:05:46 jdbc[35]: exception
+org.h2.jdbc.JdbcSQLException: Таблица "ORDERS" не найдена
+Table "ORDERS" not found; SQL statement:
+INSERT INTO ORDERS VALUES(?, ?, ?, ?, ?, ?) [42102-196]
+2018-07-12 12:05:46 jdbc[39]: exception
+org.h2.jdbc.JdbcSQLException: Таблица "ORDERS" не найдена
+Table "ORDERS" not found; SQL statement:
+UPDATE ORDERS SET NUMBER = ?, PRICE = ?, DELIVERY_INCLUDED = ?, DELIVERY_COST = ?, EXECUTED = ? WHERE ORDER_ID = ? [42102-196]
+2018-07-12 12:06:23 jdbc[6]: exception
+org.h2.jdbc.JdbcSQLException: Таблица "ORDERS" не найдена
+Table "ORDERS" not found; SQL statement:
+SELECT * FROM ORDERS WHERE ORDER_ID = ? [42102-196]
+2018-07-12 12:06:23 jdbc[14]: exception
+org.h2.jdbc.JdbcSQLException: Таблица "ORDERS" не найдена
+Table "ORDERS" not found; SQL statement:
+SELECT * FROM ORDERS [42102-196]
+2018-07-12 12:06:23 jdbc[29]: exception
+org.h2.jdbc.JdbcSQLException: Таблица "ORDERS" не найдена
+Table "ORDERS" not found; SQL statement:
+DELETE FROM ORDERS WHERE ORDER_ID = ? [42102-196]
+2018-07-12 12:06:23 jdbc[35]: exception
+org.h2.jdbc.JdbcSQLException: Таблица "ORDERS" не найдена
+Table "ORDERS" not found; SQL statement:
+INSERT INTO ORDERS VALUES(?, ?, ?, ?, ?, ?) [42102-196]
+2018-07-12 12:06:23 jdbc[39]: exception
+org.h2.jdbc.JdbcSQLException: Таблица "ORDERS" не найдена
+Table "ORDERS" not found; SQL statement:
+UPDATE ORDERS SET NUMBER = ?, PRICE = ?, DELIVERY_INCLUDED = ?, DELIVERY_COST = ?, EXECUTED = ? WHERE ORDER_ID = ? [42102-196]
