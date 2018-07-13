@@ -19,7 +19,7 @@ public class ConnectionFactory {
         properties.load(ClassLoader.getSystemResourceAsStream("db.properties"));
     }
 
-    public static ConnectionFactory buildConnectionFactory() throws IOException {
+    private static ConnectionFactory buildConnectionFactory() throws IOException {
         synchronized (ConnectionFactory.class) {
             if (connectionFactory == null) {
                 connectionFactory = new ConnectionFactory();

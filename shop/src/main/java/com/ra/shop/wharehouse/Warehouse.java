@@ -1,6 +1,11 @@
 package com.ra.shop.wharehouse;
 
+import com.ra.shop.dao.exception.ExceptionMessage;
+import com.ra.shop.dao.exception.WarehouseDaoException;
+
 import java.io.Serializable;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.Objects;
 
 public class Warehouse implements Serializable {
@@ -14,11 +19,15 @@ public class Warehouse implements Serializable {
 
     public Warehouse() {
     }
-
-    public Warehouse(final String name, final Double price, final Integer amount) {
-        this.name = name;
-        this.price = price;
-        this.amount = amount;
+    public Warehouse(ResultSet resultSet) throws WarehouseDaoException {
+        try {
+            this.idNumber = resultSet.getInt("id");
+            this.name = resultSet.getString("name");
+            this.price = resultSet.getDouble("price");
+            this.amount = resultSet.getInt("amount");
+        } catch (SQLException e) {
+            throw new WarehouseDaoException(ExceptionMessage.FAILED_TO_RETRIEVE_DATA_FROM_RESULTSET_IN_WAREHOUSE_CONSTRUCTER.getMessage());
+        }
     }
 
     public Integer getIdNumber() {

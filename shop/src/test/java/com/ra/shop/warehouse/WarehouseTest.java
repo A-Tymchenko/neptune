@@ -42,8 +42,6 @@ public class WarehouseTest {
                 + ", price=" + Double.MIN_VALUE
                 + ", amount=" + 2
                 + '}';
-        System.out.println(expected);
-        System.out.println(firstWarehouse);
         assertTrue(firstWarehouse.toString().equals(expected));
     }
 
