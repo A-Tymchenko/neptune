@@ -4,11 +4,12 @@ import java.util.List;
 import java.util.Optional;
 
 import com.ra.shop.dao.exception.WarehouseDaoException;
+import com.ra.shop.wharehouse.Warehouse;
 
 /**
  * CRUD methods.
  */
-public interface WharehouseDao<T> {
+public interface WarehouseDao<T> {
     /**
      * create and return entity.
      *
@@ -35,7 +36,7 @@ public interface WharehouseDao<T> {
      *
      * @return entity
      */
-    Optional<T> getById(Long idNumber) throws WarehouseDaoException;
+    Warehouse getById(Optional<Integer> idNumber) throws WarehouseDaoException;
 
     /**
      * List of entities.

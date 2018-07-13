@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="INFO">
+    <Appenders>
+        # Console appender
+        <Console name="stdout" target="SYSTEM_OUT">
+            # Pattern of log message for console appender
+            <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss} %p %m%n"/>
+        </Console>
+
+        # Rolling appender
+        <RollingFile name="debug_logs"
+                     fileName="logs/all.log" filePattern="logs/%i.all_log.bak"
+                     ignoreExceptions="false">
+            <PatternLayout>
+                <Pattern>%d{yyyy-MM-dd HH:mm:ss} %p %m%n</Pattern>
+            </PatternLayout>
+            <!--<filter type="log4net.Filter.LevelMatchFilter">-->
+                <!--<acceptOnMatch value="true" />-->
+                <!--<levelToMatch  value="ERROR" />-->
+            <!--</filter>-->
+            <Policies>
+                <OnStartupTriggeringPolicy/>
+                <SizeBasedTriggeringPolicy
+                        size="10 MB"/>
+            </Policies>
+        </RollingFile>
+
+        # Rolling appender
+        <RollingFile name="error_logs"
+                     fileName="logs/error.log" filePattern="logs/%i.all_log.bak"
+                     ignoreExceptions="false">
+            <PatternLayout>
+                <Pattern>%d{yyyy-MM-dd HH:mm:ss} %p %m%n</Pattern>
+            </PatternLayout>
+            <Policies>
+                <OnStartupTriggeringPolicy/>
+                <SizeBasedTriggeringPolicy
+                        size="10 MB"/>
+            </Policies>
+        </RollingFile>
+
+    </Appenders>
+    <Loggers>
+        # Override log level for specified package
+        <Logger name="com.ra.airport" level="DEBUG">
+            <AppenderRef ref="debug_logs"/>
+            <AppenderRef ref="error_logs"/>
+        </Logger>
+
+        <AsyncRoot level="DEBUG">
+            <AppenderRef ref="stdout"/>
+        </AsyncRoot>
+    </Loggers>
+</Configuration>

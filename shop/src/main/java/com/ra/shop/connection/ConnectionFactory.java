@@ -7,15 +7,29 @@ import java.util.Properties;
 
 import org.h2.jdbcx.JdbcDataSource;
 
-public final class ConnectionFactory {
-    private static JdbcDataSource dataSource;
-    private static Properties dbProperties;
-    private static ConnectionFactory factoryInstance;
+@SuppressWarnings("PMD.ClassWithOnlyPrivateConstructorsShouldBeFinal")
+public class ConnectionFactory {
+    private static ConnectionFactory connectionFactory;
+    private static Properties properties;
+    private static volatile JdbcDataSource dataSource;
 
     @SuppressWarnings("PMD.ClassWithOnlyPrivateConstructorsShouldBeFinal")
     private ConnectionFactory() throws IOException {
-        dbProperties = new Properties();
-        dbProperties.load(ClassLoader.getSystemResourceAsStream("db.properties"));
+        properties = new Properties();
+        properties.load(ClassLoader.getSystemResourceAsStream("db.properties"));
+    }
+
+    public static ConnectionFactory buildConnectionFactory() throws IOException {
+        synchronized (ConnectionFactory.class) {
+            if (connectionFactory == null) {
+                connectionFactory = new ConnectionFactory();
+                dataSource = new JdbcDataSource();
+                dataSource.setURL(properties.getProperty("URL"));
+                dataSource.setUser(properties.getProperty("USERNAME"));
+                dataSource.setPassword(properties.getProperty("PASSWORD"));
+            }
+        }
+        return connectionFactory;
     }
 
     /**
@@ -24,23 +38,9 @@ public final class ConnectionFactory {
      * @return connection instance.
      */
     public static ConnectionFactory getInstance() throws IOException {
-        synchronized (ConnectionFactory.class) {
-            if (factoryInstance == null) {
-                factoryInstance = new ConnectionFactory();
-                dataSource = new JdbcDataSource();
-                dataSource.setURL(dbProperties.getProperty("jdbc.url"));
-                dataSource.setUser(dbProperties.getProperty("jdbc.user"));
-                dataSource.setPassword(dbProperties.getProperty("jdbc.password"));
-            }
-        }
-        return factoryInstance;
+        return buildConnectionFactory();
     }
 
-    /**
-     * Returns new connection.
-     *
-     * @return source connection.
-     */
     public Connection getConnection() throws SQLException {
         return dataSource.getConnection();
     }
