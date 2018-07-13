@@ -9,7 +9,7 @@ import com.ra.shop.wharehouse.Warehouse;
 /**
  * CRUD methods.
  */
-public interface WarehouseDao<T> {
+public interface Dao<T> {
     /**
      * create and return entity.
      *
