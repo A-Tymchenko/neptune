@@ -7,7 +7,7 @@ public class Warehouse implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    private Long idNumber;
+    private Integer idNumber;
     private String name;
     private Double price;
     private Integer amount;
@@ -21,11 +21,11 @@ public class Warehouse implements Serializable {
         this.amount = amount;
     }
 
-    public Long getIdNumber() {
+    public Integer getIdNumber() {
         return idNumber;
     }
 
-    public void setIdNumber(final Long idNumber) {
+    public void setIdNumber(final Integer idNumber) {
         this.idNumber = idNumber;
     }
 
@@ -69,14 +69,15 @@ public class Warehouse implements Serializable {
         final Warehouse warehouse = (Warehouse) obj;
         return Objects.equals(idNumber, warehouse.idNumber)
                 && Objects.equals(name, warehouse.name)
-                && Objects.equals(price, warehouse.price);
+                && Objects.equals(price, warehouse.price)
+                && Objects.equals(amount, warehouse.amount);
     }
 
     @Override
     public String toString() {
         return "Warehouse{"
                 + "idNumber=" + idNumber
-                + ", goodsName='" + name + '\''
+                + ", name='" + name + '\''
                 + ", price=" + price
                 + ", amount=" + amount
                 + '}';

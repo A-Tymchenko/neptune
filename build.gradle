@@ -213,7 +213,6 @@ task wrapper(type: Wrapper) {
 }
 
 dependencies {
-
 }
 
 
@@ -229,7 +228,15 @@ project("study") {
 
 project("shop") {
     dependencies {
-        // https://mvnrepository.com/artifact/org.slf4j/slf4j-api
-        compile group: 'org.slf4j', name: 'slf4j-api', version: '1.7.25'
+        compileClasspath db.h2
+        compile group: 'org.apache.logging.log4j', name: 'log4j-api', version: '2.11.0'
+        compile group: 'org.apache.logging.log4j', name: 'log4j-core', version: '2.11.0'
+        compile group: 'com.lmax', name: 'disruptor', version: '3.4.2'
+    }
+}
+
+project("shop_integration_test") {
+    dependencies {
+        compile project(":shop")
     }
 }

@@ -1,3 +1,5 @@
 rootProject.name = 'neptune'
 include 'study'
 include 'shop'
+include 'shop_integration_test'
+
