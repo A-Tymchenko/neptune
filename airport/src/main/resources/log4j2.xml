@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Configuration status="INFO">
+<Configuration status="DEBUG">
     <Appenders>
         # Console appender
         <Console name="stdout" target="SYSTEM_OUT">
@@ -7,16 +7,27 @@
             <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss} %p %m%n"/>
         </Console>
 
-        # File appender
-        <File name="fout" fileName="log4j/target/log4j2.log"
-              immediateFlush="false" append="false">
-            # Pattern of log message for file appender
-            <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss} %p %m%n"/>
-        </File>
+        # Rolling appender
+        <RollingFile name="debug_logs"
+                     fileName="logs/all.log" filePattern="logs/%i.all_log.gz"
+                     ignoreExceptions="false">
+            <PatternLayout>
+                <Pattern>%d{yyyy-MM-dd HH:mm:ss} %p %m%n</Pattern>
+            </PatternLayout>
+            <filter type="log4net.Filter.LevelMatchFilter">
+                <acceptOnMatch value="true" />
+                <levelToMatch  value="ERROR" />
+            </filter>
+            <Policies>
+                <OnStartupTriggeringPolicy/>
+                <SizeBasedTriggeringPolicy
+                        size="10 MB"/>
+            </Policies>
+        </RollingFile>
 
         # Rolling appender
-        <RollingFile name="roll-by-size"
-                     fileName="target/log4j2/roll-by-size/app.log" filePattern="target/log4j2/roll-by-size/app.%i.log.gz"
+        <RollingFile name="error_logs"
+                     fileName="logs/error.log" filePattern="logs/%i.all_log.bak"
                      ignoreExceptions="false">
             <PatternLayout>
                 <Pattern>%d{yyyy-MM-dd HH:mm:ss} %p %m%n</Pattern>
@@ -24,57 +35,20 @@
             <Policies>
                 <OnStartupTriggeringPolicy/>
                 <SizeBasedTriggeringPolicy
-                        size="5 KB"/>
+                        size="10 MB"/>
             </Policies>
         </RollingFile>
 
-        <RollingFile name="roll-by-time"
-                     fileName="target/log4j2/roll-by-time/app.log"
-                     filePattern="target/log4j2/roll-by-time/app.%d{MM-dd-yyyy-HH-mm}.log.gz"
-                     ignoreExceptions="false">
-            <PatternLayout>
-                <Pattern>%d{yyyy-MM-dd HH:mm:ss} %p %m%n</Pattern>
-            </PatternLayout>
-            <TimeBasedTriggeringPolicy/>
-        </RollingFile>
-
-        <RollingFile name="roll-by-time-and-size"
-                     fileName="target/log4j2/roll-by-time-and-size/app.log"
-                     filePattern="target/log4j2/roll-by-time-and-size/app.%d{MM-dd-yyyy-HH-mm}.%i.log.gz"
-                     ignoreExceptions="false">
-            <PatternLayout>
-                <Pattern>%d{yyyy-MM-dd HH:mm:ss} %p %m%n</Pattern>
-            </PatternLayout>
-            <Policies>
-                <OnStartupTriggeringPolicy/>
-                <SizeBasedTriggeringPolicy
-                        size="5 KB"/>
-                <TimeBasedTriggeringPolicy/>
-            </Policies>
-            <DefaultRolloverStrategy>
-                <Delete basePath="${baseDir}" maxDepth="2">
-                    <IfFileName
-                            glob="target/log4j2/roll-by-time-and-size/app.*.log.gz"/>
-                    <IfLastModified age="20s"/>
-                </Delete>
-            </DefaultRolloverStrategy>
-        </RollingFile>
     </Appenders>
-
     <Loggers>
         # Override log level for specified package
-        <Logger name="com.ra.courses" level="TRACE"/>
-
-        <Logger name="com.ra.courses.Log4j2RollingExample"
-                level="TRACE">
-            <AppenderRef ref="roll-by-size"/>
-            <AppenderRef ref="roll-by-time"/>
-            <AppenderRef ref="roll-by-time-and-size"/>
+        <Logger name="com.ra.airport" level="DEBUG">
+            <AppenderRef ref="debug_logs"/>
+            <AppenderRef ref="error_logs"/>
         </Logger>
 
         <AsyncRoot level="DEBUG">
             <AppenderRef ref="stdout"/>
-            <AppenderRef ref="fout"/>
         </AsyncRoot>
     </Loggers>
 </Configuration>
