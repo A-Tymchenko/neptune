@@ -64,7 +64,7 @@ public class AirportDAOImpl implements AirPortDao<Airport> {
         try (Connection connection = conn.getConnection()) {
             final PreparedStatement statement = connection.prepareStatement(query);
             fillPreparedStatement(airport, statement);
-            statement.setInt(StatementParameter.AIRPORT_ID.get(), airport.getApid());
+            statement.setInt(StatementAirportParameter.AIRPORT_ID.get(), airport.getApid());
             statement.executeUpdate();
             airport = getById(airport.getApid()).get();
         } catch (SQLException e) {
@@ -139,10 +139,10 @@ public class AirportDAOImpl implements AirPortDao<Airport> {
     }
 
     private void fillPreparedStatement(final Airport airport, final PreparedStatement statement) throws SQLException {
-        statement.setString(StatementParameter.AIRPORT_NAME.get(), airport.getApname());
-        statement.setInt(StatementParameter.AIRPORT_NUM.get(), airport.getApnum());
-        statement.setString(StatementParameter.AIRPORT_TYPE.get(), airport.getAptype());
-        statement.setString(StatementParameter.AIRPORT_ADDRESSES.get(), airport.getAddresses());
-        statement.setInt(StatementParameter.AIRPORT_TERMINAL.get(), airport.getTerminalcount());
+        statement.setString(StatementAirportParameter.AIRPORT_NAME.get(), airport.getApname());
+        statement.setInt(StatementAirportParameter.AIRPORT_NUM.get(), airport.getApnum());
+        statement.setString(StatementAirportParameter.AIRPORT_TYPE.get(), airport.getAptype());
+        statement.setString(StatementAirportParameter.AIRPORT_ADDRESSES.get(), airport.getAddresses());
+        statement.setInt(StatementAirportParameter.AIRPORT_TERMINAL.get(), airport.getTerminalcount());
     }
 }

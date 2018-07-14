@@ -1,6 +1,6 @@
 package com.ra.airport.dao.impl;
 
-public enum StatementParameter {
+public enum StatementAirportParameter {
 
     AIRPORT_NAME(1),
     AIRPORT_NUM(2),
@@ -11,7 +11,7 @@ public enum StatementParameter {
 
     private final int parameterNumber;
 
-    StatementParameter(final int parameterNumber) {
+    StatementAirportParameter(final int parameterNumber) {
         this.parameterNumber = parameterNumber;
     }
 
