@@ -8,9 +8,7 @@ import java.util.Optional;
  *
  * @param <T></> represents an entity.
  */
-
 public interface IRepository<T> {
-
 
     /**
      * Method inserts new entity to database.
@@ -18,9 +16,7 @@ public interface IRepository<T> {
      * @param entity that will be created.
      * @return Entity inserted to database, with added 'ID' from DB.
      */
-
     T create(T entity) throws GoodsException;
-
 
     /**
      * Method returns Optional wrapper with an entity from database.
@@ -28,36 +24,29 @@ public interface IRepository<T> {
      * @param entityId of entity that will be insert.
      * @return Optional T wrapper for chosen entity.
      */
-
     Optional<T> get(Long entityId) throws GoodsException;
-
 
     /**
      * Method updates existed entity due to it`s new params and send updated entity to database.
      *
      * @param newEntity updated version of entity.
-     * @return Integer. Returns an updated rows number.
+     * @return Entity. Returns an updated entity.
      */
-
-    Integer update(T newEntity) throws GoodsException;
-
+    T update(T newEntity) throws GoodsException;
 
     /**
      * Method will delete entity from the database.
      *
      * @param entityId of entity that will be deleted.
-     * @return Integer value displays deleted rows number from database.
+     * @return Boolean value displays deleted from database.
      */
-
-    Integer delete(Long entityId) throws GoodsException;
-
+    Boolean delete(Long entityId) throws GoodsException;
 
     /**
      * Method returns all entities.
      *
      * @return List T which contains all existed entities of the type T.
      */
-
     List<T> getAll() throws GoodsException;
 }
 

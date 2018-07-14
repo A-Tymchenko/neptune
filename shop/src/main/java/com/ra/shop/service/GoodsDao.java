@@ -19,11 +19,11 @@ import org.apache.log4j.Logger;
 public class GoodsDao implements IRepository<Goods> {
 
     private static final Logger LOGGER = Logger.getLogger(GoodsDao.class);
-    private static final Integer FIRST_INDEX = 1;
-    private static final Integer SECOND_INDEX = 2;
-    private static final Integer THIRD_INDEX = 3;
-    private static final Integer FOURTH_INDEX = 4;
-    private static final Integer FIRST_COLUMN = 1;
+    private static final Integer FIRST_SQL_INDEX = 1;
+    private static final Integer SECOND_SQL_INDEX = 2;
+    private static final Integer THIRD_SQL_INDEX = 3;
+    private static final Integer FOURTH_SQL_INDEX = 4;
+    private static final Integer FIRST_SQL_COLUMN = 1;
     private final transient ConnectionFactory connFactory;
 
     public GoodsDao(final ConnectionFactory connFactory) {
@@ -39,27 +39,21 @@ public class GoodsDao implements IRepository<Goods> {
 
     @Override
     public Goods create(final Goods entity) throws GoodsException {
-        if (get(entity.getId()).isPresent()) {
-            final String warning = "Attempt to recreate an existing goods, ID:" + entity.getId();
-            LOGGER.warn(warning);
-            return entity;
-        }
         try (Connection connection = connFactory.getConnection()) {
             final PreparedStatement statement =
-                connection.prepareStatement("INSERT INTO GOODS (NAME, BARCODE, PRICE) VALUES (?,?,?)");
-            setStatementGoodsWithoutId(statement, entity);
+                    connection.prepareStatement("INSERT INTO GOODS (NAME, BARCODE, PRICE) VALUES (?,?,?)");
+            setStatementGoodsInSQLIndexes(statement, entity);
             statement.executeUpdate();
-
             final ResultSet generatedKeys = connection
-                .prepareStatement("SELECT SCOPE_IDENTITY()").executeQuery();
+                    .prepareStatement("SELECT SCOPE_IDENTITY()").executeQuery();
             if (generatedKeys.next()) {
-                entity.setId(generatedKeys.getLong(FIRST_COLUMN));
+                entity.setId(generatedKeys.getLong(FIRST_SQL_COLUMN));
             }
         } catch (SQLException ex) {
             LOGGER.error(ex.getMessage());
             throw new GoodsException(ex.getMessage(), ex);
         }
-        return entity;
+        return (Goods) get(entity.getId()).get();
     }
 
 
@@ -73,17 +67,15 @@ public class GoodsDao implements IRepository<Goods> {
     @Override
     public Optional get(final Long entityId) throws GoodsException {
         if (entityId == null) {
-            LOGGER.warn("Attempt to get goods with ID=NULL");
-            return Optional.empty();
+            final String errorNull = "Attempt to get goods with ID = NULL";
+            LOGGER.error(errorNull);
+            throw new GoodsException(errorNull);
         }
-        ResultSet resultSet = null;
-
         try (Connection connection = connFactory.getConnection()) {
             final PreparedStatement statement =
-                connection.prepareStatement("SELECT * FROM GOODS WHERE ID = ?");
-
-            statement.setLong(FIRST_INDEX, entityId);
-            resultSet = statement.executeQuery();
+                    connection.prepareStatement("SELECT * FROM GOODS WHERE ID = ?");
+            statement.setLong(FIRST_SQL_INDEX, entityId);
+            final ResultSet resultSet = statement.executeQuery();
             if (resultSet.next()) {
                 return Optional.of(createGoods(resultSet));
             }
@@ -98,45 +90,38 @@ public class GoodsDao implements IRepository<Goods> {
      * Update goods in DataBase.
      *
      * @param newEntity updated version of entity.
-     * @return 1 if true else 0.
+     * @return update entity.
      */
 
     @Override
-    public Integer update(final Goods newEntity) throws GoodsException {
-        if (newEntity.getId() == null) {
-            LOGGER.warn("Attempt to update goods with ID=NULL");
-            return 0;
-        }
+    public Goods update(final Goods newEntity) throws GoodsException {
         try (Connection connection = connFactory.getConnection()) {
             final PreparedStatement statement =
-                connection.prepareStatement("UPDATE GOODS SET NAME = ?, BARCODE = ?, PRICE = ? WHERE ID = ?");
-            setStatementGoodsWithoutId(statement, newEntity);
-            statement.setLong(FOURTH_INDEX, newEntity.getId());
-            return statement.executeUpdate();
+                    connection.prepareStatement("UPDATE GOODS SET NAME = ?, BARCODE = ?, PRICE = ? WHERE ID = ?");
+            setStatementGoodsInSQLIndexes(statement, newEntity);
+            statement.setLong(FOURTH_SQL_INDEX, newEntity.getId());
+            statement.executeUpdate();
         } catch (SQLException ex) {
             LOGGER.error(ex.getMessage());
             throw new GoodsException(ex.getMessage(), ex);
         }
+        return (Goods) get(newEntity.getId()).get();
     }
 
     /**
      * Deleting goods in DataBase.
      *
      * @param entityId of entity that will be deleted.
-     * @return 1 if true else 0.
+     * @return true else false.
      */
 
     @Override
-    public Integer delete(final Long entityId) throws GoodsException {
-        if (entityId == null) {
-            LOGGER.warn("Attempt to delete goods with ID=NULL");
-            return 0;
-        }
+    public Boolean delete(final Long entityId) throws GoodsException {
         try (Connection connection = connFactory.getConnection()) {
             final PreparedStatement statement =
-                connection.prepareStatement("DELETE FROM GOODS WHERE ID = ?");
-            statement.setLong(FIRST_INDEX, entityId);
-            return statement.executeUpdate();
+                    connection.prepareStatement("DELETE FROM GOODS WHERE ID = ?");
+            statement.setLong(FIRST_SQL_INDEX, entityId);
+            return statement.executeUpdate() > 0;
         } catch (SQLException ex) {
             LOGGER.error(ex.getMessage());
             throw new GoodsException(ex.getMessage(), ex);
@@ -152,10 +137,8 @@ public class GoodsDao implements IRepository<Goods> {
     @Override
     public List getAll() throws GoodsException {
         final List<Goods> goods = new ArrayList<>();
-        ResultSet resultSet = null;
         try (Connection connection = connFactory.getConnection()) {
-            resultSet = connection.prepareStatement("SELECT * FROM GOODS").executeQuery();
-
+            final ResultSet resultSet = connection.prepareStatement("SELECT * FROM GOODS").executeQuery();
             while (resultSet.next()) {
                 goods.add(createGoods(resultSet));
             }
@@ -172,10 +155,10 @@ public class GoodsDao implements IRepository<Goods> {
      * @param statement to DataBase.
      * @param entity    to DataBase.
      */
-    private void setStatementGoodsWithoutId(final PreparedStatement statement, final Goods entity) throws SQLException {
-        statement.setString(FIRST_INDEX, entity.getName());
-        statement.setLong(SECOND_INDEX, entity.getBarcode());
-        statement.setFloat(THIRD_INDEX, entity.getPrice());
+    private void setStatementGoodsInSQLIndexes(final PreparedStatement statement, final Goods entity) throws SQLException {
+        statement.setString(FIRST_SQL_INDEX, entity.getName());
+        statement.setLong(SECOND_SQL_INDEX, entity.getBarcode());
+        statement.setFloat(THIRD_SQL_INDEX, entity.getPrice());
     }
 
     /**
@@ -187,8 +170,8 @@ public class GoodsDao implements IRepository<Goods> {
 
     private Goods createGoods(final ResultSet resultSet) throws SQLException {
         return new Goods(resultSet.getLong("ID"),
-            resultSet.getString("NAME"),
-            resultSet.getLong("BARCODE"),
-            resultSet.getFloat("PRICE"));
+                resultSet.getString("NAME"),
+                resultSet.getLong("BARCODE"),
+                resultSet.getFloat("PRICE"));
     }
 }

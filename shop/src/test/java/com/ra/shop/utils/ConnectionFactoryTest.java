@@ -1,6 +1,4 @@
-package com.ra.shop.Utils;
-
-import com.ra.shop.utils.ConnectionFactory;
+package com.ra.shop.utils;
 
 import java.io.IOException;
 

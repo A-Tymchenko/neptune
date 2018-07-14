@@ -12,13 +12,11 @@ import java.sql.Connection;
 
 import java.sql.SQLException;
 import java.util.List;
-import java.util.Optional;
+import java.util.NoSuchElementException;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assumptions.assumeTrue;
 import static org.mockito.Mockito.*;
-
-import javax.swing.text.html.Option;
 
 public class GoodsDaoTest {
 
@@ -68,10 +66,9 @@ public class GoodsDaoTest {
 
             @Test
             public void deletionShouldBeFailureAndNotAffectExistingGoods() throws GoodsException {
-                final Goods nonExistingGoods = new Goods(2l, "Marlboro", 4050300003924l, 3.4f);
-                int result = dao.delete(nonExistingGoods.getId());
-
-                assertEquals(0, result);
+                final Goods nonExistingGoods = new Goods(getNonExistingGoodId(), "Marlboro", 4050300003924l, 3.4f);
+                assertGoodsCountIs(1);
+                assertFalse(dao.delete(nonExistingGoods.getId()));
                 assertGoodsCountIs(1);
             }
 
@@ -82,10 +79,7 @@ public class GoodsDaoTest {
                 final Long newBarcode = 4820005924653l;
                 final Float newPrice = 12.6f;
                 final Goods goods = new Goods(nonExistingId, newName, newBarcode, newPrice);
-                int result = dao.update(goods);
-
-                assertEquals(0, result);
-                assertFalse(dao.get(nonExistingId).isPresent());
+                assertThrows(NoSuchElementException.class, () -> dao.update(goods));
             }
 
             @Test
@@ -107,15 +101,15 @@ public class GoodsDaoTest {
                 Goods result = dao.create(existingGoods);
                 assertTrue(result.equals(existingGoods));
 
-                assertGoodsCountIs(1);
+                assertGoodsCountIs(2);
                 assertEquals(existingGoods, dao.get(existingGoods.getId()).get());
             }
 
             @Test
             public void deletionShouldBeSuccessAndGoodsShouldBeNonAccessible() throws GoodsException {
-                int result = dao.delete(existingGoods.getId());
+                boolean result = dao.delete(existingGoods.getId());
 
-                assertEquals(1, result);
+                assertEquals(true, result);
                 assertGoodsCountIs(0);
                 assertFalse(dao.get(existingGoods.getId()).isPresent());
             }
@@ -126,9 +120,9 @@ public class GoodsDaoTest {
                 final Long newBarcode = 740617152326l;
                 final Float newPrice = 32.7f;
                 final Goods goods = new Goods(existingGoods.getId(), newName, newBarcode, newPrice);
-                int result = dao.update(goods);
+                Goods result = dao.update(goods);
 
-                assertEquals(1, result);
+                assertTrue(goods.equals(result));
 
                 final Goods goodsGet = (Goods) dao.get(existingGoods.getId()).get();
                 assertEquals(newName, goodsGet.getName());
@@ -137,49 +131,77 @@ public class GoodsDaoTest {
             }
         }
 
+
         @Nested
-        public class ExistingGoodsWithNullAndZeroId {
+        public class ExistingGoodsWithNull {
+
+            private Goods existingGoodsNullId = new Goods(null, "Marlboro", 4050300003924l, 3.4f);
 
             @Test
-            public void addingResultWithNullAndZeroId() throws Exception {
-                Goods existingGoodsNullId = new Goods(null, "Marlboro", 4050300003924l, 3.4f);
+            public void addingResultWithNullId() throws Exception {
+                assertGoodsCountIs(1);
                 Goods result = dao.create(existingGoodsNullId);
+                assertGoodsCountIs(2);
                 assertTrue(result.equals(existingGoodsNullId));
+                assertTrue(existingGoodsNullId.equals(dao.get(existingGoodsNullId.getId()).get()));
+            }
 
-                Goods existingGoodsZeroId = new Goods(0l, "Marlboro", 4050300003924l, 3.4f);
+            @Test
+            public void deletingResultWithNullGoods() {
+                assertThrows(NullPointerException.class, () -> dao.delete(null));
+            }
+
+            @Test
+            public void updatingResultWithNullGoods() {
+                assertThrows(NullPointerException.class, () -> dao.update(existingGoodsNullId));
+            }
+
+            @Test
+            public void getingResultWithNullId() {
+                assertThrows(GoodsException.class, () -> dao.get(null));
+            }
+        }
+
+        @Nested
+        public class ExistingGoodsWithZeroId {
+
+            private Goods existingGoodsZeroId = new Goods(0l, "Marlboro", 4050300003924l, 3.4f);
+
+            @Test
+            public void addingGoodsWithZeroId() throws Exception {
+                assertGoodsCountIs(1);
                 Goods resultZero = dao.create(existingGoodsZeroId);
+                assertGoodsCountIs(2);
                 assertTrue(resultZero.equals(existingGoodsZeroId));
+                assertTrue(existingGoodsZeroId.equals(dao.get(existingGoodsZeroId.getId()).get()));
             }
 
             @Test
-            public void deletingResultWithNullAndZeroId() throws Exception {
-                Integer resultNull = dao.delete(null);
-                assertTrue(0 == resultNull);
-
-                Integer resultZero = dao.delete(0l);
-                assertTrue(0 == resultZero);
+            public void deletingResultWithZeroId() throws Exception {
+                assertGoodsCountIs(1);
+                assertFalse(dao.delete(0l));
+                assertGoodsCountIs(1);
             }
 
             @Test
-            public void updatingResultWithNullAndZeroId() throws Exception {
-                Goods existingGoodsNullId = new Goods(null, "Marlboro", 4050300003924l, 3.4f);
-                Integer resultNull = dao.update(existingGoodsNullId);
-                assertTrue(0 == resultNull);
-
-                Goods existingGoodsZeroId = new Goods(0l, "Marlboro", 4050300003924l, 3.4f);
-                Integer resultZero = dao.update(existingGoodsZeroId);
-                assertTrue(0 == resultZero);
+            public void updatingResultWithZeroId() throws Exception {
+                assertGoodsCountIs(1);
+                assertThrows(NoSuchElementException.class, () -> dao.update(existingGoodsZeroId));
             }
 
             @Test
-            public void getingResultWithNullAndZeroId() throws Exception {
-                Optional resultNull = dao.get(null);
-                assertFalse(resultNull.isPresent());
-
-                Optional resultZero = dao.get(0l);
-                assertFalse(resultZero.isPresent());
-
+            public void getingResultWithZeroID() throws Exception {
+                assertGoodsCountIs(1);
+                assertFalse(dao.get(0l).isPresent());
             }
+        }
+
+        @Test
+        public void getingResultWithZeroList() throws Exception {
+            assertGoodsCountIs(1);
+            dao.delete(existingGoodsID);
+            assertGoodsCountIs(0);
+            assumeTrue(dao.getAll().size() == 0);
         }
     }
 
@@ -207,8 +229,8 @@ public class GoodsDaoTest {
             Connection mockedConnection = mock(Connection.class);
             SQLException exception = new SQLException(EXCEPTION_CAUSE);
             doThrow(exception)
-                .when(mockedConnection)
-                .prepareStatement(Mockito.anyString());
+                    .when(mockedConnection)
+                    .prepareStatement(Mockito.anyString());
             when(mockedConnectionFactory.getConnection()).thenReturn(mockedConnection);
             return mockedConnectionFactory;
         }
@@ -255,7 +277,6 @@ public class GoodsDaoTest {
     private void assertGoodsCountIs(int count) throws GoodsException {
         List<Goods> allGoods = dao.getAll();
         assertTrue(allGoods.size() == count);
-
     }
 
     private Long getNonExistingGoodId() {
