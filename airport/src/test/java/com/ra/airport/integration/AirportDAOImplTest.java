@@ -41,20 +41,17 @@ public class AirportDAOImplTest {
         Airport createdAirport = apim.update(ap);
         ap.setApid(createdAirport.getApid());
         assertEquals(createdAirport, ap);
-
     }
 
     @Test
     public void WhenDeleteAirportThenReturnTrue() throws AirPortDaoException {
         assertEquals(apim.delete(ap), true);
-
     }
 
     @Test
     public void WhenDeleteAirportThenReturnFalse() throws AirPortDaoException {
         ap.setApid(10);
         assertEquals(apim.delete(ap), false);
-
     }
 
     @Test

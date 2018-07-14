@@ -33,7 +33,7 @@ public class AirportDAOImplMockitoTest {
 
     @Test
     public void whenGetAirportsExecutedReturnListSizeThree() throws Exception {
-        final String query = "Select * From Airport";
+        final String query = "Select apname, apnum, aptype, addresses, terminalcount, apid From Airport";
         ResultSet resultSet = Mockito.mock(ResultSet.class);
         ConnectionFactory conn = Mockito.mock(ConnectionFactory.class);
         PreparedStatement stat = Mockito.mock(PreparedStatement.class);
@@ -49,7 +49,7 @@ public class AirportDAOImplMockitoTest {
 
     @Test
     public void whenGetAirportByIdThenReturnSqlException() throws SQLException {
-        final String query = "Select * From Airport Where apid = ?";
+        final String query = "Select apname, apnum, aptype, addresses, terminalcount, apid From Airport Where apid = ?";
         ConnectionFactory conn = Mockito.mock(ConnectionFactory.class);
         Connection connection = Mockito.mock(Connection.class);
         AirportDAOImpl ap = new AirportDAOImpl(conn);
@@ -63,7 +63,7 @@ public class AirportDAOImplMockitoTest {
 
     @Test
     public void whenGetAirportsThenReturnSqlException() throws SQLException {
-        final String query = "Select * From Airport";
+        final String query = "Select apname, apnum, aptype, addresses, terminalcount, apid From Airport";
         ConnectionFactory conn = Mockito.mock(ConnectionFactory.class);
         Connection connection = Mockito.mock(Connection.class);
         AirportDAOImpl ap = new AirportDAOImpl(conn);

@@ -91,4 +91,16 @@ public class Airport {
 
         return Objects.hash(apid, apname, apnum, aptype, addresses, terminalcount);
     }
+
+    @Override
+    public String toString() {
+        return "Airport{"
+                + "apid=" + apid
+                + ", apname='" + apname + '\''
+                + ", apnum=" + apnum
+                + ", aptype='" + aptype + '\''
+                + ", addresses='" + addresses + '\''
+                + ", terminalcount=" + terminalcount
+                + '}';
+    }
 }
