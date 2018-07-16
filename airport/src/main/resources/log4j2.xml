@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Configuration status="DEBUG">
+<Configuration status="INFO">
     <Appenders>
         # Console appender
         <Console name="stdout" target="SYSTEM_OUT">
@@ -9,7 +9,7 @@
 
         # Rolling appender
         <RollingFile name="debug_logs"
-                     fileName="logs/all.log" filePattern="logs/%i.all_log.gz"
+                     fileName="logs/all.log" filePattern="logs/%i.all_log.bak"
                      ignoreExceptions="false">
             <PatternLayout>
                 <Pattern>%d{yyyy-MM-dd HH:mm:ss} %p %m%n</Pattern>

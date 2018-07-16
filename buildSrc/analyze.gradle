@@ -5,7 +5,6 @@ apply plugin: 'jdepend'
 apply plugin: "jacoco"
 apply plugin: 'com.palantir.jacoco-coverage'
 
-
 checkstyle {
     ignoreFailures = false
     configProperties.samedir = "${rootProject.projectDir}/buildSrc/checkstyle"
@@ -41,7 +40,7 @@ jacocoTestReport {
     }
     afterEvaluate {
         classDirectories = files(classDirectories.files.collect {
-            fileTree(dir: it, exclude: ['**/model/**', '**/dto/**', '**/config/**', '**/*Main*/**', '**/roman/**', '**/entity/**'])
+            fileTree(dir: it, exclude: ['**/model/**', '**/entity/**', '**/dto/**', '**/config/**', '**/*Main*/**', '**/roman/**'])
 
         })
     }
