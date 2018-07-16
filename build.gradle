@@ -196,7 +196,6 @@ allprojects {
     dependencies shared.dataBaseDependencies
     dependencies shared.unitTestDependencies
     dependencies shared.applicationDependencies
-    dependencies shared.log4jDependencies
 }
 
 test {

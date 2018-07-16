@@ -21,12 +21,6 @@ public class AirportDAOImpl implements AirPortDao<Airport> {
 
     private final transient ConnectionFactory conn;
 
-    private static final int AIRPORT_ID = 6;
-    private static final int AIRPORT_NAME = 1;
-    private static final int AIRPORT_NUM = 2;
-    private static final int AIRPORT_TYPE = 3;
-    private static final int AIRPORT_ADDRESSES = 4;
-    private static final int AIRPORT_TERMINAL = 5;
     private static final Logger LOGGER = LogManager.getLogger(AirportDAOImpl.class);
 
     public AirportDAOImpl(final ConnectionFactory conn) {
@@ -55,17 +49,12 @@ public class AirportDAOImpl implements AirPortDao<Airport> {
 
     @Override
     public Airport update(Airport airport) throws AirPortDaoException {
-        final String query = "UPDATE Airport SET "
-                + " apname = ?,"
-                + " apnum = ?,"
-                + " aptype = ?,"
-                + " addresses = ?,"
-                + " terminalcount = ?"
+        final String query = "UPDATE Airport SET apname = ?, apnum = ?, aptype = ?, addresses = ?, terminalcount = ?"
                 + " WHERE apid = ?";
         try (Connection connection = conn.getConnection()) {
             final PreparedStatement statement = connection.prepareStatement(query);
             fillPreparedStatement(airport, statement);
-            statement.setInt(AIRPORT_ID, airport.getApid());
+            statement.setInt(StatementParameter.AIRPORT_ID.get(), airport.getApid());
             statement.executeUpdate();
             airport = getById(airport.getApid()).get();
         } catch (SQLException e) {
@@ -131,19 +120,19 @@ public class AirportDAOImpl implements AirPortDao<Airport> {
 
     private Airport createAirport(final ResultSet res) throws SQLException {
 
-        return new Airport(res.getInt(AIRPORT_ID),
-                res.getString(AIRPORT_NAME),
-                res.getInt(AIRPORT_NUM),
-                res.getString(AIRPORT_TYPE),
-                res.getString(AIRPORT_ADDRESSES),
-                res.getInt(AIRPORT_TERMINAL));
+        return new Airport(res.getInt(StatementParameter.AIRPORT_ID.get()),
+                res.getString(StatementParameter.AIRPORT_NAME.get()),
+                res.getInt(StatementParameter.AIRPORT_NUM.get()),
+                res.getString(StatementParameter.AIRPORT_TYPE.get()),
+                res.getString(StatementParameter.AIRPORT_ADDRESSES.get()),
+                res.getInt(StatementParameter.AIRPORT_TERMINAL.get()));
     }
 
     private void fillPreparedStatement(final Airport airport, final PreparedStatement statement) throws SQLException {
-        statement.setString(AIRPORT_NAME, airport.getApname());
-        statement.setInt(AIRPORT_NUM, airport.getApnum());
-        statement.setString(AIRPORT_TYPE, airport.getAptype());
-        statement.setString(AIRPORT_ADDRESSES, airport.getAddresses());
-        statement.setInt(AIRPORT_TERMINAL, airport.getTerminalcount());
+        statement.setString(StatementParameter.AIRPORT_NAME.get(), airport.getApname());
+        statement.setInt(StatementParameter.AIRPORT_NUM.get(), airport.getApnum());
+        statement.setString(StatementParameter.AIRPORT_TYPE.get(), airport.getAptype());
+        statement.setString(StatementParameter.AIRPORT_ADDRESSES.get(), airport.getAddresses());
+        statement.setInt(StatementParameter.AIRPORT_TERMINAL.get(), airport.getTerminalcount());
     }
 }
