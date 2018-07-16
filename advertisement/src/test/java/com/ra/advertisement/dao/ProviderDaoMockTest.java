@@ -2,7 +2,7 @@ package com.ra.advertisement.dao;
 
 import com.ra.advertisement.connection.ConnectionFactory;
 import com.ra.advertisement.dao.exceptions.DaoException;
-import com.ra.advertisement.model.entities.Provider;
+import com.ra.advertisement.entity.Provider;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -13,20 +13,25 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Optional;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 public class ProviderDaoMockTest {
     private static ConnectionFactory connectionFactory;
+    private static AdvertisementDao<Provider> providerDao;
     private Connection mockConnection;
     private PreparedStatement mockStatement;
     private ResultSet mockResultSet;
-    private static AdvertisementDao<Provider> providerDao;
+    private Provider provider;
+    private Provider providerUpdate;
 
     @BeforeAll
-    public static void init(){
+    public static void init() {
         connectionFactory = mock(ConnectionFactory.class);
         providerDao = new ProviderAdvertisementDaoImpl(connectionFactory);
     }
@@ -37,6 +42,9 @@ public class ProviderDaoMockTest {
         mockStatement = mock(PreparedStatement.class);
         mockResultSet = mock(ResultSet.class);
         when(connectionFactory.getConnection()).thenReturn(mockConnection);
+        provider = new Provider("Coca Cola ltd", "Kyiv", "22-14-45", "Ukraine");
+        providerUpdate = new Provider(1L, "Coca Cola ltd Update", "Kyiv Update",
+                "22-14-45 Update", "Ukraine Update");
     }
 
     /**
@@ -46,35 +54,29 @@ public class ProviderDaoMockTest {
      */
     @Test
     public void testAddProvider() throws SQLException, DaoException {
-        Provider provider = new Provider();
-        provider.setProvId(1L);
-        provider.setName("Coca Cola ltd");
-        provider.setAddress("Kyiv");
-        provider.setTelephone("22-14-58");
-        provider.setCountry("Ukraine");
         when(mockConnection.prepareStatement(anyString())).thenReturn(mockStatement);
         when(mockStatement.executeUpdate()).thenReturn(1);
-        int result = providerDao.create(provider);
-        Assertions.assertTrue( result == 1);
+        when(mockStatement.getGeneratedKeys()).thenReturn(mockResultSet);
+        when(mockResultSet.next()).thenReturn(true);
+        Integer result = providerDao.create(provider);
+        Assertions.assertTrue(result == 1);
     }
 
     /**
-     * Testing method addProvider when result true.
+     * Testing method addProvider and get generated key when result true.
      *
      * @throws SQLException exception.
      */
     @Test
-    public void testAddProviderReturnNotExecuted() throws SQLException, DaoException {
-        Provider provider = new Provider();
-        provider.setProvId(1L);
-        provider.setName("Coca Cola ltd");
-        provider.setAddress("Kyiv");
-        provider.setTelephone("22-14-58");
-        provider.setCountry("Ukraine");
+    public void testAddProviderAndGeneratedKeyReturnTrue() throws SQLException, DaoException {
         when(mockConnection.prepareStatement(anyString())).thenReturn(mockStatement);
-        when(mockStatement.executeUpdate()).thenReturn(0);
-        int result = providerDao.create(provider);
-        Assertions.assertTrue( result == 0);
+        when(mockStatement.executeUpdate()).thenReturn(1);
+        when(mockStatement.getGeneratedKeys()).thenReturn(mockResultSet);
+        while (mockResultSet.next()){
+            provider.setProvId(mockResultSet.getLong(1));
+        }
+        Integer result = providerDao.create(provider);
+        Assertions.assertTrue(result == 1);
     }
 
     /**
@@ -87,7 +89,7 @@ public class ProviderDaoMockTest {
         when(mockConnection.prepareStatement(anyString())).thenReturn(mockStatement);
         when(mockStatement.executeUpdate()).thenReturn(1);
         int rezult = providerDao.delete(2L);
-        Assertions.assertTrue( rezult == 1);
+        Assertions.assertTrue(rezult == 1);
     }
 
     /**
@@ -97,16 +99,10 @@ public class ProviderDaoMockTest {
      */
     @Test
     public void testUpdateProvider() throws SQLException, DaoException {
-        Provider providerUpdate = new Provider();
-        providerUpdate.setProvId(1L);
-        providerUpdate.setName("Coca Cola ltd Update");
-        providerUpdate.setAddress("Kyiv Update");
-        providerUpdate.setTelephone("22-14-58 Update");
-        providerUpdate.setCountry("Ukraine Update");
         when(mockConnection.prepareStatement(anyString())).thenReturn(mockStatement);
         when(mockStatement.executeUpdate()).thenReturn(1);
         int result = providerDao.update(providerUpdate);
-        Assertions.assertTrue( result == 1);
+        Assertions.assertTrue(result == 1);
     }
 
     /**
@@ -119,10 +115,103 @@ public class ProviderDaoMockTest {
         boolean result = false;
         when(mockConnection.prepareStatement(anyString())).thenReturn(mockStatement);
         when(mockStatement.executeQuery()).thenReturn(mockResultSet);
-        when(mockResultSet.next()).thenReturn(result=true).thenReturn(false);
+        when(mockResultSet.next()).thenReturn(result = true).thenReturn(false);
         List<Provider> listDevices = providerDao.getAll();
-        Assertions.assertTrue( result == true);
+        Assertions.assertTrue(result == true);
     }
 
+    /**
+     * Testing method getProviderById when Optional.empty result true.
+     *
+     * @throws SQLException
+     * @throws DaoException
+     */
+    @Test
+    public void whenGetByIdReturnEmptyResultSetThenEmptyOptionalShouldBeReturned() throws DaoException, SQLException {
+        when(mockConnection.prepareStatement(anyString())).thenReturn(mockStatement);
+        when(mockStatement.executeQuery()).thenReturn(mockResultSet);
+        when(mockResultSet.next()).thenReturn(false);
+        Optional<Provider> provider = providerDao.getById(Long.valueOf(1L));
+        assertEquals(Optional.empty(), provider);
+    }
 
+    /**
+     * Testing method getProviderById when Optional is not empty result true.
+     *
+     * @throws SQLException
+     * @throws DaoException
+     */
+    @Test
+    public void whenGetByIdReturnNotEmptyResultSetThenProviderOptionalShouldBeReturned() throws DaoException, SQLException {
+        when(mockConnection.prepareStatement(anyString())).thenReturn(mockStatement);
+        when(mockStatement.executeQuery()).thenReturn(mockResultSet);
+        when(mockResultSet.next()).thenReturn(true, false);
+        Optional<Provider> providerOptional = providerDao.getById(1L);
+    }
+
+    /**
+     * Testing method deleteProvider catch SQLException throw DaoException.
+     *
+     * @throws SQLException
+     */
+    @Test
+    public void deleteProviderThrowDaoException() throws SQLException {
+        when(mockConnection.prepareStatement(anyString())).thenThrow(new SQLException());
+        assertThrows(DaoException.class, () -> {
+            providerDao.delete(1L);
+        });
+    }
+
+    /**
+     * Testing method addProvider catch SQLException throw DaoException.
+     *
+     * @throws SQLException
+     */
+    @Test
+    public void addProviderThrowDaoException() throws SQLException {
+        when(mockConnection.prepareStatement(anyString())).thenThrow(new SQLException());
+        assertThrows(DaoException.class, () -> {
+            providerDao.create(provider);
+        });
+    }
+
+    /**
+     * Testing method UpdateProvider catch SQLException throw DaoException.
+     *
+     * @throws SQLException
+     */
+    @Test
+    public void updateProviderThrowDaoException() throws SQLException {
+        when(mockConnection.prepareStatement(anyString())).thenThrow(new SQLException());
+        assertThrows(DaoException.class, () -> {
+            providerDao.update(providerUpdate);
+        });
+    }
+
+    /**
+     * Testing method getAllProviders catch SQLException throw DaoException.
+     *
+     * @throws SQLException
+     */
+    @Test
+    public void getAllProvidersThrowDaoException() throws SQLException {
+        when(mockConnection.prepareStatement(anyString())).thenThrow(new SQLException());
+        assertThrows(DaoException.class, () -> {
+            providerDao.getAll();
+        });
+    }
+
+    /**
+     * Testing method getByIdProvider catch SQLException throw DaoException.
+     *
+     * @throws SQLException
+     */
+    @Test
+    public void getByIdProviderThrowDaoException() throws SQLException {
+        when(mockConnection.prepareStatement(anyString())).thenThrow(new SQLException());
+        assertThrows(DaoException.class, () -> {
+            providerDao.getById(2L);
+        });
+    }
 }
+

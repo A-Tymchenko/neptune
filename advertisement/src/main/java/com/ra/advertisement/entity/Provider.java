@@ -1,4 +1,4 @@
-package com.ra.advertisement.model.entities;
+package com.ra.advertisement.entity;
 
 public class Provider {
     private Long provId;
@@ -14,6 +14,14 @@ public class Provider {
     public Provider(final Long provId, final String name, final String address,
                     final String telephone, final String country) {
         this.provId = provId;
+        this.name = name;
+        this.address = address;
+        this.telephone = telephone;
+        this.country = country;
+    }
+
+    public Provider(final String name, final String address,
+                    final String telephone, final String country) {
         this.name = name;
         this.address = address;
         this.telephone = telephone;

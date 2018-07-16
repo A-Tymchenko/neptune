@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Properties;
-import java.util.logging.LogManager;
 
 import org.h2.jdbcx.JdbcDataSource;
 
@@ -17,15 +16,7 @@ public class ConnectionFactory {
 
     private ConnectionFactory() throws IOException {
         dbProperties = new Properties();
-        loadLogManager();
         loadProperties();
-    }
-
-    /**
-     * this method load configurations for LogManager from properties file.
-     */
-    private void loadLogManager() throws IOException {
-        LogManager.getLogManager().readConfiguration(ClassLoader.getSystemResourceAsStream("logging.properties"));
     }
 
     /**
@@ -53,7 +44,6 @@ public class ConnectionFactory {
         return connFactory;
     }
 
-
     /**
      * This method get Connection from JdbcDataSource.
      *
@@ -62,5 +52,4 @@ public class ConnectionFactory {
     public Connection getConnection() throws SQLException {
         return dataSource.getConnection();
     }
-
 }

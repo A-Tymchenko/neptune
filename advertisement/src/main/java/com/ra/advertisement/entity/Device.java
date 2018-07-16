@@ -1,4 +1,4 @@
-package com.ra.advertisement.model.entities;
+package com.ra.advertisement.entity;
 
 public class Device {
 
@@ -12,6 +12,12 @@ public class Device {
 
     public Device(final Long devId, final String name, final String model, final String deviceType) {
         this.devId = devId;
+        this.name = name;
+        this.model = model;
+        this.deviceType = deviceType;
+    }
+
+    public Device(final String name, final String model, final String deviceType) {
         this.name = name;
         this.model = model;
         this.deviceType = deviceType;

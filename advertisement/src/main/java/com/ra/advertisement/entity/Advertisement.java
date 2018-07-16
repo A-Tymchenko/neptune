@@ -1,4 +1,4 @@
-package com.ra.advertisement.model.entities;
+package com.ra.advertisement.entity;
 
 public class Advertisement {
     private Long adId;
@@ -14,6 +14,15 @@ public class Advertisement {
     public Advertisement(final Long adId, final String title, final String context, final String imageUrl,
                          final String language, final Long provId) {
         this.adId = adId;
+        this.title = title;
+        this.context = context;
+        this.imageUrl = imageUrl;
+        this.language = language;
+        this.provId = provId;
+    }
+
+    public Advertisement(final String title, final String context, final String imageUrl,
+                         final String language, final Long provId) {
         this.title = title;
         this.context = context;
         this.imageUrl = imageUrl;
