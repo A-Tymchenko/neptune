@@ -1,10 +1,10 @@
-package com.ra.courses.airport.entity;
+package com.ra.airport.entity;
 
 import java.sql.Timestamp;
 import java.util.Objects;
 
 public class Ticket {
-    private Long idTicket;
+    private Integer idTicket;
     private String ticketNumber;
     private String passengerName;
     private String document;
@@ -13,28 +13,11 @@ public class Ticket {
     public Ticket() {
     }
 
-    public Ticket(final String ticketNumber, final String passengerName, final String document,
-                  final Timestamp sellingDate) {
-        this.ticketNumber = ticketNumber.trim();
-        this.passengerName = passengerName.trim();
-        this.document = document.trim();
-        this.sellingDate = sellingDate;
-    }
-
-    public Ticket(final Long idTicket, final String ticketNumber, final String passengerName, final String document,
-                  final Timestamp sellingDate) {
-        this.idTicket = idTicket;
-        this.ticketNumber = ticketNumber.trim();
-        this.passengerName = passengerName.trim();
-        this.document = document.trim();
-        this.sellingDate = sellingDate;
-    }
-
-    public Long getIdTicket() {
+     public Integer getIdTicket() {
         return idTicket;
     }
 
-    public void setIdTicket(final Long idTicket) {
+    public void setIdTicket(final Integer idTicket) {
         this.idTicket = idTicket;
     }
 
