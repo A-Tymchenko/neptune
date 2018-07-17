@@ -10,6 +10,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.FileReader;
+import java.net.URL;
 import java.sql.Connection;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -23,6 +24,8 @@ class PublisherAdvertisementDaoImplTest {
     private static final Publisher PUBLISHER_UPDATE = new Publisher(1L, "Advert ltd Update",
             "Kyiv Update", "25-17-84 Update", "Ukraine Update");
     private static ConnectionFactory connectionFactory;
+    private static URL urlToPublisherDb;
+    private static URL urlToDropPublisherDb;
     private AdvertisementDao<Publisher> publisherDao;
 
     @BeforeEach
@@ -30,7 +33,8 @@ class PublisherAdvertisementDaoImplTest {
         connectionFactory = ConnectionFactory.getInstance();
         publisherDao = new PublisherAdvertisementDaoImpl(connectionFactory);
         Connection connection = connectionFactory.getConnection();
-        RunScript.execute(connection, new FileReader(".\\src\\test\\resources\\publisher_db.sql"));
+        urlToPublisherDb = ClassLoader.getSystemResource("./publisher_db.sql");
+        RunScript.execute(connection, new FileReader(urlToPublisherDb.getPath()));
     }
 
     /**
@@ -278,6 +282,7 @@ class PublisherAdvertisementDaoImplTest {
      */
     static void dropTablePublisherMethod() throws Exception {
         Connection connection = connectionFactory.getConnection();
-        RunScript.execute(connection, new FileReader(".\\src\\test\\resources\\drop_table_publisher.sql"));
+        urlToDropPublisherDb = ClassLoader.getSystemResource("./drop_table_publisher.sql");
+        RunScript.execute(connection, new FileReader(urlToDropPublisherDb.getPath()));
     }
 }

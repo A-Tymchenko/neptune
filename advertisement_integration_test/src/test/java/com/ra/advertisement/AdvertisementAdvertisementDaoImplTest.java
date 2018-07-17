@@ -12,6 +12,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.FileReader;
+import java.net.URL;
 import java.sql.Connection;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -27,6 +28,9 @@ class AdvertisementAdvertisementDaoImplTest {
     private static final Advertisement ADVERTISEMENT_UPDATE = new Advertisement(1L, "AdvertoNEUpdate",
             "WELCOME TO UKRAINE UPDATE", "iMAGE uRL UPDATE", "English UPDATE", 1L);
     private static ConnectionFactory connectionFactory;
+    private static URL urlToProviderDB;
+    private static URL urlToAdvertisementDB;
+    private static URL urlToDropTableAdvertisement;
     private AdvertisementDao<Advertisement> advertisementDao;
     private AdvertisementDao<Provider> providerDao;
 
@@ -36,8 +40,10 @@ class AdvertisementAdvertisementDaoImplTest {
         advertisementDao = new AdvertisementAdvertisementDaoImpl(connectionFactory);
         providerDao = new ProviderAdvertisementDaoImpl(connectionFactory);
         Connection connection = connectionFactory.getConnection();
-        RunScript.execute(connection, new FileReader(".\\src\\test\\resources\\provider_db.sql"));
-        RunScript.execute(connection, new FileReader(".\\src\\test\\resources\\advertisement_db.sql"));
+        urlToProviderDB = ClassLoader.getSystemResource("./provider_db.sql");
+        urlToAdvertisementDB = ClassLoader.getSystemResource("./advertisement_db.sql");
+        RunScript.execute(connection, new FileReader(urlToProviderDB.getPath()));
+        RunScript.execute(connection, new FileReader(urlToAdvertisementDB.getPath()));
     }
 
     /**
@@ -292,6 +298,7 @@ class AdvertisementAdvertisementDaoImplTest {
      */
     static void dropTableAdvertisementMethod() throws Exception {
         Connection connection = connectionFactory.getConnection();
-        RunScript.execute(connection, new FileReader(".\\src\\test\\resources\\drop_table_advertisement.sql"));
+        urlToDropTableAdvertisement = ClassLoader.getSystemResource("./drop_table_advertisement.sql");
+        RunScript.execute(connection, new FileReader(urlToDropTableAdvertisement.getPath()));
     }
 }

@@ -10,6 +10,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.FileReader;
+import java.net.URL;
 import java.sql.Connection;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -23,6 +24,8 @@ class ProviderAdvertisementDaoImplTest {
     private static final Provider PROVIDER_UPDATE = new Provider(1L, "Coca Cola Update",
             "LvivUpdate", "22-45-18Update", "UkraineUpdate");
     private static ConnectionFactory connectionFactory;
+    private static URL urlToProviderDb;
+    private static URL urlToDropProviderDB;
     private AdvertisementDao<Provider> providerDao;
 
     @BeforeEach
@@ -30,7 +33,8 @@ class ProviderAdvertisementDaoImplTest {
         connectionFactory = ConnectionFactory.getInstance();
         providerDao = new ProviderAdvertisementDaoImpl(connectionFactory);
         Connection connection = connectionFactory.getConnection();
-        RunScript.execute(connection, new FileReader(".\\src\\test\\resources\\provider_db.sql"));
+        urlToProviderDb = ClassLoader.getSystemResource("./provider_db.sql");
+        RunScript.execute(connection, new FileReader(urlToProviderDb.getPath()));
     }
 
     /**
@@ -290,6 +294,7 @@ class ProviderAdvertisementDaoImplTest {
      */
     static void dropTableProviderMethod() throws Exception {
         Connection connection = connectionFactory.getConnection();
-        RunScript.execute(connection, new FileReader(".\\src\\test\\resources\\drop_table_provider.sql"));
+        urlToDropProviderDB = ClassLoader.getSystemResource("./drop_table_provider.sql");
+        RunScript.execute(connection, new FileReader(urlToDropProviderDB.getPath()));
     }
 }

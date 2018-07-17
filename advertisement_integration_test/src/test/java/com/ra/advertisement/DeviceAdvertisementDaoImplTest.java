@@ -10,6 +10,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.FileReader;
+import java.net.URL;
 import java.sql.Connection;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -21,6 +22,8 @@ public class DeviceAdvertisementDaoImplTest {
     private static final Device DEVICE_UPDATE = new Device(1L, "Nokia Update", "25-10 Update",
             "Mobile Phone Update");
     private static ConnectionFactory connectionFactory;
+    private static URL urlToDeviceDB;
+    private static URL urlToDropDeviceDB;
     private AdvertisementDao<Device> deviceDao;
 
     @BeforeEach
@@ -28,7 +31,8 @@ public class DeviceAdvertisementDaoImplTest {
         connectionFactory = ConnectionFactory.getInstance();
         deviceDao = new DeviceAdvertisementDaoImpl(connectionFactory);
         Connection connection = connectionFactory.getConnection();
-        RunScript.execute(connection, new FileReader(".\\src\\test\\resources\\device_db.sql"));
+        urlToDeviceDB = ClassLoader.getSystemResource("./device_db.sql");
+        RunScript.execute(connection, new FileReader(urlToDeviceDB.getPath()));
     }
 
     /**
@@ -274,6 +278,7 @@ public class DeviceAdvertisementDaoImplTest {
      */
     static void dropTableDevicesMethod() throws Exception {
         Connection connection = connectionFactory.getConnection();
-        RunScript.execute(connection, new FileReader(".\\src\\test\\resources\\drop_table_devices.sql"));
+        urlToDropDeviceDB = ClassLoader.getSystemResource("./drop_table_devices.sql");
+        RunScript.execute(connection, new FileReader(urlToDropDeviceDB.getPath()));
     }
 }
