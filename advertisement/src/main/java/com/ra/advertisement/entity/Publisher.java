@@ -1,4 +1,4 @@
-package com.ra.advertisement.model.entities;
+package com.ra.advertisement.entity;
 
 public class Publisher {
 
@@ -15,6 +15,14 @@ public class Publisher {
     public Publisher(final Long pubId, final String name, final String address, final String telephone,
                      final String country) {
         this.pubId = pubId;
+        this.name = name;
+        this.address = address;
+        this.telephone = telephone;
+        this.country = country;
+    }
+
+    public Publisher(final String name, final String address, final String telephone,
+                     final String country) {
         this.name = name;
         this.address = address;
         this.telephone = telephone;

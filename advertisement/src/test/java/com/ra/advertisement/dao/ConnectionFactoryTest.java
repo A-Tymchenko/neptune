@@ -1,5 +1,6 @@
-package com.ra.advertisement.connection;
+package com.ra.advertisement.dao;
 
+import com.ra.advertisement.connection.ConnectionFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -7,7 +8,6 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Properties;
-import java.util.logging.Logger;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -16,7 +16,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class ConnectionFactoryTest {
     private ConnectionFactory connectionFactory;
     private Properties dBproperties;
-    private Logger LOGGER = Logger.getLogger(ConnectionFactory.class.getName());
 
     @BeforeEach
     void setUp() throws IOException {
@@ -51,13 +50,8 @@ public class ConnectionFactoryTest {
      * testing if the method returns Object of class Connection
      */
     @Test
-    void getConnectionFromDataSourceReturnTrue() {
-        Connection connection = null;
-        try {
-            connection = connectionFactory.getConnection();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+    void getConnectionFromDataSourceReturnTrue() throws SQLException {
+        Connection connection = connectionFactory.getConnection();
         assertTrue(connection instanceof Connection);
     }
 
