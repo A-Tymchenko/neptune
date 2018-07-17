@@ -233,3 +233,8 @@ project("advertisement_integration_test") {
         compile project(':advertisement')
     }
 }
+
+project("advertisement") {
+    dependencies {
+
+    }}
