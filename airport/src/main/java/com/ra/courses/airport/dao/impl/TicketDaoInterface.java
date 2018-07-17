@@ -1,5 +1,7 @@
 package com.ra.courses.airport.dao.impl;
 
+import com.ra.courses.airport.dao.exception.DaoException;
+
 import java.util.List;
 import java.util.Optional;
 

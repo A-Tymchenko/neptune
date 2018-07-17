@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Optional;
 
 import com.ra.courses.airport.entity.Ticket;
+import com.ra.courses.airport.factory.ConnectionFactory;
 import org.apache.log4j.Logger;
 
 public class TicketDao implements TicketDaoInterface<Ticket> {
