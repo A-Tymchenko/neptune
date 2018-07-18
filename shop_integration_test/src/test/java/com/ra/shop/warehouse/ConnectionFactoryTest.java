@@ -32,7 +32,7 @@ public class ConnectionFactoryTest {
         ConnectionFactory firstInstance = ConnectionFactory.getInstance();
         ConnectionFactory secondInstance = ConnectionFactory.getInstance();
 
-        assertTrue(firstInstance == secondInstance);
+        assertSame(firstInstance, secondInstance);
     }
 
 }

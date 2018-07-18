@@ -6,41 +6,24 @@ import com.ra.shop.dao.exception.WarehouseDaoException;
 import com.ra.shop.dao.implementation.WarehouseDaoImpl;
 import com.ra.shop.warehouse.tools.Tools;
 import com.ra.shop.wharehouse.Warehouse;
+import org.h2.tools.RunScript;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.io.File;
-import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
 import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Scanner;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class WarehouseDaoTest {
 
-    private static final String CREATE_TABLE_WAREHOUSE = getSql("src/test/resources/warehouse_create_table.sql");
-    private static final String DROP_TABLE_WAREHOUSE = getSql("src/test/resources/drop_table.sql");
-
-    private static final String getSql(final String path) {
-        String sqlQuery = "";
-        try {
-            Scanner sc = new Scanner(new File(path));
-
-            while (sc.hasNextLine()) {
-                sqlQuery += sc.nextLine();
-            }
-            return sqlQuery;
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
-        return "";
-    }
+    private static final String CREATE_TABLE_WAREHOUSE = "src/test/resources/warehouse_create_table.sql";
+    private static final String DROP_TABLE_WAREHOUSE = "src/test/resources/drop_table.sql";
 
     private WarehouseDao<Warehouse> warehouseDao;
 
@@ -109,11 +92,10 @@ public class WarehouseDaoTest {
     }
 
     @Test
-    public void whenFillInWarehouseCalledThenWarehouseIsSetCorrectlyFromTheObject() throws WarehouseDaoException, IOException, SQLException {
+    public void whenGetAllEmptyListThenListSizeIsZero() throws WarehouseDaoException {
+        List<Warehouse> warehouses = warehouseDao.getAll();
 
-
-
-
+        assertTrue(0 == warehouses.size());
     }
 
     private Warehouse changeWarehouse(Warehouse warehouse) {
@@ -123,21 +105,19 @@ public class WarehouseDaoTest {
         return warehouse;
     }
 
+    private void createDataBaseTable() throws IOException, SQLException {
+        Connection connection = ConnectionFactory.getInstance().getConnection();
+        RunScript.execute(connection, new FileReader(CREATE_TABLE_WAREHOUSE));
+    }
 
     private void deleteDataBaseTable() throws IOException, SQLException {
         Connection connection = ConnectionFactory.getInstance().getConnection();
-        PreparedStatement preparedStatement = connection.prepareStatement(DROP_TABLE_WAREHOUSE);
-        preparedStatement.executeUpdate();
+        RunScript.execute(connection, new FileReader(DROP_TABLE_WAREHOUSE));
+
     }
 
     private void createWarehouse() throws IOException {
         warehouseDao = new WarehouseDaoImpl(ConnectionFactory.getInstance());
         warehouse = Tools.creteWarehouse();
-    }
-
-    private void createDataBaseTable() throws IOException, SQLException {
-        Connection connection = ConnectionFactory.getInstance().getConnection();
-        PreparedStatement preparedStatement = connection.prepareStatement(CREATE_TABLE_WAREHOUSE);
-        preparedStatement.executeUpdate();
     }
 }

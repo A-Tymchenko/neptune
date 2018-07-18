@@ -149,7 +149,7 @@ public class WarehouseDaoImplMockitoTest {
     @Test
     public void whenGetByIdThrowsSQLExceptionThenDaoExceptionMustBeThrown() {
         Throwable exception = assertThrows(WarehouseDaoException.class, () -> {
-            when(mockConnection.prepareStatement(SELECT_WAREHOUSE_BY_ID)).thenThrow(new SQLException());
+            when(mockConnection.prepareStatement(anyString())).thenThrow(new SQLException());
             warehouseDaoImpl.getById(1);
         });
 
