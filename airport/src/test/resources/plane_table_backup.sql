@@ -1,0 +1,7 @@
+CREATE TABLE IF NOT EXISTS flight (
+  id INT NOT NULL AUTO_INCREMENT UNIQUE,
+  owner VARCHAR(255),
+  model VARCHAR(255),
+  type VARCHAR(255),
+  platenumber INTEGER,
+);

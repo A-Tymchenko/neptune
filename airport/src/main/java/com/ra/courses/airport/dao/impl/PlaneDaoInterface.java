@@ -1,4 +1,4 @@
-package main.java.com.ra.courses.airport.dao.impl;
+package com.ra.courses.airport.dao.impl;
 //create and add exception
 
 import java.util.List;

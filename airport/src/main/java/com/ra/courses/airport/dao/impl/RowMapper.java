@@ -1,4 +1,4 @@
-package main.java.com.ra.courses.airport.dao.impl;
+package com.ra.courses.airport.dao.impl;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;

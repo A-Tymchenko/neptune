@@ -1,4 +1,4 @@
-package main.java.com.ra.courses.airport.dao.impl;
+package com.ra.courses.airport.dao.impl;
 
 
 import org.h2.jdbcx.JdbcDataSource;

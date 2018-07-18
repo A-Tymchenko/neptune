@@ -1,6 +1,5 @@
-package main.java.com.ra.courses.airport.dao.impl;
-
-import main.java.com.ra.courses.airport.entity.Plane;
+package com.ra.courses.airport.dao.impl;
+import com.ra.courses.airport.entity.Plane;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;

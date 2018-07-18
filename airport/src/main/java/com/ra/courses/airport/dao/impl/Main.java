@@ -1,6 +1,6 @@
-package main.java.com.ra.courses.airport.dao.impl;
+package com.ra.courses.airport.dao.impl;
 
-import main.java.com.ra.courses.airport.entity.Plane;
+import com.ra.courses.airport.entity.Plane;
 
 import java.io.IOException;
 import java.sql.Connection;
@@ -22,6 +22,7 @@ public class Main {
         String createTable="CREATE TABLE IF NOT EXISTS plane ("
                 +  "id INTEGER NOT NULL"
                 +  "owner VARCHAR(255),"
+                +  "type VARCHAR(255),"
                 +  "model VARCHAR(255),"
                 +  "platenumber INTEGER)";
 

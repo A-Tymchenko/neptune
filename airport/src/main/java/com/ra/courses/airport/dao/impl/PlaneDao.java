@@ -1,8 +1,12 @@
-package main.java.com.ra.courses.airport.dao.impl;
+package com.ra.courses.airport.dao.impl;
 //create Logger
 
 import java.sql.Connection;
-import main.java.com.ra.courses.airport.entity.Plane;
+
+import com.ra.courses.airport.dao.impl.RowMapper;
+import com.ra.courses.airport.dao.impl.PlaneRowMapper;
+import com.ra.courses.airport.entity.Plane;
+
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -11,12 +15,6 @@ import java.util.List;
 import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-
-
-
-
-
 
 public class PlaneDao implements PlaneDaoInterface<Plane> {
 
@@ -48,7 +46,7 @@ public class PlaneDao implements PlaneDaoInterface<Plane> {
 
 
 
-    public Plane create (Plane plane) throws PlaneDaoException{
+    public Plane create (Plane plane) throws PlaneDaoException {
         try (Connection connection = connectionFactory.getConnection()) {
             final PreparedStatement preparedStatement = connection.prepareStatement(INSERT_PLANE_SQL);
             fillPreparedStatement(plane,preparedStatement);
@@ -75,7 +73,7 @@ public class PlaneDao implements PlaneDaoInterface<Plane> {
             preparedStatement.executeUpdate();
             plane = getById(plane.getId()).get();
         }catch (SQLException e) {
-            final String errorMessage = ExceptionMessage.FAILED_TO_UPDATE_PLANE.get() + plane.getId();
+            final String errorMessage = ExceptionMessage.FAILED_TO_UPDATE_PLANE_WITH_ID.get() + plane.getId();
             LOGGER.error(errorMessage, e);
             throw new PlaneDaoException(errorMessage, e);
             }
@@ -91,7 +89,7 @@ public class PlaneDao implements PlaneDaoInterface<Plane> {
                         preparedStatement.setInt(1, plane.getId());
                         result = preparedStatement.executeUpdate() > 0;
                     } catch (SQLException e) {
-                        final String errorMessage = ExceptionMessage.FAILED_TO_DELETE_PLANE.get() + plane.getId();
+                        final String errorMessage = ExceptionMessage.FAILED_TO_DELETE_PLANE_WITH_ID.get() + plane.getId();
                         LOGGER.error(errorMessage, e);
                         throw new PlaneDaoException(errorMessage, e);
                     }
@@ -111,7 +109,7 @@ public class PlaneDao implements PlaneDaoInterface<Plane> {
                             return Optional.of(plane);
                             }
                     } catch (SQLException e) {
-                        final String errorMessage = ExceptionMessage.FAILED_TO_GET_PLANE.get() + idPlane;
+                        final String errorMessage = ExceptionMessage.FAILED_TO_GET_PLANE_WITH_ID.get() + idPlane;
                         LOGGER.error(errorMessage, e);
                         throw new PlaneDaoException(errorMessage, e);
                     }
