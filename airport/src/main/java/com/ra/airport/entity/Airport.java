@@ -4,69 +4,69 @@ import java.util.Objects;
 
 public class Airport {
 
-    private Integer apid;
-    private String apname;
-    private int apnum;
-    private String aptype;
-    private String addresses;
-    private int terminalcount;
+    private Integer apId;
+    private String apName;
+    private int apNum;
+    private String apType;
+    private String address;
+    private int terminalCount;
 
-    public Airport(final Integer apid, final String apname, final int apnum, final String aptype, final String addresses,
-                   final int terminalcount) {
-        this.apid = apid;
-        this.apname = apname;
-        this.apnum = apnum;
-        this.aptype = aptype;
-        this.addresses = addresses;
-        this.terminalcount = terminalcount;
+    public Airport(final Integer apId, final String apName, final int apNum,
+                   final String apType, final String address, final int terminalCount) {
+        this.apId = apId;
+        this.apName = apName;
+        this.apNum = apNum;
+        this.apType = apType;
+        this.address = address;
+        this.terminalCount = terminalCount;
     }
 
-    public Integer getApid() {
-        return apid;
+    public Integer getApId() {
+        return apId;
     }
 
-    public String getApname() {
-        return apname;
+    public void setApId(final Integer apId) {
+        this.apId = apId;
     }
 
-    public int getApnum() {
-        return apnum;
+    public String getApName() {
+        return apName;
     }
 
-    public String getAptype() {
-        return aptype;
+    public void setApName(final String apName) {
+        this.apName = apName;
     }
 
-    public String getAddresses() {
-        return addresses;
+    public int getApNum() {
+        return apNum;
     }
 
-    public int getTerminalcount() {
-        return terminalcount;
+    public void setApNum(final int apNum) {
+        this.apNum = apNum;
     }
 
-    public void setApid(final Integer apid) {
-        this.apid = apid;
+    public String getApType() {
+        return apType;
     }
 
-    public void setApname(final String apname) {
-        this.apname = apname;
+    public void setApType(final String apType) {
+        this.apType = apType;
     }
 
-    public void setApnum(final int apnum) {
-        this.apnum = apnum;
+    public String getAddress() {
+        return address;
     }
 
-    public void setAptype(final String aptype) {
-        this.aptype = aptype;
+    public void setAddress(final String address) {
+        this.address = address;
     }
 
-    public void setAddresses(final String addresses) {
-        this.addresses = addresses;
+    public int getTerminalCount() {
+        return terminalCount;
     }
 
-    public void setTerminalcount(final int terminalcount) {
-        this.terminalcount = terminalcount;
+    public void setTerminalCount(final int terminalCount) {
+        this.terminalCount = terminalCount;
     }
 
     @Override
@@ -78,29 +78,29 @@ public class Airport {
             return false;
         }
         final Airport airport = (Airport) object;
-        return apnum == airport.apnum
-                && terminalcount == airport.terminalcount
-                && Objects.equals(apid, airport.apid)
-                && Objects.equals(apname, airport.apname)
-                && Objects.equals(aptype, airport.aptype)
-                && Objects.equals(addresses, airport.addresses);
+        return apNum == airport.apNum
+                && terminalCount == airport.terminalCount
+                && Objects.equals(apId, airport.apId)
+                && Objects.equals(apName, airport.apName)
+                && Objects.equals(apType, airport.apType)
+                && Objects.equals(address, airport.address);
     }
 
     @Override
     public int hashCode() {
 
-        return Objects.hash(apid, apname, apnum, aptype, addresses, terminalcount);
+        return Objects.hash(apId, apName, apNum, apType, address, terminalCount);
     }
 
     @Override
     public String toString() {
         return "Airport{"
-                + "apid=" + apid
-                + ", apname='" + apname + '\''
-                + ", apnum=" + apnum
-                + ", aptype='" + aptype + '\''
-                + ", addresses='" + addresses + '\''
-                + ", terminalcount=" + terminalcount
+                + "apId=" + apId
+                + ", apName='" + apName + '\''
+                + ", apNum=" + apNum
+                + ", apType='" + apType + '\''
+                + ", address='" + address + '\''
+                + ", terminalCount=" + terminalCount
                 + '}';
     }
 }

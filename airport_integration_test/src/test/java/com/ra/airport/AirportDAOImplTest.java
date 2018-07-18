@@ -32,14 +32,14 @@ public class AirportDAOImplTest {
     @Test
     public void whenAddAirportThenReturnCreatedAirportWitsId() throws AirPortDaoException {
         Airport createdAirport = airportImpl.create(airport);
-        airport.setApid(createdAirport.getApid());
+        airport.setApId(createdAirport.getApId());
         assertEquals(createdAirport, airport);
     }
 
     @Test
     public void whenUpdateAirportThenReturnCreatedAirportWitsId() throws AirPortDaoException {
         Airport createdAirport = airportImpl.update(airport);
-        airport.setApid(createdAirport.getApid());
+        airport.setApId(createdAirport.getApId());
         assertEquals(createdAirport, airport);
     }
 
@@ -50,19 +50,18 @@ public class AirportDAOImplTest {
 
     @Test
     public void whenDeleteAirportThenReturnFalse() throws AirPortDaoException {
-        airport.setApid(10);
+        airport.setApId(10);
         assertEquals(airportImpl.delete(airport), false);
     }
 
     @Test
     public void whenGetAirportByIdThenReturnAirport() throws AirPortDaoException {
         Optional<Airport> ap = airportImpl.getById(1);
-        System.out.println(ap);
-        assertEquals(ap.get().getApname(), this.airport.getApname());
-        assertEquals(ap.get().getAddresses(), this.airport.getAddresses());
-        assertEquals(ap.get().getAptype(), this.airport.getAptype());
-        assertEquals(ap.get().getApnum(), this.airport.getApnum());
-        assertEquals(ap.get().getTerminalcount(), this.airport.getTerminalcount());
+        assertEquals(ap.get().getApName(), this.airport.getApName());
+        assertEquals(ap.get().getAddress(), this.airport.getAddress());
+        assertEquals(ap.get().getApType(), this.airport.getApType());
+        assertEquals(ap.get().getApNum(), this.airport.getApNum());
+        assertEquals(ap.get().getTerminalCount(), this.airport.getTerminalCount());
     }
 
     @Test
