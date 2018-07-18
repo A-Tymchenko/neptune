@@ -9,7 +9,7 @@ import com.ra.shop.wharehouse.Warehouse;
 /**
  * CRUD methods.
  */
-public interface Dao<T> {
+public interface WarehouseDao<T> {
     /**
      * create and return entity.
      *
@@ -36,7 +36,7 @@ public interface Dao<T> {
      *
      * @return entity
      */
-    Warehouse getById(Optional<Integer> idNumber) throws WarehouseDaoException;
+    Warehouse getById(Integer idNumber) throws WarehouseDaoException;
 
     /**
      * List of entities.

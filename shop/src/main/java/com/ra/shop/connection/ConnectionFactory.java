@@ -9,9 +9,10 @@ import org.h2.jdbcx.JdbcDataSource;
 
 @SuppressWarnings("PMD.ClassWithOnlyPrivateConstructorsShouldBeFinal")
 public class ConnectionFactory {
-    private static ConnectionFactory connectionFactory;
-    private static Properties properties;
     private static volatile JdbcDataSource dataSource;
+    private static Properties properties;
+
+    private static ConnectionFactory factoryInstance;
 
     @SuppressWarnings("PMD.ClassWithOnlyPrivateConstructorsShouldBeFinal")
     private ConnectionFactory() throws IOException {
@@ -19,26 +20,22 @@ public class ConnectionFactory {
         properties.load(ClassLoader.getSystemResourceAsStream("db.properties"));
     }
 
-    private static ConnectionFactory buildConnectionFactory() throws IOException {
+    /**
+     * Returns singleton's instance.
+     *
+     * @return factory instance.
+     */
+    public static ConnectionFactory getInstance() throws IOException {
         synchronized (ConnectionFactory.class) {
-            if (connectionFactory == null) {
-                connectionFactory = new ConnectionFactory();
+            if (factoryInstance == null) {
+                factoryInstance = new ConnectionFactory();
                 dataSource = new JdbcDataSource();
                 dataSource.setURL(properties.getProperty("URL"));
                 dataSource.setUser(properties.getProperty("USERNAME"));
                 dataSource.setPassword(properties.getProperty("PASSWORD"));
             }
         }
-        return connectionFactory;
-    }
-
-    /**
-     * Returns singleton's instance.
-     *
-     * @return connection instance.
-     */
-    public static ConnectionFactory getInstance() throws IOException {
-        return buildConnectionFactory();
+        return factoryInstance;
     }
 
     public Connection getConnection() throws SQLException {
