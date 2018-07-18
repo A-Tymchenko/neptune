@@ -75,19 +75,13 @@ public class WarehouseDaoMockitoTest {
     }
 
     @Test
-    public void whenAddAirportThenReturnAirport() throws SQLException, WarehouseDaoException {
+    public void whenAddWarehouseThenReturnWarehouse() throws SQLException, WarehouseDaoException {
         when(connectionFactory.getConnection()).thenReturn(connection);
-        when(connection.prepareStatement(any())).thenReturn(preparedStatement);
+        when(connection.prepareStatement(anyString())).thenReturn(preparedStatement);
         when(preparedStatement.executeQuery()).thenReturn(resultSet);
         when(resultSet.next()).thenReturn(true);
         when(connectionFactory.getConnection()).thenReturn(connection);
 
         warehouseDao.create(warehouse);
     }
-
-
-
-
-
-
 }
