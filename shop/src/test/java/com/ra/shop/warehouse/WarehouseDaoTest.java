@@ -1,10 +1,10 @@
-package com.ra.shop.warehouse.integration;
+package com.ra.shop.warehouse;
 
 import com.ra.shop.connection.ConnectionFactory;
-import com.ra.shop.dao.Dao;
+import com.ra.shop.dao.WarehouseDao;
 import com.ra.shop.dao.exception.WarehouseDaoException;
 import com.ra.shop.dao.implementation.WarehouseDaoImpl;
-import com.ra.shop.warehouse.Tools;
+import com.ra.shop.warehouse.integration.Tools;
 import com.ra.shop.wharehouse.Warehouse;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -15,7 +15,6 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -43,7 +42,7 @@ public class WarehouseDaoTest {
         return "";
     }
 
-    private Dao<Warehouse> dao;
+    private WarehouseDao<Warehouse> warehouseDao;
 
     private Warehouse warehouse;
 
@@ -60,7 +59,7 @@ public class WarehouseDaoTest {
 
     @Test
     public void whenCreateTableThenNewWarehouseMustReturn() throws WarehouseDaoException {
-        Warehouse createdWarehouse = dao.create(warehouse);
+        Warehouse createdWarehouse = warehouseDao.create(warehouse);
         assertNotNull(createdWarehouse);
         Integer warehouseId = createdWarehouse.getIdNumber();
         assertNotNull(warehouseId);
@@ -70,17 +69,26 @@ public class WarehouseDaoTest {
 
     @Test
     public void whenUpdateThenUpdatedWarehouseReturns() throws WarehouseDaoException {
-        Warehouse createdWarehouse = dao.create(warehouse);
+        Warehouse createdWarehouse = warehouseDao.create(warehouse);
         Warehouse expectedWarehouse = changeWarehouse(createdWarehouse);
 
-        Warehouse updatedWarehouse = dao.update(createdWarehouse);
+        Warehouse updatedWarehouse = warehouseDao.update(createdWarehouse);
         assertEquals(expectedWarehouse, updatedWarehouse);
     }
 
     @Test
+    public void whenDeleteFalseThenReturnFalse() throws WarehouseDaoException {
+        Warehouse createdWarehouse = warehouseDao.create(warehouse);
+        warehouseDao.delete(createdWarehouse);
+        boolean result = warehouseDao.delete(createdWarehouse);
+
+        assertFalse(result);
+    }
+
+    @Test
     public void whenDeleteThenDeleteAndReturnTrue() throws WarehouseDaoException {
-        Warehouse createdWarehouse = dao.create(warehouse);
-        boolean result = dao.delete(createdWarehouse);
+        Warehouse createdWarehouse = warehouseDao.create(warehouse);
+        boolean result = warehouseDao.delete(createdWarehouse);
 
         assertTrue(result);
     }
@@ -88,28 +96,23 @@ public class WarehouseDaoTest {
     @Test
     public void whenGetAllThenWarehousesMustReturn() throws WarehouseDaoException {
         List<Warehouse> expectedList = new ArrayList<>();
-        Warehouse e1 = dao.create(warehouse);
-        Warehouse e2 = dao.create(warehouse);
-        Warehouse e3 = dao.create(warehouse);
+        Warehouse e1 = warehouseDao.create(warehouse);
+        Warehouse e2 = warehouseDao.create(warehouse);
+        Warehouse e3 = warehouseDao.create(warehouse);
         expectedList.add(e1);
         expectedList.add(e2);
         expectedList.add(e3);
 
-        List<Warehouse> warehouses = dao.getAll();
+        List<Warehouse> warehouses = warehouseDao.getAll();
 
         assertEquals(expectedList, warehouses);
     }
 
     @Test
-    public void whenFillInWarehouseCalledThenWarehouseIsSetFromResultSet() throws WarehouseDaoException, IOException, SQLException {
-        Warehouse expected = dao.create(warehouse);
-        ConnectionFactory connectionFactory = ConnectionFactory.getInstance();
-        Connection connection = connectionFactory.getConnection();
-        PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM warehouse WHERE id = ?");
-        preparedStatement.setInt(1, 1);
+    public void whenFillInWarehouseCalledThenWarehouseIsSetCorrectlyFromTheObject() throws WarehouseDaoException, IOException, SQLException {
 
-        ResultSet resultSet = preparedStatement.executeQuery();
-        WarehouseDaoImpl warehouseDao = new WarehouseDaoImpl(connectionFactory);
+
+
 
     }
 
@@ -128,7 +131,7 @@ public class WarehouseDaoTest {
     }
 
     private void createWarehouse() throws IOException {
-        dao = new WarehouseDaoImpl(ConnectionFactory.getInstance());
+        warehouseDao = new WarehouseDaoImpl(ConnectionFactory.getInstance());
         warehouse = Tools.creteWarehouse();
     }
 

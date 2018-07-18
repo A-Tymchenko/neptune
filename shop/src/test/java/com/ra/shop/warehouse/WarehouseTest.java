@@ -4,7 +4,7 @@ import com.ra.shop.wharehouse.Warehouse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import static com.ra.shop.warehouse.Tools.creteWarehouse;
+import static com.ra.shop.warehouse.integration.Tools.creteWarehouse;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -20,7 +20,7 @@ public class WarehouseTest {
     }
 
     @Test
-    public void whenWarehousesTheSameEqualsReturTrue() {
+    public void whenWarehousesTheSameEqualsReturnsTrue() {
         assertTrue(firstWarehouse.hashCode() == secondWarehouse.hashCode());
 
         assertTrue(firstWarehouse.equals(secondWarehouse));

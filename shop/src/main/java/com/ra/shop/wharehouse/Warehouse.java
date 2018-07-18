@@ -19,6 +19,13 @@ public class Warehouse implements Serializable {
 
     public Warehouse() {
     }
+
+    public Warehouse(String name, Double price, Integer amount) {
+        this.name = name;
+        this.price = price;
+        this.amount = amount;
+    }
+
     public Warehouse(ResultSet resultSet) throws WarehouseDaoException {
         try {
             this.idNumber = resultSet.getInt("id");
