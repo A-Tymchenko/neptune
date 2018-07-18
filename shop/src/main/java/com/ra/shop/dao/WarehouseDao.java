@@ -1,7 +1,6 @@
 package com.ra.shop.dao;
 
 import java.util.List;
-import java.util.Optional;
 
 import com.ra.shop.dao.exception.WarehouseDaoException;
 import com.ra.shop.wharehouse.Warehouse;

@@ -1,6 +1,0 @@
-CREATE TABLE IF NOT EXISTS warehouse (
-  id BIGINT NOT NULL AUTO_INCREMENT UNIQUE,
-  name VARCHAR(255),
-  price DOUBLE,
-  amount INT,
-);

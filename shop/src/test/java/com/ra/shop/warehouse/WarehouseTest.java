@@ -5,8 +5,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static com.ra.shop.warehouse.tools.Tools.creteWarehouse;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class WarehouseTest {
 
@@ -21,9 +20,19 @@ public class WarehouseTest {
 
     @Test
     public void whenWarehousesTheSameEqualsReturnsTrue() {
-        assertTrue(firstWarehouse.hashCode() == secondWarehouse.hashCode());
+        assertEquals(firstWarehouse.hashCode(), secondWarehouse.hashCode());
 
-        assertTrue(firstWarehouse.equals(secondWarehouse));
+        assertEquals(firstWarehouse, secondWarehouse);
+    }
+
+    @Test
+    public void whenEqualsObjectsTrueExpected() {
+        assertEquals(firstWarehouse, secondWarehouse);
+    }
+
+    @Test
+    public void whenDifferentObjectsFalseExpected() {
+        assertNotEquals(firstWarehouse, Object.class);
     }
 
     @Test
@@ -31,7 +40,7 @@ public class WarehouseTest {
         firstWarehouse.setIdNumber(2);
         assertFalse(firstWarehouse.hashCode() == secondWarehouse.hashCode());
 
-        assertFalse(firstWarehouse.equals(secondWarehouse));
+        assertNotEquals(firstWarehouse, secondWarehouse);
     }
 
     @Test
@@ -42,45 +51,40 @@ public class WarehouseTest {
                 + ", price=" + Double.MIN_VALUE
                 + ", amount=" + 2
                 + '}';
-        assertTrue(firstWarehouse.toString().equals(expected));
-    }
-
-    @Test
-    public void whenEqualsObjectsTrueExpected() {
-        assertTrue(firstWarehouse.equals(secondWarehouse));
+        assertEquals(firstWarehouse.toString(), expected);
     }
 
     @Test
     public void whenDifferentIdFalseIsExpected() {
-        firstWarehouse.setIdNumber(2);
-        assertFalse(firstWarehouse.equals(secondWarehouse));
+        firstWarehouse.setIdNumber(0);
+        assertNotEquals(firstWarehouse, secondWarehouse);
     }
 
     @Test
     public void whenDifferentNamesFalseIsExpected() {
         firstWarehouse.setName("lelia");
-        assertFalse(firstWarehouse.equals(secondWarehouse));
+        assertNotEquals(firstWarehouse, secondWarehouse);
     }
 
     @Test
     public void whenDifferentPriceFalseIsExpected() {
         firstWarehouse.setPrice(1.1);
-        assertFalse(firstWarehouse.equals(secondWarehouse));
+        assertNotEquals(firstWarehouse, secondWarehouse);
     }
 
     @Test
     public void whenDifferentAmountFalseIsExpected() {
         firstWarehouse.setAmount(1);
-        assertFalse(firstWarehouse.equals(secondWarehouse));
+        assertNotEquals(firstWarehouse, secondWarehouse);
     }
 
     @Test
     public void whenEqualsObjectsWithNullExpectedFalse() {
-        assertFalse(firstWarehouse.equals(null));
+        assertNotEquals(firstWarehouse,null);
     }
 
     @Test
     public void whenEqualsWithOtherClasses() {
-        assertFalse(firstWarehouse.equals(new Object()));
+        assertEquals(firstWarehouse, firstWarehouse);
     }
 }
