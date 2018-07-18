@@ -30,7 +30,7 @@ public abstract class DataCreationHelper {
         ticket.setTicketNumber("AA111-BB111");
         ticket.setPassengerName("John Dow");
         ticket.setDocument("QQ12345678QQ");
-        ticket.setSellingDate(Timestamp.valueOf("2018-10-24 08:00:00"));
+        ticket.setSellingDate(Timestamp.valueOf("2018-07-24 08:00:00"));
         return ticket;
     }
 }

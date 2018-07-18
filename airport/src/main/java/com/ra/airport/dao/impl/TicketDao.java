@@ -1,9 +1,6 @@
 package com.ra.airport.dao.impl;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -20,14 +17,9 @@ import org.apache.logging.log4j.Logger;
  * Implementation of {@link AirPortDao} interface.
  */
 public class TicketDao implements AirPortDao<Ticket> {
-    private static final int ONE = 1;
-    private static final int TWO = 2;
-    private static final int THREE = 3;
-    private static final int FOUR = 4;
-    private static final int FIVE = 5;
-
-    private static final transient Logger LOGGER = LogManager.getLogger(TicketDao.class);
     private final transient ConnectionFactory connectionFactory;
+    private static final transient Logger LOGGER = LogManager.getLogger(TicketDao.class);
+
 
     public TicketDao(final ConnectionFactory connectionFactory) {
         this.connectionFactory = connectionFactory;
@@ -47,14 +39,14 @@ public class TicketDao implements AirPortDao<Ticket> {
 
         try (Connection connection = connectionFactory.getConnection()) {
             final PreparedStatement preparedStatement = connection.prepareStatement(sql);
-            preparedStatement.setString(ONE, ticket.getTicketNumber());
-            preparedStatement.setString(TWO, ticket.getPassengerName());
-            preparedStatement.setString(THREE, ticket.getDocument());
-            preparedStatement.setTimestamp(FOUR, ticket.getSellingDate());
+            preparedStatement.setString(StatementParameter.TICKET_NUMBER.get(), ticket.getTicketNumber());
+            preparedStatement.setString(StatementParameter.PASSENGER_NAME.get(), ticket.getPassengerName());
+            preparedStatement.setString(StatementParameter.DOCUMENT.get(), ticket.getDocument());
+            preparedStatement.setTimestamp(StatementParameter.SELLING_DATE.get(), ticket.getSellingDate());
             preparedStatement.executeUpdate();
             final ResultSet scopeResultSet = connection.prepareStatement("SELECT SCOPE_IDENTITY()").executeQuery();
             if (scopeResultSet.next()) {
-                ticket = getById(scopeResultSet.getInt(ONE)).get();
+                ticket = getById(scopeResultSet.getInt(StatementParameter.ID_TICKET.get())).get();
             }
         } catch (SQLException e) {
             LOGGER.error(ExceptionMessage.FAILED_TO_CREATE_NEW_TICKET.toString(), e);
@@ -75,15 +67,15 @@ public class TicketDao implements AirPortDao<Ticket> {
     public Ticket update(final Ticket ticket) throws AirPortDaoException {
         final String sql = "UPDATE TICKET "
                 + "SET TICKET_NUMBER=?, PASSENGER_NAME=?, DOCUMENT=?, SELLING_DATE=?"
-                + "WHERE ID = ?";
+                + "WHERE ID_TICKET=?";
 
         try (Connection connection = connectionFactory.getConnection()) {
             final PreparedStatement preparedStatement = connection.prepareStatement(sql);
-            preparedStatement.setString(ONE, ticket.getTicketNumber());
-            preparedStatement.setString(TWO, ticket.getPassengerName());
-            preparedStatement.setString(THREE, ticket.getDocument());
-            preparedStatement.setTimestamp(FOUR, ticket.getSellingDate());
-            preparedStatement.setLong(FIVE, ticket.getIdTicket());
+            preparedStatement.setString(StatementParameter.TICKET_NUMBER.get(), ticket.getTicketNumber());
+            preparedStatement.setString(StatementParameter.PASSENGER_NAME.get(), ticket.getPassengerName());
+            preparedStatement.setString(StatementParameter.DOCUMENT.get(), ticket.getDocument());
+            preparedStatement.setTimestamp(StatementParameter.SELLING_DATE.get(), ticket.getSellingDate());
+            preparedStatement.setInt(StatementParameter.ID_TICKET.get(), ticket.getIdTicket());
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
             final String errorMessage = ExceptionMessage.FAILED_TO_UPDATE_TICKET_WITH_ID.get() + ticket.getIdTicket();
@@ -104,11 +96,11 @@ public class TicketDao implements AirPortDao<Ticket> {
      */
     @Override
     public boolean delete(final Ticket ticket) throws AirPortDaoException {
-        final String sql = "DELETE FROM TICKET WHERE ID = ?";
+        final String sql = "DELETE FROM TICKET WHERE ID_TICKET = ?";
         boolean result;
         try (Connection connection = connectionFactory.getConnection()) {
             final PreparedStatement preparedStatement = connection.prepareStatement(sql);
-            preparedStatement.setLong(ONE, ticket.getIdTicket());
+            preparedStatement.setInt(StatementParameter.ID_TICKET.get(), ticket.getIdTicket());
             result = preparedStatement.executeUpdate() > 0;
         } catch (SQLException e) {
             final String errorMessage = ExceptionMessage.FAILED_TO_DELETE_TICKET_WITH_ID.get() + ticket.getIdTicket();
@@ -129,11 +121,11 @@ public class TicketDao implements AirPortDao<Ticket> {
         if (idTicket == null) {
             throw new AirPortDaoException(ExceptionMessage.TICKET_ID_CANNOT_BE_NULL.get());
         }
-        final String sql = "SELECT * FROM TICKET WHERE ID = ?";
+        final String sql = "SELECT * FROM TICKET WHERE ID_TICKET = ?";
 
         try (Connection connection = connectionFactory.getConnection()) {
             final PreparedStatement preparedStatement = connection.prepareStatement(sql);
-            preparedStatement.setLong(ONE, idTicket);
+            preparedStatement.setInt(StatementParameter.ID_TICKET.get(), idTicket);
             final ResultSet resultSet = preparedStatement.executeQuery();
             if (resultSet.next()) {
                 return Optional.of(getTicketFromResultSet(resultSet));
@@ -156,7 +148,7 @@ public class TicketDao implements AirPortDao<Ticket> {
     @Override
     public List<Ticket> getAll() throws AirPortDaoException {
         final List<Ticket> ticketList = new ArrayList<>();
-        final String sql = "SELECT ID, TICKET_NUMBER, PASSENGER_NAME, DOCUMENT, SELLING_DATE FROM TICKET";
+        final String sql = "SELECT * FROM TICKET";
 
         try (Connection connection = connectionFactory.getConnection()) {
             final PreparedStatement preparedStatement = connection.prepareStatement(sql);
@@ -182,7 +174,7 @@ public class TicketDao implements AirPortDao<Ticket> {
      */
     private Ticket getTicketFromResultSet(final ResultSet resultSet) throws SQLException {
         final Ticket ticket = new Ticket();
-        ticket.setIdTicket(resultSet.getInt("ID"));
+        ticket.setIdTicket(resultSet.getInt("ID_TICKET"));
         ticket.setTicketNumber(resultSet.getString("TICKET_NUMBER"));
         ticket.setPassengerName(resultSet.getString("PASSENGER_NAME"));
         ticket.setDocument(resultSet.getString("DOCUMENT"));

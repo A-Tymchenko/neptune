@@ -13,7 +13,7 @@ public class Ticket {
     public Ticket() {
     }
 
-     public Integer getIdTicket() {
+    public Integer getIdTicket() {
         return idTicket;
     }
 
@@ -55,7 +55,7 @@ public class Ticket {
 
     @Override
     public String toString() {
-        return "entities.Ticket{"
+        return "Ticket{"
                 + "idTicket=" + idTicket
                 + ", ticketNumber='" + ticketNumber + '\''
                 + ", passengerName='" + passengerName + '\''

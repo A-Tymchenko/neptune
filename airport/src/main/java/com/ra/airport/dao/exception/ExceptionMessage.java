@@ -17,7 +17,13 @@ public enum ExceptionMessage {
     FAILED_TO_DELETE_TICKET_WITH_ID("Failed to delete ticket with id "),
     FAILED_TO_GET_TICKET_WITH_ID("Failed to get ticket with id "),
     FAILED_TO_GET_ALL_TICKETS("Failed to get all tickets"),
-    TICKET_ID_CANNOT_BE_NULL("Ticket id can't be null");
+    TICKET_ID_CANNOT_BE_NULL("Ticket id can't be null"),
+
+    FAILED_TO_CREATE_NEW_AIRPORT("Failed to create new airport"),
+    FAILED_TO_UPDATE_AIRPORT_WITH_ID("Failed to update airport with id "),
+    FAILED_TO_DELETE_AIRPORT_WITH_ID("Failed to delete airport with id "),
+    FAILED_TO_GET_AIRPORT_WITH_ID("Failed to get airport with id "),
+    FAILED_TO_GET_ALL_AIRPORTS("Failed to get all airports");
 
     private final String message;
 

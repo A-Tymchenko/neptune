@@ -35,7 +35,7 @@ public class TicketTest {
 
     @Test
     public void whenToStringCorrectMessageShouldBeReturned() {
-        String expected = "Flight{id=1, name=' ', carrier=' ', duration=12:00, departureDate=-999999999-01-01T00:00, arrivalDate=+999999999-12-31T23:59:59.999999999, fare=4.9E-324, mealOn=true}";
+        String expected = "Ticket{idTicket=1, ticketNumber='AA111-BB111', passengerName='John Dow', document='QQ12345678QQ', sellingDate=2018-07-24 08:00:00.0}";
         assertEquals(expected, secondTicket.toString());
     }
 
@@ -45,56 +45,32 @@ public class TicketTest {
     }
 
     @Test
-    public void whenEqualsObjectsWithTheDifferentIdsFalseShouldBeReturned() {
+    public void whenEqualsObjectsWithTheDifferentIdTicketFalseShouldBeReturned() {
         secondTicket.setIdTicket(2);
         assertFalse(firstTicket.equals(secondTicket));
     }
 
     @Test
-    public void whenEqualsObjectsWithTheDifferentNamesFalseShouldBeReturned() {
+    public void whenEqualsObjectsWithTheDifferentTicketNumberFalseShouldBeReturned() {
+        secondTicket.setTicketNumber("");
+        assertFalse(firstTicket.equals(secondTicket));
+    }
+
+    @Test
+    public void whenEqualsObjectsWithTheDifferentPassengerNameFalseShouldBeReturned() {
         secondTicket.setPassengerName("");
         assertFalse(firstTicket.equals(secondTicket));
     }
 
     @Test
-    public void whenEqualsObjectsWithTheDifferentCarrierFalseShouldBeReturned() {
-        secondTicket.setCarrier("");
-
+    public void whenEqualsObjectsWithTheDifferentDocumentFalseShouldBeReturned() {
+        secondTicket.setDocument("");
         assertFalse(firstTicket.equals(secondTicket));
     }
 
     @Test
-    public void whenEqualsObjectsWithTheDifferentDurationFalseShouldBeReturned() {
-        secondTicket.setDuration(LocalTime.MIDNIGHT);
-
-        assertFalse(firstTicket.equals(secondTicket));
-    }
-
-    @Test
-    public void whenEqualsObjectsWithTheDifferentMealOnFalseShouldBeReturned() {
-        secondTicket.setMealOn(false);
-
-        assertFalse(firstTicket.equals(secondTicket));
-    }
-
-    @Test
-    public void whenEqualsObjectsWithTheDifferentFareFalseShouldBeReturned() {
-        secondTicket.setFare(Double.MAX_VALUE);
-
-        assertFalse(firstTicket.equals(secondTicket));
-    }
-
-    @Test
-    public void whenEqualsObjectsWithTheDifferentDepartureDateFalseShouldBeReturned() {
-        secondTicket.setDepartureDate(firstTicket.getDepartureDate().plusDays(1));
-
-        assertFalse(firstTicket.equals(secondTicket));
-    }
-
-    @Test
-    public void whenEqualsObjectsWithTheDifferentArrivalDateFalseShouldBeReturned() {
-        secondTicket.setArrivalDate(firstTicket.getArrivalDate().minusDays(1));
-
+    public void whenEqualsObjectsWithTheDifferentSellingDateFalseShouldBeReturned() {
+        secondTicket.setSellingDate(null);
         assertFalse(firstTicket.equals(secondTicket));
     }
 
