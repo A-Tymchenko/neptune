@@ -242,9 +242,5 @@ project("airport_integration_test") {
     }
 }
 
-dependencies {
-    compile 'org.junit.jupiter:junit-jupiter-api'
-    testCompile group: 'org.mockito', name: 'mockito-core', version: '2.19.0'
-}
 
 
