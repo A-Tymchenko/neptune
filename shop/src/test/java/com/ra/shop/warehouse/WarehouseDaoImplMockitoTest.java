@@ -14,7 +14,7 @@ import java.sql.SQLException;
 import java.util.List;
 
 import static com.ra.shop.dao.exception.ExceptionMessage.*;
-import static com.ra.shop.warehouse.integration.Tools.creteWarehouse;
+import static com.ra.shop.warehouse.tools.Tools.creteWarehouse;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.mock;
