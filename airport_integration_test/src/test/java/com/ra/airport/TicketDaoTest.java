@@ -59,12 +59,28 @@ class TicketDaoTest {
     }
 
     @Test
-    public void whenCreateThenNewFlightWithIdShouldBeReturned() throws AirPortDaoException {
+    public void whenCreateThenNewTicketWithIdShouldBeReturned() throws AirPortDaoException {
         Ticket createdTicket = airPortDao.create(ticket);
         assertNotNull(createdTicket);
         Integer idTicket = createdTicket.getIdTicket();
         assertNotNull(idTicket);
         ticket.setIdTicket(idTicket);
         assertEquals(ticket, createdTicket);
+    }
+
+    @Test
+    public void whenUpdateThenUpdatedTicketShouldBeReturned() throws AirPortDaoException {
+        Ticket createdTicket = airPortDao.create(ticket);
+        Ticket expectedTicket = changeTicket(createdTicket);
+        Ticket updatedTicket = airPortDao.update(createdTicket);
+        assertEquals(expectedTicket, updatedTicket);
+    }
+
+    private Ticket changeTicket(Ticket ticket) {
+        ticket.setTicketNumber("DD111-CC111");
+        ticket.setPassengerName("Jane Dow");
+        ticket.setDocument("WW12345678WW");
+        ticket.setSellingDate(Timestamp.valueOf("2018-07-25 08:00:00"));
+        return ticket;
     }
 }
