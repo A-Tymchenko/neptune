@@ -15,6 +15,8 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -51,7 +53,6 @@ class TicketDaoTest {
     private void createTicket() throws IOException {
         airPortDao = new TicketDao(ConnectionFactory.getInstance());
         ticket = new Ticket();
-        ticket.setIdTicket(1);
         ticket.setTicketNumber("AA111-BB111");
         ticket.setPassengerName("John Dow");
         ticket.setDocument("QQ12345678QQ");
@@ -74,6 +75,22 @@ class TicketDaoTest {
         Ticket expectedTicket = changeTicket(createdTicket);
         Ticket updatedTicket = airPortDao.update(createdTicket);
         assertEquals(expectedTicket, updatedTicket);
+    }
+
+    @Test
+    public void whenDeleteThenDeleteTicketAndReturnTrue() throws AirPortDaoException {
+        Ticket createdTicket = airPortDao.create(ticket);
+        boolean result = airPortDao.delete(createdTicket);
+        assertTrue(result);
+    }
+
+    @Test
+    public void whenGetAllThenTicketsFromDBShouldBeReturned() throws AirPortDaoException {
+        List<Ticket> expectedResult = new ArrayList<>();
+        expectedResult.add(airPortDao.create(ticket));
+        expectedResult.add(airPortDao.create(ticket));
+        List<Ticket> tickets = airPortDao.getAll();
+        assertEquals(expectedResult, tickets);
     }
 
     private Ticket changeTicket(Ticket ticket) {

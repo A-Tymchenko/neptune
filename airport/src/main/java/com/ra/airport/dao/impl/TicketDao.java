@@ -46,7 +46,7 @@ public class TicketDao implements AirPortDao<Ticket> {
             preparedStatement.executeUpdate();
             final ResultSet scopeResultSet = connection.prepareStatement("SELECT SCOPE_IDENTITY()").executeQuery();
             if (scopeResultSet.next()) {
-                ticket = getById(scopeResultSet.getInt(StatementParameter.ID_TICKET.get())).get();
+                ticket = getById(scopeResultSet.getInt(1)).get();
             }
         } catch (SQLException e) {
             LOGGER.error(ExceptionMessage.FAILED_TO_CREATE_NEW_TICKET.toString(), e);
@@ -100,7 +100,7 @@ public class TicketDao implements AirPortDao<Ticket> {
         boolean result;
         try (Connection connection = connectionFactory.getConnection()) {
             final PreparedStatement preparedStatement = connection.prepareStatement(sql);
-            preparedStatement.setInt(StatementParameter.ID_TICKET.get(), ticket.getIdTicket());
+            preparedStatement.setInt(1, ticket.getIdTicket());
             result = preparedStatement.executeUpdate() > 0;
         } catch (SQLException e) {
             final String errorMessage = ExceptionMessage.FAILED_TO_DELETE_TICKET_WITH_ID.get() + ticket.getIdTicket();
@@ -125,7 +125,7 @@ public class TicketDao implements AirPortDao<Ticket> {
 
         try (Connection connection = connectionFactory.getConnection()) {
             final PreparedStatement preparedStatement = connection.prepareStatement(sql);
-            preparedStatement.setInt(StatementParameter.ID_TICKET.get(), idTicket);
+            preparedStatement.setInt(1, idTicket);
             final ResultSet resultSet = preparedStatement.executeQuery();
             if (resultSet.next()) {
                 return Optional.of(getTicketFromResultSet(resultSet));
