@@ -1,4 +1,6 @@
 rootProject.name = 'neptune'
 include 'study'
 include 'shop'
+include 'advertisement'
+include 'advertisement_integration_test'
 
