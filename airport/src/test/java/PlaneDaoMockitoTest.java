@@ -121,16 +121,16 @@ public class PlaneDaoMockitoTest {
     public void whenGetAllThenCorrectSQLShouldBeExecutedAndCorrectListReturned() throws PlaneDaoException, SQLException {
                 when(mockConnection.prepareStatement(SELECT_ALL_PLANES_BY_ID_SQL)).thenReturn(mockStatement);
                 when(mockResultSet.next()).thenReturn(true,false);
-                List<Plane> flights = planeDao.getAll();
+                List<Plane> planes = planeDao.getAll();
         
-                        assertFalse(flights.isEmpty());
+                        assertFalse(planes.isEmpty());
             }
             
                 @Test
     public void whenGetByIdReturnEmptyResultSetThenEmptyOptionalShouldBeReturned() throws PlaneDaoException, SQLException {
                 when(mockResultSet.next()).thenReturn(false);
-                Optional<Plane> flight = planeDao.getById(Integer.valueOf(1));
-                        assertEquals(Optional.empty(), flight);
+                Optional<Plane> plane = planeDao.getById(Integer.valueOf(1));
+                        assertEquals(Optional.empty(), plane);
             }
 
     @Test
