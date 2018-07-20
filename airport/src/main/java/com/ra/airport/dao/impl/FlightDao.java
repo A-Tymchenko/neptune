@@ -20,15 +20,21 @@ import com.ra.airport.mapper.FlightRowMapper;
 import com.ra.airport.mapper.RowMapper;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
+
+import javax.sql.DataSource;
 
 
 /**
  * Implementation of {@link AirPortDao} interface.
  */
-@Component
+@Repository
 public class FlightDao implements AirPortDao<Flight> {
 
+    private final DataSource dataSource;
+    
     private static final String INSERT_FLIGHT_SQL = "INSERT INTO flight "
             + "(name, carrier, duration, meal_on, fare, departure_date, arrival_date) "
             + " VALUES(?,?,?,?,?,?,?)";
@@ -38,7 +44,10 @@ public class FlightDao implements AirPortDao<Flight> {
 
     private static final Logger LOGGER = LogManager.getLogger(FlightDao.class);
 
-    public FlightDao() {
+
+    @Autowired
+    public FlightDao(DataSource dataSource) {
+        this.dataSource = dataSource;
     }
 
     /**
