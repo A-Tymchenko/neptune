@@ -1,7 +1,6 @@
 package com.ra.airport;
 
 import com.ra.airport.dao.exception.AirPortDaoException;
-import com.ra.airport.dao.impl.FlightDao;
 import com.ra.airport.dao.impl.TicketDao;
 import com.ra.airport.entity.Ticket;
 import com.ra.airport.factory.ConnectionFactory;
