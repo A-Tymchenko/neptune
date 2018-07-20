@@ -73,8 +73,8 @@ ext {
             webSocket         : "org.springframework:spring-websocket:$springVersion",
             messaging         : "org.springframework:spring-messaging:$springVersion",
             batchCore         : "org.springframework.batch:spring-batch-core:$springBatchVersion",
-            batchIntegration  : "org.springframework.batch:spring-batch-integration:$springBatchIntegrationVersion",
-            integrationFile   : "org.springframework.integration:spring-integration-file:$springIntegrationVersion",
+            batchIntegration  : "org.springframework.batch:spring-batch-tools:$springBatchIntegrationVersion",
+            integrationFile   : "org.springframework.tools:spring-tools-file:$springIntegrationVersion",
             webflux           : "org.springframework:spring-webflux:$springVersion"
 
     ]
@@ -213,7 +213,6 @@ task wrapper(type: Wrapper) {
 }
 
 dependencies {
-
 }
 
 
@@ -225,5 +224,19 @@ project("study") {
     dependencies {
         compile spring.context
     }
+}
 
+project("shop") {
+    dependencies {
+        compileClasspath db.h2
+        compile group: 'org.apache.logging.log4j', name: 'log4j-api', version: '2.11.0'
+        compile group: 'org.apache.logging.log4j', name: 'log4j-core', version: '2.11.0'
+        compile group: 'com.lmax', name: 'disruptor', version: '3.4.2'
+    }
+}
+
+project("shop_integration_test") {
+    dependencies {
+        compile project(":shop")
+    }
 }
