@@ -62,23 +62,23 @@ public class Plane implements Serializable {
         this.platenumber = platenumber;
     }
 
-    
+
     @Override
     public boolean equals(final Object object) {
-                if (this == object) {
-                        return true;
-                    }
-                if (object == null || getClass() != object.getClass()) {
-                        return false;
-                    }
-                final Plane plane = (Plane) object;
-                return Objects.equals(id, plane.id)
-                                && Objects.equals(owner, plane.owner)
-                                && Objects.equals(model, plane.model)
-                                && Objects.equals(type, plane.type)
-                                && Objects.equals(platenumber, plane.platenumber);
+        if (this == object) {
+            return true;
+        }
+        if (object == null || getClass() != object.getClass()) {
+            return false;
+        }
+        final Plane plane = (Plane) object;
+        return Objects.equals(id, plane.id)
+                && Objects.equals(owner, plane.owner)
+                && Objects.equals(model, plane.model)
+                && Objects.equals(type, plane.type)
+                && Objects.equals(platenumber, plane.platenumber);
 
-            }
+    }
 
     @Override
     public String toString() {

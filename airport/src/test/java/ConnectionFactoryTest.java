@@ -15,22 +15,22 @@ public class ConnectionFactoryTest {
     private ConnectionFactory connectionFactory;
 
 
-            @BeforeEach
+    @BeforeEach
     public void beforeTest() throws IOException {
-               connectionFactory = ConnectionFactory.getInstance();
-            }
+        connectionFactory = ConnectionFactory.getInstance();
+    }
 
-            @Test
+    @Test
     public void whenGetConnectionNewConnectionShouldBeReturned() throws SQLException {
-                Connection connection = connectionFactory.getConnection();
-                assertNotNull(connection);
-                assertFalse(connection.isClosed());
-            }
+        Connection connection = connectionFactory.getConnection();
+        assertNotNull(connection);
+        assertFalse(connection.isClosed());
+    }
 
-            @Test
+    @Test
     public void whenConnectionFactoryGetInstanceCallTwiceTheSameInstanceShouldBeReturned() throws IOException {
-                ConnectionFactory firstInstance = ConnectionFactory.getInstance();
-                ConnectionFactory secondInstance = ConnectionFactory.getInstance();
-                assertTrue(firstInstance == secondInstance);
-            }
+        ConnectionFactory firstInstance = ConnectionFactory.getInstance();
+        ConnectionFactory secondInstance = ConnectionFactory.getInstance();
+        assertTrue(firstInstance == secondInstance);
+    }
 }

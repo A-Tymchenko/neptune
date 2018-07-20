@@ -31,92 +31,92 @@ public class PlaneDaoTest {
     private PlaneDaoInterface<Plane> planeDao;
     private Plane plane;
 
-            @BeforeEach
-            public void beforeTest() throws SQLException, IOException {
-                createDataBaseTable();
-                createPlane();
-            }
+    @BeforeEach
+    public void beforeTest() throws SQLException, IOException {
+        createDataBaseTable();
+        createPlane();
+    }
 
-            @AfterEach
-            public void afterTest() throws SQLException, IOException {
-                deleteTable();
-            }
+    @AfterEach
+    public void afterTest() throws SQLException, IOException {
+        deleteTable();
+    }
 
-            private void createDataBaseTable() throws SQLException, IOException {
-                Connection connection = ConnectionFactory.getInstance().getConnection();
-                RunScript.execute(connection, new FileReader("src/test/resources/sql/plane_table_backup.sql"));
-            }
+    private void createDataBaseTable() throws SQLException, IOException {
+        Connection connection = ConnectionFactory.getInstance().getConnection();
+        RunScript.execute(connection, new FileReader("src/test/resources/sql/plane_table_backup.sql"));
+    }
 
-                private void deleteTable() throws SQLException, IOException {
-                Connection connection = ConnectionFactory.getInstance().getConnection();
-                RunScript.execute(connection, new FileReader("src/test/resources/sql/remove_plane_table.sql"));
-            }
-            
-            
-                private void createPlane() throws IOException {
+    private void deleteTable() throws SQLException, IOException {
+        Connection connection = ConnectionFactory.getInstance().getConnection();
+        RunScript.execute(connection, new FileReader("src/test/resources/sql/remove_plane_table.sql"));
+    }
 
-                planeDao = new PlaneDao(ConnectionFactory.getInstance());
-                plane = new Plane();
-                plane.setOwner(OWNER);
-                plane.setModel(MODEL);
-                plane.setType(TYPE);
-                plane.setPlatenumber(PLATENUMBER);
-            }
-            
-                @Test
+
+    private void createPlane() throws IOException {
+
+        planeDao = new PlaneDao(ConnectionFactory.getInstance());
+        plane = new Plane();
+        plane.setOwner(OWNER);
+        plane.setModel(MODEL);
+        plane.setType(TYPE);
+        plane.setPlatenumber(PLATENUMBER);
+    }
+
+    @Test
     public void whenCreateThenNewPlaneWithIdShouldBeReturned() throws PlaneDaoException {
-                Plane createdPlane = planeDao.create(plane);
-                assertNotNull(createdPlane);
-                Integer planeId = createdPlane.getId();
-                assertNotNull(planeId);
-                plane.setId(planeId);
-                assertEquals(plane, createdPlane);
-            }
-            
-            
-                @Test
-    public void whenUpdateThenUpdatedPlaneShouldBeReturned() throws PlaneDaoException {
-                Plane createdPlane = planeDao.create(plane);
-                Plane expectedPlane = changePlane(createdPlane);
-        
-                        Plane updatedPlane = planeDao.update(createdPlane);
-        
-                        assertEquals(expectedPlane, updatedPlane);
-            }
-            
-                @Test
-    public void whenDeleteThenDeleteObjectAndReturnTrue() throws PlaneDaoException {
-                Plane createdPlane = planeDao.create(plane);
-                boolean result = planeDao.delete(createdPlane);
-                        assertTrue(result);
-            }
+        Plane createdPlane = planeDao.create(plane);
+        assertNotNull(createdPlane);
+        Integer planeId = createdPlane.getId();
+        assertNotNull(planeId);
+        plane.setId(planeId);
+        assertEquals(plane, createdPlane);
+    }
 
-                @Test
+
+    @Test
+    public void whenUpdateThenUpdatedPlaneShouldBeReturned() throws PlaneDaoException {
+        Plane createdPlane = planeDao.create(plane);
+        Plane expectedPlane = changePlane(createdPlane);
+
+        Plane updatedPlane = planeDao.update(createdPlane);
+
+        assertEquals(expectedPlane, updatedPlane);
+    }
+
+    @Test
+    public void whenDeleteThenDeleteObjectAndReturnTrue() throws PlaneDaoException {
+        Plane createdPlane = planeDao.create(plane);
+        boolean result = planeDao.delete(createdPlane);
+        assertTrue(result);
+    }
+
+    @Test
     public void whenGetAllThenPlanesFromDBShouldBeReturned() throws PlaneDaoException {
-                List<Plane> expectedResult = new ArrayList<>();
-                expectedResult.add(planeDao.create(plane));
-                expectedResult.add(planeDao.create(plane));
-        
-                        List<Plane> planes = planeDao.getAll();
-                        assertEquals(expectedResult, planes);
-            }
-            
-            
-            
-            
-                private Plane changePlane(Plane plane) {
-                plane.setOwner("Lufthansa");
-                plane.setModel("Hawker");
-                plane.setType("smallcarrier");
-                plane.setPlatenumber(4567854);
-                return plane;
-            }
-            
-            
-            
-            
-            
-            
+        List<Plane> expectedResult = new ArrayList<>();
+        expectedResult.add(planeDao.create(plane));
+        expectedResult.add(planeDao.create(plane));
+
+        List<Plane> planes = planeDao.getAll();
+        assertEquals(expectedResult, planes);
+    }
+
+
+
+
+    private Plane changePlane(Plane plane) {
+        plane.setOwner("Lufthansa");
+        plane.setModel("Hawker");
+        plane.setType("smallcarrier");
+        plane.setPlatenumber(4567854);
+        return plane;
+    }
+
+
+
+
+
+
 
 
 

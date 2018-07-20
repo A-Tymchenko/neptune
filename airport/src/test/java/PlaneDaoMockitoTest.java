@@ -53,144 +53,144 @@ public class PlaneDaoMockitoTest {
         when(connectionFactory.getConnection()).thenReturn(mockConnection);
         createMocksFromGetByIdMethod();
 
-        
+
     }
 
     private void createMocksFromGetByIdMethod() throws SQLException {
-                when(mockConnection.prepareStatement(SELECT_PLANE_BY_ID_SQL)).thenReturn(mockStatement);
-                when(mockResultSet.next()).thenReturn(true);
-                when(mockStatement.executeQuery()).thenReturn(mockResultSet);
-                when(mockResultSet.getInt(1)).thenReturn(plane.getId());
-                when(mockResultSet.getInt("id")).thenReturn(plane.getId());
-                when(mockResultSet.getString("owner")).thenReturn(plane.getOwner());
-                when(mockResultSet.getString("model")).thenReturn(plane.getModel());
-                when(mockResultSet.getString("type")).thenReturn(plane.getType());
-                when(mockResultSet.getInt("platenumber")).thenReturn(plane.getPlatenumber());
+        when(mockConnection.prepareStatement(SELECT_PLANE_BY_ID_SQL)).thenReturn(mockStatement);
+        when(mockResultSet.next()).thenReturn(true);
+        when(mockStatement.executeQuery()).thenReturn(mockResultSet);
+        when(mockResultSet.getInt(1)).thenReturn(plane.getId());
+        when(mockResultSet.getInt("id")).thenReturn(plane.getId());
+        when(mockResultSet.getString("owner")).thenReturn(plane.getOwner());
+        when(mockResultSet.getString("model")).thenReturn(plane.getModel());
+        when(mockResultSet.getString("type")).thenReturn(plane.getType());
+        when(mockResultSet.getInt("platenumber")).thenReturn(plane.getPlatenumber());
 
-            }
-            
-                @Test
+    }
+
+    @Test
     public void whenCreateThenCorrectSQLShouldBeExecutedAndCorrectEntityShouldBeReturned() throws SQLException, PlaneDaoException {
-                    when(mockConnection.prepareStatement(INSERT_PLANE_SQL)).thenReturn(mockStatement);
-                    when(mockConnection.prepareStatement(SELECT_LAST_GENERATED_ID_SQL)).thenReturn(mockStatement);
-                    Plane result = planeDao.create(plane);
-                    assertEquals(plane, result);
+        when(mockConnection.prepareStatement(INSERT_PLANE_SQL)).thenReturn(mockStatement);
+        when(mockConnection.prepareStatement(SELECT_LAST_GENERATED_ID_SQL)).thenReturn(mockStatement);
+        Plane result = planeDao.create(plane);
+        assertEquals(plane, result);
 
 
-                }
+    }
 
 
-                    @Test
+    @Test
     public void whenCreateReturnNullGeneratedIdThenDAOExceptionShouldBeThrown() throws SQLException, PlaneDaoException {
-                when(mockConnection.prepareStatement(INSERT_PLANE_SQL)).thenReturn(mockStatement);
-                when(mockConnection.prepareStatement(SELECT_LAST_GENERATED_ID_SQL)).thenReturn(mockStatement);
-                when(mockResultSet.next()).thenReturn(false);
-                Throwable exception =  assertThrows(PlaneDaoException.class,() -> {
-                        planeDao.create(plane);
-                    });
-        
-                        assertEquals(exception.getMessage(), PLANE_ID_CANNOT_BE_NULL.get());
-            }
+        when(mockConnection.prepareStatement(INSERT_PLANE_SQL)).thenReturn(mockStatement);
+        when(mockConnection.prepareStatement(SELECT_LAST_GENERATED_ID_SQL)).thenReturn(mockStatement);
+        when(mockResultSet.next()).thenReturn(false);
+        Throwable exception =  assertThrows(PlaneDaoException.class,() -> {
+            planeDao.create(plane);
+        });
 
-                @Test
+        assertEquals(exception.getMessage(), PLANE_ID_CANNOT_BE_NULL.get());
+    }
+
+    @Test
     public void whenUpdateThenCorrectSQLShouldBeExecutedAndCorrectEntityShouldBeReturned() throws SQLException, PlaneDaoException {
-                when(mockConnection.prepareStatement(UPDATE_PLANE_SQL)).thenReturn(mockStatement);
-                Plane result = planeDao.update(plane);
-        
-                        assertEquals(plane, result);
-            }
+        when(mockConnection.prepareStatement(UPDATE_PLANE_SQL)).thenReturn(mockStatement);
+        Plane result = planeDao.update(plane);
 
-                @Test
+        assertEquals(plane, result);
+    }
+
+    @Test
     public void whenDeleteThenCorrectSQLShouldBeExecutedAndTrueShouldBeReturned() throws PlaneDaoException, SQLException {
-                when(mockConnection.prepareStatement(DELETE_PLANE_BY_ID_SQL)).thenReturn(mockStatement);
-                when(mockStatement.executeUpdate()).thenReturn(1);
-                boolean result = planeDao.delete(plane);
-                        assertEquals(true, result);
-            }
+        when(mockConnection.prepareStatement(DELETE_PLANE_BY_ID_SQL)).thenReturn(mockStatement);
+        when(mockStatement.executeUpdate()).thenReturn(1);
+        boolean result = planeDao.delete(plane);
+        assertEquals(true, result);
+    }
 
-                @Test
+    @Test
     public void whenDeleteStatementExecuteReturnOThenFalseShouldBeReturned() throws SQLException, PlaneDaoException {
-                when(mockConnection.prepareStatement(DELETE_PLANE_BY_ID_SQL)).thenReturn(mockStatement);
-                when(mockStatement.executeUpdate()).thenReturn(0);
-                boolean result = planeDao.delete(plane);
-        
-                        assertEquals(false, result);
-            }
+        when(mockConnection.prepareStatement(DELETE_PLANE_BY_ID_SQL)).thenReturn(mockStatement);
+        when(mockStatement.executeUpdate()).thenReturn(0);
+        boolean result = planeDao.delete(plane);
 
-                @Test
+        assertEquals(false, result);
+    }
+
+    @Test
     public void whenGetAllThenCorrectSQLShouldBeExecutedAndCorrectListReturned() throws PlaneDaoException, SQLException {
-                when(mockConnection.prepareStatement(SELECT_ALL_PLANES_BY_ID_SQL)).thenReturn(mockStatement);
-                when(mockResultSet.next()).thenReturn(true,false);
-                List<Plane> planes = planeDao.getAll();
-        
-                        assertFalse(planes.isEmpty());
-            }
-            
-                @Test
+        when(mockConnection.prepareStatement(SELECT_ALL_PLANES_BY_ID_SQL)).thenReturn(mockStatement);
+        when(mockResultSet.next()).thenReturn(true,false);
+        List<Plane> planes = planeDao.getAll();
+
+        assertFalse(planes.isEmpty());
+    }
+
+    @Test
     public void whenGetByIdReturnEmptyResultSetThenEmptyOptionalShouldBeReturned() throws PlaneDaoException, SQLException {
-                when(mockResultSet.next()).thenReturn(false);
-                Optional<Plane> plane = planeDao.getById(Integer.valueOf(1));
-                        assertEquals(Optional.empty(), plane);
-            }
+        when(mockResultSet.next()).thenReturn(false);
+        Optional<Plane> plane = planeDao.getById(Integer.valueOf(1));
+        assertEquals(Optional.empty(), plane);
+    }
 
     @Test
     public void whenGetByIdNullPassedThenDAOExceptionShouldBeThrown() {
-                Throwable exception =  assertThrows(PlaneDaoException.class,() -> {
-                        planeDao.getById(null);
-                    });
-        
-                        assertEquals(PLANE_ID_CANNOT_BE_NULL.get(), exception.getMessage());
-            }
+        Throwable exception =  assertThrows(PlaneDaoException.class,() -> {
+            planeDao.getById(null);
+        });
 
-                @Test
+        assertEquals(PLANE_ID_CANNOT_BE_NULL.get(), exception.getMessage());
+    }
+
+    @Test
     public void whenCreateThrownSQlExceptionThenDAOExceptionShouldBeThrownToo() {
-                Throwable exception = assertThrows(PlaneDaoException.class, () -> {
-                        when(mockConnection.prepareStatement(INSERT_PLANE_SQL)).thenThrow(new SQLException());
-                        planeDao.create(plane);
-                    });
-        
-                        assertEquals(exception.getMessage(), FAILED_TO_CREATE_NEW_PLANE.get());
-            }
+        Throwable exception = assertThrows(PlaneDaoException.class, () -> {
+            when(mockConnection.prepareStatement(INSERT_PLANE_SQL)).thenThrow(new SQLException());
+            planeDao.create(plane);
+        });
 
-            @Test
+        assertEquals(exception.getMessage(), FAILED_TO_CREATE_NEW_PLANE.get());
+    }
+
+    @Test
     public void whenUpdateThrownSQlExceptionThenDAOExceptionShouldBeThrownToo() {
-                Throwable exception = assertThrows(PlaneDaoException.class, () -> {
-                        when(mockConnection.prepareStatement(UPDATE_PLANE_SQL)).thenThrow(new SQLException());
-                        planeDao.update(plane);
-                    });
-        
-                        assertEquals(exception.getMessage(), FAILED_TO_UPDATE_PLANE_WITH_ID.get()+1);
-            }
+        Throwable exception = assertThrows(PlaneDaoException.class, () -> {
+            when(mockConnection.prepareStatement(UPDATE_PLANE_SQL)).thenThrow(new SQLException());
+            planeDao.update(plane);
+        });
 
-            @Test
+        assertEquals(exception.getMessage(), FAILED_TO_UPDATE_PLANE_WITH_ID.get()+1);
+    }
+
+    @Test
     public void whenDeleteThrownSQlExceptionThenDAOExceptionShouldBeThrownToo() {
-                Throwable exception = assertThrows(PlaneDaoException.class, () -> {
-                        when(mockConnection.prepareStatement(DELETE_PLANE_BY_ID_SQL)).thenThrow(new SQLException());
-                        planeDao.delete(plane);
-                    });
-        
-                        assertEquals(exception.getMessage(), FAILED_TO_DELETE_PLANE_WITH_ID.get()+1);
-            }
+        Throwable exception = assertThrows(PlaneDaoException.class, () -> {
+            when(mockConnection.prepareStatement(DELETE_PLANE_BY_ID_SQL)).thenThrow(new SQLException());
+            planeDao.delete(plane);
+        });
 
-            @Test
+        assertEquals(exception.getMessage(), FAILED_TO_DELETE_PLANE_WITH_ID.get()+1);
+    }
+
+    @Test
     public void whenGetAllThrownSQlExceptionThenDAOExceptionShouldBeThrownToo() {
-                Throwable exception = assertThrows(PlaneDaoException.class, () -> {
-                        when(mockConnection.prepareStatement(SELECT_ALL_PLANES_BY_ID_SQL)).thenThrow(new SQLException());
-                        planeDao.getAll();
-                    });
-        
-                        assertEquals(exception.getMessage(), FAILED_TO_GET_ALL_PLANES.get());
-            }
+        Throwable exception = assertThrows(PlaneDaoException.class, () -> {
+            when(mockConnection.prepareStatement(SELECT_ALL_PLANES_BY_ID_SQL)).thenThrow(new SQLException());
+            planeDao.getAll();
+        });
 
-            @Test
+        assertEquals(exception.getMessage(), FAILED_TO_GET_ALL_PLANES.get());
+    }
+
+    @Test
     public void whenGetByIdThrownSQlExceptionThenDAOExceptionShouldBeThrownToo() {
-                Throwable exception = assertThrows(PlaneDaoException.class, () -> {
-                        when(mockConnection.prepareStatement(SELECT_PLANE_BY_ID_SQL)).thenThrow(new SQLException());
-                        planeDao.getById(Integer.valueOf(1));
-                    });
-        
-                        assertEquals(exception.getMessage(), FAILED_TO_GET_PLANE_WITH_ID.get()+1);
-            }
+        Throwable exception = assertThrows(PlaneDaoException.class, () -> {
+            when(mockConnection.prepareStatement(SELECT_PLANE_BY_ID_SQL)).thenThrow(new SQLException());
+            planeDao.getById(Integer.valueOf(1));
+        });
+
+        assertEquals(exception.getMessage(), FAILED_TO_GET_PLANE_WITH_ID.get()+1);
+    }
 }
 
 

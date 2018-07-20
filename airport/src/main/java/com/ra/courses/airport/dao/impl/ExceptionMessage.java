@@ -12,18 +12,18 @@ public enum ExceptionMessage {
 
     private final String message;
 
-        ExceptionMessage(final String message) {
-            this.message = message;
-        }
+    ExceptionMessage(final String message) {
+        this.message = message;
+    }
 
-            /**
-      * Return message of Exception.
-      *
-      * @return text of message
-      */
-            public String get() {
-                return message;
-            }
+    /**
+     * Return message of Exception.
+     *
+     * @return text of message
+     */
+    public String get() {
+        return message;
+    }
 }
 
 
