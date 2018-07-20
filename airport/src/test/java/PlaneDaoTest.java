@@ -64,18 +64,18 @@ public class PlaneDaoTest {
             }
             
                 @Test
-    public void whenCreateThenNewFlightWithIdShouldBeReturned() throws PlaneDaoException {
+    public void whenCreateThenNewPlaneWithIdShouldBeReturned() throws PlaneDaoException {
                 Plane createdPlane = planeDao.create(plane);
                 assertNotNull(createdPlane);
-                Integer flightId = createdPlane.getId();
-                assertNotNull(flightId);
-                plane.setId(flightId);
+                Integer planeId = createdPlane.getId();
+                assertNotNull(planeId);
+                plane.setId(planeId);
                 assertEquals(plane, createdPlane);
             }
             
             
                 @Test
-    public void whenUpdateThenUpdatedFlightShouldBeReturned() throws PlaneDaoException {
+    public void whenUpdateThenUpdatedPlaneShouldBeReturned() throws PlaneDaoException {
                 Plane createdPlane = planeDao.create(plane);
                 Plane expectedPlane = changePlane(createdPlane);
         
@@ -92,13 +92,13 @@ public class PlaneDaoTest {
             }
 
                 @Test
-    public void whenGetAllThenFlightsFromDBShouldBeReturned() throws PlaneDaoException {
+    public void whenGetAllThenPlanesFromDBShouldBeReturned() throws PlaneDaoException {
                 List<Plane> expectedResult = new ArrayList<>();
                 expectedResult.add(planeDao.create(plane));
                 expectedResult.add(planeDao.create(plane));
         
-                        List<Plane> flights = planeDao.getAll();
-                        assertEquals(expectedResult, flights);
+                        List<Plane> planes = planeDao.getAll();
+                        assertEquals(expectedResult, planes);
             }
             
             

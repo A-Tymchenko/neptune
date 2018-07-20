@@ -61,7 +61,7 @@ public class PlaneDao implements PlaneDaoInterface<Plane> {
                         LOGGER.error(ExceptionMessage.FAILED_TO_CREATE_NEW_PLANE.toString(), e);
                         throw new PlaneDaoException(ExceptionMessage.FAILED_TO_CREATE_NEW_PLANE.get(), e);
                     }
-                LOGGER.debug("Flight with id was created {}", plane.getId());
+                LOGGER.debug("Plane with id was created {}", plane.getId());
                 return plane;
             }
 
@@ -77,7 +77,7 @@ public class PlaneDao implements PlaneDaoInterface<Plane> {
             LOGGER.error(errorMessage, e);
             throw new PlaneDaoException(errorMessage, e);
             }
-                LOGGER.debug("Flight with id was updated {}", plane.getId());
+                LOGGER.debug("Plane with id was updated {}", plane.getId());
                 return plane;
             }
 
@@ -146,11 +146,11 @@ public class PlaneDao implements PlaneDaoInterface<Plane> {
                 return planes;
             }
 
-    private void createPlane(final List<Plane> flights, final ResultSet resultSet) throws SQLException {
+    private void createPlane(final List<Plane> planes, final ResultSet resultSet) throws SQLException {
                 Plane plane = new Plane();
                 final RowMapper<Plane> rowMapper = new PlaneRowMapper();
                 plane = rowMapper.mapRow(resultSet, plane);
-                flights.add(plane);
+                planes.add(plane);
             }
 
 

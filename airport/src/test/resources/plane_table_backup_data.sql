@@ -1,4 +1,4 @@
-INSERT INTO flight
+INSERT INTO plane
 (owner,model,type,
 platenumber
 ) VALUES (
