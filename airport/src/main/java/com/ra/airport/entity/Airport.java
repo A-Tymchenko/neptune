@@ -21,6 +21,10 @@ public class Airport {
         this.terminalCount = terminalCount;
     }
 
+    public Airport(){
+
+    }
+
     public Integer getApId() {
         return apId;
     }
