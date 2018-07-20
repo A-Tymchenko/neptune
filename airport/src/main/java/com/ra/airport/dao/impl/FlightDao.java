@@ -20,11 +20,13 @@ import com.ra.airport.mapper.FlightRowMapper;
 import com.ra.airport.mapper.RowMapper;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.stereotype.Component;
 
 
 /**
  * Implementation of {@link AirPortDao} interface.
  */
+@Component
 public class FlightDao implements AirPortDao<Flight> {
 
     private static final String INSERT_FLIGHT_SQL = "INSERT INTO flight "
@@ -36,10 +38,7 @@ public class FlightDao implements AirPortDao<Flight> {
 
     private static final Logger LOGGER = LogManager.getLogger(FlightDao.class);
 
-    private static ConnectionFactory connectionFactory;
-
-    public FlightDao(final ConnectionFactory connectionFactory) {
-        this.connectionFactory = connectionFactory;
+    public FlightDao() {
     }
 
     /**
@@ -50,22 +49,23 @@ public class FlightDao implements AirPortDao<Flight> {
      * @throws AirPortDaoException exception for DAO layer
      */
     public Flight create(Flight flight) throws AirPortDaoException {
-        try (Connection connection = connectionFactory.getConnection()) {
-            final PreparedStatement preparedStatement = connection.prepareStatement(INSERT_FLIGHT_SQL);
-            fillPreparedStatement(flight, preparedStatement);
-            preparedStatement.executeUpdate();
-            final ResultSet generatedIdRS = connection.prepareStatement("SELECT SCOPE_IDENTITY()").executeQuery();
-            Integer flightId = null;
-            if (generatedIdRS.next()) {
-               flightId = generatedIdRS.getInt(1);
-            }
-            flight = getById(flightId).get();
-        } catch (SQLException e) {
-            LOGGER.error(ExceptionMessage.FAILED_TO_CREATE_NEW_FLIGHT.toString(), e);
-            throw new AirPortDaoException(ExceptionMessage.FAILED_TO_CREATE_NEW_FLIGHT.get(), e);
-        }
-        LOGGER.debug("Flight with id was created {}", flight.getIdentifier());
-        return flight;
+//        try (Connection connection = connectionFactory.getConnection()) {
+//            final PreparedStatement preparedStatement = connection.prepareStatement(INSERT_FLIGHT_SQL);
+//            fillPreparedStatement(flight, preparedStatement);
+//            preparedStatement.executeUpdate();
+//            final ResultSet generatedIdRS = connection.prepareStatement("SELECT SCOPE_IDENTITY()").executeQuery();
+//            Integer flightId = null;
+//            if (generatedIdRS.next()) {
+//               flightId = generatedIdRS.getInt(1);
+//            }
+//            flight = getById(flightId).get();
+//        } catch (SQLException e) {
+//            LOGGER.error(ExceptionMessage.FAILED_TO_CREATE_NEW_FLIGHT.toString(), e);
+//            throw new AirPortDaoException(ExceptionMessage.FAILED_TO_CREATE_NEW_FLIGHT.get(), e);
+//        }
+//        LOGGER.debug("Flight with id was created {}", flight.getIdentifier());
+//        return flight;
+        return null;
     }
 
     /**
@@ -76,17 +76,17 @@ public class FlightDao implements AirPortDao<Flight> {
      * @throws AirPortDaoException exception for DAO layer
      */
     public Flight update(Flight flight) throws AirPortDaoException {
-        try (Connection connection = connectionFactory.getConnection()) {
-            final PreparedStatement preparedStatement = connection.prepareStatement(UPDATE_FLIGHT_SQL);
-            fillPreparedStatement(flight, preparedStatement);
-            preparedStatement.executeUpdate();
-            flight = getById(flight.getIdentifier()).get();
-        } catch (SQLException e) {
-            final String errorMessage = ExceptionMessage.FAILED_TO_UPDATE_FLIGHT_WITH_ID.get() + flight.getIdentifier();
-            LOGGER.error(errorMessage, e);
-            throw new AirPortDaoException(errorMessage, e);
-        }
-        LOGGER.debug("Flight with id was updated {}", flight.getIdentifier());
+//        try (Connection connection = connectionFactory.getConnection()) {
+//            final PreparedStatement preparedStatement = connection.prepareStatement(UPDATE_FLIGHT_SQL);
+//            fillPreparedStatement(flight, preparedStatement);
+//            preparedStatement.executeUpdate();
+//            flight = getById(flight.getIdentifier()).get();
+//        } catch (SQLException e) {
+//            final String errorMessage = ExceptionMessage.FAILED_TO_UPDATE_FLIGHT_WITH_ID.get() + flight.getIdentifier();
+//            LOGGER.error(errorMessage, e);
+//            throw new AirPortDaoException(errorMessage, e);
+//        }
+//        LOGGER.debug("Flight with id was updated {}", flight.getIdentifier());
         return flight;
     }
 
@@ -100,16 +100,16 @@ public class FlightDao implements AirPortDao<Flight> {
      */
     public boolean delete(final Flight flight) throws AirPortDaoException {
         boolean result;
-        try (Connection connection = connectionFactory.getConnection()) {
-            final PreparedStatement preparedStatement = connection.prepareStatement("DELETE FROM flight WHERE id = ?");
-            preparedStatement.setInt(1, flight.getIdentifier());
-            result = preparedStatement.executeUpdate() > 0;
-        } catch (SQLException e) {
-            final String errorMessage = ExceptionMessage.FAILED_TO_DELETE_FLIGHT_WITH_ID.get() + flight.getIdentifier();
-            LOGGER.error(errorMessage, e);
-            throw new AirPortDaoException(errorMessage, e);
-        }
-        return result;
+//        try (Connection connection = connectionFactory.getConnection()) {
+//            final PreparedStatement preparedStatement = connection.prepareStatement("DELETE FROM flight WHERE id = ?");
+//            preparedStatement.setInt(1, flight.getIdentifier());
+//            result = preparedStatement.executeUpdate() > 0;
+//        } catch (SQLException e) {
+//            final String errorMessage = ExceptionMessage.FAILED_TO_DELETE_FLIGHT_WITH_ID.get() + flight.getIdentifier();
+//            LOGGER.error(errorMessage, e);
+//            throw new AirPortDaoException(errorMessage, e);
+//        }
+        return false;
     }
 
     /**
@@ -123,19 +123,19 @@ public class FlightDao implements AirPortDao<Flight> {
         if (flightId == null) {
             throw new AirPortDaoException(ExceptionMessage.FLIGHT_ID_CANNOT_BE_NULL.get());
         }
-        try (Connection connection = connectionFactory.getConnection()) {
-            final PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM flight WHERE id = ?");
-            preparedStatement.setInt(1, flightId);
-            final ResultSet resultSet = preparedStatement.executeQuery();
-            if (resultSet.next()) {
-                final Flight flight = new FlightRowMapper().mapRow(resultSet, new Flight());
-                return Optional.of(flight);
-            }
-        } catch (SQLException e) {
-            final String errorMessage = ExceptionMessage.FAILED_TO_GET_FLIGHT_WITH_ID.get() + flightId;
-            LOGGER.error(errorMessage, e);
-            throw new AirPortDaoException(errorMessage, e);
-        }
+//        try (Connection connection = connectionFactory.getConnection()) {
+//            final PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM flight WHERE id = ?");
+//            preparedStatement.setInt(1, flightId);
+//            final ResultSet resultSet = preparedStatement.executeQuery();
+//            if (resultSet.next()) {
+//                final Flight flight = new FlightRowMapper().mapRow(resultSet, new Flight());
+//                return Optional.of(flight);
+//            }
+//        } catch (SQLException e) {
+//            final String errorMessage = ExceptionMessage.FAILED_TO_GET_FLIGHT_WITH_ID.get() + flightId;
+//            LOGGER.error(errorMessage, e);
+//            throw new AirPortDaoException(errorMessage, e);
+//        }
         return Optional.empty();
     }
 
@@ -149,17 +149,17 @@ public class FlightDao implements AirPortDao<Flight> {
     @Override
     public List<Flight> getAll() throws AirPortDaoException {
         final List<Flight> flights = new ArrayList<>();
-        try (Connection connection = connectionFactory.getConnection()) {
-            final PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM flight");
-            final ResultSet resultSet = preparedStatement.executeQuery();
-            while (resultSet.next()) {
-                createFlight(flights, resultSet);
-            }
-        } catch (SQLException e) {
-            final String message = ExceptionMessage.FAILED_TO_GET_ALL_FLIGHTS.get();
-            LOGGER.error(message, e);
-            throw new AirPortDaoException(message, e);
-        }
+//        try (Connection connection = connectionFactory.getConnection()) {
+//            final PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM flight");
+//            final ResultSet resultSet = preparedStatement.executeQuery();
+//            while (resultSet.next()) {
+//                createFlight(flights, resultSet);
+//            }
+//        } catch (SQLException e) {
+//            final String message = ExceptionMessage.FAILED_TO_GET_ALL_FLIGHTS.get();
+//            LOGGER.error(message, e);
+//            throw new AirPortDaoException(message, e);
+//        }
         return flights;
     }
 
