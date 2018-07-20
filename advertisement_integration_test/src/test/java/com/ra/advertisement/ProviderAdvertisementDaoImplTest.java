@@ -18,8 +18,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class ProviderAdvertisementDaoImplTest {
-
-    private static final Provider PROVIDER = new Provider(1L, "Coca Cola", "Lviv",
+    private static final Provider PROVIDER = new Provider("Coca Cola", "Lviv",
             "22-45-18", "Ukraine");
     private static final Provider PROVIDER_UPDATE = new Provider(1L, "Coca Cola Update",
             "LvivUpdate", "22-45-18Update", "UkraineUpdate");
@@ -38,14 +37,21 @@ class ProviderAdvertisementDaoImplTest {
     }
 
     /**
-     * testing successful result of create method which saves info regarding Provider into DB
+     * testing successful result of create method which save info regarding Provider into DB
      *
      * @throws Exception
      */
     @Test
-    void insertValidDataReturnTrue() throws Exception {
-        Integer result = providerDao.create(PROVIDER);
-        assertEquals(Integer.valueOf(1), result);
+    void insertValidDataIntoDbAndGetItsFromThereWithGeneratedIddReturnTrue() throws Exception {
+        Provider providerCreated = providerDao.create(PROVIDER);
+        Provider actual = providerDao.getById(providerCreated.getProvId()).orElse(null);
+        assertAll("actual",
+                () -> assertEquals(providerCreated.getProvId(), actual.getProvId()),
+                () -> assertEquals(providerCreated.getName(), actual.getName()),
+                () -> assertEquals(providerCreated.getAddress(), actual.getAddress()),
+                () -> assertEquals(providerCreated.getCountry(), actual.getCountry()),
+                () -> assertEquals(providerCreated.getTelephone(), actual.getTelephone())
+        );
     }
 
     /**
@@ -81,26 +87,15 @@ class ProviderAdvertisementDaoImplTest {
      */
     @Test
     void getObjectByIdExecutedReturnTrue() throws Exception {
-        providerDao.create(PROVIDER);
-        Provider actual = providerDao.getById(PROVIDER.getProvId()).orElse(null);
+        Provider providerCreated = providerDao.create(PROVIDER);
+        Provider actual = providerDao.getById(providerCreated.getProvId()).orElse(null);
         assertAll("actual",
-                () -> assertEquals(PROVIDER.getProvId(), actual.getProvId()),
-                () -> assertEquals(PROVIDER.getAddress(), actual.getAddress()),
-                () -> assertEquals(PROVIDER.getCountry(), actual.getCountry()),
-                () -> assertEquals(PROVIDER.getName(), actual.getName()),
-                () -> assertEquals(PROVIDER.getTelephone(), actual.getTelephone())
+                () -> assertEquals(providerCreated.getProvId(), actual.getProvId()),
+                () -> assertEquals(providerCreated.getAddress(), actual.getAddress()),
+                () -> assertEquals(providerCreated.getCountry(), actual.getCountry()),
+                () -> assertEquals(providerCreated.getName(), actual.getName()),
+                () -> assertEquals(providerCreated.getTelephone(), actual.getTelephone())
         );
-    }
-
-    /**
-     * testing result (null) of getById method which gets info regarding Provider from DB when there no such id in DB
-     *
-     * @throws Exception
-     */
-    @Test
-    void getObjectByIdExecutedAndReturnNullReturnTrue() throws Exception {
-        Provider actual = providerDao.getById(PROVIDER.getProvId()).orElse(null);
-        assertEquals(null, actual);
     }
 
     /**
@@ -110,9 +105,10 @@ class ProviderAdvertisementDaoImplTest {
      */
     @Test
     void getObjectByIdAfterTheTableOfProviderWasDroppedThrowDaoException() throws Exception {
+        Provider providerCreated = providerDao.create(PROVIDER);
         dropTableProviderMethod();
         assertThrows(DaoException.class, () -> {
-            providerDao.getById(PROVIDER.getProvId());
+            providerDao.getById(providerCreated.getProvId());
         });
     }
 
@@ -123,9 +119,10 @@ class ProviderAdvertisementDaoImplTest {
      */
     @Test
     void getObjectByIdAfterTheTableOfProviderWasDroppedThrowException() throws Exception {
+        Provider providerCreated = providerDao.create(PROVIDER);
         dropTableProviderMethod();
         assertThrows(Exception.class, () -> {
-            providerDao.getById(PROVIDER.getProvId());
+            providerDao.getById(providerCreated.getProvId());
         });
     }
 
@@ -136,21 +133,9 @@ class ProviderAdvertisementDaoImplTest {
      */
     @Test
     void deleteValidDataExecutedReturnTrue() throws Exception {
-        providerDao.create(PROVIDER);
-        Integer actual = providerDao.delete(PROVIDER.getProvId());
+        Provider providerCreated = providerDao.create(PROVIDER);
+        Integer actual = providerDao.delete(providerCreated);
         assertEquals(Integer.valueOf(1), actual);
-    }
-
-    /**
-     * testing unsuccessful result of delete method which delete info regarding Provider from DB
-     *
-     * @throws Exception
-     */
-    @Test
-    void deleteInValidDataReturnTrue() throws Exception {
-        providerDao.create(PROVIDER);
-        Integer actual = providerDao.delete(2L);
-        assertEquals(Integer.valueOf(0), actual);
     }
 
     /**
@@ -160,9 +145,10 @@ class ProviderAdvertisementDaoImplTest {
      */
     @Test
     void deleteObjectByIdAfterTheTableOfProviderWasDroppedThrowDaoException() throws Exception {
+        Provider providerCreated = providerDao.create(PROVIDER);
         dropTableProviderMethod();
         assertThrows(DaoException.class, () -> {
-            providerDao.delete(PROVIDER.getProvId());
+            providerDao.delete(providerCreated);
         });
     }
 
@@ -173,9 +159,10 @@ class ProviderAdvertisementDaoImplTest {
      */
     @Test
     void deleteObjectByIdAfterTheTableOfProviderWasDroppedThrowException() throws Exception {
+        Provider providerCreated = providerDao.create(PROVIDER);
         dropTableProviderMethod();
         assertThrows(Exception.class, () -> {
-            providerDao.delete(PROVIDER.getProvId());
+            providerDao.delete(providerCreated);
         });
     }
 
@@ -211,6 +198,7 @@ class ProviderAdvertisementDaoImplTest {
      */
     @Test
     void getAllObjectAfterTheTableOfProviderWasDroppedThrowDaoException() throws Exception {
+        providerDao.create(PROVIDER);
         dropTableProviderMethod();
         assertThrows(DaoException.class, () -> {
             providerDao.getAll();
@@ -224,22 +212,11 @@ class ProviderAdvertisementDaoImplTest {
      */
     @Test
     void getAllObjectAfterTheTableOfProviderWasDroppedThrowException() throws Exception {
+        providerDao.create(PROVIDER);
         dropTableProviderMethod();
         assertThrows(Exception.class, () -> {
             providerDao.getAll();
         });
-    }
-
-    /**
-     * testing successful result of update method which updates info regarding Providers in DB
-     *
-     * @throws Exception
-     */
-    @Test
-    void updateDataExecutedReturnTrue() throws Exception {
-        providerDao.create(PROVIDER);
-        Integer actual = providerDao.update(PROVIDER_UPDATE);
-        assertEquals(Integer.valueOf(1), actual);
     }
 
     /**
@@ -249,15 +226,15 @@ class ProviderAdvertisementDaoImplTest {
      */
     @Test
     void updateDataExecutedAndAllFieldsOfTheProviderRecievedAndCheckedReturnTrue() throws Exception {
-        providerDao.create(PROVIDER);
-        providerDao.update(PROVIDER_UPDATE);
-        Provider actual = providerDao.getById(PROVIDER_UPDATE.getProvId()).orElse(null);
+        Provider providerCreated = providerDao.create(PROVIDER);
+        Provider providerUpdated = providerDao.update(PROVIDER_UPDATE);
+        Provider actual = providerDao.getById(providerUpdated.getProvId()).orElse(null);
         assertAll("actual",
-                () -> assertEquals(PROVIDER_UPDATE.getProvId(), actual.getProvId()),
-                () -> assertEquals(PROVIDER_UPDATE.getAddress(), actual.getAddress()),
-                () -> assertEquals(PROVIDER_UPDATE.getCountry(), actual.getCountry()),
-                () -> assertEquals(PROVIDER_UPDATE.getName(), actual.getName()),
-                () -> assertEquals(PROVIDER_UPDATE.getTelephone(), actual.getTelephone())
+                () -> assertEquals(providerUpdated.getProvId(), actual.getProvId()),
+                () -> assertEquals(providerUpdated.getAddress(), actual.getAddress()),
+                () -> assertEquals(providerUpdated.getCountry(), actual.getCountry()),
+                () -> assertEquals(providerUpdated.getName(), actual.getName()),
+                () -> assertEquals(providerUpdated.getTelephone(), actual.getTelephone())
         );
     }
 
@@ -268,6 +245,7 @@ class ProviderAdvertisementDaoImplTest {
      */
     @Test
     void updateObjectAfterTheTableOfProviderWasDroppedThrowDaoException() throws Exception {
+        providerDao.create(PROVIDER);
         dropTableProviderMethod();
         assertThrows(DaoException.class, () -> {
             providerDao.update(PROVIDER_UPDATE);
@@ -281,6 +259,7 @@ class ProviderAdvertisementDaoImplTest {
      */
     @Test
     void updateObjectAfterTheTableOfProviderWasDroppedThrowException() throws Exception {
+        providerDao.create(PROVIDER);
         dropTableProviderMethod();
         assertThrows(Exception.class, () -> {
             providerDao.update(PROVIDER_UPDATE);

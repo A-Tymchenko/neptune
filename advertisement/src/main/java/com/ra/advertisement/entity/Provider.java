@@ -8,7 +8,6 @@ public class Provider {
     private String country;
 
     public Provider() {
-
     }
 
     public Provider(final Long provId, final String name, final String address,
@@ -20,8 +19,7 @@ public class Provider {
         this.country = country;
     }
 
-    public Provider(final String name, final String address,
-                    final String telephone, final String country) {
+    public Provider(final String name, final String address, final String telephone, final String country) {
         this.name = name;
         this.address = address;
         this.telephone = telephone;

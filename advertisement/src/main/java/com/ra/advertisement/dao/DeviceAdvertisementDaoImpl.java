@@ -31,23 +31,21 @@ public final class DeviceAdvertisementDaoImpl implements AdvertisementDao<Device
     /**
      * Method adds new Device to the Data Base.
      *
-     * @param device DEvice to save
-     * @returnto count of added rows
+     * @param device Device to save
+     * @return entity Device with generated id
      */
     @Override
-    public Integer create(final Device device) throws DaoException {
+    public Device create(final Device device) throws DaoException {
         try (Connection connection = connectionFactory.getConnection()) {
             final PreparedStatement pstm = connection.prepareStatement("INSERT INTO DEVICES (NAME, MODEL, "
                     + "DEVICE_TYPE) VALUES(?,?,?)");
-            pstm.setString(NAME, device.getName());
-            pstm.setString(MODEL, device.getModel());
-            pstm.setString(DEVICE_TYPE, device.getDeviceType());
-            final Integer result = pstm.executeUpdate();
+            setStatementValues(pstm, device);
+            pstm.executeUpdate();
             final ResultSet resultSetWithKey = pstm.getGeneratedKeys();
             if (resultSetWithKey.next()) {
-                device.setDevId(resultSetWithKey.getLong(1));
+                return getById(resultSetWithKey.getLong(1)).get();
             }
-            return result;
+            return device;
         } catch (SQLException ex) {
             final String message = "Trouble in the create method {}";
             LOGGER.error(message, AdvertisementEnum.DEVICES.getMessage(), ex);
@@ -79,21 +77,25 @@ public final class DeviceAdvertisementDaoImpl implements AdvertisementDao<Device
     }
 
     /**
-     * Method deletes  the object from Data Base by its id.
+     * Method deletes the object from Data Base by its id.
      *
-     * @param devId Device's Id
+     * @param device Device
      * @return count of deleted rows
      */
     @Override
-    public Integer delete(final Long devId) throws DaoException {
-        try (Connection connection = connectionFactory.getConnection()) {
-            final PreparedStatement pstm = connection.prepareStatement("DELETE FROM DEVICES WHERE DEV_ID=?");
-            pstm.setLong(1, devId);
-            return pstm.executeUpdate();
-        } catch (SQLException ex) {
-            final String message = "Trouble in the delete method {}";
-            LOGGER.error(message, AdvertisementEnum.DEVICES.getMessage(), ex);
-            throw new DaoException(String.format(message, AdvertisementEnum.DEVICES.getMessage()), ex);
+    public Integer delete(final Device device) throws DaoException {
+        if (device != null) {
+            try (Connection connection = connectionFactory.getConnection()) {
+                final PreparedStatement pstm = connection.prepareStatement("DELETE FROM DEVICES WHERE DEV_ID=?");
+                pstm.setLong(1, device.getDevId());
+                return pstm.executeUpdate();
+            } catch (SQLException ex) {
+                final String message = "Trouble in the delete method {}";
+                LOGGER.error(message, AdvertisementEnum.DEVICES.getMessage(), ex);
+                throw new DaoException(String.format(message, AdvertisementEnum.DEVICES.getMessage()), ex);
+            }
+        } else {
+            return 0;
         }
     }
 
@@ -101,15 +103,17 @@ public final class DeviceAdvertisementDaoImpl implements AdvertisementDao<Device
      * Update Device to Data Base.
      *
      * @param device to save
-     * @return count of updated rows
+     * @return new entity Device updated
      */
     @Override
-    public Integer update(final Device device) throws DaoException {
+    public Device update(final Device device) throws DaoException {
         try (Connection connection = connectionFactory.getConnection()) {
             final PreparedStatement pstm = connection.prepareStatement("update DEVICES set NAME = ?, MODEL= ?, "
                     + "DEVICE_TYPE = ? where DEV_ID = ?");
             setStatementValues(pstm, device);
-            return pstm.executeUpdate();
+            pstm.setLong(DEV_ID, device.getDevId());
+            pstm.executeUpdate();
+            return getById(device.getDevId()).get();
         } catch (SQLException ex) {
             final String message = "Trouble in the update method {}";
             LOGGER.error(message, AdvertisementEnum.DEVICES.getMessage(), ex);
@@ -144,7 +148,7 @@ public final class DeviceAdvertisementDaoImpl implements AdvertisementDao<Device
      * Method extracts a device from resultSet.
      *
      * @param resultSet resultSet recieved from a Data Base
-     * @return device with the filled fields
+     * @return new Device with the filled fields
      */
     private Device getDeviceFromResultSet(final ResultSet resultSet) throws SQLException {
         final Device device = new Device();
@@ -156,7 +160,7 @@ public final class DeviceAdvertisementDaoImpl implements AdvertisementDao<Device
     }
 
     /**
-     * Method sets Statement values.
+     * Method sets Statement values for create method.
      *
      * @param pstm   to save
      * @param device to save
@@ -165,7 +169,5 @@ public final class DeviceAdvertisementDaoImpl implements AdvertisementDao<Device
         pstm.setString(NAME, device.getName());
         pstm.setString(MODEL, device.getModel());
         pstm.setString(DEVICE_TYPE, device.getDeviceType());
-        pstm.setLong(DEV_ID, device.getDevId());
     }
-
 }

@@ -22,7 +22,7 @@ public final class PublisherAdvertisementDaoImpl implements AdvertisementDao<Pub
     private static final Integer TELEPHONE = 3;
     private static final Integer COUNTRY = 4;
     private static final Integer PUB_ID = 5;
-    private static final Logger LOGGER = LogManager.getLogger(ProviderAdvertisementDaoImpl.class);
+    private static final Logger LOGGER = LogManager.getLogger(PublisherAdvertisementDaoImpl.class);
 
     public PublisherAdvertisementDaoImpl(final ConnectionFactory connectionFactory) {
         this.connectionFactory = connectionFactory;
@@ -32,23 +32,20 @@ public final class PublisherAdvertisementDaoImpl implements AdvertisementDao<Pub
      * Method adds new Publisher to the Data Base.
      *
      * @param publisher Publisher to save
-     * @returnto count of added rows
+     * @return entity Publisher with generated id;
      */
     @Override
-    public Integer create(final Publisher publisher) throws DaoException {
+    public Publisher create(final Publisher publisher) throws DaoException {
         try (Connection connection = connectionFactory.getConnection()) {
             final PreparedStatement pstm = connection.prepareStatement("INSERT INTO PUBLISHER (NAME, ADDRESS, "
                     + "TELEPHONE, COUNTRY) VALUES(?,?,?,?)");
-            pstm.setString(NAME, publisher.getName());
-            pstm.setString(ADDRESS, publisher.getAddress());
-            pstm.setString(TELEPHONE, publisher.getTelephone());
-            pstm.setString(COUNTRY, publisher.getCountry());
-            final Integer result = pstm.executeUpdate();
+            setStatementValues(pstm, publisher);
+            pstm.executeUpdate();
             final ResultSet resultSetWithKey = pstm.getGeneratedKeys();
             if (resultSetWithKey.next()) {
-                publisher.setPubId(resultSetWithKey.getLong(1));
+                return getById(resultSetWithKey.getLong(1)).get();
             }
-            return result;
+            return publisher;
         } catch (SQLException ex) {
             final String message = "Trouble in the create method {}";
             LOGGER.error(message, AdvertisementEnum.PUBLISHER.getMessage(), ex);
@@ -80,21 +77,25 @@ public final class PublisherAdvertisementDaoImpl implements AdvertisementDao<Pub
     }
 
     /**
-     * Method deletes  the object from Data Base by its id.
+     * Method deletes the object from Data Base by its id.
      *
-     * @param pubId Publisher's Id
+     * @param publisher Publisher
      * @return count of deleted rows
      */
     @Override
-    public Integer delete(final Long pubId) throws DaoException {
-        try (Connection connection = connectionFactory.getConnection()) {
-            final PreparedStatement pstm = connection.prepareStatement("DELETE FROM PUBLISHER WHERE PUB_ID=?");
-            pstm.setLong(1, pubId);
-            return pstm.executeUpdate();
-        } catch (SQLException ex) {
-            final String message = "Trouble in the delete method {}";
-            LOGGER.error(message, AdvertisementEnum.PUBLISHER.getMessage(), ex);
-            throw new DaoException(String.format(message, AdvertisementEnum.PUBLISHER.getMessage()), ex);
+    public Integer delete(final Publisher publisher) throws DaoException {
+        if (publisher != null) {
+            try (Connection connection = connectionFactory.getConnection()) {
+                final PreparedStatement pstm = connection.prepareStatement("DELETE FROM PUBLISHER WHERE PUB_ID=?");
+                pstm.setLong(1, publisher.getPubId());
+                return pstm.executeUpdate();
+            } catch (SQLException ex) {
+                final String message = "Trouble in the delete method {}";
+                LOGGER.error(message, AdvertisementEnum.PUBLISHER.getMessage(), ex);
+                throw new DaoException(String.format(message, AdvertisementEnum.PUBLISHER.getMessage()), ex);
+            }
+        } else {
+            return 0;
         }
     }
 
@@ -102,15 +103,17 @@ public final class PublisherAdvertisementDaoImpl implements AdvertisementDao<Pub
      * Update publisher to Data Base.
      *
      * @param publisher to save.
-     * @return count of updated rows.
+     * @return new Publisher updated.
      */
     @Override
-    public Integer update(final Publisher publisher) throws DaoException {
+    public Publisher update(final Publisher publisher) throws DaoException {
         try (Connection connection = connectionFactory.getConnection()) {
             final PreparedStatement pstm = connection.prepareStatement("update PUBLISHER set NAME = ?, ADDRESS= ?, "
                     + "TELEPHONE = ?, COUNTRY = ? where PUB_ID = ?");
             setStatementValues(pstm, publisher);
-            return pstm.executeUpdate();
+            pstm.setLong(PUB_ID, publisher.getPubId());
+            pstm.executeUpdate();
+            return getById(publisher.getPubId()).get();
         } catch (SQLException ex) {
             final String message = "Trouble in the update method {}";
             LOGGER.error(message, AdvertisementEnum.PUBLISHER.getMessage(), ex);
@@ -144,7 +147,7 @@ public final class PublisherAdvertisementDaoImpl implements AdvertisementDao<Pub
     /**
      * Method extracts a publisher from resultSet.
      *
-     * @param resultSet resultSet recieved from a Data Base
+     * @param resultSet resultSet received from a Data Base
      * @return publisher with the filled fields
      */
     private Publisher getPublisherFromResultSet(final ResultSet resultSet) throws SQLException {
@@ -168,6 +171,5 @@ public final class PublisherAdvertisementDaoImpl implements AdvertisementDao<Pub
         pstm.setString(ADDRESS, publisher.getAddress());
         pstm.setString(TELEPHONE, publisher.getTelephone());
         pstm.setString(COUNTRY, publisher.getCountry());
-        pstm.setLong(PUB_ID, publisher.getPubId());
     }
 }

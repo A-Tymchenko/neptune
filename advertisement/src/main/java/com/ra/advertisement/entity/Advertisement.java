@@ -6,28 +6,25 @@ public class Advertisement {
     private String context;
     private String imageUrl;
     private String language;
-    private Long provId;
 
     public Advertisement() {
     }
 
     public Advertisement(final Long adId, final String title, final String context, final String imageUrl,
-                         final String language, final Long provId) {
+                         final String language) {
         this.adId = adId;
         this.title = title;
         this.context = context;
         this.imageUrl = imageUrl;
         this.language = language;
-        this.provId = provId;
     }
 
     public Advertisement(final String title, final String context, final String imageUrl,
-                         final String language, final Long provId) {
+                         final String language) {
         this.title = title;
         this.context = context;
         this.imageUrl = imageUrl;
         this.language = language;
-        this.provId = provId;
     }
 
     public Long getAdId() {
@@ -70,14 +67,6 @@ public class Advertisement {
         this.language = language;
     }
 
-    public Long getProvId() {
-        return provId;
-    }
-
-    public void setProvId(final Long provId) {
-        this.provId = provId;
-    }
-
     @Override
     public String toString() {
         return "Advertisement{"
@@ -86,7 +75,6 @@ public class Advertisement {
                 + ", context='" + context + '\''
                 + ", imageUrl='" + imageUrl + '\''
                 + ", language='" + language + '\''
-                + ", provId=" + provId
                 + '}';
     }
 }

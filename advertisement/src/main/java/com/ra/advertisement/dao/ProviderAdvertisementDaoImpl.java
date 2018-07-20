@@ -32,23 +32,20 @@ public final class ProviderAdvertisementDaoImpl implements AdvertisementDao<Prov
      * Method adds new Provider to the Data Base.
      *
      * @param provider Provider to save
-     * @returnto count of added rows
+     * @return entity Provider with generated key
      */
     @Override
-    public Integer create(final Provider provider) throws DaoException {
+    public Provider create(final Provider provider) throws DaoException {
         try (Connection connection = connectionFactory.getConnection()) {
             final PreparedStatement pstm = connection.prepareStatement("INSERT INTO PROVIDER (NAME, ADDRESS, "
                     + "TELEPHONE, COUNTRY) VALUES(?,?,?,?)");
-            pstm.setString(NAME, provider.getName());
-            pstm.setString(ADDRESS, provider.getAddress());
-            pstm.setString(TELEPHONE, provider.getTelephone());
-            pstm.setString(COUNTRY, provider.getCountry());
-            final Integer result = pstm.executeUpdate();
+            setStatementValues(pstm, provider);
+            pstm.executeUpdate();
             final ResultSet resultSetWithKey = pstm.getGeneratedKeys();
             if (resultSetWithKey.next()) {
-                provider.setProvId(resultSetWithKey.getLong(1));
+                return getById(resultSetWithKey.getLong(1)).get();
             }
-            return result;
+            return provider;
         } catch (SQLException ex) {
             final String message = "Trouble in the create method {}";
             LOGGER.error(message, AdvertisementEnum.PROVIDER.getMessage(), ex);
@@ -82,35 +79,41 @@ public final class ProviderAdvertisementDaoImpl implements AdvertisementDao<Prov
     /**
      * Method deletes the object from Data Base by its id.
      *
-     * @param provId Provider's Id
+     * @param provider Provider
      * @return count of deleted rows
      */
     @Override
-    public Integer delete(final Long provId) throws DaoException {
-        try (Connection connection = connectionFactory.getConnection()) {
-            final PreparedStatement pstm = connection.prepareStatement("DELETE FROM PROVIDER WHERE PROV_ID=?");
-            pstm.setLong(1, provId);
-            return pstm.executeUpdate();
-        } catch (SQLException ex) {
-            final String message = "Trouble in the delete method {}";
-            LOGGER.error(message, AdvertisementEnum.PROVIDER.getMessage(), ex);
-            throw new DaoException(String.format(message, AdvertisementEnum.PROVIDER.getMessage()), ex);
+    public Integer delete(final Provider provider) throws DaoException {
+        if (provider != null) {
+            try (Connection connection = connectionFactory.getConnection()) {
+                final PreparedStatement pstm = connection.prepareStatement("DELETE FROM PROVIDER WHERE PROV_ID=?");
+                pstm.setLong(1, provider.getProvId());
+                return pstm.executeUpdate();
+            } catch (SQLException ex) {
+                final String message = "Trouble in the delete method {}";
+                LOGGER.error(message, AdvertisementEnum.PROVIDER.getMessage(), ex);
+                throw new DaoException(String.format(message, AdvertisementEnum.PROVIDER.getMessage()), ex);
+            }
+        } else {
+            return 0;
         }
     }
 
     /**
      * Update provider to Data Base.
      *
-     * @param provider to save.
-     * @return count of updated rows.
+     * @param provider to save
+     * @return new entity Provider updated
      */
     @Override
-    public Integer update(final Provider provider) throws DaoException {
+    public Provider update(final Provider provider) throws DaoException {
         try (Connection connection = connectionFactory.getConnection()) {
             final PreparedStatement pstm = connection.prepareStatement("update PROVIDER set NAME = ?, ADDRESS= ?, "
                     + "TELEPHONE = ?, COUNTRY = ? where PROV_ID = ?");
             setStatementValues(pstm, provider);
-            return pstm.executeUpdate();
+            pstm.setLong(PROV_ID, provider.getProvId());
+            pstm.executeUpdate();
+            return getById(provider.getProvId()).get();
         } catch (SQLException ex) {
             final String message = "Trouble in the update method {}";
             LOGGER.error(message, AdvertisementEnum.PROVIDER.getMessage(), ex);
@@ -144,8 +147,8 @@ public final class ProviderAdvertisementDaoImpl implements AdvertisementDao<Prov
     /**
      * Method extracts a provider from resultSet.
      *
-     * @param resultSet resultSet recieved from a Data Base
-     * @return provider with the filled fields
+     * @param resultSet resultSet received from a Data Base
+     * @return new Provider with the filled fields
      */
     private Provider getProviderFomResultSet(final ResultSet resultSet) throws SQLException {
         final Provider provider = new Provider();
@@ -163,11 +166,11 @@ public final class ProviderAdvertisementDaoImpl implements AdvertisementDao<Prov
      * @param pstm     to save
      * @param provider to save
      */
-    private void setStatementValues(final PreparedStatement pstm, final Provider provider) throws SQLException {
+    private void setStatementValues(final PreparedStatement pstm, final Provider provider) throws
+            SQLException {
         pstm.setString(NAME, provider.getName());
         pstm.setString(ADDRESS, provider.getAddress());
         pstm.setString(TELEPHONE, provider.getTelephone());
         pstm.setString(COUNTRY, provider.getCountry());
-        pstm.setLong(PROV_ID, provider.getProvId());
     }
 }

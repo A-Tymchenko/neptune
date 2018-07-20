@@ -21,7 +21,6 @@ public final class AdvertisementAdvertisementDaoImpl implements AdvertisementDao
     private static final Integer CONTEXT = 2;
     private static final Integer IMAGE_URL = 3;
     private static final Integer LANGUAGE = 4;
-    private static final Integer PROV_ID = 5;
     private static final Integer AD_ID = 5;
     private static final Logger LOGGER = LogManager.getLogger(AdvertisementAdvertisementDaoImpl.class);
 
@@ -33,27 +32,24 @@ public final class AdvertisementAdvertisementDaoImpl implements AdvertisementDao
      * Method adds new Advertisement to the Data Base.
      *
      * @param advertisement Advertisement to save
-     * @returnto count of added rows
+     * @returnto new Advertisement
      */
     @Override
-    public Integer create(final Advertisement advertisement) throws DaoException {
+    public Advertisement create(final Advertisement advertisement) throws DaoException {
         try (Connection connection = connectionFactory.getConnection()) {
             final PreparedStatement pstm = connection.prepareStatement("INSERT INTO ADVERTISEMENT "
-                    + "(TITLE, CONTEXT, IMAGE_URL, LANGUAGE, PROV_ID) VALUES(?,?,?,?,?)");
-            pstm.setString(TITLE, advertisement.getTitle());
-            pstm.setString(CONTEXT, advertisement.getContext());
-            pstm.setString(IMAGE_URL, advertisement.getImageUrl());
-            pstm.setString(LANGUAGE, advertisement.getLanguage());
-            pstm.setLong(PROV_ID, advertisement.getProvId());
-            final Integer result = pstm.executeUpdate();
+                    + "(TITLE, CONTEXT, IMAGE_URL, LANGUAGE) VALUES(?,?,?,?)");
+            setStatementValues(pstm, advertisement);
+            pstm.executeUpdate();
             final ResultSet resultSetWithKey = pstm.getGeneratedKeys();
             if (resultSetWithKey.next()) {
-                advertisement.setAdId(resultSetWithKey.getLong(1));
+                return getById(resultSetWithKey.getLong(1)).get();
             }
-            return result;
+            return advertisement;
         } catch (SQLException ex) {
-            LOGGER.error("Trouble in the create method {}", AdvertisementEnum.ADVERTISEMENT.getMessage(), ex);
-            throw new DaoException("Trouble in the create method check if the Advertisement table exists", ex);
+            final String message = "Trouble in the create method {}";
+            LOGGER.error(message, AdvertisementEnum.ADVERTISEMENT.getMessage(), ex);
+            throw new DaoException(String.format(message, AdvertisementEnum.ADVERTISEMENT.getMessage()), ex);
         }
     }
 
@@ -83,19 +79,23 @@ public final class AdvertisementAdvertisementDaoImpl implements AdvertisementDao
     /**
      * Method deletes the object from Data Base by its id.
      *
-     * @param adId Advertisement's Id
+     * @param advertisement Advertisement we want delete
      * @return count of deleted rows
      */
     @Override
-    public Integer delete(final Long adId) throws DaoException {
-        try (Connection connection = connectionFactory.getConnection()) {
-            final PreparedStatement pstm = connection.prepareStatement("DELETE FROM ADVERTISEMENT WHERE AD_ID=?");
-            pstm.setLong(1, adId);
-            return pstm.executeUpdate();
-        } catch (SQLException ex) {
-            final String message = "Trouble in the delete method {}";
-            LOGGER.error(message, AdvertisementEnum.ADVERTISEMENT.getMessage(), ex);
-            throw new DaoException(String.format(message, AdvertisementEnum.ADVERTISEMENT.getMessage()), ex);
+    public Integer delete(final Advertisement advertisement) throws DaoException {
+        if (advertisement != null) {
+            try (Connection connection = connectionFactory.getConnection()) {
+                final PreparedStatement pstm = connection.prepareStatement("DELETE FROM ADVERTISEMENT WHERE AD_ID=?");
+                pstm.setLong(1, advertisement.getAdId());
+                return pstm.executeUpdate();
+            } catch (SQLException ex) {
+                final String message = "Trouble in the delete method {}";
+                LOGGER.error(message, AdvertisementEnum.ADVERTISEMENT.getMessage(), ex);
+                throw new DaoException(String.format(message, AdvertisementEnum.ADVERTISEMENT.getMessage()), ex);
+            }
+        } else {
+            return 0;
         }
     }
 
@@ -103,15 +103,17 @@ public final class AdvertisementAdvertisementDaoImpl implements AdvertisementDao
      * Update publisher to Data Base.
      *
      * @param advertisement advertisement to update
-     * @return count of updated rows
+     * @return new Advertisement
      */
     @Override
-    public Integer update(final Advertisement advertisement) throws DaoException {
+    public Advertisement update(final Advertisement advertisement) throws DaoException {
         try (Connection connection = connectionFactory.getConnection()) {
             final PreparedStatement pstm = connection.prepareStatement("update ADVERTISEMENT set TITLE = ?, "
                     + "CONTEXT= ?, IMAGE_URL = ?, LANGUAGE = ? where AD_ID = ?");
             setStatementValues(pstm, advertisement);
-            return pstm.executeUpdate();
+            pstm.setLong(AD_ID, advertisement.getAdId());
+            pstm.executeUpdate();
+            return getById(advertisement.getAdId()).get();
         } catch (SQLException ex) {
             final String message = "Trouble in the update method {}";
             LOGGER.error(message, AdvertisementEnum.ADVERTISEMENT.getMessage(), ex);
@@ -155,12 +157,11 @@ public final class AdvertisementAdvertisementDaoImpl implements AdvertisementDao
         advertisement.setContext(resultSet.getString("CONTEXT"));
         advertisement.setImageUrl(resultSet.getString("IMAGE_URL"));
         advertisement.setLanguage(resultSet.getString("LANGUAGE"));
-        advertisement.setProvId(resultSet.getLong("PROV_ID"));
         return advertisement;
     }
 
     /**
-     * Method sets Statement values.
+     * Method sets Statement for create method.
      *
      * @param pstm          to save
      * @param advertisement to save
@@ -170,6 +171,5 @@ public final class AdvertisementAdvertisementDaoImpl implements AdvertisementDao
         pstm.setString(CONTEXT, advertisement.getContext());
         pstm.setString(IMAGE_URL, advertisement.getImageUrl());
         pstm.setString(LANGUAGE, advertisement.getLanguage());
-        pstm.setLong(AD_ID, advertisement.getAdId());
     }
 }

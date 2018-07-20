@@ -15,20 +15,27 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 public class AdvertisementMockTest {
+      private static final String CREATE_ADVERTISEMENT = "INSERT INTO ADVERTISEMENT (TITLE, CONTEXT, IMAGE_URL, LANGUAGE) "
+            + "VALUES(?,?,?,?)";
+    private static final String GET_ADVER_BY_ID = "SELECT * FROM ADVERTISEMENT WHERE AD_ID=?";
+    private static final String GET_ALL_ADVERTS = "SELECT * FROM ADVERTISEMENT";
+    private static final String UPDATE_ADVERT = "update ADVERTISEMENT set TITLE = ?, CONTEXT= ?, IMAGE_URL = ?,"
+            + " LANGUAGE = ? where AD_ID = ?";
+    private static final String DELETE_ADVERT = "DELETE FROM ADVERTISEMENT WHERE AD_ID=?";
     private static ConnectionFactory connectionFactory;
     private static AdvertisementDao<Advertisement> advertDao;
     private Connection mockConnection;
     private PreparedStatement mockStatement;
     private ResultSet mockResultSet;
+    private ResultSet mockResultSetForKey;
     private Advertisement advertisement;
-    private Advertisement advertisementUpdate;
+    private Advertisement advertisementNoId;
 
     @BeforeAll
     public static void init() {
@@ -41,12 +48,13 @@ public class AdvertisementMockTest {
         mockConnection = mock(Connection.class);
         mockStatement = mock(PreparedStatement.class);
         mockResultSet = mock(ResultSet.class);
+        mockResultSetForKey = mock(ResultSet.class);
+        advertisement = new Advertisement(1L, "Welcome advert", "Welcome to Ukraine",
+                "url", "Ukrainian");
+        advertisementNoId = new Advertisement("Welcome advert", "Welcome to Ukraine",
+                "url", "Ukrainian");
         when(connectionFactory.getConnection()).thenReturn(mockConnection);
-        advertisement = new Advertisement("Welcome advert", "Welcome to Ukraine",
-                "url", "Ukrainian", 1L);
-        advertisementUpdate = new Advertisement(1L, "Welcome advert",
-                "Welcome Update", "Welcome to Ukraine Update",
-                "UrlUpdate", 1l);
+        createMocksFromGetByIdMethod();
     }
 
     /**
@@ -55,30 +63,44 @@ public class AdvertisementMockTest {
      * @throws SQLException exception.
      */
     @Test
-    public void testAddAdvertisement() throws SQLException, DaoException {
-        when(mockConnection.prepareStatement(anyString())).thenReturn(mockStatement);
-        when(mockStatement.executeUpdate()).thenReturn(1);
-        when(mockStatement.getGeneratedKeys()).thenReturn(mockResultSet);
-        when(mockResultSet.next()).thenReturn(true);
-        Integer result = advertDao.create(advertisement);
-        Assertions.assertTrue(result == 1);
+    public void addAdvertisementExecuteSuccessfuldReturnTrue() throws SQLException, DaoException {
+        when(mockConnection.prepareStatement(CREATE_ADVERTISEMENT)).thenReturn(mockStatement);
+        when(mockStatement.getGeneratedKeys()).thenReturn(mockResultSetForKey);
+        Advertisement result = advertDao.create(advertisement);
+        assertAll("result",
+                () -> assertEquals(result.getAdId(), advertisement.getAdId()),
+                () -> assertEquals(result.getTitle(), advertisement.getTitle()),
+                () -> assertEquals(result.getContext(), advertisement.getContext()),
+                () -> assertEquals(result.getImageUrl(), advertisement.getImageUrl()),
+                () -> assertEquals(result.getLanguage(), advertisement.getLanguage()));
     }
 
     /**
-     * Testing method addAdvertisement and get generated key when result true.
+     * Testing method addAdvertisement when we don't get id of created entity.
      *
      * @throws SQLException exception.
      */
     @Test
-    public void testAddAdvertisementGeneratedKeyReturnTrue() throws SQLException, DaoException {
-        when(mockConnection.prepareStatement(anyString())).thenReturn(mockStatement);
-        when(mockStatement.executeUpdate()).thenReturn(1);
-        when(mockStatement.getGeneratedKeys()).thenReturn(mockResultSet);
-        while (mockResultSet.next()){
-            advertisement.setAdId(mockResultSet.getLong(1));
-        }
-        Integer result = advertDao.create(advertisement);
-        Assertions.assertTrue(result == 1);
+    public void addAdvertisementAndDontGetGeneratedIdReturnTrue() throws SQLException, DaoException {
+        when(mockConnection.prepareStatement(CREATE_ADVERTISEMENT)).thenReturn(mockStatement);
+        when(mockStatement.getGeneratedKeys()).thenReturn(mockResultSetForKey);
+        when(mockResultSetForKey.next()).thenReturn(false);
+        Advertisement result = advertDao.create(advertisementNoId);
+        Assertions.assertTrue(result.getAdId() == null);
+    }
+
+    /**
+     * Testing method addAdvertisement when we get id of created entity.
+     *
+     * @throws SQLException exception.
+     */
+    @Test
+    public void addAdvertisementAndGetGeneratedIdReturnTrue() throws SQLException, DaoException {
+        when(mockConnection.prepareStatement(CREATE_ADVERTISEMENT)).thenReturn(mockStatement);
+        when(mockStatement.getGeneratedKeys()).thenReturn(mockResultSetForKey);
+        when(mockResultSetForKey.next()).thenReturn(true);
+        Advertisement result = advertDao.create(advertisementNoId);
+        Assertions.assertTrue(result.getAdId() == advertisement.getAdId());
     }
 
     /**
@@ -87,11 +109,25 @@ public class AdvertisementMockTest {
      * @throws SQLException
      */
     @Test
-    public void testDeleteAdvertisement() throws SQLException, DaoException {
-        when(mockConnection.prepareStatement(anyString())).thenReturn(mockStatement);
+    public void deleteAdvertisementSuccessfulReturnTrue() throws SQLException, DaoException {
+        when(mockConnection.prepareStatement(DELETE_ADVERT)).thenReturn(mockStatement);
         when(mockStatement.executeUpdate()).thenReturn(1);
-        int result = advertDao.delete(2L);
+        Integer result = advertDao.delete(advertisement);
         Assertions.assertTrue(result == 1);
+    }
+
+    /**
+     * Testing method deleteAdvertisement failed return true.
+     *
+     * @throws SQLException
+     */
+    @Test
+    public void testDeleteAdvertisementFailedReturnTrue() throws SQLException, DaoException {
+        when(mockConnection.prepareStatement(DELETE_ADVERT)).thenReturn(mockStatement);
+        when(mockStatement.executeUpdate()).thenReturn(1);
+        Advertisement advertisementNull = null;
+        Integer result = advertDao.delete(advertisementNull);
+        Assertions.assertTrue(result == 0);
     }
 
     /**
@@ -100,11 +136,15 @@ public class AdvertisementMockTest {
      * @throws SQLException
      */
     @Test
-    public void testUpdateAdvertisement() throws SQLException, DaoException {
-        when(mockConnection.prepareStatement(anyString())).thenReturn(mockStatement);
-        when(mockStatement.executeUpdate()).thenReturn(1);
-        int result = advertDao.update(advertisementUpdate);
-        Assertions.assertTrue(result == 1);
+    public void updateAdvertisementSuccessfulReturnTrue() throws SQLException, DaoException {
+        when(mockConnection.prepareStatement(UPDATE_ADVERT)).thenReturn(mockStatement);
+        Advertisement result = advertDao.update(advertisement);
+        assertAll("result",
+                () -> assertEquals(result.getAdId(), advertisement.getAdId()),
+                () -> assertEquals(result.getTitle(), advertisement.getTitle()),
+                () -> assertEquals(result.getContext(), advertisement.getContext()),
+                () -> assertEquals(result.getImageUrl(), advertisement.getImageUrl()),
+                () -> assertEquals(result.getLanguage(), advertisement.getLanguage()));
     }
 
     /**
@@ -113,7 +153,7 @@ public class AdvertisementMockTest {
      * @throws SQLException
      */
     @Test
-    public void testGetAllAdvertisement() throws SQLException, DaoException {
+    public void getAllAdvertisementExecutedReturnTrue() throws SQLException, DaoException {
         boolean result = false;
         when(mockConnection.prepareStatement(anyString())).thenReturn(mockStatement);
         when(mockStatement.executeQuery()).thenReturn(mockResultSet);
@@ -129,12 +169,13 @@ public class AdvertisementMockTest {
      * @throws DaoException
      */
     @Test
-    public void whenGetByIdReturnEmptyResultSetThenEmptyOptionalShouldBeReturned() throws DaoException, SQLException {
-        when(mockConnection.prepareStatement(anyString())).thenReturn(mockStatement);
+    public void advertisementGetByIdReturnEmptyResultSetThenEmptyOptionalShouldBeReturned() throws
+            DaoException, SQLException {
+        when(mockConnection.prepareStatement(GET_ADVER_BY_ID)).thenReturn(mockStatement);
         when(mockStatement.executeQuery()).thenReturn(mockResultSet);
         when(mockResultSet.next()).thenReturn(false);
-        Optional<Advertisement> advertisement = advertDao.getById(Long.valueOf(1L));
-        assertEquals(Optional.empty(), advertisement);
+        Optional<Advertisement> advertisementOptional = advertDao.getById(advertisement.getAdId());
+        assertEquals(Optional.empty(), advertisementOptional);
     }
 
     /**
@@ -144,11 +185,19 @@ public class AdvertisementMockTest {
      * @throws DaoException
      */
     @Test
-    public void whenGetByIdReturnNotEmptyResultSetThenAdvertisementOptionalShouldBeReturned() throws DaoException, SQLException {
-        when(mockConnection.prepareStatement(anyString())).thenReturn(mockStatement);
+    public void advertisementGetByIdReturnNotEmptyResultSetThenAdvertisementOptionalShouldBeReturned() throws
+            DaoException, SQLException {
+        when(mockConnection.prepareStatement(GET_ADVER_BY_ID)).thenReturn(mockStatement);
         when(mockStatement.executeQuery()).thenReturn(mockResultSet);
         when(mockResultSet.next()).thenReturn(true, false);
-        Optional<Advertisement> advertisement = advertDao.getById(1L);
+        Optional<Advertisement> advertisementOptional = advertDao.getById(advertisement.getAdId());
+        Advertisement advertisementFromOptional = advertisementOptional.get();
+        assertAll("advertisementFromOptional",
+                () -> assertEquals(advertisementFromOptional.getAdId(), advertisement.getAdId()),
+                () -> assertEquals(advertisementFromOptional.getTitle(), advertisement.getTitle()),
+                () -> assertEquals(advertisementFromOptional.getContext(), advertisement.getContext()),
+                () -> assertEquals(advertisementFromOptional.getImageUrl(), advertisement.getImageUrl()),
+                () -> assertEquals(advertisementFromOptional.getLanguage(), advertisement.getLanguage()));
     }
 
     /**
@@ -158,9 +207,9 @@ public class AdvertisementMockTest {
      */
     @Test
     public void deleteAdvertThrowDaoException() throws SQLException {
-        when(mockConnection.prepareStatement(anyString())).thenThrow(new SQLException());
+        when(mockConnection.prepareStatement(DELETE_ADVERT)).thenThrow(new SQLException());
         assertThrows(DaoException.class, () -> {
-            advertDao.delete(1L);
+            advertDao.delete(advertisement);
         });
     }
 
@@ -171,7 +220,7 @@ public class AdvertisementMockTest {
      */
     @Test
     public void addAdvertisementThrowDaoException() throws SQLException {
-        when(mockConnection.prepareStatement(anyString())).thenThrow(new SQLException());
+        when(mockConnection.prepareStatement(CREATE_ADVERTISEMENT)).thenThrow(new SQLException());
         assertThrows(DaoException.class, () -> {
             advertDao.create(advertisement);
         });
@@ -184,9 +233,9 @@ public class AdvertisementMockTest {
      */
     @Test
     public void updateAdvertisementThrowDaoException() throws SQLException {
-        when(mockConnection.prepareStatement(anyString())).thenThrow(new SQLException());
+        when(mockConnection.prepareStatement(UPDATE_ADVERT)).thenThrow(new SQLException());
         assertThrows(DaoException.class, () -> {
-            advertDao.update(advertisementUpdate);
+            advertDao.update(advertisement);
         });
     }
 
@@ -197,7 +246,7 @@ public class AdvertisementMockTest {
      */
     @Test
     public void getAllAdvertsThrowDaoException() throws SQLException {
-        when(mockConnection.prepareStatement(anyString())).thenThrow(new SQLException());
+        when(mockConnection.prepareStatement(GET_ALL_ADVERTS)).thenThrow(new SQLException());
         assertThrows(DaoException.class, () -> {
             advertDao.getAll();
         });
@@ -210,9 +259,20 @@ public class AdvertisementMockTest {
      */
     @Test
     public void getByIdAdvertisementThrowDaoException() throws SQLException {
-        when(mockConnection.prepareStatement(anyString())).thenThrow(new SQLException());
+        when(mockConnection.prepareStatement(GET_ADVER_BY_ID)).thenThrow(new SQLException());
         assertThrows(DaoException.class, () -> {
-            advertDao.getById(2L);
+            advertDao.getById(advertisement.getAdId());
         });
+    }
+
+    private void createMocksFromGetByIdMethod() throws SQLException {
+        when(mockConnection.prepareStatement(GET_ADVER_BY_ID)).thenReturn(mockStatement);
+        when(mockResultSet.next()).thenReturn(true);
+        when(mockStatement.executeQuery()).thenReturn(mockResultSet);
+        when(mockResultSet.getLong("AD_ID")).thenReturn(advertisement.getAdId());
+        when(mockResultSet.getString("TITLE")).thenReturn(advertisement.getTitle());
+        when(mockResultSet.getString("CONTEXT")).thenReturn(advertisement.getContext());
+        when(mockResultSet.getString("IMAGE_URL")).thenReturn(advertisement.getImageUrl());
+        when(mockResultSet.getString("LANGUAGE")).thenReturn(advertisement.getLanguage());
     }
 }

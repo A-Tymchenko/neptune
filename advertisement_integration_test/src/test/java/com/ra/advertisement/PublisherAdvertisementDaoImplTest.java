@@ -18,8 +18,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class PublisherAdvertisementDaoImplTest {
-
-    private static final Publisher PUBLISHER = new Publisher(1L, "Advert ltd",
+    private static final Publisher PUBLISHER = new Publisher("Advert ltd",
             "Kyiv", "25-17-84", "Ukraine");
     private static final Publisher PUBLISHER_UPDATE = new Publisher(1L, "Advert ltd Update",
             "Kyiv Update", "25-17-84 Update", "Ukraine Update");
@@ -38,14 +37,21 @@ class PublisherAdvertisementDaoImplTest {
     }
 
     /**
-     * testing successful result of create method which saves info regarding Publisher into DB
+     * testing successful result of create method which save info regarding Publisher into DB
      *
      * @throws Exception
      */
     @Test
-    void insertValidDataReturnTrue() throws Exception {
-        Integer result = publisherDao.create(PUBLISHER);
-        assertEquals(Integer.valueOf(1), result);
+    void insertValidDataIntoDbAndGetItsFromThereWithGeneratedIddReturnTrue() throws Exception {
+        Publisher publisherCreated = publisherDao.create(PUBLISHER);
+        Publisher actual = publisherDao.getById(publisherCreated.getPubId()).orElse(null);
+        assertAll("actual",
+                () -> assertEquals(publisherCreated.getPubId(), actual.getPubId()),
+                () -> assertEquals(publisherCreated.getName(), actual.getName()),
+                () -> assertEquals(publisherCreated.getAddress(), actual.getAddress()),
+                () -> assertEquals(publisherCreated.getCountry(), actual.getCountry()),
+                () -> assertEquals(publisherCreated.getTelephone(), actual.getTelephone())
+        );
     }
 
     /**
@@ -80,28 +86,18 @@ class PublisherAdvertisementDaoImplTest {
      * @throws Exception
      */
     @Test
-    void getObjectByIExecutedReturnTrue() throws Exception {
-        publisherDao.create(PUBLISHER);
-        Publisher actual = publisherDao.getById(PUBLISHER.getPubId()).orElse(null);
+    void getObjectByIdExecutedReturnTrue() throws Exception {
+        Publisher publisherCreated = publisherDao.create(PUBLISHER);
+        Publisher actual = publisherDao.getById(publisherCreated.getPubId()).orElse(null);
         assertAll("actual",
-                () -> assertEquals(PUBLISHER.getPubId(), actual.getPubId()),
-                () -> assertEquals(PUBLISHER.getAddress(), actual.getAddress()),
-                () -> assertEquals(PUBLISHER.getCountry(), actual.getCountry()),
-                () -> assertEquals(PUBLISHER.getName(), actual.getName()),
-                () -> assertEquals(PUBLISHER.getTelephone(), actual.getTelephone())
+                () -> assertEquals(publisherCreated.getPubId(), actual.getPubId()),
+                () -> assertEquals(publisherCreated.getAddress(), actual.getAddress()),
+                () -> assertEquals(publisherCreated.getCountry(), actual.getCountry()),
+                () -> assertEquals(publisherCreated.getName(), actual.getName()),
+                () -> assertEquals(publisherCreated.getTelephone(), actual.getTelephone())
         );
     }
 
-    /**
-     * testing result (null) of getById method which gets info regarding Publisher from DB when there no such id in DB
-     *
-     * @throws Exception
-     */
-    @Test
-    void getObjectByIdExecutedAndReturnNullReturnTrue() throws Exception {
-        Publisher actual = publisherDao.getById(PUBLISHER.getPubId()).orElse(null);
-        assertEquals(null, actual);
-    }
 
     /**
      * testing if throws DaoException of getById method in case of some troubles
@@ -110,9 +106,10 @@ class PublisherAdvertisementDaoImplTest {
      */
     @Test
     void getObjectByIdAfterTheTableOfPublisherWasDroppedThrowDaoException() throws Exception {
+        Publisher publisherCreated = publisherDao.create(PUBLISHER);
         dropTablePublisherMethod();
         assertThrows(DaoException.class, () -> {
-            publisherDao.getById(PUBLISHER.getPubId());
+            publisherDao.getById(publisherCreated.getPubId());
         });
     }
 
@@ -123,9 +120,10 @@ class PublisherAdvertisementDaoImplTest {
      */
     @Test
     void getObjectByIdAfterTheTableOfPublisherWasDroppedThrowException() throws Exception {
+        Publisher publisherCreated = publisherDao.create(PUBLISHER);
         dropTablePublisherMethod();
         assertThrows(Exception.class, () -> {
-            publisherDao.getById(PUBLISHER.getPubId());
+            publisherDao.getById(publisherCreated.getPubId());
         });
     }
 
@@ -136,8 +134,8 @@ class PublisherAdvertisementDaoImplTest {
      */
     @Test
     void deleteValidDataExecutedReturnTrue() throws Exception {
-        publisherDao.create(PUBLISHER);
-        Integer actual = publisherDao.delete(PUBLISHER.getPubId());
+        Publisher publisherCreated = publisherDao.create(PUBLISHER);
+        Integer actual = publisherDao.delete(publisherCreated);
         assertEquals(Integer.valueOf(1), actual);
     }
 
@@ -148,9 +146,10 @@ class PublisherAdvertisementDaoImplTest {
      */
     @Test
     void deleteObjectByIdAfterTheTableOfPublisherWasDroppedThrowDaoException() throws Exception {
+        Publisher publisherCreated = publisherDao.create(PUBLISHER);
         dropTablePublisherMethod();
         assertThrows(DaoException.class, () -> {
-            publisherDao.getById(PUBLISHER.getPubId());
+            publisherDao.getById(publisherCreated.getPubId());
         });
     }
 
@@ -161,9 +160,10 @@ class PublisherAdvertisementDaoImplTest {
      */
     @Test
     void deleteObjectByIdAfterTheTableOfPublisherWasDroppedThrowException() throws Exception {
+        Publisher publisherCreated = publisherDao.create(PUBLISHER);
         dropTablePublisherMethod();
         assertThrows(Exception.class, () -> {
-            publisherDao.getById(PUBLISHER.getPubId());
+            publisherDao.getById(publisherCreated.getPubId());
         });
     }
 
@@ -199,6 +199,7 @@ class PublisherAdvertisementDaoImplTest {
      */
     @Test
     void getAllObjectAfterTheTableOfPublisherWasDroppedThrowDaoException() throws Exception {
+        publisherDao.create(PUBLISHER);
         dropTablePublisherMethod();
         assertThrows(DaoException.class, () -> {
             publisherDao.getAll();
@@ -212,6 +213,7 @@ class PublisherAdvertisementDaoImplTest {
      */
     @Test
     void getAllObjectAfterTheTableOfPublisherWasDroppedThrowException() throws Exception {
+        publisherDao.create(PUBLISHER);
         dropTablePublisherMethod();
         assertThrows(Exception.class, () -> {
             publisherDao.getAll();
@@ -224,28 +226,16 @@ class PublisherAdvertisementDaoImplTest {
      * @throws Exception
      */
     @Test
-    void updateDataWhenExecutedReturnTrue() throws Exception {
-        publisherDao.create(PUBLISHER);
-        Integer actual = publisherDao.update(PUBLISHER_UPDATE);
-        assertEquals(Integer.valueOf(1), actual);
-    }
-
-    /**
-     * testing successful result of update method which updates info regarding Publisher in DB
-     *
-     * @throws Exception
-     */
-    @Test
     void updateDataExecutedAndAllFieldsOfThePublisherRecievedAndCheckedReturnTrue() throws Exception {
         publisherDao.create(PUBLISHER);
-        publisherDao.update(PUBLISHER_UPDATE);
-        Publisher actual = publisherDao.getById(PUBLISHER_UPDATE.getPubId()).orElse(null);
+        Publisher publisherUpdated = publisherDao.update(PUBLISHER_UPDATE);
+        Publisher actual = publisherDao.getById(publisherUpdated.getPubId()).orElse(null);
         assertAll("actual",
-                () -> assertEquals(PUBLISHER_UPDATE.getPubId(), actual.getPubId()),
-                () -> assertEquals(PUBLISHER_UPDATE.getAddress(), actual.getAddress()),
-                () -> assertEquals(PUBLISHER_UPDATE.getCountry(), actual.getCountry()),
-                () -> assertEquals(PUBLISHER_UPDATE.getName(), actual.getName()),
-                () -> assertEquals(PUBLISHER_UPDATE.getTelephone(), actual.getTelephone())
+                () -> assertEquals(publisherUpdated.getPubId(), actual.getPubId()),
+                () -> assertEquals(publisherUpdated.getAddress(), actual.getAddress()),
+                () -> assertEquals(publisherUpdated.getCountry(), actual.getCountry()),
+                () -> assertEquals(publisherUpdated.getName(), actual.getName()),
+                () -> assertEquals(publisherUpdated.getTelephone(), actual.getTelephone())
         );
     }
 
@@ -256,6 +246,7 @@ class PublisherAdvertisementDaoImplTest {
      */
     @Test
     void updateObjectAfterTheTableOfPublisherWasDroppedThrowDaoException() throws Exception {
+        publisherDao.create(PUBLISHER);
         dropTablePublisherMethod();
         assertThrows(DaoException.class, () -> {
             publisherDao.update(PUBLISHER_UPDATE);
@@ -269,6 +260,7 @@ class PublisherAdvertisementDaoImplTest {
      */
     @Test
     void updateObjectAfterTheTableOfPublisherWasDroppedThrowException() throws Exception {
+        publisherDao.create(PUBLISHER);
         dropTablePublisherMethod();
         assertThrows(Exception.class, () -> {
             publisherDao.update(PUBLISHER_UPDATE);

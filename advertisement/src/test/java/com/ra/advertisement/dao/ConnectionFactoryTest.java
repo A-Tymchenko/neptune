@@ -64,5 +64,4 @@ public class ConnectionFactoryTest {
             dBproperties.load(ClassLoader.getSystemResourceAsStream("confi.properties"));
         });
     }
-
 }

@@ -18,5 +18,4 @@ public class DaoException extends Exception {
     public Throwable getException() {
         return exception;
     }
-
 }

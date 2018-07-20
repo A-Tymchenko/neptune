@@ -3,10 +3,8 @@ package com.ra.advertisement;
 import com.ra.advertisement.connection.ConnectionFactory;
 import com.ra.advertisement.dao.AdvertisementAdvertisementDaoImpl;
 import com.ra.advertisement.dao.AdvertisementDao;
-import com.ra.advertisement.dao.ProviderAdvertisementDaoImpl;
 import com.ra.advertisement.dao.exceptions.DaoException;
 import com.ra.advertisement.entity.Advertisement;
-import com.ra.advertisement.entity.Provider;
 import org.h2.tools.RunScript;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -20,42 +18,40 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class AdvertisementAdvertisementDaoImplTest {
-
-    private static final Advertisement ADVERTISEMENT = new Advertisement(1L, "AdvertoNE",
-            "WELCOME TO UKRAINE", "iMAGE uRL", "English", 1L);
-    private static final Provider PROVIDER = new Provider(1L, "Coca Cola", "Lviv",
-            "22-45-18", "Ukraine");
+    private static final Advertisement ADVERTISEMENT = new Advertisement("AdvertoNE",
+            "WELCOME TO UKRAINE", "iMAGE uRL", "English");
     private static final Advertisement ADVERTISEMENT_UPDATE = new Advertisement(1L, "AdvertoNEUpdate",
-            "WELCOME TO UKRAINE UPDATE", "iMAGE uRL UPDATE", "English UPDATE", 1L);
+            "WELCOME TO UKRAINE UPDATE", "iMAGE uRL UPDATE", "English UPDATE");
     private static ConnectionFactory connectionFactory;
-    private static URL urlToProviderDB;
     private static URL urlToAdvertisementDB;
     private static URL urlToDropTableAdvertisement;
     private AdvertisementDao<Advertisement> advertisementDao;
-    private AdvertisementDao<Provider> providerDao;
 
     @BeforeEach
     void setUp() throws Exception {
         connectionFactory = ConnectionFactory.getInstance();
         advertisementDao = new AdvertisementAdvertisementDaoImpl(connectionFactory);
-        providerDao = new ProviderAdvertisementDaoImpl(connectionFactory);
         Connection connection = connectionFactory.getConnection();
-        urlToProviderDB = ClassLoader.getSystemResource("./provider_db.sql");
         urlToAdvertisementDB = ClassLoader.getSystemResource("./advertisement_db.sql");
-        RunScript.execute(connection, new FileReader(urlToProviderDB.getPath()));
         RunScript.execute(connection, new FileReader(urlToAdvertisementDB.getPath()));
     }
 
     /**
-     * testing successful result of create method which saves info regarding Advertisement into DB
+     * testing successful result of create method which save info regarding Advertisement into DB
      *
      * @throws Exception
      */
     @Test
-    void insertValidDataReturnTrue() throws Exception {
-        providerDao.create(PROVIDER);
-        Integer result = advertisementDao.create(ADVERTISEMENT);
-        assertEquals(Integer.valueOf(1), result);
+    void insertValidDataIntoDbAndGetItsFromThereWithGeneratedIddReturnTrue() throws Exception {
+        Advertisement advertisementCreated = advertisementDao.create(ADVERTISEMENT);
+        Advertisement actual = advertisementDao.getById(advertisementCreated.getAdId()).orElse(null);
+        assertAll("actual",
+                () -> assertEquals(advertisementCreated.getAdId(), actual.getAdId()),
+                () -> assertEquals(advertisementCreated.getTitle(), actual.getTitle()),
+                () -> assertEquals(advertisementCreated.getContext(), actual.getContext()),
+                () -> assertEquals(advertisementCreated.getImageUrl(), actual.getImageUrl()),
+                () -> assertEquals(advertisementCreated.getLanguage(), actual.getLanguage())
+        );
     }
 
     /**
@@ -91,27 +87,14 @@ class AdvertisementAdvertisementDaoImplTest {
      */
     @Test
     void getObjectByIdExecutedReturnTrue() throws Exception {
-        providerDao.create(PROVIDER);
-        advertisementDao.create(ADVERTISEMENT);
-        Advertisement actual = advertisementDao.getById(ADVERTISEMENT.getAdId()).orElse(null);
+        Advertisement advertisementCreated = advertisementDao.create(ADVERTISEMENT);
+        Advertisement actual = advertisementDao.getById(advertisementCreated.getAdId()).orElse(null);
         assertAll("actual",
-                () -> assertEquals(ADVERTISEMENT.getAdId(), actual.getAdId()),
-                () -> assertEquals(ADVERTISEMENT.getTitle(), actual.getTitle()),
-                () -> assertEquals(ADVERTISEMENT.getContext(), actual.getContext()),
-                () -> assertEquals(ADVERTISEMENT.getImageUrl(), actual.getImageUrl()),
-                () -> assertEquals(ADVERTISEMENT.getLanguage(), actual.getLanguage()),
-                () -> assertEquals(ADVERTISEMENT.getProvId(), actual.getProvId()));
-    }
-
-    /**
-     * testing result (null) of getById method which gets info regarding Advertisement from DB when there no such id in DB
-     *
-     * @throws Exception
-     */
-    @Test
-    void getObjectByIdExecutedNullReturnTrue() throws Exception {
-        Advertisement actual = advertisementDao.getById(ADVERTISEMENT.getAdId()).orElse(null);
-        assertEquals(null, actual);
+                () -> assertEquals(advertisementCreated.getAdId(), actual.getAdId()),
+                () -> assertEquals(advertisementCreated.getTitle(), actual.getTitle()),
+                () -> assertEquals(advertisementCreated.getContext(), actual.getContext()),
+                () -> assertEquals(advertisementCreated.getImageUrl(), actual.getImageUrl()),
+                () -> assertEquals(advertisementCreated.getLanguage(), actual.getLanguage()));
     }
 
     /**
@@ -121,9 +104,10 @@ class AdvertisementAdvertisementDaoImplTest {
      */
     @Test
     void getObjectByIAfterTheTableOfAdvertisementWasDroppedThrowDaoException() throws Exception {
+        Advertisement advertisementCreated = advertisementDao.create(ADVERTISEMENT);
         dropTableAdvertisementMethod();
         assertThrows(DaoException.class, () -> {
-            advertisementDao.getById(ADVERTISEMENT.getAdId());
+            advertisementDao.getById(advertisementCreated.getAdId());
         });
     }
 
@@ -134,9 +118,8 @@ class AdvertisementAdvertisementDaoImplTest {
      */
     @Test
     void deleteValidDataExecutedReturnTrue() throws Exception {
-        providerDao.create(PROVIDER);
-        advertisementDao.create(ADVERTISEMENT);
-        Integer actual = advertisementDao.delete(ADVERTISEMENT.getAdId());
+        Advertisement advertisementCreated = advertisementDao.create(ADVERTISEMENT);
+        Integer actual = advertisementDao.delete(advertisementCreated);
         assertEquals(Integer.valueOf(1), actual);
     }
 
@@ -147,9 +130,10 @@ class AdvertisementAdvertisementDaoImplTest {
      */
     @Test
     void deleteObjectByIdAfterTheTableOfAdvertisementWasDroppedThrowDaoException() throws Exception {
+        Advertisement advertisementCreated = advertisementDao.create(ADVERTISEMENT);
         dropTableAdvertisementMethod();
         assertThrows(DaoException.class, () -> {
-            advertisementDao.getById(ADVERTISEMENT.getAdId());
+            advertisementDao.getById(advertisementCreated.getAdId());
         });
     }
 
@@ -160,9 +144,10 @@ class AdvertisementAdvertisementDaoImplTest {
      */
     @Test
     void deleteObjectByIdAfterTheTableOfAdvertisementWasDroppedThrowException() throws Exception {
+        Advertisement advertisementCreated = advertisementDao.create(ADVERTISEMENT);
         dropTableAdvertisementMethod();
         assertThrows(Exception.class, () -> {
-            advertisementDao.delete(ADVERTISEMENT.getAdId());
+            advertisementDao.delete(advertisementCreated);
         });
     }
 
@@ -173,9 +158,10 @@ class AdvertisementAdvertisementDaoImplTest {
      */
     @Test
     void getObjectByIdAfterTheTableOfAdvertisementWasDroppedThrowException() throws Exception {
+        Advertisement advertisementCreated = advertisementDao.create(ADVERTISEMENT);
         dropTableAdvertisementMethod();
         assertThrows(Exception.class, () -> {
-            advertisementDao.getById(ADVERTISEMENT.getAdId());
+            advertisementDao.getById(advertisementCreated.getAdId());
         });
     }
 
@@ -186,7 +172,6 @@ class AdvertisementAdvertisementDaoImplTest {
      */
     @Test
     void getAllObjectExecutedAndListIsNotEmptyReturnTrue() throws Exception {
-        providerDao.create(PROVIDER);
         advertisementDao.create(ADVERTISEMENT);
         boolean actual = advertisementDao.getAll().isEmpty();
         assertEquals(Boolean.valueOf(false), actual);
@@ -199,7 +184,6 @@ class AdvertisementAdvertisementDaoImplTest {
      */
     @Test
     void getAllObjectExecutedTwiceAndTheListsSizeIsTwoReturnTrue() throws Exception {
-        providerDao.create(PROVIDER);
         advertisementDao.create(ADVERTISEMENT);
         advertisementDao.create(ADVERTISEMENT);
         Integer actual = advertisementDao.getAll().size();
@@ -238,31 +222,16 @@ class AdvertisementAdvertisementDaoImplTest {
      * @throws Exception
      */
     @Test
-    void updateDataExecutedReturnTrue() throws Exception {
-        providerDao.create(PROVIDER);
-        advertisementDao.create(ADVERTISEMENT);
-        Integer actual = advertisementDao.update(ADVERTISEMENT_UPDATE);
-        assertEquals(Integer.valueOf(1), actual);
-    }
-
-    /**
-     * testing successful result of update method which updates info regarding Advertisement in DB
-     *
-     * @throws Exception
-     */
-    @Test
     void updateDataExecutedAndAllFieldsOfAdvertisementRecievedAndCheckedReturnTrue() throws Exception {
-        providerDao.create(PROVIDER);
         advertisementDao.create(ADVERTISEMENT);
-        advertisementDao.update(ADVERTISEMENT_UPDATE);
-        Advertisement actual = advertisementDao.getById(ADVERTISEMENT_UPDATE.getAdId()).orElse(null);
+        Advertisement advertisementUpdated = advertisementDao.update(ADVERTISEMENT_UPDATE);
+        Advertisement actual = advertisementDao.getById(advertisementUpdated.getAdId()).orElse(null);
         assertAll("actual",
-                () -> assertEquals(ADVERTISEMENT_UPDATE.getAdId(), actual.getAdId()),
-                () -> assertEquals(ADVERTISEMENT_UPDATE.getTitle(), actual.getTitle()),
-                () -> assertEquals(ADVERTISEMENT_UPDATE.getContext(), actual.getContext()),
-                () -> assertEquals(ADVERTISEMENT_UPDATE.getImageUrl(), actual.getImageUrl()),
-                () -> assertEquals(ADVERTISEMENT_UPDATE.getLanguage(), actual.getLanguage()),
-                () -> assertEquals(ADVERTISEMENT_UPDATE.getProvId(), actual.getProvId()));
+                () -> assertEquals(advertisementUpdated.getAdId(), actual.getAdId()),
+                () -> assertEquals(advertisementUpdated.getTitle(), actual.getTitle()),
+                () -> assertEquals(advertisementUpdated.getContext(), actual.getContext()),
+                () -> assertEquals(advertisementUpdated.getImageUrl(), actual.getImageUrl()),
+                () -> assertEquals(advertisementUpdated.getLanguage(), actual.getLanguage()));
     }
 
     /**
@@ -272,6 +241,7 @@ class AdvertisementAdvertisementDaoImplTest {
      */
     @Test
     void updateObjectAfterTheTableOfAdvertisementWasDroppedThrowDaoException() throws Exception {
+        advertisementDao.create(ADVERTISEMENT);
         dropTableAdvertisementMethod();
         assertThrows(DaoException.class, () -> {
             advertisementDao.update(ADVERTISEMENT_UPDATE);
@@ -285,6 +255,7 @@ class AdvertisementAdvertisementDaoImplTest {
      */
     @Test
     void updateObjectAfterTheTableOfAdvertisementWasDroppedThrowException() throws Exception {
+        advertisementDao.create(ADVERTISEMENT);
         dropTableAdvertisementMethod();
         assertThrows(Exception.class, () -> {
             advertisementDao.update(ADVERTISEMENT_UPDATE);

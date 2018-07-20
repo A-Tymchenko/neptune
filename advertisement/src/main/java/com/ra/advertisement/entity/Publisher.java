@@ -1,7 +1,6 @@
 package com.ra.advertisement.entity;
 
 public class Publisher {
-
     private Long pubId;
     private String name;
     private String address;
@@ -9,7 +8,6 @@ public class Publisher {
     private String country;
 
     public Publisher() {
-
     }
 
     public Publisher(final Long pubId, final String name, final String address, final String telephone,

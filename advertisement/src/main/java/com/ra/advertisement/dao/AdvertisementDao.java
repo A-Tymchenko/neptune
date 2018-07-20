@@ -11,9 +11,9 @@ public interface AdvertisementDao<T> {
      * Method save entity with parameters into Data Base.
      *
      * @param entity object for saving into Data Base
-     * @return number of affected rows in database
+     * @return entity with genereted Id
      */
-    Integer create(T entity) throws DaoException;
+    T create(T entity) throws DaoException;
 
     /**
      * Method get the object from a Data Base by id.
@@ -26,18 +26,18 @@ public interface AdvertisementDao<T> {
     /**
      * Method delete the object from a Data Base by id.
      *
-     * @param entityId id of the object which will be deleted from database
+     * @param entity object which will be deleted from database
      * @return number of affected rows in database
      */
-    Integer delete(Long entityId) throws DaoException;
+    Integer delete(T entity) throws DaoException;
 
     /**
      * Method for updating object in database.
      *
      * @param entity object to be updated
-     * @return number of affected rows in database
+     * @return new Entity updated
      */
-    Integer update(T entity) throws DaoException;
+    T update(T entity) throws DaoException;
 
     /**
      * Method get all objects from a Data Base.

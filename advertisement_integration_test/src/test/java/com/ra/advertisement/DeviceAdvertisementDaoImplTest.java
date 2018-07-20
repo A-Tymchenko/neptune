@@ -13,12 +13,10 @@ import java.io.FileReader;
 import java.net.URL;
 import java.sql.Connection;
 
-import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class DeviceAdvertisementDaoImplTest {
-    private static final Device DEVICE = new Device(1L, "Nokia", "25-10", "Mobile Phone");
+    private static final Device DEVICE = new Device("Nokia", "25-10", "Mobile Phone");
     private static final Device DEVICE_UPDATE = new Device(1L, "Nokia Update", "25-10 Update",
             "Mobile Phone Update");
     private static ConnectionFactory connectionFactory;
@@ -36,14 +34,20 @@ public class DeviceAdvertisementDaoImplTest {
     }
 
     /**
-     * testing successful result of create method which saves info regarding Device into DB
+     * testing successful result of create method which save info regarding Device into DB
      *
      * @throws Exception
      */
     @Test
-    void insertValidDataReturnTrue() throws Exception {
-        Integer result = deviceDao.create(DEVICE);
-        assertEquals(Integer.valueOf(1), result);
+    void insertValidDataIntoDbAndGetItsFromThereWithGeneratedIddReturnTrue() throws Exception {
+        Device deviceCreated = deviceDao.create(DEVICE);
+        Device actual = deviceDao.getById(deviceCreated.getDevId()).orElse(null);
+        assertAll("actual",
+                () -> assertEquals(deviceCreated.getDevId(), actual.getDevId()),
+                () -> assertEquals(deviceCreated.getModel(), actual.getModel()),
+                () -> assertEquals(deviceCreated.getDeviceType(), actual.getDeviceType()),
+                () -> assertEquals(deviceCreated.getName(), actual.getName())
+        );
     }
 
     /**
@@ -79,25 +83,14 @@ public class DeviceAdvertisementDaoImplTest {
      */
     @Test
     void getObjectByIdExecutedReturnTrue() throws Exception {
-        deviceDao.create(DEVICE);
-        Device actual = deviceDao.getById(DEVICE.getDevId()).orElse(null);
+        Device deviceCreated = deviceDao.create(DEVICE);
+        Device actual = deviceDao.getById(deviceCreated.getDevId()).orElse(null);
         assertAll("actual",
-                () -> assertEquals(DEVICE.getDevId(), actual.getDevId()),
+                () -> assertEquals(Long.valueOf(1L), actual.getDevId()),
                 () -> assertEquals(DEVICE.getModel(), actual.getModel()),
                 () -> assertEquals(DEVICE.getDeviceType(), actual.getDeviceType()),
                 () -> assertEquals(DEVICE.getName(), actual.getName())
         );
-    }
-
-    /**
-     * testing result (null) of getById method which gets info regarding Device from DB when there no such id in DB
-     *
-     * @throws Exception
-     */
-    @Test
-    void getObjectByIdExecutedAndReturnNullReturnTrue() throws Exception {
-        Device actual = deviceDao.getById(DEVICE.getDevId()).orElse(null);
-        assertEquals(null, actual);
     }
 
     /**
@@ -107,9 +100,10 @@ public class DeviceAdvertisementDaoImplTest {
      */
     @Test
     void getObjectByIdAfterTheTableOfDevicesWasDroppedThrowDaoException() throws Exception {
+        Device newDevice = deviceDao.create(DEVICE);
         dropTableDevicesMethod();
         assertThrows(DaoException.class, () -> {
-            deviceDao.getById(DEVICE.getDevId());
+            deviceDao.getById(newDevice.getDevId());
         });
     }
 
@@ -120,9 +114,10 @@ public class DeviceAdvertisementDaoImplTest {
      */
     @Test
     void getObjectByIdAfterTheTableOfDevicesWasDroppedThrowException() throws Exception {
+        Device newDevice = deviceDao.create(DEVICE);
         dropTableDevicesMethod();
         assertThrows(Exception.class, () -> {
-            deviceDao.getById(DEVICE.getDevId());
+            deviceDao.getById(newDevice.getDevId());
         });
     }
 
@@ -133,8 +128,8 @@ public class DeviceAdvertisementDaoImplTest {
      */
     @Test
     void deleteValidDataExecutedReturnTrue() throws Exception {
-        deviceDao.create(DEVICE);
-        Integer actual = deviceDao.delete(DEVICE.getDevId());
+        Device newDevice = deviceDao.create(DEVICE);
+        Integer actual = deviceDao.delete(newDevice);
         assertEquals(Integer.valueOf(1), actual);
     }
 
@@ -145,9 +140,10 @@ public class DeviceAdvertisementDaoImplTest {
      */
     @Test
     void deleteObjectByIdAfterTheTableOfDevicesWasDroppedThrowDaoException() throws Exception {
+        Device newDevice = deviceDao.create(DEVICE);
         dropTableDevicesMethod();
         assertThrows(DaoException.class, () -> {
-            deviceDao.getById(DEVICE.getDevId());
+            deviceDao.delete(newDevice);
         });
     }
 
@@ -158,9 +154,10 @@ public class DeviceAdvertisementDaoImplTest {
      */
     @Test
     void deleteObjectByIdAfterTheTableOfDevicesWasDroppedThrowException() throws Exception {
+        Device newDevice = deviceDao.create(DEVICE);
         dropTableDevicesMethod();
         assertThrows(Exception.class, () -> {
-            deviceDao.delete(DEVICE.getDevId());
+            deviceDao.delete(newDevice);
         });
     }
 
@@ -196,6 +193,7 @@ public class DeviceAdvertisementDaoImplTest {
      */
     @Test
     void getAllObjectAfterTheTableOfDevicesWasDroppedThrowDaoException() throws Exception {
+        deviceDao.create(DEVICE);
         dropTableDevicesMethod();
         assertThrows(DaoException.class, () -> {
             deviceDao.getAll();
@@ -209,6 +207,7 @@ public class DeviceAdvertisementDaoImplTest {
      */
     @Test
     void getAllObjectAfterTheTableOfDevicesWasDroppedThrowException() throws Exception {
+        deviceDao.create(DEVICE);
         dropTableDevicesMethod();
         assertThrows(Exception.class, () -> {
             deviceDao.getAll();
@@ -221,20 +220,8 @@ public class DeviceAdvertisementDaoImplTest {
      * @throws Exception
      */
     @Test
-    void updateDataExecutedReturnTrue() throws Exception {
-        deviceDao.create(DEVICE);
-        Integer actual = deviceDao.update(DEVICE_UPDATE);
-        assertEquals(Integer.valueOf(1), actual);
-    }
-
-    /**
-     * testing successful result of update method which updates info regarding Devices in DB
-     *
-     * @throws Exception
-     */
-    @Test
     void updateDataExecutedAndAllFieldsOfTheDeviceRecievedAndCheckedReturnTrue() throws Exception {
-        deviceDao.create(DEVICE);
+        Device newDevice = deviceDao.create(DEVICE);
         deviceDao.update(DEVICE_UPDATE);
         Device actual = deviceDao.getById(DEVICE_UPDATE.getDevId()).orElse(null);
         assertAll("actual",
@@ -252,6 +239,7 @@ public class DeviceAdvertisementDaoImplTest {
      */
     @Test
     void updateObjectAfterTheTableOfDevicesWasDroppedThrowDaoException() throws Exception {
+        deviceDao.create(DEVICE);
         dropTableDevicesMethod();
         assertThrows(DaoException.class, () -> {
             deviceDao.update(DEVICE_UPDATE);
@@ -265,6 +253,7 @@ public class DeviceAdvertisementDaoImplTest {
      */
     @Test
     void updateObjectAfterTheTableOfDevicesWasDroppedThrowException() throws Exception {
+        deviceDao.create(DEVICE);
         dropTableDevicesMethod();
         assertThrows(Exception.class, () -> {
             deviceDao.update(DEVICE_UPDATE);

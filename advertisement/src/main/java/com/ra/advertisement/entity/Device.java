@@ -1,7 +1,6 @@
 package com.ra.advertisement.entity;
 
 public class Device {
-
     private Long devId;
     private String name;
     private String model;

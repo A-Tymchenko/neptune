@@ -220,6 +220,12 @@ repositories {
     mavenCentral()
 }
 
+project("study"){
+    dependencies{
+        compile spring.context
+    }
+}
+
 project("advertisement") {
     dependencies {
         compile group: 'org.apache.logging.log4j', name: 'log4j-core', version: '2.10.0'
@@ -233,8 +239,3 @@ project("advertisement_integration_test") {
         compile project(':advertisement')
     }
 }
-
-project("advertisement") {
-    dependencies {
-
-    }}
