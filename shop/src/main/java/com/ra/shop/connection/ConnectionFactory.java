@@ -38,6 +38,10 @@ public class ConnectionFactory {
         return factoryInstance;
     }
 
+    /**
+     * Method gets Connection from JdbcDataSource.
+     * @return Connection instance
+     */
     public Connection getConnection() throws SQLException {
         return dataSource.getConnection();
     }

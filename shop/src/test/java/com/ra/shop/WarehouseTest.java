@@ -1,10 +1,10 @@
-package com.ra.shop.warehouse;
+package com.ra.shop;
 
+import com.ra.shop.tools.Tools;
 import com.ra.shop.wharehouse.Warehouse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import static com.ra.shop.warehouse.tools.Tools.creteWarehouse;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -15,8 +15,8 @@ public class WarehouseTest {
 
     @BeforeEach
     public void initWarehouse() {
-        firstWarehouse = creteWarehouse();
-        secondWarehouse = creteWarehouse();
+        firstWarehouse = Tools.creteWarehouse();
+        secondWarehouse = Tools.creteWarehouse();
     }
 
     @Test

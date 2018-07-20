@@ -1,10 +1,8 @@
 package com.ra.shop.dao;
 
 import java.util.List;
-import java.util.Optional;
 
 import com.ra.shop.dao.exception.WarehouseDaoException;
-import com.ra.shop.wharehouse.Warehouse;
 
 /**
  * CRUD methods.
@@ -36,7 +34,7 @@ public interface WarehouseDao<T> {
      *
      * @return entity
      */
-    Warehouse getById(Integer idNumber) throws WarehouseDaoException;
+    T getById(Integer idNumber) throws WarehouseDaoException;
 
     /**
      * List of entities.

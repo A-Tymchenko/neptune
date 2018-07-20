@@ -1,14 +1,12 @@
-package com.ra.shop.warehouse;
+package com.ra.shop;
 
 import com.ra.shop.connection.ConnectionFactory;
-import com.ra.shop.dao.exception.ExceptionMessage;
 import com.ra.shop.dao.exception.WarehouseDaoException;
 import com.ra.shop.dao.implementation.WarehouseDaoImpl;
 import com.ra.shop.wharehouse.Warehouse;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -21,7 +19,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
 
-public class WarehouseDaoMockitoTest {
+public class WarehouseDaoMockTest {
 
     private ResultSet resultSet;
     private ConnectionFactory connectionFactory;

@@ -1,8 +1,9 @@
-package com.ra.shop.warehouse;
+package com.ra.shop;
 
 import com.ra.shop.connection.ConnectionFactory;
 import com.ra.shop.dao.exception.WarehouseDaoException;
 import com.ra.shop.dao.implementation.WarehouseDaoImpl;
+import com.ra.shop.tools.Tools;
 import com.ra.shop.wharehouse.Warehouse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -14,13 +15,12 @@ import java.sql.SQLException;
 import java.util.List;
 
 import static com.ra.shop.dao.exception.ExceptionMessage.*;
-import static com.ra.shop.warehouse.tools.Tools.creteWarehouse;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-public class WarehouseDaoImplMockitoTest {
+public class WarehouseDaoImplMockTest {
 
     public static final String UPDATE_WAREHOUSE = "UPDATE warehouse SET name = ?, price = ?, amount = ? WHERE id = ?";
     public static final String SELECT_WAREHOUSE_BY_ID = "SELECT * FROM warehouse WHERE id = ?";
@@ -45,7 +45,7 @@ public class WarehouseDaoImplMockitoTest {
         mockConnectionFactory = mock(ConnectionFactory.class);
         warehouseDaoImpl = new WarehouseDaoImpl(mockConnectionFactory);
         when(mockConnectionFactory.getConnection()).thenReturn(mockConnection);
-        warehouse = creteWarehouse();
+        warehouse = Tools.creteWarehouse();
         createMockByIdMethod();
     }
 

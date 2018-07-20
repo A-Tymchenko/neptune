@@ -1,4 +1,4 @@
-package com.ra.shop.warehouse.tools;
+package com.ra.shop.tools;
 
 import com.ra.shop.wharehouse.Warehouse;
 

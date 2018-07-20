@@ -14,10 +14,10 @@
             <PatternLayout>
                 <Pattern>%d{yyyy-MM-dd HH:mm:ss} %p %m%n</Pattern>
             </PatternLayout>
-            <!--<filter type="log4net.Filter.LevelMatchFilter">-->
-                <!--<acceptOnMatch value="true" />-->
-                <!--<levelToMatch  value="ERROR" />-->
-            <!--</filter>-->
+            <filter type="log4net.Filter.LevelMatchFilter">
+                <acceptOnMatch value="true" />
+                <levelToMatch  value="ERROR" />
+            </filter>
             <Policies>
                 <OnStartupTriggeringPolicy/>
                 <SizeBasedTriggeringPolicy

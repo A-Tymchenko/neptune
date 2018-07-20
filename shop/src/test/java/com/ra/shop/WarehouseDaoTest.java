@@ -1,10 +1,10 @@
-package com.ra.shop.warehouse;
+package com.ra.shop;
 
 import com.ra.shop.connection.ConnectionFactory;
 import com.ra.shop.dao.WarehouseDao;
 import com.ra.shop.dao.exception.WarehouseDaoException;
 import com.ra.shop.dao.implementation.WarehouseDaoImpl;
-import com.ra.shop.warehouse.tools.Tools;
+import com.ra.shop.tools.Tools;
 import com.ra.shop.wharehouse.Warehouse;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;

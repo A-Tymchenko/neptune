@@ -1,4 +1,4 @@
-package com.ra.shop.warehouse;
+package com.ra.shop;
 
 import com.ra.shop.connection.ConnectionFactory;
 import org.junit.jupiter.api.BeforeEach;

@@ -1,5 +1,12 @@
 package com.ra.shop.dao.implementation;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+
 import com.ra.shop.connection.ConnectionFactory;
 import com.ra.shop.dao.WarehouseDao;
 import com.ra.shop.dao.exception.ExceptionMessage;
@@ -8,27 +15,11 @@ import com.ra.shop.wharehouse.Warehouse;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
-
-import static com.ra.shop.dao.exception.ExceptionMessage.*;
-
 public class WarehouseDaoImpl implements WarehouseDao<Warehouse> {
     private static final int NAME = 1;
     private static final int PRICE = 2;
     private static final int AMOUNT = 3;
     private static final int ID_NUMBER = 4;
-
-    private static final String INSERT_WAREHOUSE = "INSERT INTO warehouse "
-            + "(name, price, amount) "
-            + " VALUES(?,?,?)";
-    private static final String UPDATE_WAREHOUSE = "UPDATE warehouse "
-            + "SET name = ?, price = ?, amount = ? "
-            + "WHERE id = ?";
 
     private static final Logger LOGGER = LogManager.getLogger(WarehouseDaoImpl.class);
 
@@ -41,33 +32,37 @@ public class WarehouseDaoImpl implements WarehouseDao<Warehouse> {
     @Override
     public Warehouse create(Warehouse warehouse) throws WarehouseDaoException {
         try (Connection connection = connectionFactory.getConnection()) {
-            final PreparedStatement insertStatement = connection.prepareStatement(INSERT_WAREHOUSE);
+            final PreparedStatement insertStatement = connection.prepareStatement("INSERT INTO warehouse "
+                    + "(name, price, amount) "
+                    + " VALUES(?,?,?)");
             final PreparedStatement getLastId = connection.prepareStatement("SELECT LAST_INSERT_ID()");
             fillInStatement(warehouse, insertStatement);
             insertStatement.executeUpdate();
-            ResultSet lastIdResultSet = getLastId.executeQuery();
+            final ResultSet lastIdResultSet = getLastId.executeQuery();
             if (!lastIdResultSet.next()) {
-                throw new WarehouseDaoException(THE_WAREHOUSE_CANNOT_BE_NULL.getMessage());
+                throw new WarehouseDaoException(ExceptionMessage.THE_WAREHOUSE_CANNOT_BE_NULL.getMessage());
             }
             warehouse = getById(lastIdResultSet.getInt(1));
         } catch (SQLException e) {
             LOGGER.error(ExceptionMessage.FAILED_TO_CREATE_NEW_WAREHOUSE.getMessage(), e);
-            throw new WarehouseDaoException(FAILED_TO_CREATE_NEW_WAREHOUSE.getMessage());
+            throw new WarehouseDaoException(ExceptionMessage.FAILED_TO_CREATE_NEW_WAREHOUSE.getMessage());
         }
         return warehouse;
     }
 
     @Override
-    public Warehouse update(Warehouse warehouse) throws WarehouseDaoException {
+    public Warehouse update(final Warehouse warehouse) throws WarehouseDaoException {
         try (Connection connection = connectionFactory.getConnection()) {
-            final PreparedStatement preparedStatement = connection.prepareStatement(UPDATE_WAREHOUSE);
+            final PreparedStatement preparedStatement = connection.prepareStatement("UPDATE warehouse "
+                    + "SET name = ?, price = ?, amount = ? "
+                    + "WHERE id = ?");
             fillInStatement(warehouse, preparedStatement);
             preparedStatement.setInt(ID_NUMBER, warehouse.getIdNumber());
             preparedStatement.executeUpdate();
             getById(warehouse.getIdNumber());
         } catch (SQLException e) {
             LOGGER.error(ExceptionMessage.FAILED_TO_UPDATE_WAREHOUSE.getMessage(), e);
-            throw new WarehouseDaoException(FAILED_TO_UPDATE_WAREHOUSE.getMessage(), e);
+            throw new WarehouseDaoException(ExceptionMessage.FAILED_TO_UPDATE_WAREHOUSE.getMessage(), e);
         }
         return warehouse;
     }
@@ -81,7 +76,7 @@ public class WarehouseDaoImpl implements WarehouseDao<Warehouse> {
             result = preparedStatement.executeUpdate() > 0;
         } catch (SQLException e) {
             LOGGER.error(ExceptionMessage.FAILED_TO_DELETE_WAREHOUSE.getMessage(), e);
-            throw new WarehouseDaoException(FAILED_TO_DELETE_WAREHOUSE.getMessage());
+            throw new WarehouseDaoException(ExceptionMessage.FAILED_TO_DELETE_WAREHOUSE.getMessage());
         }
         return result;
     }
@@ -90,18 +85,17 @@ public class WarehouseDaoImpl implements WarehouseDao<Warehouse> {
     public Warehouse getById(final Integer idNumber) throws WarehouseDaoException {
         Warehouse warehouse;
         try (Connection connection = connectionFactory.getConnection()) {
-            PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM warehouse WHERE id = ?");
+            final PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM warehouse WHERE id = ?");
             preparedStatement.setInt(1, idNumber);
-            ResultSet resultSet = preparedStatement.executeQuery();
-
+            final ResultSet resultSet = preparedStatement.executeQuery();
             if (!resultSet.next()) {
                 return null;
             }
-            warehouse = new Warehouse(resultSet);
+            warehouse = getWarehouseFromResultSet(resultSet);
             return warehouse;
         } catch (SQLException e) {
             LOGGER.error(ExceptionMessage.FAILED_TO_GET_WAREHOUSE_BY_ID.getMessage(), e);
-            throw new WarehouseDaoException(FAILED_TO_GET_WAREHOUSE_BY_ID.getMessage() + " " + idNumber);
+            throw new WarehouseDaoException(ExceptionMessage.FAILED_TO_GET_WAREHOUSE_BY_ID.getMessage() + " " + idNumber);
         }
     }
 
@@ -112,20 +106,27 @@ public class WarehouseDaoImpl implements WarehouseDao<Warehouse> {
             final PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM warehouse");
             final ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
-                Warehouse warehouse = new Warehouse(resultSet);
-                warehouses.add(warehouse);
+                warehouses.add(getWarehouseFromResultSet(resultSet));
             }
         } catch (SQLException e) {
             LOGGER.error(ExceptionMessage.FAILED_TO_GET_ALL_WAREHOUSES.getMessage(), e);
-            throw new WarehouseDaoException(FAILED_TO_GET_ALL_WAREHOUSES.getMessage());
+            throw new WarehouseDaoException(ExceptionMessage.FAILED_TO_GET_ALL_WAREHOUSES.getMessage());
         }
         return warehouses;
     }
-
 
     private void fillInStatement(final Warehouse warehouse, final PreparedStatement preparedStatement) throws SQLException {
         preparedStatement.setString(NAME, warehouse.getName());
         preparedStatement.setDouble(PRICE, warehouse.getPrice());
         preparedStatement.setInt(AMOUNT, warehouse.getAmount());
+    }
+
+    private Warehouse getWarehouseFromResultSet(final ResultSet resultSet) throws SQLException {
+        final Warehouse warehouse = new Warehouse();
+        warehouse.setIdNumber(resultSet.getInt("id"));
+        warehouse.setName(resultSet.getString("name"));
+        warehouse.setPrice(resultSet.getDouble("price"));
+        warehouse.setAmount(resultSet.getInt("amount"));
+        return warehouse;
     }
 }
