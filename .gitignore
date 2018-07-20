@@ -5,4 +5,5 @@
 out
 build
 *.log
-*/buildSrc/.gradle
+*/buildSrc/*.gradle
+**.gradle
