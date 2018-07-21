@@ -1,3 +1,4 @@
 rootProject.name = 'neptune'
 include 'study'
 include 'airport'
+include 'airport_integration_test'
