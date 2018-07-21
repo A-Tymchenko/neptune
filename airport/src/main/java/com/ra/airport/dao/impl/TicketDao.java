@@ -46,7 +46,7 @@ public class TicketDao implements AirPortDao<Ticket> {
             preparedStatement.executeUpdate();
             final ResultSet scopeResultSet = connection.prepareStatement("SELECT SCOPE_IDENTITY()").executeQuery();
             if (scopeResultSet.next()) {
-                ticket = getById(scopeResultSet.getInt(1)).get();
+                ticket.setIdTicket(scopeResultSet.getInt(1));
             }
         } catch (SQLException e) {
             LOGGER.error(ExceptionMessage.FAILED_TO_CREATE_NEW_TICKET.toString(), e);
@@ -66,8 +66,8 @@ public class TicketDao implements AirPortDao<Ticket> {
     @Override
     public Ticket update(final Ticket ticket) throws AirPortDaoException {
         final String sql = "UPDATE TICKET "
-                + "SET TICKET_NUMBER=?, PASSENGER_NAME=?, DOCUMENT=?, SELLING_DATE=?"
-                + "WHERE ID_TICKET=?";
+                + "SET TICKET_NUMBER = ?, PASSENGER_NAME = ?, DOCUMENT = ?, SELLING_DATE = ?"
+                + "WHERE ID_TICKET = ?";
 
         try (Connection connection = connectionFactory.getConnection()) {
             final PreparedStatement preparedStatement = connection.prepareStatement(sql);

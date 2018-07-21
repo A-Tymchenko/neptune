@@ -12,6 +12,7 @@ import org.junit.jupiter.api.Test;
 
 import java.io.FileReader;
 import java.io.IOException;
+import java.net.URL;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Timestamp;
@@ -24,6 +25,7 @@ import static org.junit.jupiter.api.Assertions.*;
  * Tests for {@link TicketDao} class
  */
 class TicketDaoTest {
+    private static URL urlToTicketScript;
 
     private AirPortDao<Ticket> airPortDao;
 
@@ -42,12 +44,14 @@ class TicketDaoTest {
 
     private void createDataBaseTable() throws SQLException, IOException {
         Connection connection = ConnectionFactory.getInstance().getConnection();
-        RunScript.execute(connection, new FileReader("src/test/resources/sql/ticket_create_table.sql"));
+        urlToTicketScript = ClassLoader.getSystemResource("./sql/ticket_create_table.sql");
+        RunScript.execute(connection, new FileReader(urlToTicketScript.getPath()));
     }
 
     private void deleteTable() throws SQLException, IOException {
         Connection connection = ConnectionFactory.getInstance().getConnection();
-        RunScript.execute(connection, new FileReader("src/test/resources/sql/ticket_drop_table.sql"));
+        urlToTicketScript = ClassLoader.getSystemResource("./sql/ticket_drop_table.sql");
+        RunScript.execute(connection, new FileReader(urlToTicketScript.getPath()));
     }
 
     private void createTicket() throws IOException {
@@ -89,8 +93,9 @@ class TicketDaoTest {
         List<Ticket> expectedResult = new ArrayList<>();
         expectedResult.add(airPortDao.create(ticket));
         expectedResult.add(airPortDao.create(ticket));
+        expectedResult.add(airPortDao.create(ticket));
         List<Ticket> tickets = airPortDao.getAll();
-        assertEquals(expectedResult, tickets);
+        assertEquals(expectedResult.size(), tickets.size());
     }
 
     private Ticket changeTicket(Ticket ticket) {
