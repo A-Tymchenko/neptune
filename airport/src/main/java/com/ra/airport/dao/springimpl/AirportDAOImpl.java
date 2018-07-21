@@ -3,22 +3,24 @@ package com.ra.airport.dao.springimpl;
 import com.ra.airport.dao.AirPortDao;
 import com.ra.airport.dao.impl.StatementParameter;
 import com.ra.airport.entity.Airport;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
+import org.springframework.stereotype.Component;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
 
+@Component
 public class AirportDAOImpl implements AirPortDao<Airport> {
 
-    private final JdbcTemplate jdbcTemplate;
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
 
-    public AirportDAOImpl(JdbcTemplate jdbcTemplate) {
-        this.jdbcTemplate = jdbcTemplate;
-    }
+    public AirportDAOImpl() { }
 
     @Override
     public Airport create(final Airport airport) {
