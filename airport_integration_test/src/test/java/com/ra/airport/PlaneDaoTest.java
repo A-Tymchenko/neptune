@@ -1,8 +1,8 @@
-import com.ra.courses.airport.dao.impl.ConnectionFactory;
-import com.ra.courses.airport.dao.impl.PlaneDaoException;
-import com.ra.courses.airport.dao.impl.PlaneDaoInterface;
-import com.ra.courses.airport.entity.Plane;
-import com.ra.courses.airport.dao.impl.PlaneDao;
+package com.ra.airport;
+
+import com.ra.airport.dao.exception.PlaneDaoException;
+import com.ra.airport.entity.Plane;
+import com.ra.airport.dao.impl.PlaneDao;
 
 
 import org.h2.tools.RunScript;

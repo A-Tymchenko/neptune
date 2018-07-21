@@ -1,4 +1,6 @@
-import com.ra.courses.airport.entity.Plane;
+package com.ra.airport;
+
+import com.ra.airport.entity.Plane;
 
 public abstract class DataCreationHelper {
     private static final String SPACE = " ";
