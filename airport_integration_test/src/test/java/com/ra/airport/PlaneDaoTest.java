@@ -28,7 +28,7 @@ public class PlaneDaoTest {
     private static final String OWNER = "MAU";
     private static final String MODEL = "Boeing";
     private static final String TYPE = "LargeCarrier";
-    private static final Integer PLATENUMBER = 132498789;
+    private static final Integer PLATE_NUMBER = 132498789;
 
     private AirPortDao<Plane> planeDao;
     private Plane plane;
@@ -54,15 +54,13 @@ public class PlaneDaoTest {
         RunScript.execute(connection, new FileReader("src/test/resources/sql/remove_plane_table.sql"));
     }
 
-
     private void createPlane() throws IOException {
-
         planeDao = new PlaneDao(ConnectionFactory.getInstance());
         plane = new Plane();
         plane.setOwner(OWNER);
         plane.setModel(MODEL);
         plane.setType(TYPE);
-        plane.setPlateNumber(PLATENUMBER);
+        plane.setPlateNumber(PLATE_NUMBER);
     }
 
     @Test
@@ -74,7 +72,6 @@ public class PlaneDaoTest {
         plane.setId(planeId);
         assertEquals(plane, createdPlane);
     }
-
 
     @Test
     public void whenUpdateThenUpdatedPlaneShouldBeReturned() throws AirPortDaoException {
