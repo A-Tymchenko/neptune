@@ -1,5 +1,7 @@
 package com.ra.advertisement.entity;
 
+import java.io.Serializable;
+
 public class Advertisement {
     private Long adId;
     private String title;

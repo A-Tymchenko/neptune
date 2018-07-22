@@ -4,7 +4,9 @@ import java.util.List;
 import java.util.Optional;
 
 import com.ra.advertisement.dao.exceptions.DaoException;
+import org.springframework.stereotype.Component;
 
+@Component
 public interface AdvertisementDao<T> {
 
     /**
@@ -21,7 +23,7 @@ public interface AdvertisementDao<T> {
      * @param entityId id of the object which will be selected from database
      * @return an Optional with a present value if the specified value is non-null, otherwise an empty Optional
      */
-    Optional<T> getById(Long entityId) throws DaoException;
+    T getById(Long entityId) throws DaoException;
 
     /**
      * Method delete the object from a Data Base by id.
