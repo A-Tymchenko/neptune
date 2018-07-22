@@ -34,10 +34,10 @@ import javax.sql.DataSource;
 @Repository
 public class FlightDao extends JdbcDaoSupport implements AirPortDao<Flight> {
 
-
     private static final String INSERT_FLIGHT_SQL = "INSERT INTO flight "
             + "(name, carrier, duration, meal_on, fare, departure_date, arrival_date) "
             + " VALUES(?,?,?,?,?,?,?)";
+
     private static final String UPDATE_FLIGHT_SQL = "UPDATE flight "
             + "SET name = ?, carrier = ?, duration = ?, meal_on = ?, fare = ?, departure_date = ?, arrival_date = ? "
             + "WHERE id = ?";
@@ -57,13 +57,8 @@ public class FlightDao extends JdbcDaoSupport implements AirPortDao<Flight> {
      * @throws AirPortDaoException exception for DAO layer
      */
     public Flight create(Flight flight) throws AirPortDaoException {
-        //getJdbcTemplate().update(ps -> fillPreparedStatement(flight, ps));
+        getJdbcTemplate().update(INSERT_FLIGHT_SQL,ps -> fillPreparedStatement(flight, ps));
 
-        getJdbcTemplate().update(connection -> {
-            PreparedStatement ps = connection.prepareStatement(INSERT_FLIGHT_SQL);
-            fillPreparedStatement(flight,ps);
-            return ps;
-        });
 
 
 //        try (Connection connection = connectionFactory.getConnection()) {
