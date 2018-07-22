@@ -17,8 +17,6 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.Matchers.anyInt;
-import static org.mockito.Mockito.stubVoid;
 
 public class AirportDAOImplMockitoTest {
 
@@ -29,11 +27,11 @@ public class AirportDAOImplMockitoTest {
     private AirportDAOImpl airportDAO;
     private Airport airport;
     private Optional<Airport> optionalAirport;
-    private static final String INSERT_QUERY = "INSERT INTO Airport(apname, apnum, aptype, addresses, terminalcount) "
+    private static final String INSERT_QUERY = "INSERT INTO Airport(apname, apnum, aptype, address, terminalcount) "
             + "VALUES(?, ?, ?, ?, ?)";
     private static final String SELECT_BY_ID_QUERY = "Select * From Airport Where apid = ?";
     private static final String SELECT_ALL_QUERY = "Select * From Airport";
-    private static final String UPDATE_QUERY = "UPDATE Airport SET apname = ?, apnum = ?, aptype = ?, addresses = ?, terminalcount = ?"
+    private static final String UPDATE_QUERY = "UPDATE Airport SET apname = ?, apnum = ?, aptype = ?, address = ?, terminalcount = ?"
             + " WHERE apid = ?";
     private static final String DELETE_QUERY = "DELETE FROM Airport "
             + "WHERE apid = ?";
@@ -57,7 +55,7 @@ public class AirportDAOImplMockitoTest {
         Mockito.when(resultSet.getString("apname")).thenReturn(airport.getApName());
         Mockito.when(resultSet.getInt("apnum")).thenReturn(airport.getApNum());
         Mockito.when(resultSet.getString("aptype")).thenReturn(airport.getApType());
-        Mockito.when(resultSet.getString("addresses")).thenReturn(airport.getAddress());
+        Mockito.when(resultSet.getString("address")).thenReturn(airport.getAddress());
         Mockito.when(resultSet.getInt("terminalcount")).thenReturn(airport.getTerminalCount());
     }
 

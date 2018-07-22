@@ -1,7 +1,8 @@
 package com.ra.airport;
 
 import com.ra.airport.configuration.AirPortConfiguration;
-import com.ra.airport.dao.springimpl.AirportDAOImpl;
+import com.ra.airport.dao.exception.AirPortDaoException;
+import com.ra.airport.dao.impl.AirportDAOImplSpring;
 import com.ra.airport.entity.Airport;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -13,6 +14,12 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.List;
+import java.util.Optional;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = {AirPortConfiguration.class})
@@ -22,7 +29,7 @@ class AirportDAOSpringImplTest {
     JdbcTemplate jdbcTemplate;
     Airport airport;
     @Autowired
-    AirportDAOImpl airportImpl;
+    AirportDAOImplSpring airportImpl;
 
     @BeforeEach
     public void initH2() throws SQLException, IOException {
@@ -32,25 +39,45 @@ class AirportDAOSpringImplTest {
     }
 
     @Test
-    void create() {
-        airportImpl.create(airport);
+    void whenAddAirportThenReturnCreatedAirportWitsId() throws AirPortDaoException {
+        Airport createdAirport = airportImpl.create(airport);
+        airport.setApId(createdAirport.getApId());
+        assertEquals(createdAirport, airport);
     }
 
     @Test
-    void update() {
+    void whenUpdateAirportThenReturnCreatedAirportWitsId() throws AirPortDaoException {
+        Airport createdAirport = airportImpl.update(airport);
+        airport.setApId(createdAirport.getApId());
+        assertEquals(createdAirport, airport);
     }
 
     @Test
-    void delete() {
+    public void whenDeleteAirportThenReturnTrue() throws AirPortDaoException {
+        assertEquals(airportImpl.delete(airport), true);
     }
 
     @Test
-    void getById() {
-        System.out.println(airportImpl.getById(1));
+    public void whenGetAirportByIdThenReturnAirport() throws AirPortDaoException {
+        Optional<Airport> ap = airportImpl.getById(1);
+        assertEquals(ap.get().getApName(), this.airport.getApName());
+        assertEquals(ap.get().getAddress(), this.airport.getAddress());
+        assertEquals(ap.get().getApType(), this.airport.getApType());
+        assertEquals(ap.get().getApNum(), this.airport.getApNum());
+        assertEquals(ap.get().getTerminalCount(), this.airport.getTerminalCount());
     }
 
     @Test
-    void getAll() {
-        System.out.println(airportImpl.getAll());
+    public void whenGetAirportByIdThenThrowAirPortDaoException() throws AirPortDaoException {
+        Throwable thrown = assertThrows(AirPortDaoException.class, () -> {
+            airportImpl.getById(8);
+        });
+        assertNotNull(thrown.getMessage());
+    }
+
+    @Test
+    public void getAirports() throws AirPortDaoException {
+        List<Airport> list = airportImpl.getAll();
+        assertEquals(list.size(), 7);
     }
 }

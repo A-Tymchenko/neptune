@@ -29,7 +29,7 @@ public class AirportDAOImpl implements AirPortDao<Airport> {
 
     @Override
     public Airport create(Airport airport) throws AirPortDaoException {
-        final String query = "INSERT INTO Airport(apname, apnum, aptype, addresses, terminalcount) "
+        final String query = "INSERT INTO Airport(apname, apnum, aptype, address, terminalcount) "
                 + "VALUES(?, ?, ?, ?, ?)";
         try (Connection connection = connectionFactory.getConnection()) {
             final PreparedStatement statement = connection.prepareStatement(query);
@@ -49,7 +49,7 @@ public class AirportDAOImpl implements AirPortDao<Airport> {
 
     @Override
     public Airport update(Airport airport) throws AirPortDaoException {
-        final String query = "UPDATE Airport SET apname = ?, apnum = ?, aptype = ?, addresses = ?, terminalcount = ?"
+        final String query = "UPDATE Airport SET apname = ?, apnum = ?, aptype = ?, address = ?, terminalcount = ?"
                 + " WHERE apid = ?";
         try (Connection connection = connectionFactory.getConnection()) {
             final PreparedStatement statement = connection.prepareStatement(query);
@@ -124,7 +124,7 @@ public class AirportDAOImpl implements AirPortDao<Airport> {
                 resultSet.getString("apname"),
                 resultSet.getInt("apnum"),
                 resultSet.getString("aptype"),
-                resultSet.getString("addresses"),
+                resultSet.getString("address"),
                 resultSet.getInt("terminalcount"));
     }
 
