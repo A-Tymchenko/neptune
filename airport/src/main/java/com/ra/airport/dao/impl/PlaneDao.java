@@ -1,30 +1,32 @@
-package com.ra.courses.airport.dao.impl;
-//create Logger
+package com.ra.airport.dao.impl;
+
+import com.ra.airport.dao.AirPortDao;
+import com.ra.airport.dao.exception.AirPortDaoException;
+import com.ra.airport.dao.exception.ExceptionMessage;
+import com.ra.airport.entity.Plane;
+import com.ra.airport.factory.ConnectionFactory;
+import com.ra.airport.mapper.PlaneRowMapper;
+import com.ra.airport.mapper.RowMapper;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.sql.Connection;
-
-import com.ra.courses.airport.dao.impl.RowMapper;
-import com.ra.courses.airport.dao.impl.PlaneRowMapper;
-import com.ra.courses.airport.entity.Plane;
-
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-public class PlaneDao implements PlaneDaoInterface<Plane> {
+public class PlaneDao implements AirPortDao<Plane> {
 
     private final transient ConnectionFactory connectionFactory;
 
-    private static final Integer ID=1;
-    private static final Integer OWNER=2;
-    private static final Integer MODEL=3;
-    private static final Integer TYPE=4;
-    private static final Integer PLATENUMBER=5;
+    private static final Integer ID = 1;
+    private static final Integer OWNER = 2;
+    private static final Integer MODEL = 3;
+    private static final Integer TYPE = 4;
+    private static final Integer PLATE_NUMBER = 5;
 
 
     private static final String INSERT_PLANE_SQL = "INSERT INTO plane "
@@ -33,25 +35,18 @@ public class PlaneDao implements PlaneDaoInterface<Plane> {
     private static final String UPDATE_PLANE_SQL = "UPDATE plane "
             +"SET owner = ?, model = ?, type = ?, platenumber = ?"
             +"WHERE id = ?";
-    private static final String GET_PLANE_BY_ID = "SELECT * FROM plane WHERE id = ?";
-    private static final String DELETE_PLANE = "DELETE FROM plane WHERE id = ?";
-    private static final String GET_ALL_PLANES = "SELECT * FROM plane";
-    private static final String GET_PLANE_ID = "SELECT SCOPE_IDENTITY()";
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(PlaneDao.class);
-
+    private static final Logger LOGGER = LogManager.getLogger(FlightDao.class);
 
     public PlaneDao(ConnectionFactory connectionFactory){this.connectionFactory=connectionFactory;}
 
-
-
-
-    public Plane create (Plane plane) throws PlaneDaoException {
+    @Override
+    public Plane create (Plane plane) throws AirPortDaoException {
         try (Connection connection = connectionFactory.getConnection()) {
             final PreparedStatement preparedStatement = connection.prepareStatement(INSERT_PLANE_SQL);
             fillPreparedStatement(plane,preparedStatement);
             preparedStatement.executeUpdate();
-            final ResultSet generatedIdRS = connection.prepareStatement(GET_PLANE_ID).executeQuery();
+            final ResultSet generatedIdRS = connection.prepareStatement("SELECT SCOPE_IDENTITY()").executeQuery();
             Integer planeId = null;
             if (generatedIdRS.next()) {
                 planeId = generatedIdRS.getInt(1);
@@ -59,81 +54,48 @@ public class PlaneDao implements PlaneDaoInterface<Plane> {
             plane = getById(planeId).get();
         } catch (SQLException e) {
             LOGGER.error(ExceptionMessage.FAILED_TO_CREATE_NEW_PLANE.toString(), e);
-            throw new PlaneDaoException(ExceptionMessage.FAILED_TO_CREATE_NEW_PLANE.get(), e);
+            throw new AirPortDaoException(ExceptionMessage.FAILED_TO_CREATE_NEW_PLANE.get(), e);
         }
         LOGGER.debug("Plane with id was created {}", plane.getId());
         return plane;
     }
 
-    public Plane update(Plane plane) throws PlaneDaoException {
-
+    @Override
+    public Plane update(Plane plane) throws AirPortDaoException {
         try (Connection connection = connectionFactory.getConnection()) {
             final PreparedStatement preparedStatement = connection.prepareStatement(UPDATE_PLANE_SQL);
             fillPreparedStatement(plane, preparedStatement);
             preparedStatement.executeUpdate();
             plane = getById(plane.getId()).get();
-        }catch (SQLException e) {
+        } catch (SQLException e) {
             final String errorMessage = ExceptionMessage.FAILED_TO_UPDATE_PLANE_WITH_ID.get() + plane.getId();
             LOGGER.error(errorMessage, e);
-            throw new PlaneDaoException(errorMessage, e);
+            throw new AirPortDaoException(errorMessage, e);
         }
         LOGGER.debug("Plane with id was updated {}", plane.getId());
         return plane;
     }
 
-
-    public boolean delete(final Plane plane) throws PlaneDaoException {
+    @Override
+    public boolean delete(final Plane plane) throws AirPortDaoException {
         boolean result;
         try (Connection connection = connectionFactory.getConnection()) {
-            final PreparedStatement preparedStatement = connection.prepareStatement(DELETE_PLANE);
+            final PreparedStatement preparedStatement = connection.prepareStatement("DELETE FROM plane WHERE id = ?");
             preparedStatement.setInt(1, plane.getId());
             result = preparedStatement.executeUpdate() > 0;
         } catch (SQLException e) {
             final String errorMessage = ExceptionMessage.FAILED_TO_DELETE_PLANE_WITH_ID.get() + plane.getId();
             LOGGER.error(errorMessage, e);
-            throw new PlaneDaoException(errorMessage, e);
+            throw new AirPortDaoException(errorMessage, e);
         }
         return result;
     }
 
-    public Optional<Plane> getById(final Integer idPlane) throws PlaneDaoException {
-        if (idPlane == null) {
-            throw new PlaneDaoException(ExceptionMessage.PLANE_ID_CANNOT_BE_NULL.get());
-        }
-        try (Connection connection = connectionFactory.getConnection()) {
-            final PreparedStatement preparedStatement = connection.prepareStatement(GET_PLANE_BY_ID);
-            preparedStatement.setInt(1, idPlane);
-            final ResultSet resultSet = preparedStatement.executeQuery();
-            if (resultSet.next()) {
-                final Plane plane = new PlaneRowMapper().mapRow(resultSet, new Plane());
-                return Optional.of(plane);
-            }
-        } catch (SQLException e) {
-            final String errorMessage = ExceptionMessage.FAILED_TO_GET_PLANE_WITH_ID.get() + idPlane;
-            LOGGER.error(errorMessage, e);
-            throw new PlaneDaoException(errorMessage, e);
-        }
-        return Optional.empty();
-    }
-
-
-
-    private Plane getPlaneFromResultSet(final ResultSet resultSet) throws SQLException {
-        final Plane plane=new Plane();
-        plane.setId(resultSet.getInt("ID"));
-        plane.setOwner(resultSet.getString("OWNER"));
-        plane.setModel(resultSet.getString("MODEL"));
-        plane.setType(resultSet.getString("TYPE"));
-        plane.setPlatenumber(resultSet.getInt("PLATENUMBER"));
-        return  plane;
-    }
-
-
-
-    public List<Plane> getAll() throws PlaneDaoException {
+    @Override
+    public List<Plane> getAll() throws AirPortDaoException {
         final List<Plane> planes = new ArrayList<>();
         try (Connection connection = connectionFactory.getConnection()) {
-            final PreparedStatement preparedStatement = connection.prepareStatement(GET_ALL_PLANES);
+            final PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM plane");
             final ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
                 createPlane(planes, resultSet);
@@ -141,9 +103,30 @@ public class PlaneDao implements PlaneDaoInterface<Plane> {
         } catch (SQLException e) {
             final String message = ExceptionMessage.FAILED_TO_GET_ALL_PLANES.get();
             LOGGER.error(message, e);
-            throw new PlaneDaoException(message, e);
+            throw new AirPortDaoException(message, e);
         }
         return planes;
+    }
+
+    @Override
+    public Optional<Plane> getById(final Integer planeId) throws AirPortDaoException {
+        if (planeId == null) {
+            throw new AirPortDaoException(ExceptionMessage.PLANE_ID_CANNOT_BE_NULL.get());
+        }
+        try (Connection connection = connectionFactory.getConnection()) {
+            final PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM plane WHERE id = ?");
+                    preparedStatement.setInt(1, planeId);
+            final ResultSet resultSet = preparedStatement.executeQuery();
+            if (resultSet.next()) {
+                final Plane plane = new PlaneRowMapper().mapRow(resultSet, new Plane());
+                return Optional.of(plane);
+            }
+        } catch (SQLException e) {
+            final String errorMessage = ExceptionMessage.FAILED_TO_GET_PLANE_WITH_ID.get() + planeId;
+            LOGGER.error(errorMessage, e);
+            throw new AirPortDaoException(errorMessage, e);
+        }
+        return Optional.empty();
     }
 
     private void createPlane(final List<Plane> planes, final ResultSet resultSet) throws SQLException {
@@ -153,32 +136,13 @@ public class PlaneDao implements PlaneDaoInterface<Plane> {
         planes.add(plane);
     }
 
-
-
-
     private void fillPreparedStatement(final Plane plane, final PreparedStatement preparedStatement) throws SQLException {
         preparedStatement.setString(OWNER, plane.getOwner());
         preparedStatement.setString(MODEL, plane.getModel());
         preparedStatement.setString(TYPE, plane.getType());
-        preparedStatement.setInt(PLATENUMBER, plane.getPlatenumber());
+        preparedStatement.setInt(PLATE_NUMBER, plane.getPlateNumber());
         if (plane.getId()!= null) {
             preparedStatement.setInt(ID, plane.getId());
         }
     }
-
-
-
-
-
 }
-
-
-
-
-
-
-
-
-
-
-

@@ -1,4 +1,7 @@
-import com.ra.courses.airport.entity.Plane;
+package com.ra.airport;
+
+import com.ra.airport.entity.Plane;
+import com.ra.airport.helper.DataCreationHelper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -34,7 +37,7 @@ public class PlaneTest {
 
     @Test
     public void whenToStringCorrectMessageShouldBeReturned() {
-        String expected = "Plane{id=1, name=' ', carrier=' ', duration=12:00, departureDate=-999999999-01-01T00:00, arrivalDate=999999999-12-31T23:59:59.999999999, fare=4.9E-324, mealOn=true}";
+        String expected = "Plane{id=1, owner=' ', model=' ', type=' ', plateNumber=2}";
         assertEquals(expected, secondPlane.toString());
     }
 

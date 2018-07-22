@@ -3,5 +3,5 @@ CREATE TABLE IF NOT EXISTS plane (
   owner VARCHAR(255),
   model VARCHAR(255),
   type VARCHAR(255),
-  platenumber INTEGER,
+  plateNumber INTEGER,
 );

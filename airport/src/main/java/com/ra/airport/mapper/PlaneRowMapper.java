@@ -1,5 +1,6 @@
-package com.ra.courses.airport.dao.impl;
-import com.ra.courses.airport.entity.Plane;
+package com.ra.airport.mapper;
+
+import com.ra.airport.entity.Plane;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -12,7 +13,7 @@ public class PlaneRowMapper implements RowMapper<Plane> {
     private static final String OWNER = "owner";
     private static final String TYPE = "type";
     private static final String MODEL = "model";
-    private static final String PLATNUMBER = "platenumber";
+    private static final String PLATE_NUMBER = "platenumber";
 
 
     /**
@@ -29,7 +30,7 @@ public class PlaneRowMapper implements RowMapper<Plane> {
         plane.setOwner(resultSet.getString(OWNER));
         plane.setType(resultSet.getString(TYPE));
         plane.setModel(resultSet.getString(MODEL));
-        plane.setPlatenumber(resultSet.getInt(PLATNUMBER));
+        plane.setPlateNumber(resultSet.getInt(PLATE_NUMBER));
 
         return plane;
     }

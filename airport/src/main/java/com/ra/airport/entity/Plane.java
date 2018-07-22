@@ -1,25 +1,25 @@
-package com.ra.courses.airport.entity;
+package com.ra.airport.entity;
 
 import java.io.Serializable;
 import java.util.Objects;
 
 public class Plane implements Serializable {
 
-    private Integer id=0;
+    private Integer id;
     private String owner;
     private String model;
     private String type;
-    private Integer platenumber;
+    private Integer plateNumber;
 
     public Plane() {
     }
 
-    public Plane(int id, String owner, String model, String type, int platenumber) {
+    public Plane(int id, String owner, String model, String type, int plateNumber) {
         this.id = id;
         this.owner = owner;
         this.model = model;
         this.type = type;
-        this.platenumber = platenumber;
+        this.plateNumber = plateNumber;
     }
 
     public Integer getId() {
@@ -38,8 +38,8 @@ public class Plane implements Serializable {
         return type;
     }
 
-    public int getPlatenumber() {
-        return platenumber;
+    public int getPlateNumber() {
+        return plateNumber;
     }
 
     public void setId(int id) {
@@ -58,8 +58,8 @@ public class Plane implements Serializable {
         this.type = type;
     }
 
-    public void setPlatenumber(int platenumber) {
-        this.platenumber = platenumber;
+    public void setPlateNumber(int plateNumber) {
+        this.plateNumber = plateNumber;
     }
 
 
@@ -76,7 +76,7 @@ public class Plane implements Serializable {
                 && Objects.equals(owner, plane.owner)
                 && Objects.equals(model, plane.model)
                 && Objects.equals(type, plane.type)
-                && Objects.equals(platenumber, plane.platenumber);
+                && Objects.equals(plateNumber, plane.plateNumber);
 
     }
 
@@ -87,13 +87,13 @@ public class Plane implements Serializable {
                 ", owner='" + owner + '\'' +
                 ", model='" + model + '\'' +
                 ", type='" + type + '\'' +
-                ", platenumber=" + platenumber +
+                ", plateNumber=" + plateNumber +
                 '}';
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id,owner,model,type,platenumber);
+        return Objects.hash(id,owner,model,type, plateNumber);
     }
 }
 

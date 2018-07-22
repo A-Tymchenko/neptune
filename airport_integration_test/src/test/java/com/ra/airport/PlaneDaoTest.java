@@ -1,10 +1,12 @@
 package com.ra.airport;
 
-import com.ra.airport.dao.exception.PlaneDaoException;
+import com.ra.airport.dao.AirPortDao;
+import com.ra.airport.dao.exception.AirPortDaoException;
 import com.ra.airport.entity.Plane;
 import com.ra.airport.dao.impl.PlaneDao;
 
 
+import com.ra.airport.factory.ConnectionFactory;
 import org.h2.tools.RunScript;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -28,7 +30,7 @@ public class PlaneDaoTest {
     private static final String TYPE = "LargeCarrier";
     private static final Integer PLATENUMBER = 132498789;
 
-    private PlaneDaoInterface<Plane> planeDao;
+    private AirPortDao<Plane> planeDao;
     private Plane plane;
 
     @BeforeEach
@@ -60,11 +62,11 @@ public class PlaneDaoTest {
         plane.setOwner(OWNER);
         plane.setModel(MODEL);
         plane.setType(TYPE);
-        plane.setPlatenumber(PLATENUMBER);
+        plane.setPlateNumber(PLATENUMBER);
     }
 
     @Test
-    public void whenCreateThenNewPlaneWithIdShouldBeReturned() throws PlaneDaoException {
+    public void whenCreateThenNewPlaneWithIdShouldBeReturned() throws AirPortDaoException {
         Plane createdPlane = planeDao.create(plane);
         assertNotNull(createdPlane);
         Integer planeId = createdPlane.getId();
@@ -75,24 +77,24 @@ public class PlaneDaoTest {
 
 
     @Test
-    public void whenUpdateThenUpdatedPlaneShouldBeReturned() throws PlaneDaoException {
+    public void whenUpdateThenUpdatedPlaneShouldBeReturned() throws AirPortDaoException {
         Plane createdPlane = planeDao.create(plane);
         Plane expectedPlane = changePlane(createdPlane);
-
         Plane updatedPlane = planeDao.update(createdPlane);
 
         assertEquals(expectedPlane, updatedPlane);
     }
 
     @Test
-    public void whenDeleteThenDeleteObjectAndReturnTrue() throws PlaneDaoException {
+    public void whenDeleteThenDeleteObjectAndReturnTrue() throws AirPortDaoException {
         Plane createdPlane = planeDao.create(plane);
         boolean result = planeDao.delete(createdPlane);
+
         assertTrue(result);
     }
 
     @Test
-    public void whenGetAllThenPlanesFromDBShouldBeReturned() throws PlaneDaoException {
+    public void whenGetAllThenPlanesFromDBShouldBeReturned() throws AirPortDaoException {
         List<Plane> expectedResult = new ArrayList<>();
         expectedResult.add(planeDao.create(plane));
         expectedResult.add(planeDao.create(plane));
@@ -101,23 +103,12 @@ public class PlaneDaoTest {
         assertEquals(expectedResult, planes);
     }
 
-
-
-
     private Plane changePlane(Plane plane) {
         plane.setOwner("Lufthansa");
         plane.setModel("Hawker");
         plane.setType("smallcarrier");
-        plane.setPlatenumber(4567854);
+        plane.setPlateNumber(4567854);
+
         return plane;
     }
-
-
-
-
-
-
-
-
-
 }

@@ -1,8 +1,7 @@
 INSERT INTO plane
 (owner,model,type,
-platenumber
+plateNumber
 ) VALUES (
 'MAU',
 'Boeing',
-'LargeCarrier',
-132498789);
+'LargeCarrier');

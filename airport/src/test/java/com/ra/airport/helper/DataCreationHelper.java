@@ -1,6 +1,7 @@
 package com.ra.airport.helper;
 
 import com.ra.airport.entity.Flight;
+import com.ra.airport.entity.Plane;
 
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -20,5 +21,15 @@ public abstract class DataCreationHelper {
         flight.setDepartureDate(LocalDateTime.MIN);
         flight.setArrivalDate(LocalDateTime.MAX);
         return flight;
+    }
+
+    public static Plane createPlane(){
+        Plane plane = new Plane();
+        plane.setId(1);
+        plane.setPlateNumber(2);
+        plane.setModel(SPACE);
+        plane.setType(SPACE);
+        plane.setOwner(SPACE);
+        return plane;
     }
 }

@@ -1,12 +1,14 @@
-import com.ra.courses.airport.dao.impl.ConnectionFactory;
-import com.ra.courses.airport.dao.impl.PlaneDaoException;
-import com.ra.courses.airport.dao.impl.PlaneDaoInterface;
-import com.ra.courses.airport.entity.Plane;
-import com.ra.courses.airport.dao.impl.PlaneDao;
-import static com.ra.courses.airport.dao.impl.ExceptionMessage.*;
+package com.ra.airport;
 
+import com.ra.airport.dao.exception.AirPortDaoException;
+import com.ra.airport.helper.DataCreationHelper;
+import com.ra.airport.dao.impl.PlaneDao;
+import com.ra.airport.entity.Plane;
+import com.ra.airport.factory.ConnectionFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
+import static com.ra.airport.dao.exception.ExceptionMessage.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.sql.Connection;
@@ -22,7 +24,6 @@ import static org.mockito.Mockito.when;
 
 public class PlaneDaoMockitoTest {
 
-
     private static final String INSERT_PLANE_SQL = "INSERT INTO plane "
             +"(owner, type, model, platenumber) "
             +" VALUES(?,?,?,?)";
@@ -33,7 +34,6 @@ public class PlaneDaoMockitoTest {
     private static final String DELETE_PLANE_BY_ID_SQL = "DELETE FROM plane WHERE id = ?";
     private static final String SELECT_LAST_GENERATED_ID_SQL = "SELECT SCOPE_IDENTITY()";
     private static final String SELECT_ALL_PLANES_BY_ID_SQL = "SELECT * FROM plane";
-
 
     private static ConnectionFactory connectionFactory;
     private Connection mockConnection;
@@ -48,12 +48,10 @@ public class PlaneDaoMockitoTest {
         mockStatement = mock(PreparedStatement.class);
         mockResultSet = mock(ResultSet.class);
         connectionFactory = mock(ConnectionFactory.class);
-        planeDao=new PlaneDao(connectionFactory);
-        plane=DataCreationHelper.createPlane();
+        planeDao = new PlaneDao(connectionFactory);
+        plane = DataCreationHelper.createPlane();
         when(connectionFactory.getConnection()).thenReturn(mockConnection);
         createMocksFromGetByIdMethod();
-
-
     }
 
     private void createMocksFromGetByIdMethod() throws SQLException {
@@ -65,27 +63,23 @@ public class PlaneDaoMockitoTest {
         when(mockResultSet.getString("owner")).thenReturn(plane.getOwner());
         when(mockResultSet.getString("model")).thenReturn(plane.getModel());
         when(mockResultSet.getString("type")).thenReturn(plane.getType());
-        when(mockResultSet.getInt("platenumber")).thenReturn(plane.getPlatenumber());
-
+        when(mockResultSet.getInt("platenumber")).thenReturn(plane.getPlateNumber());
     }
 
     @Test
-    public void whenCreateThenCorrectSQLShouldBeExecutedAndCorrectEntityShouldBeReturned() throws SQLException, PlaneDaoException {
+    public void whenCreateThenCorrectSQLShouldBeExecutedAndCorrectEntityShouldBeReturned() throws SQLException, AirPortDaoException {
         when(mockConnection.prepareStatement(INSERT_PLANE_SQL)).thenReturn(mockStatement);
         when(mockConnection.prepareStatement(SELECT_LAST_GENERATED_ID_SQL)).thenReturn(mockStatement);
         Plane result = planeDao.create(plane);
         assertEquals(plane, result);
-
-
     }
 
-
     @Test
-    public void whenCreateReturnNullGeneratedIdThenDAOExceptionShouldBeThrown() throws SQLException, PlaneDaoException {
+    public void whenCreateReturnNullGeneratedIdThenDAOExceptionShouldBeThrown() throws SQLException, AirPortDaoException {
         when(mockConnection.prepareStatement(INSERT_PLANE_SQL)).thenReturn(mockStatement);
         when(mockConnection.prepareStatement(SELECT_LAST_GENERATED_ID_SQL)).thenReturn(mockStatement);
         when(mockResultSet.next()).thenReturn(false);
-        Throwable exception =  assertThrows(PlaneDaoException.class,() -> {
+        Throwable exception =  assertThrows(AirPortDaoException.class,() -> {
             planeDao.create(plane);
         });
 
@@ -93,7 +87,7 @@ public class PlaneDaoMockitoTest {
     }
 
     @Test
-    public void whenUpdateThenCorrectSQLShouldBeExecutedAndCorrectEntityShouldBeReturned() throws SQLException, PlaneDaoException {
+    public void whenUpdateThenCorrectSQLShouldBeExecutedAndCorrectEntityShouldBeReturned() throws SQLException, AirPortDaoException {
         when(mockConnection.prepareStatement(UPDATE_PLANE_SQL)).thenReturn(mockStatement);
         Plane result = planeDao.update(plane);
 
@@ -101,7 +95,7 @@ public class PlaneDaoMockitoTest {
     }
 
     @Test
-    public void whenDeleteThenCorrectSQLShouldBeExecutedAndTrueShouldBeReturned() throws PlaneDaoException, SQLException {
+    public void whenDeleteThenCorrectSQLShouldBeExecutedAndTrueShouldBeReturned() throws AirPortDaoException, SQLException {
         when(mockConnection.prepareStatement(DELETE_PLANE_BY_ID_SQL)).thenReturn(mockStatement);
         when(mockStatement.executeUpdate()).thenReturn(1);
         boolean result = planeDao.delete(plane);
@@ -109,7 +103,7 @@ public class PlaneDaoMockitoTest {
     }
 
     @Test
-    public void whenDeleteStatementExecuteReturnOThenFalseShouldBeReturned() throws SQLException, PlaneDaoException {
+    public void whenDeleteStatementExecuteReturnOThenFalseShouldBeReturned() throws SQLException, AirPortDaoException {
         when(mockConnection.prepareStatement(DELETE_PLANE_BY_ID_SQL)).thenReturn(mockStatement);
         when(mockStatement.executeUpdate()).thenReturn(0);
         boolean result = planeDao.delete(plane);
@@ -118,7 +112,7 @@ public class PlaneDaoMockitoTest {
     }
 
     @Test
-    public void whenGetAllThenCorrectSQLShouldBeExecutedAndCorrectListReturned() throws PlaneDaoException, SQLException {
+    public void whenGetAllThenCorrectSQLShouldBeExecutedAndCorrectListReturned() throws AirPortDaoException, SQLException {
         when(mockConnection.prepareStatement(SELECT_ALL_PLANES_BY_ID_SQL)).thenReturn(mockStatement);
         when(mockResultSet.next()).thenReturn(true,false);
         List<Plane> planes = planeDao.getAll();
@@ -127,7 +121,7 @@ public class PlaneDaoMockitoTest {
     }
 
     @Test
-    public void whenGetByIdReturnEmptyResultSetThenEmptyOptionalShouldBeReturned() throws PlaneDaoException, SQLException {
+    public void whenGetByIdReturnEmptyResultSetThenEmptyOptionalShouldBeReturned() throws AirPortDaoException, SQLException {
         when(mockResultSet.next()).thenReturn(false);
         Optional<Plane> plane = planeDao.getById(Integer.valueOf(1));
         assertEquals(Optional.empty(), plane);
@@ -135,7 +129,7 @@ public class PlaneDaoMockitoTest {
 
     @Test
     public void whenGetByIdNullPassedThenDAOExceptionShouldBeThrown() {
-        Throwable exception =  assertThrows(PlaneDaoException.class,() -> {
+        Throwable exception =  assertThrows(AirPortDaoException.class,() -> {
             planeDao.getById(null);
         });
 
@@ -144,7 +138,7 @@ public class PlaneDaoMockitoTest {
 
     @Test
     public void whenCreateThrownSQlExceptionThenDAOExceptionShouldBeThrownToo() {
-        Throwable exception = assertThrows(PlaneDaoException.class, () -> {
+        Throwable exception = assertThrows(AirPortDaoException.class, () -> {
             when(mockConnection.prepareStatement(INSERT_PLANE_SQL)).thenThrow(new SQLException());
             planeDao.create(plane);
         });
@@ -154,7 +148,7 @@ public class PlaneDaoMockitoTest {
 
     @Test
     public void whenUpdateThrownSQlExceptionThenDAOExceptionShouldBeThrownToo() {
-        Throwable exception = assertThrows(PlaneDaoException.class, () -> {
+        Throwable exception = assertThrows(AirPortDaoException.class, () -> {
             when(mockConnection.prepareStatement(UPDATE_PLANE_SQL)).thenThrow(new SQLException());
             planeDao.update(plane);
         });
@@ -164,7 +158,7 @@ public class PlaneDaoMockitoTest {
 
     @Test
     public void whenDeleteThrownSQlExceptionThenDAOExceptionShouldBeThrownToo() {
-        Throwable exception = assertThrows(PlaneDaoException.class, () -> {
+        Throwable exception = assertThrows(AirPortDaoException.class, () -> {
             when(mockConnection.prepareStatement(DELETE_PLANE_BY_ID_SQL)).thenThrow(new SQLException());
             planeDao.delete(plane);
         });
@@ -174,7 +168,7 @@ public class PlaneDaoMockitoTest {
 
     @Test
     public void whenGetAllThrownSQlExceptionThenDAOExceptionShouldBeThrownToo() {
-        Throwable exception = assertThrows(PlaneDaoException.class, () -> {
+        Throwable exception = assertThrows(AirPortDaoException.class, () -> {
             when(mockConnection.prepareStatement(SELECT_ALL_PLANES_BY_ID_SQL)).thenThrow(new SQLException());
             planeDao.getAll();
         });
@@ -184,7 +178,7 @@ public class PlaneDaoMockitoTest {
 
     @Test
     public void whenGetByIdThrownSQlExceptionThenDAOExceptionShouldBeThrownToo() {
-        Throwable exception = assertThrows(PlaneDaoException.class, () -> {
+        Throwable exception = assertThrows(AirPortDaoException.class, () -> {
             when(mockConnection.prepareStatement(SELECT_PLANE_BY_ID_SQL)).thenThrow(new SQLException());
             planeDao.getById(Integer.valueOf(1));
         });
