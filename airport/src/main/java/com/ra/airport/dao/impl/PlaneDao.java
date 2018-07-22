@@ -20,14 +20,7 @@ import java.util.Optional;
 
 public class PlaneDao implements AirPortDao<Plane> {
 
-    private final transient ConnectionFactory connectionFactory;
-
-    private static final Integer ID = 1;
-    private static final Integer OWNER = 2;
-    private static final Integer MODEL = 3;
-    private static final Integer TYPE = 4;
-    private static final Integer PLATE_NUMBER = 5;
-
+    private final ConnectionFactory connectionFactory;
 
     private static final String INSERT_PLANE_SQL = "INSERT INTO plane "
             +"(owner, type, model, platenumber) "
@@ -137,12 +130,12 @@ public class PlaneDao implements AirPortDao<Plane> {
     }
 
     private void fillPreparedStatement(final Plane plane, final PreparedStatement preparedStatement) throws SQLException {
-        preparedStatement.setString(OWNER, plane.getOwner());
-        preparedStatement.setString(MODEL, plane.getModel());
-        preparedStatement.setString(TYPE, plane.getType());
-        preparedStatement.setInt(PLATE_NUMBER, plane.getPlateNumber());
+        preparedStatement.setString(StatementParameter.PLANE_OWNER.get(), plane.getOwner());
+        preparedStatement.setString(StatementParameter.PLANE_MODEL.get(), plane.getModel());
+        preparedStatement.setString(StatementParameter.PLANE_TYPE.get(), plane.getType());
+        preparedStatement.setInt(StatementParameter.PLATE_NUMBER.get(), plane.getPlateNumber());
         if (plane.getId()!= null) {
-            preparedStatement.setInt(ID, plane.getId());
+            preparedStatement.setInt(StatementParameter.PLANE_ID.get(), plane.getId());
         }
     }
 }

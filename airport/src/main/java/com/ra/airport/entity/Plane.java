@@ -77,7 +77,6 @@ public class Plane implements Serializable {
                 && Objects.equals(model, plane.model)
                 && Objects.equals(type, plane.type)
                 && Objects.equals(plateNumber, plane.plateNumber);
-
     }
 
     @Override
