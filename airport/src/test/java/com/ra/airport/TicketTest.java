@@ -7,6 +7,9 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * Tests for the model class {@link com.ra.airport.entity.Ticket}
+ */
 public class TicketTest {
     private Ticket firstTicket;
 

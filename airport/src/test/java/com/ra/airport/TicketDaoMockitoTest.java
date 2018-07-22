@@ -19,6 +19,9 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+/**
+ * Mockito tests for {@link TicketDao} class
+ */
 public class TicketDaoMockitoTest {
     private static final String INSERT_TICKET_SQL = "INSERT INTO TICKET "
             + "(TICKET_NUMBER, PASSENGER_NAME, DOCUMENT, SELLING_DATE) VALUES (?,?,?,?)";
@@ -71,22 +74,24 @@ public class TicketDaoMockitoTest {
         assertEquals(ticket, result);
     }
 
-//    @Test
-//    public void whenCreateReturnNullGeneratedIdThenDAOExceptionShouldBeThrown() throws SQLException, AirPortDaoException {
-////        when(mockConnection.prepareStatement(INSERT_TICKET_SQL)).thenReturn(mockStatement);
-////        when(mockConnection.prepareStatement(SELECT_LAST_GENERATED_ID_SQL)).thenReturn(mockStatement);
-////        when(mockResultSet.next()).thenReturn(false);
-////        Throwable exception =  assertThrows(AirPortDaoException.class,() -> {
-////            ticketDao.create(ticket);
-////        });
-//
-//        TicketDao ticketDao = new TicketDao(null);
-//        Throwable exception =  assertThrows(AirPortDaoException.class,() -> {
-//            ticketDao.create(ticket);
-//        });
-//
-//        assertEquals(exception.getMessage(), TICKET_ID_CANNOT_BE_NULL.get());
-//    }
+    @Test
+    public void whenGetTicketByIdThenReturnEmptyOption() throws SQLException, AirPortDaoException {
+        when(mockConnection.prepareStatement(SELECT_TICKET_BY_ID_SQL)).thenReturn(mockStatement);
+        when(mockStatement.executeQuery()).thenReturn(mockResultSet);
+        when(mockResultSet.next()).thenReturn(false);
+        Optional<Ticket> result = ticketDao.getById(1);
+        assertEquals(result, Optional.empty());
+    }
+
+    @Test
+    public void whenGetTicketByIdThenReturnOptionalTicket() throws SQLException, AirPortDaoException {
+        when(mockConnection.prepareStatement(SELECT_TICKET_BY_ID_SQL)).thenReturn(mockStatement);
+        when(mockStatement.executeQuery()).thenReturn(mockResultSet);
+        when(mockResultSet.next()).thenReturn(true);
+        Optional<Ticket> result = ticketDao.getById(1);
+        assertEquals(result, ticketDao.getById(1));
+
+    }
 
     @Test
     public void whenUpdateThenCorrectSQLShouldBeExecutedAndCorrectEntityShouldBeReturned() throws SQLException, AirPortDaoException {

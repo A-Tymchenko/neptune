@@ -1,6 +1,9 @@
 package com.ra.airport.dao.impl;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -20,7 +23,6 @@ public class TicketDao implements AirPortDao<Ticket> {
     private final transient ConnectionFactory connectionFactory;
     private static final transient Logger LOGGER = LogManager.getLogger(TicketDao.class);
 
-
     public TicketDao(final ConnectionFactory connectionFactory) {
         this.connectionFactory = connectionFactory;
     }
@@ -33,16 +35,11 @@ public class TicketDao implements AirPortDao<Ticket> {
      * @throws AirPortDaoException exception for DAO layer
      */
     @Override
-    public Ticket create(Ticket ticket) throws AirPortDaoException {
-        final String sql = "INSERT INTO TICKET "
-                + "(TICKET_NUMBER, PASSENGER_NAME, DOCUMENT, SELLING_DATE) VALUES (?,?,?,?)";
-
+    public Ticket create(final Ticket ticket) throws AirPortDaoException {
+        final String sql = "INSERT INTO TICKET (TICKET_NUMBER, PASSENGER_NAME, DOCUMENT, SELLING_DATE) VALUES (?,?,?,?)";
         try (Connection connection = connectionFactory.getConnection()) {
             final PreparedStatement preparedStatement = connection.prepareStatement(sql);
-            preparedStatement.setString(StatementParameter.TICKET_NUMBER.get(), ticket.getTicketNumber());
-            preparedStatement.setString(StatementParameter.PASSENGER_NAME.get(), ticket.getPassengerName());
-            preparedStatement.setString(StatementParameter.DOCUMENT.get(), ticket.getDocument());
-            preparedStatement.setTimestamp(StatementParameter.SELLING_DATE.get(), ticket.getSellingDate());
+            fillPreparedStatement(ticket, preparedStatement);
             preparedStatement.executeUpdate();
             final ResultSet scopeResultSet = connection.prepareStatement("SELECT SCOPE_IDENTITY()").executeQuery();
             if (scopeResultSet.next()) {
@@ -68,13 +65,9 @@ public class TicketDao implements AirPortDao<Ticket> {
         final String sql = "UPDATE TICKET "
                 + "SET TICKET_NUMBER = ?, PASSENGER_NAME = ?, DOCUMENT = ?, SELLING_DATE = ?"
                 + "WHERE ID_TICKET = ?";
-
         try (Connection connection = connectionFactory.getConnection()) {
             final PreparedStatement preparedStatement = connection.prepareStatement(sql);
-            preparedStatement.setString(StatementParameter.TICKET_NUMBER.get(), ticket.getTicketNumber());
-            preparedStatement.setString(StatementParameter.PASSENGER_NAME.get(), ticket.getPassengerName());
-            preparedStatement.setString(StatementParameter.DOCUMENT.get(), ticket.getDocument());
-            preparedStatement.setTimestamp(StatementParameter.SELLING_DATE.get(), ticket.getSellingDate());
+            fillPreparedStatement(ticket, preparedStatement);
             preparedStatement.setInt(StatementParameter.ID_TICKET.get(), ticket.getIdTicket());
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
@@ -122,7 +115,6 @@ public class TicketDao implements AirPortDao<Ticket> {
             throw new AirPortDaoException(ExceptionMessage.TICKET_ID_CANNOT_BE_NULL.get());
         }
         final String sql = "SELECT * FROM TICKET WHERE ID_TICKET = ?";
-
         try (Connection connection = connectionFactory.getConnection()) {
             final PreparedStatement preparedStatement = connection.prepareStatement(sql);
             preparedStatement.setInt(1, idTicket);
@@ -180,5 +172,20 @@ public class TicketDao implements AirPortDao<Ticket> {
         ticket.setDocument(resultSet.getString("DOCUMENT"));
         ticket.setSellingDate(resultSet.getTimestamp("SELLING_DATE"));
         return ticket;
+    }
+
+    /**
+     * Fill {@link PreparedStatement} parameters.
+     * Get them from {@link Ticket} entity.
+     *
+     * @param ticket entity
+     * @param preparedStatement statement for filling
+     * @throws SQLException exception for DAO layer
+     */
+    private void fillPreparedStatement(final Ticket ticket, final PreparedStatement preparedStatement) throws SQLException {
+        preparedStatement.setString(StatementParameter.TICKET_NUMBER.get(), ticket.getTicketNumber());
+        preparedStatement.setString(StatementParameter.PASSENGER_NAME.get(), ticket.getPassengerName());
+        preparedStatement.setString(StatementParameter.DOCUMENT.get(), ticket.getDocument());
+        preparedStatement.setTimestamp(StatementParameter.SELLING_DATE.get(), ticket.getSellingDate());
     }
 }
