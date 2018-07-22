@@ -43,13 +43,13 @@ public class TicketDao implements AirPortDao<Ticket> {
             preparedStatement.executeUpdate();
             final ResultSet scopeResultSet = connection.prepareStatement("SELECT SCOPE_IDENTITY()").executeQuery();
             if (scopeResultSet.next()) {
-                ticket.setIdTicket(scopeResultSet.getInt(1));
+                ticket.setTicketId(scopeResultSet.getInt(1));
             }
         } catch (SQLException e) {
             LOGGER.error(ExceptionMessage.FAILED_TO_CREATE_NEW_TICKET.toString(), e);
             throw new AirPortDaoException(ExceptionMessage.FAILED_TO_CREATE_NEW_TICKET.get(), e);
         }
-        LOGGER.debug("Ticket with id was created {}", ticket.getIdTicket());
+        LOGGER.debug("Ticket with id was created {}", ticket.getTicketId());
         return ticket;
     }
 
@@ -64,18 +64,18 @@ public class TicketDao implements AirPortDao<Ticket> {
     public Ticket update(final Ticket ticket) throws AirPortDaoException {
         final String sql = "UPDATE TICKET "
                 + "SET TICKET_NUMBER = ?, PASSENGER_NAME = ?, DOCUMENT = ?, SELLING_DATE = ?"
-                + "WHERE ID_TICKET = ?";
+                + "WHERE TICKET_ID = ?";
         try (Connection connection = connectionFactory.getConnection()) {
             final PreparedStatement preparedStatement = connection.prepareStatement(sql);
             fillPreparedStatement(ticket, preparedStatement);
-            preparedStatement.setInt(StatementParameter.ID_TICKET.get(), ticket.getIdTicket());
+            preparedStatement.setInt(StatementParameter.TICKET_ID.get(), ticket.getTicketId());
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
-            final String errorMessage = ExceptionMessage.FAILED_TO_UPDATE_TICKET_WITH_ID.get() + ticket.getIdTicket();
+            final String errorMessage = ExceptionMessage.FAILED_TO_UPDATE_TICKET_WITH_ID.get() + ticket.getTicketId();
             LOGGER.error(errorMessage, e);
             throw new AirPortDaoException(errorMessage, e);
         }
-        LOGGER.debug("Ticket with id was updated {}", ticket.getIdTicket());
+        LOGGER.debug("Ticket with id was updated {}", ticket.getTicketId());
         return ticket;
     }
 
@@ -89,14 +89,14 @@ public class TicketDao implements AirPortDao<Ticket> {
      */
     @Override
     public boolean delete(final Ticket ticket) throws AirPortDaoException {
-        final String sql = "DELETE FROM TICKET WHERE ID_TICKET = ?";
+        final String sql = "DELETE FROM TICKET WHERE TICKET_ID = ?";
         boolean result;
         try (Connection connection = connectionFactory.getConnection()) {
             final PreparedStatement preparedStatement = connection.prepareStatement(sql);
-            preparedStatement.setInt(1, ticket.getIdTicket());
+            preparedStatement.setInt(1, ticket.getTicketId());
             result = preparedStatement.executeUpdate() > 0;
         } catch (SQLException e) {
-            final String errorMessage = ExceptionMessage.FAILED_TO_DELETE_TICKET_WITH_ID.get() + ticket.getIdTicket();
+            final String errorMessage = ExceptionMessage.FAILED_TO_DELETE_TICKET_WITH_ID.get() + ticket.getTicketId();
             LOGGER.error(errorMessage, e);
             throw new AirPortDaoException(errorMessage, e);
         }
@@ -114,7 +114,7 @@ public class TicketDao implements AirPortDao<Ticket> {
         if (idTicket == null) {
             throw new AirPortDaoException(ExceptionMessage.TICKET_ID_CANNOT_BE_NULL.get());
         }
-        final String sql = "SELECT * FROM TICKET WHERE ID_TICKET = ?";
+        final String sql = "SELECT * FROM TICKET WHERE TICKET_ID = ?";
         try (Connection connection = connectionFactory.getConnection()) {
             final PreparedStatement preparedStatement = connection.prepareStatement(sql);
             preparedStatement.setInt(1, idTicket);
@@ -166,7 +166,7 @@ public class TicketDao implements AirPortDao<Ticket> {
      */
     private Ticket getTicketFromResultSet(final ResultSet resultSet) throws SQLException {
         final Ticket ticket = new Ticket();
-        ticket.setIdTicket(resultSet.getInt("ID_TICKET"));
+        ticket.setTicketId(resultSet.getInt("TICKET_ID"));
         ticket.setTicketNumber(resultSet.getString("TICKET_NUMBER"));
         ticket.setPassengerName(resultSet.getString("PASSENGER_NAME"));
         ticket.setDocument(resultSet.getString("DOCUMENT"));

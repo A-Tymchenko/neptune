@@ -30,7 +30,7 @@ public class TicketTest {
 
     @Test
     public void whenHashCodeIsTheDifferentForObjectsEqualsShouldReturnFalseForThem() {
-        secondTicket.setIdTicket(2);
+        secondTicket.setTicketId(2);
         assertFalse(firstTicket.hashCode() == secondTicket.hashCode());
 
         assertFalse(this.firstTicket.equals(secondTicket));
@@ -38,7 +38,7 @@ public class TicketTest {
 
     @Test
     public void whenToStringCorrectMessageShouldBeReturned() {
-        String expected = "Ticket{idTicket=1, ticketNumber='AA111-BB111', passengerName='John Dow', document='QQ12345678QQ', sellingDate=2018-07-24 08:00:00.0}";
+        String expected = "Ticket{ticketId=1, ticketNumber='AA111-BB111', passengerName='John Dow', document='QQ12345678QQ', sellingDate=2018-07-24 08:00:00.0}";
         assertEquals(expected, secondTicket.toString());
     }
 
@@ -49,7 +49,7 @@ public class TicketTest {
 
     @Test
     public void whenEqualsObjectsWithTheDifferentIdTicketFalseShouldBeReturned() {
-        secondTicket.setIdTicket(2);
+        secondTicket.setTicketId(2);
         assertFalse(firstTicket.equals(secondTicket));
     }
 

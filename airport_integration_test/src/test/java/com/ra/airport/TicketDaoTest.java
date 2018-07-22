@@ -67,9 +67,9 @@ class TicketDaoTest {
     public void whenCreateThenNewTicketWithIdShouldBeReturned() throws AirPortDaoException {
         Ticket createdTicket = airPortDao.create(ticket);
         assertNotNull(createdTicket);
-        Integer idTicket = createdTicket.getIdTicket();
+        Integer idTicket = createdTicket.getTicketId();
         assertNotNull(idTicket);
-        ticket.setIdTicket(idTicket);
+        ticket.setTicketId(idTicket);
         assertEquals(ticket, createdTicket);
     }
 

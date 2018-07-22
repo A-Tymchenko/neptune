@@ -4,7 +4,7 @@ import java.sql.Timestamp;
 import java.util.Objects;
 
 public class Ticket {
-    private Integer idTicket;
+    private Integer ticketId;
     private String ticketNumber;
     private String passengerName;
     private String document;
@@ -13,12 +13,12 @@ public class Ticket {
     public Ticket() {
     }
 
-    public Integer getIdTicket() {
-        return idTicket;
+    public Integer getTicketId() {
+        return ticketId;
     }
 
-    public void setIdTicket(final Integer idTicket) {
-        this.idTicket = idTicket;
+    public void setTicketId(final Integer ticketId) {
+        this.ticketId = ticketId;
     }
 
     public String getTicketNumber() {
@@ -56,7 +56,7 @@ public class Ticket {
     @Override
     public String toString() {
         return "Ticket{"
-                + "idTicket=" + idTicket
+                + "ticketId=" + ticketId
                 + ", ticketNumber='" + ticketNumber + '\''
                 + ", passengerName='" + passengerName + '\''
                 + ", document='" + document + '\''
@@ -73,7 +73,7 @@ public class Ticket {
             return false;
         }
         final Ticket ticket = (Ticket) obj;
-        return Objects.equals(idTicket, ticket.idTicket)
+        return Objects.equals(ticketId, ticket.ticketId)
                 && Objects.equals(ticketNumber, ticket.ticketNumber)
                 && Objects.equals(passengerName, ticket.passengerName)
                 && Objects.equals(document, ticket.document)
@@ -82,6 +82,6 @@ public class Ticket {
 
     @Override
     public int hashCode() {
-        return Objects.hash(idTicket, ticketNumber, passengerName, document, sellingDate);
+        return Objects.hash(ticketId, ticketNumber, passengerName, document, sellingDate);
     }
 }

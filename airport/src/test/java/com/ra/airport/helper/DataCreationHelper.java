@@ -26,7 +26,7 @@ public abstract class DataCreationHelper {
 
     public static Ticket createTicket() {
         Ticket ticket = new Ticket();
-        ticket.setIdTicket(1);
+        ticket.setTicketId(1);
         ticket.setTicketNumber("AA111-BB111");
         ticket.setPassengerName("John Dow");
         ticket.setDocument("QQ12345678QQ");

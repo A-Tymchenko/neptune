@@ -20,7 +20,7 @@ public enum StatementParameter {
     PASSENGER_NAME(2),
     DOCUMENT(3),
     SELLING_DATE(4),
-    ID_TICKET(5);
+    TICKET_ID(5);
 
     private final int parameterNumber;
 

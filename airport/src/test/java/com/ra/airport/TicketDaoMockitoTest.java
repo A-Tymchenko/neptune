@@ -28,9 +28,9 @@ public class TicketDaoMockitoTest {
 
     private static final String UPDATE_TICKET_SQL = "UPDATE TICKET "
             + "SET TICKET_NUMBER = ?, PASSENGER_NAME = ?, DOCUMENT = ?, SELLING_DATE = ?"
-            + "WHERE ID_TICKET = ?";
-    private static final String SELECT_TICKET_BY_ID_SQL = "SELECT * FROM TICKET WHERE ID_TICKET = ?";
-    private static final String DELETE_TICKET_BY_ID_SQL = "DELETE FROM TICKET WHERE ID_TICKET = ?";
+            + "WHERE TICKET_ID = ?";
+    private static final String SELECT_TICKET_BY_ID_SQL = "SELECT * FROM TICKET WHERE TICKET_ID = ?";
+    private static final String DELETE_TICKET_BY_ID_SQL = "DELETE FROM TICKET WHERE TICKET_ID = ?";
     private static final String SELECT_LAST_GENERATED_ID_SQL = "SELECT SCOPE_IDENTITY()";
     private static final String SELECT_ALL_TICKETS_SQL ="SELECT * FROM TICKET";
 
@@ -58,7 +58,7 @@ public class TicketDaoMockitoTest {
         when(mockConnection.prepareStatement(SELECT_TICKET_BY_ID_SQL)).thenReturn(mockStatement);
         when(mockResultSet.next()).thenReturn(true);
         when(mockStatement.executeQuery()).thenReturn(mockResultSet);
-        when(mockResultSet.getInt("ID_TICKET")).thenReturn(ticket.getIdTicket());
+        when(mockResultSet.getInt("TICKET_ID")).thenReturn(ticket.getTicketId());
         when(mockResultSet.getString("TICKET_NUMBER")).thenReturn(ticket.getTicketNumber());
         when(mockResultSet.getString("PASSENGER_NAME")).thenReturn(ticket.getPassengerName());
         when(mockResultSet.getString("DOCUMENT")).thenReturn(ticket.getDocument());
