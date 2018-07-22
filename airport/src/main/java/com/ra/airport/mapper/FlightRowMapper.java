@@ -4,6 +4,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import com.ra.airport.entity.Flight;
+import org.springframework.jdbc.core.RowMapper;
 
 public class FlightRowMapper implements RowMapper<Flight> {
 
@@ -20,12 +21,12 @@ public class FlightRowMapper implements RowMapper<Flight> {
      * Map {@link ResultSet} to {@link Flight} instance.
      *
      * @param resultSet source {@link ResultSet}
-     * @param flight target {@link Flight} entity
      * @return {@link Flight} with filled fields
      * @throws SQLException standard SQL exception
      */
     @Override
-    public Flight mapRow(final ResultSet resultSet, final Flight flight) throws SQLException {
+    public Flight mapRow(ResultSet resultSet, int rowNum) throws SQLException {
+        Flight flight = new Flight();
         flight.setIdentifier(resultSet.getInt(FLIGHT_ID));
         flight.setName(resultSet.getString(NAME));
         flight.setCarrier(resultSet.getString(CARRIER));
@@ -37,4 +38,7 @@ public class FlightRowMapper implements RowMapper<Flight> {
 
         return flight;
     }
+
+
+
 }

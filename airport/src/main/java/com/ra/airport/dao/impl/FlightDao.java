@@ -17,10 +17,11 @@ import com.ra.airport.dao.exception.ExceptionMessage;
 import com.ra.airport.entity.Flight;
 import com.ra.airport.factory.ConnectionFactory;
 import com.ra.airport.mapper.FlightRowMapper;
-import com.ra.airport.mapper.RowMapper;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.support.JdbcDaoSupport;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
@@ -31,10 +32,9 @@ import javax.sql.DataSource;
  * Implementation of {@link AirPortDao} interface.
  */
 @Repository
-public class FlightDao implements AirPortDao<Flight> {
+public class FlightDao extends JdbcDaoSupport implements AirPortDao<Flight> {
 
-    private final DataSource dataSource;
-    
+
     private static final String INSERT_FLIGHT_SQL = "INSERT INTO flight "
             + "(name, carrier, duration, meal_on, fare, departure_date, arrival_date) "
             + " VALUES(?,?,?,?,?,?,?)";
@@ -44,10 +44,9 @@ public class FlightDao implements AirPortDao<Flight> {
 
     private static final Logger LOGGER = LogManager.getLogger(FlightDao.class);
 
-
     @Autowired
-    public FlightDao(DataSource dataSource) {
-        this.dataSource = dataSource;
+    public FlightDao(JdbcTemplate jdbcTemplate) {
+        setJdbcTemplate(jdbcTemplate);
     }
 
     /**
@@ -58,8 +57,17 @@ public class FlightDao implements AirPortDao<Flight> {
      * @throws AirPortDaoException exception for DAO layer
      */
     public Flight create(Flight flight) throws AirPortDaoException {
+        //getJdbcTemplate().update(ps -> fillPreparedStatement(flight, ps));
+
+        getJdbcTemplate().update(connection -> {
+            PreparedStatement ps = connection.prepareStatement(INSERT_FLIGHT_SQL);
+            fillPreparedStatement(flight,ps);
+            return ps;
+        });
+
+
 //        try (Connection connection = connectionFactory.getConnection()) {
-//            final PreparedStatement preparedStatement = connection.prepareStatement(INSERT_FLIGHT_SQL);
+//            final PreparedStatement preparedStatement = connection.prepareStatement();
 //            fillPreparedStatement(flight, preparedStatement);
 //            preparedStatement.executeUpdate();
 //            final ResultSet generatedIdRS = connection.prepareStatement("SELECT SCOPE_IDENTITY()").executeQuery();
@@ -173,10 +181,10 @@ public class FlightDao implements AirPortDao<Flight> {
     }
 
     private void createFlight(final List<Flight> flights, final ResultSet resultSet) throws SQLException {
-        Flight flight = new Flight();
-        final RowMapper<Flight> rowMapper = new FlightRowMapper();
-        flight = rowMapper.mapRow(resultSet, flight);
-        flights.add(flight);
+//        Flight flight = new Flight();
+//        final RowMapper<Flight> rowMapper = new FlightRowMapper();
+//        flight = rowMapper.mapRow(resultSet, flight);
+//        flights.add(flight);
     }
 
     /**
