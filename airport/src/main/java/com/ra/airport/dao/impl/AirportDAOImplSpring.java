@@ -98,7 +98,7 @@ public class AirportDAOImplSpring implements AirPortDao<Airport> {
             final String query = "Select * From Airport";
             return jdbcTemplate.query(query, BeanPropertyRowMapper.newInstance(Airport.class));
         } catch (EmptyResultDataAccessException | BadSqlGrammarException e) {
-            final String errorMessage = ExceptionMessage.FAILED_TO_GET_AIRPORT_WITH_ID.get();
+            final String errorMessage = ExceptionMessage.FAILED_TO_GET_ALL_AIRPORTS.get();
             LOGGER.error(errorMessage, e);
             throw new AirPortDaoException(errorMessage, e);
         }
