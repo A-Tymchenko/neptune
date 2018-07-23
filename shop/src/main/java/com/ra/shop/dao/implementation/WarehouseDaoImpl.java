@@ -6,16 +6,17 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import com.ra.shop.connection.ConnectionFactory;
-import com.ra.shop.dao.ShopDao;
+import com.ra.shop.dao.IRepository;
+import com.ra.shop.dao.exception.DAOException;
 import com.ra.shop.dao.exception.ExceptionMessage;
-import com.ra.shop.dao.exception.WarehouseDaoException;
 import com.ra.shop.entity.Warehouse;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class WarehouseDaoImpl implements ShopDao<Warehouse> {
+public class WarehouseDaoImpl implements IRepository<Warehouse> {
     private static final int NAME = 1;
     private static final int PRICE = 2;
     private static final int AMOUNT = 3;
@@ -36,7 +37,7 @@ public class WarehouseDaoImpl implements ShopDao<Warehouse> {
      * @return new Warehouse
      */
     @Override
-    public Warehouse create(Warehouse warehouse) throws WarehouseDaoException {
+    public Warehouse create(Warehouse warehouse) throws DAOException {
         try (Connection connection = connectionFactory.getConnection()) {
             final PreparedStatement insertStatement = connection.prepareStatement("INSERT INTO warehouse "
                     + "(name, price, amount) "
@@ -46,12 +47,12 @@ public class WarehouseDaoImpl implements ShopDao<Warehouse> {
             insertStatement.executeUpdate();
             final ResultSet lastIdResultSet = getLastId.executeQuery();
             if (!lastIdResultSet.next()) {
-                throw new WarehouseDaoException(ExceptionMessage.THE_WAREHOUSE_CANNOT_BE_NULL.getMessage());
+                throw new DAOException(ExceptionMessage.THE_WAREHOUSE_CANNOT_BE_NULL.getMessage());
             }
-            warehouse = getById(lastIdResultSet.getLong(1));
+            warehouse = get(lastIdResultSet.getLong(1)).get();
         } catch (SQLException e) {
             LOGGER.error(ExceptionMessage.FAILED_TO_CREATE_NEW_WAREHOUSE.getMessage(), e);
-            throw new WarehouseDaoException(ExceptionMessage.FAILED_TO_CREATE_NEW_WAREHOUSE.getMessage());
+            throw new DAOException(ExceptionMessage.FAILED_TO_CREATE_NEW_WAREHOUSE.getMessage());
         }
         return warehouse;
     }
@@ -63,7 +64,7 @@ public class WarehouseDaoImpl implements ShopDao<Warehouse> {
      * @return new Warehouse
      */
     @Override
-    public Warehouse update(final Warehouse warehouse) throws WarehouseDaoException {
+    public Warehouse update(final Warehouse warehouse) throws DAOException {
         try (Connection connection = connectionFactory.getConnection()) {
             final PreparedStatement preparedStatement = connection.prepareStatement("UPDATE warehouse "
                     + "SET name = ?, price = ?, amount = ? "
@@ -71,10 +72,10 @@ public class WarehouseDaoImpl implements ShopDao<Warehouse> {
             fillInStatement(warehouse, preparedStatement);
             preparedStatement.setLong(ID_NUMBER, warehouse.getIdNumber());
             preparedStatement.executeUpdate();
-            getById(warehouse.getIdNumber());
+            get(warehouse.getIdNumber());
         } catch (SQLException e) {
             LOGGER.error(ExceptionMessage.FAILED_TO_UPDATE_WAREHOUSE.getMessage(), e);
-            throw new WarehouseDaoException(ExceptionMessage.FAILED_TO_UPDATE_WAREHOUSE.getMessage(), e);
+            throw new DAOException(ExceptionMessage.FAILED_TO_UPDATE_WAREHOUSE.getMessage(), e);
         }
         return warehouse;
     }
@@ -82,19 +83,19 @@ public class WarehouseDaoImpl implements ShopDao<Warehouse> {
     /**
      * Method deletes the warehouse from a Data Base by id.
      *
-     * @param warehouse Warehouse we want delete
+     * @param entityId Long we want delete
      * @return count of deleted rows
      */
     @Override
-    public boolean delete(final Warehouse warehouse) throws WarehouseDaoException {
+    public Boolean delete(final Long entityId) throws DAOException {
         boolean result;
         try (Connection connection = connectionFactory.getConnection()) {
             final PreparedStatement preparedStatement = connection.prepareStatement("DELETE FROM warehouse WHERE id = ?");
-            preparedStatement.setLong(1, warehouse.getIdNumber());
+            preparedStatement.setLong(1, entityId);
             result = preparedStatement.executeUpdate() > 0;
         } catch (SQLException e) {
             LOGGER.error(ExceptionMessage.FAILED_TO_DELETE_WAREHOUSE.getMessage(), e);
-            throw new WarehouseDaoException(ExceptionMessage.FAILED_TO_DELETE_WAREHOUSE.getMessage());
+            throw new DAOException(ExceptionMessage.FAILED_TO_DELETE_WAREHOUSE.getMessage());
         }
         return result;
     }
@@ -103,23 +104,23 @@ public class WarehouseDaoImpl implements ShopDao<Warehouse> {
      * Method returns warehouse from a Data Base by id.
      *
      * @param idNumber Warehouse id
-     * @return warehouse
+     * @return Optional of warehouse or empty optional
      */
     @Override
-    public Warehouse getById(final Long idNumber) throws WarehouseDaoException {
-        Warehouse warehouse;
+    public Optional<Warehouse> get(final Long idNumber) throws DAOException {
+        Optional<Warehouse> warehouse = Optional.empty();
         try (Connection connection = connectionFactory.getConnection()) {
             final PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM warehouse WHERE id = ?");
             preparedStatement.setLong(1, idNumber);
             final ResultSet resultSet = preparedStatement.executeQuery();
             if (!resultSet.next()) {
-                return null;
+                return warehouse;
             }
-            warehouse = getWarehouseFromResultSet(resultSet);
+            warehouse = Optional.of(getWarehouseFromResultSet(resultSet));
             return warehouse;
         } catch (SQLException e) {
             LOGGER.error(ExceptionMessage.FAILED_TO_GET_WAREHOUSE_BY_ID.getMessage(), e);
-            throw new WarehouseDaoException(ExceptionMessage.FAILED_TO_GET_WAREHOUSE_BY_ID.getMessage() + " " + idNumber);
+            throw new DAOException(ExceptionMessage.FAILED_TO_GET_WAREHOUSE_BY_ID.getMessage() + " " + idNumber);
         }
     }
 
@@ -129,7 +130,7 @@ public class WarehouseDaoImpl implements ShopDao<Warehouse> {
      * @return list of warehouses or empty list
      */
     @Override
-    public List<Warehouse> getAll() throws WarehouseDaoException {
+    public List<Warehouse> getAll() throws DAOException {
         final List<Warehouse> warehouses = new ArrayList<>();
         try (Connection connection = connectionFactory.getConnection()) {
             final PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM warehouse");
@@ -139,7 +140,7 @@ public class WarehouseDaoImpl implements ShopDao<Warehouse> {
             }
         } catch (SQLException e) {
             LOGGER.error(ExceptionMessage.FAILED_TO_GET_ALL_WAREHOUSES.getMessage(), e);
-            throw new WarehouseDaoException(ExceptionMessage.FAILED_TO_GET_ALL_WAREHOUSES.getMessage());
+            throw new DAOException(ExceptionMessage.FAILED_TO_GET_ALL_WAREHOUSES.getMessage());
         }
         return warehouses;
     }

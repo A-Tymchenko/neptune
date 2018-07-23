@@ -1,8 +1,8 @@
 package com.ra.shop;
 
 import com.ra.shop.connection.ConnectionFactory;
-import com.ra.shop.dao.ShopDao;
-import com.ra.shop.dao.exception.WarehouseDaoException;
+import com.ra.shop.dao.IRepository;
+import com.ra.shop.dao.exception.DAOException;
 import com.ra.shop.dao.implementation.WarehouseDaoImpl;
 import com.ra.shop.entity.Warehouse;
 import org.h2.tools.RunScript;
@@ -24,7 +24,7 @@ public class WarehouseDaoImplTest {
     private static final String CREATE_TABLE_WAREHOUSE = "src/test/resources/warehouse_create_table.sql";
     private static final String DROP_TABLE_WAREHOUSE = "src/test/resources/drop_table.sql";
 
-    private ShopDao<Warehouse> shopDao;
+    private IRepository<Warehouse> IRepository;
     private Warehouse warehouse;
 
     @BeforeEach
@@ -41,11 +41,11 @@ public class WarehouseDaoImplTest {
     /**
      * testing new warehouse creation.
      *
-     * @throws WarehouseDaoException exception
+     * @throws DAOException exception
      */
     @Test
-    public void whenCreateTableThenNewWarehouseMustReturn() throws WarehouseDaoException {
-        Warehouse createdWarehouse = shopDao.create(warehouse);
+    public void whenCreateTableThenNewWarehouseMustReturn() throws DAOException {
+        Warehouse createdWarehouse = IRepository.create(warehouse);
         assertNotNull(createdWarehouse);
         Long warehouseId = createdWarehouse.getIdNumber();
         assertNotNull(warehouseId);
@@ -57,27 +57,27 @@ public class WarehouseDaoImplTest {
     /**
      * testing update warehouse.
      *
-     * @throws WarehouseDaoException exception
+     * @throws DAOException exception
      */
     @Test
-    public void whenUpdateThenUpdatedWarehouseReturns() throws WarehouseDaoException {
-        Warehouse createdWarehouse = shopDao.create(warehouse);
+    public void whenUpdateThenUpdatedWarehouseReturns() throws DAOException {
+        Warehouse createdWarehouse = IRepository.create(warehouse);
         Warehouse expectedWarehouse = changeWarehouse(createdWarehouse);
 
-        Warehouse updatedWarehouse = shopDao.update(createdWarehouse);
+        Warehouse updatedWarehouse = IRepository.update(createdWarehouse);
         assertEquals(expectedWarehouse, updatedWarehouse);
     }
 
     /**
      * testing delete warehouse twice.
      *
-     * @throws WarehouseDaoException exception
+     * @throws DAOException exception
      */
     @Test
-    public void whenDeleteFalseThenReturnFalse() throws WarehouseDaoException {
-        Warehouse createdWarehouse = shopDao.create(warehouse);
-        shopDao.delete(createdWarehouse);
-        boolean result = shopDao.delete(createdWarehouse);
+    public void whenDeleteFalseThenReturnFalse() throws DAOException {
+        Warehouse createdWarehouse = IRepository.create(warehouse);
+        IRepository.delete(createdWarehouse.getIdNumber());
+        boolean result = IRepository.delete(createdWarehouse.getIdNumber());
 
         assertFalse(result);
     }
@@ -85,12 +85,12 @@ public class WarehouseDaoImplTest {
     /**
      * testing delete warehouse.
      *
-     * @throws WarehouseDaoException exception
+     * @throws DAOException exception
      */
     @Test
-    public void whenDeleteCorrectlyThenDeleteAndReturnTrue() throws WarehouseDaoException {
-        Warehouse createdWarehouse = shopDao.create(warehouse);
-        boolean result = shopDao.delete(createdWarehouse);
+    public void whenDeleteCorrectlyThenDeleteAndReturnTrue() throws DAOException {
+        Warehouse createdWarehouse = IRepository.create(warehouse);
+        boolean result = IRepository.delete(createdWarehouse.getIdNumber());
 
         assertTrue(result);
     }
@@ -98,19 +98,19 @@ public class WarehouseDaoImplTest {
     /**
      * testing getAll warehouses.
      *
-     * @throws WarehouseDaoException exception
+     * @throws DAOException exception
      */
     @Test
-    public void whenGetAllThenWarehousesMustReturn() throws WarehouseDaoException {
+    public void whenGetAllThenWarehousesMustReturn() throws DAOException {
         List<Warehouse> expectedList = new ArrayList<>();
-        Warehouse e1 = shopDao.create(warehouse);
-        Warehouse e2 = shopDao.create(warehouse);
-        Warehouse e3 = shopDao.create(warehouse);
+        Warehouse e1 = IRepository.create(warehouse);
+        Warehouse e2 = IRepository.create(warehouse);
+        Warehouse e3 = IRepository.create(warehouse);
         expectedList.add(e1);
         expectedList.add(e2);
         expectedList.add(e3);
 
-        List<Warehouse> warehouses = shopDao.getAll();
+        List<Warehouse> warehouses = IRepository.getAll();
 
         assertEquals(expectedList, warehouses);
     }
@@ -129,7 +129,7 @@ public class WarehouseDaoImplTest {
     }
 
     private void createWarehouse() throws IOException {
-        shopDao = new WarehouseDaoImpl(ConnectionFactory.getInstance());
+        IRepository = new WarehouseDaoImpl(ConnectionFactory.getInstance());
         warehouse = new Warehouse("Lola", Double.MIN_VALUE, 2);
         warehouse.setIdNumber(1L);
     }

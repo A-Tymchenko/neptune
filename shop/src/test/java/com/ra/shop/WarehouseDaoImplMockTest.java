@@ -1,7 +1,7 @@
 package com.ra.shop;
 
 import com.ra.shop.connection.ConnectionFactory;
-import com.ra.shop.dao.exception.WarehouseDaoException;
+import com.ra.shop.dao.exception.DAOException;
 import com.ra.shop.dao.implementation.WarehouseDaoImpl;
 import com.ra.shop.entity.Warehouse;
 import org.junit.jupiter.api.BeforeEach;
@@ -64,10 +64,10 @@ public class WarehouseDaoImplMockTest {
     /**
      * testing create method to return the warehouse.
      *
-     * @throws SQLException exception, WarehouseDaoException exception
+     * @throws SQLException exception, DAOException exception
      */
     @Test
-    public void whenCreateMethodCalledThenCorrectEntityReturns() throws SQLException, WarehouseDaoException {
+    public void whenCreateMethodCalledThenCorrectEntityReturns() throws SQLException, DAOException {
         when(mockConnection.prepareStatement(INSERT_WAREHOUSE)).thenReturn(mockStatement);
         when(mockConnection.prepareStatement(GET_ID)).thenReturn(mockStatement);
         Warehouse result = warehouseDaoImpl.create(warehouse);
@@ -81,7 +81,7 @@ public class WarehouseDaoImplMockTest {
      * @throws SQLException exception
      */
     @Test
-    public void whenUpdateMethodCalledThenCorrectEntityReturns() throws SQLException, WarehouseDaoException {
+    public void whenUpdateMethodCalledThenCorrectEntityReturns() throws SQLException, DAOException {
         when(mockConnection.prepareStatement(UPDATE_WAREHOUSE)).thenReturn(mockStatement);
         Warehouse result = warehouseDaoImpl.update(warehouse);
 
@@ -94,10 +94,10 @@ public class WarehouseDaoImplMockTest {
      * @throws SQLException exception
      */
     @Test
-    public void whenDeleteMethodCalledAndEntityExistsThenReturnTrue() throws SQLException, WarehouseDaoException {
+    public void whenDeleteMethodCalledAndEntityExistsThenReturnTrue() throws SQLException, DAOException {
         when(mockConnection.prepareStatement(DELETE_WAREHOUSE_BY_ID)).thenReturn(mockStatement);
         when(mockStatement.executeUpdate()).thenReturn(1);
-        boolean result = warehouseDaoImpl.delete(warehouse);
+        boolean result = warehouseDaoImpl.delete(warehouse.getIdNumber());
 
         assertTrue(result);
     }
@@ -108,10 +108,10 @@ public class WarehouseDaoImplMockTest {
      * @throws SQLException exception
      */
     @Test
-    public void whenDeleteMethodCalledAndEntityNotFoundThenReturnFalse() throws SQLException, WarehouseDaoException {
+    public void whenDeleteMethodCalledAndEntityNotFoundThenReturnFalse() throws SQLException, DAOException {
         when(mockConnection.prepareStatement(anyString())).thenReturn(mockStatement);
         when(mockStatement.executeUpdate()).thenReturn(-1);
-        boolean result = warehouseDaoImpl.delete(warehouse);
+        boolean result = warehouseDaoImpl.delete(warehouse.getIdNumber());
 
         assertFalse(result);
     }
@@ -122,7 +122,7 @@ public class WarehouseDaoImplMockTest {
      * @throws SQLException exception
      */
     @Test
-    public void whenGetAllMethodCalledThenCorrectListReturns() throws SQLException, WarehouseDaoException {
+    public void whenGetAllMethodCalledThenCorrectListReturns() throws SQLException, DAOException {
         when(mockConnection.prepareStatement(SELECT_ALL_WAREHOUSES)).thenReturn(mockStatement);
         when(mockResultSet.next()).thenReturn(true, false);
         List<Warehouse> warehouses = warehouseDaoImpl.getAll();
@@ -135,7 +135,7 @@ public class WarehouseDaoImplMockTest {
      */
     @Test
     public void whenCreateMethodCalledThrowsSQLExceptionThenDaoExceptionMustBeThrown() {
-        Throwable exception = assertThrows(WarehouseDaoException.class, () -> {
+        Throwable exception = assertThrows(DAOException.class, () -> {
             when(mockConnection.prepareStatement(INSERT_WAREHOUSE)).thenThrow(new SQLException());
             warehouseDaoImpl.create(warehouse);
         });
@@ -148,7 +148,7 @@ public class WarehouseDaoImplMockTest {
      */
     @Test
     public void whenCreateMethodCalledWithIdNullThenDaoExceptionMustBeThrown() {
-        Throwable exception = assertThrows(WarehouseDaoException.class, () -> {
+        Throwable exception = assertThrows(DAOException.class, () -> {
             when(mockConnection.prepareStatement(anyString())).thenReturn(mockStatement);
             when(mockResultSet.next()).thenReturn(false);
             warehouseDaoImpl.create(warehouse);
@@ -162,7 +162,7 @@ public class WarehouseDaoImplMockTest {
      */
     @Test
     public void whenUpdateMethodCalledThrowsSQLExceptionThenDaoExceptionMustBeThrown() {
-        Throwable exception = assertThrows(WarehouseDaoException.class, () -> {
+        Throwable exception = assertThrows(DAOException.class, () -> {
             when(mockConnection.prepareStatement(UPDATE_WAREHOUSE)).thenThrow(new SQLException());
             warehouseDaoImpl.update(warehouse);
         });
@@ -175,9 +175,9 @@ public class WarehouseDaoImplMockTest {
      */
     @Test
     public void whenDeleteMethodCalledThrowsSQLExceptionThenDaoExceptionMustBeThrown() {
-        Throwable exception = assertThrows(WarehouseDaoException.class, () -> {
+        Throwable exception = assertThrows(DAOException.class, () -> {
             when(mockConnection.prepareStatement(DELETE_WAREHOUSE_BY_ID)).thenThrow(new SQLException());
-            warehouseDaoImpl.delete(warehouse);
+            warehouseDaoImpl.delete(warehouse.getIdNumber());
         });
 
         assertEquals(exception.getMessage(), FAILED_TO_DELETE_WAREHOUSE.getMessage());
@@ -188,7 +188,7 @@ public class WarehouseDaoImplMockTest {
      */
     @Test
     public void whenGetAllMethodCalledThrowsSQLExceptionThenDaoExceptionMustBeThrown() {
-        Throwable exception = assertThrows(WarehouseDaoException.class, () -> {
+        Throwable exception = assertThrows(DAOException.class, () -> {
             when(mockConnection.prepareStatement(SELECT_ALL_WAREHOUSES)).thenThrow(new SQLException());
             warehouseDaoImpl.getAll();
         });
@@ -197,60 +197,59 @@ public class WarehouseDaoImplMockTest {
     }
 
     /**
-     * testing getById method to throw FAILED_TO_GET_WAREHOUSE_BY_ID Exception.
+     * testing get method to throw FAILED_TO_GET_WAREHOUSE_BY_ID Exception.
      */
     @Test
     public void whenGetByIdThrowsSQLExceptionThenDaoExceptionMustBeThrown() {
-        Throwable exception = assertThrows(WarehouseDaoException.class, () -> {
+        Throwable exception = assertThrows(DAOException.class, () -> {
             when(mockConnection.prepareStatement(SELECT_WAREHOUSE_BY_ID)).thenThrow(new SQLException());
-            warehouseDaoImpl.getById(1L);
+            warehouseDaoImpl.get(1L);
         });
 
         assertEquals(exception.getMessage(), FAILED_TO_GET_WAREHOUSE_BY_ID.getMessage() + " 1");
     }
 
     /**
-     * testing getById method to return null.
+     * testing get method to return null.
      */
     @Test
-    public void whenGetByIdCalledWithIdNullThenNullIsReturned() throws SQLException, WarehouseDaoException {
+    public void whenGetByIdCalledWithIdNullThenNullIsReturned() throws SQLException, DAOException {
         when(mockConnection.prepareStatement(anyString())).thenReturn(mockStatement);
         when(mockResultSet.next()).thenReturn(false);
-        Warehouse result = warehouseDaoImpl.getById(1L);
 
-        assertNull(result);
+        assertFalse(warehouseDaoImpl.get(1L).isPresent());
     }
 
     /**
-     * testing getById method to throw WarehouseDaoException.
+     * testing get method to throw DAOException.
      */
     @Test
     public void whenGetWarehouseByIdThenReturnSqlException() throws SQLException {
         when(mockConnectionFactory.getConnection()).thenReturn(mockConnection);
         when(mockConnection.prepareStatement(anyString())).thenThrow(SQLException.class);
-        Throwable thrown = assertThrows(WarehouseDaoException.class, () -> warehouseDaoImpl.getById(1L));
+        Throwable thrown = assertThrows(DAOException.class, () -> warehouseDaoImpl.get(1L));
         assertNotNull(thrown.getMessage());
     }
 
     /**
-     * testing getAll method to throw WarehouseDaoException.
+     * testing getAll method to throw DAOException.
      */
     @Test
     public void whenGetAllWarehousesThenReturnSqlException() throws SQLException {
         when(mockConnectionFactory.getConnection()).thenReturn(mockConnection);
         when(mockConnection.prepareStatement(any(String.class))).thenThrow(SQLException.class);
-        Throwable thrown = assertThrows(WarehouseDaoException.class, () -> warehouseDaoImpl.getAll());
+        Throwable thrown = assertThrows(DAOException.class, () -> warehouseDaoImpl.getAll());
         assertNotNull(thrown.getMessage());
     }
 
     /**
-     * testing create method to throw WarehouseDaoException.
+     * testing create method to throw DAOException.
      */
     @Test
     public void whenAddWarehouseThenReturnSqlException() throws SQLException {
         when(mockConnectionFactory.getConnection()).thenReturn(mockConnection);
         when(mockConnection.prepareStatement(any(String.class))).thenThrow(SQLException.class);
-        Throwable thrown = assertThrows(WarehouseDaoException.class, () -> warehouseDaoImpl.create(warehouse));
+        Throwable thrown = assertThrows(DAOException.class, () -> warehouseDaoImpl.create(warehouse));
         assertNotNull(thrown.getMessage());
     }
 }
