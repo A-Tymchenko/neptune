@@ -58,8 +58,8 @@ public class FlightDao extends JdbcDaoSupport implements AirPortDao<Flight> {
      */
     public Flight create(Flight flight) throws AirPortDaoException {
         getJdbcTemplate().update(INSERT_FLIGHT_SQL,ps -> fillPreparedStatement(flight, ps));
-
-
+        Integer flightId = getJdbcTemplate().queryForObject("SELECT SCOPE_IDENTITY()", Integer.class);
+        flight = getById(flightId).get();
 
 //        try (Connection connection = connectionFactory.getConnection()) {
 //            final PreparedStatement preparedStatement = connection.prepareStatement();
