@@ -56,7 +56,6 @@ public class AirportDAOImplSpring implements AirPortDao<Airport> {
             jdbcTemplate.update(query, statement -> {
                 fillPreparedStatement(statement, airport);
                 statement.setInt(StatementParameter.AIRPORT_ID.get(), airport.getApId());
-                System.out.println("test");
             });
             return airport;
         } catch (EmptyResultDataAccessException | BadSqlGrammarException e) {

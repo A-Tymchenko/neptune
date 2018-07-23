@@ -7,10 +7,7 @@ import com.ra.airport.entity.Airport;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.mockito.MockitoAnnotations;
+import org.mockito.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.BadSqlGrammarException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
@@ -21,6 +18,7 @@ import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.*;
 
@@ -37,6 +35,7 @@ class AirportDAOImplSpringMockitoTest {
     private AirportDAOImplSpring airportDAO;
     private Airport airport;
     private SqlRowSet sqlRowSet;
+    PreparedStatement statement;
     private static final String INSERT_QUERY = "INSERT INTO Airport(apname, apnum, aptype, address, terminalcount) "
             + "VALUES(?, ?, ?, ?, ?)";
     private static final String SELECT_BY_ID_QUERY = "Select * From Airport Where apid = ?";
@@ -52,6 +51,7 @@ class AirportDAOImplSpringMockitoTest {
         MockitoAnnotations.initMocks(this);
         airport = new Airport(8,"Kenedy", 4949034, "International", "USA New Yourk", 10);
         sqlRowSet = Mockito.mock(SqlRowSet.class);
+        statement = Mockito.mock(PreparedStatement.class);
         createAirport();
     }
 
@@ -66,18 +66,24 @@ class AirportDAOImplSpringMockitoTest {
 
     @Test
     void whenCreateAirportThenReturnAirportWitsIdTrue() throws AirPortDaoException {
+        Mockito.doAnswer(invocation -> {
+            ((PreparedStatementSetter)invocation.getArguments()[1]).setValues(statement);
+            return null;
+        }).when(jdbcTemplate).update(Mockito.eq(INSERT_QUERY), Mockito.any(PreparedStatementSetter.class));
         Mockito.when(jdbcTemplate.queryForRowSet(LAST_INSERT_ID)).thenReturn(sqlRowSet);
         Mockito.when(sqlRowSet.next()).thenReturn(true).thenReturn(false);
         Mockito.when(sqlRowSet.getInt(1)).thenReturn(8);
         Mockito.when(jdbcTemplate.queryForObject(Mockito.eq(SELECT_BY_ID_QUERY), Mockito.any(BeanPropertyRowMapper.class), Mockito.eq(8))).thenReturn(airport);
-        airportDAO.create(airport);
+        Airport createdAirport = airportDAO.create(airport);
+        assertEquals(createdAirport, airport);
     }
 
     @Test
     void whenCreateAirportThenReturnAirportWitsIdFalse() throws AirPortDaoException {
         Mockito.when(jdbcTemplate.queryForRowSet(LAST_INSERT_ID)).thenReturn(sqlRowSet);
         Mockito.when(sqlRowSet.next()).thenReturn(false);
-        airportDAO.create(airport);
+        Airport createdAirport = airportDAO.create(airport);
+        assertEquals(createdAirport, airport);
     }
 
     @Test
@@ -91,12 +97,18 @@ class AirportDAOImplSpringMockitoTest {
 
     @Test
     void whenUpdateAirportThenReturnAirport() throws AirPortDaoException {
-        airportDAO.update(airport);
+        Mockito.doAnswer(invocation -> {
+            ((PreparedStatementSetter)invocation.getArguments()[1]).setValues(statement);
+            return null;
+        }).when(jdbcTemplate).update(Mockito.eq(UPDATE_QUERY), Mockito.any(PreparedStatementSetter.class));
+        Airport updatedAirport = airportDAO.update(airport);
+        assertEquals(updatedAirport, airport);
     }
 
     @Test
     void whenUpdateAirportThenThrowExseption() {
-        Mockito.doThrow(BadSqlGrammarException.class).when(jdbcTemplate).update(Mockito.eq(UPDATE_QUERY), Mockito.any(PreparedStatementSetter.class));
+        Mockito.doThrow(BadSqlGrammarException.class).when(jdbcTemplate).update(Mockito.eq(UPDATE_QUERY),
+                Mockito.any(PreparedStatementSetter.class));
         Throwable thrown = assertThrows(AirPortDaoException.class, () -> {
             airportDAO.update(airport);
         });
@@ -106,12 +118,18 @@ class AirportDAOImplSpringMockitoTest {
     @Test
     void whenDeleteAirportThenReturnTrue() throws AirPortDaoException {
         Mockito.when(jdbcTemplate.update(Mockito.eq(DELETE_QUERY), Mockito.any(PreparedStatementSetter.class))).thenReturn(1);
-        airportDAO.delete(airport);
+        boolean createdAirport = airportDAO.delete(airport);
+        assertEquals(createdAirport, true);
     }
 
     @Test
     void whenDeleteAirportThenReturnFalse() throws AirPortDaoException {
-        airportDAO.delete(airport);
+        Mockito.doAnswer(invocation -> {
+            ((PreparedStatementSetter)invocation.getArguments()[1]).setValues(statement);
+            return null;
+        }).when(jdbcTemplate).update(Mockito.eq(DELETE_QUERY), Mockito.any(PreparedStatementSetter.class));
+        boolean delettedAirport = airportDAO.delete(airport);
+        assertEquals(delettedAirport, false);
     }
 
     @Test
@@ -126,7 +144,8 @@ class AirportDAOImplSpringMockitoTest {
     @Test
     void whenGetByIdAirportThenReturnAirport() throws AirPortDaoException {
         Mockito.when(jdbcTemplate.queryForObject(Mockito.eq(SELECT_BY_ID_QUERY), Mockito.any(BeanPropertyRowMapper.class), Mockito.eq(1))).thenReturn(airport);
-        airportDAO.getById(1);
+        Airport findAirport = airportDAO.getById(1).get();
+        assertEquals(findAirport, airport);
     }
 
     @Test
@@ -149,12 +168,21 @@ class AirportDAOImplSpringMockitoTest {
         };
         Mockito.when(jdbcTemplate.query(Mockito.eq(SELECT_ALL_QUERY), Mockito.any(BeanPropertyRowMapper.class))).thenReturn(list);
         airportDAO.getAll();
+        assertEquals(list.size(), 3);
     }
     @Test
     void whenGetAllThenThrowExseption() {
         Mockito.when(jdbcTemplate.query(Mockito.eq(SELECT_ALL_QUERY), Mockito.any(BeanPropertyRowMapper.class))).thenThrow(BadSqlGrammarException.class);
         Throwable thrown = assertThrows(AirPortDaoException.class, () -> {
             airportDAO.getAll();
+        });
+        assertNotNull(thrown.getMessage());
+    }
+
+    @Test
+    void throwNewAirPortDaoException() {
+        Throwable thrown = assertThrows(AirPortDaoException.class, () -> {
+            throw new AirPortDaoException("test Exception");
         });
         assertNotNull(thrown.getMessage());
     }
