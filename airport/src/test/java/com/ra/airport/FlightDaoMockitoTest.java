@@ -46,7 +46,7 @@ public class FlightDaoMockitoTest {
         mockStatement = mock(PreparedStatement.class);
         mockResultSet = mock(ResultSet.class);
         connectionFactory = mock(ConnectionFactory.class);
-        flightDao = new FlightDao();
+        flightDao = new FlightDao(connectionFactory);
         flight = DataCreationHelper.createFlight();
         flight.setDepartureDate(LocalDateTime.now());
         flight.setArrivalDate(LocalDateTime.now().plusHours(1));

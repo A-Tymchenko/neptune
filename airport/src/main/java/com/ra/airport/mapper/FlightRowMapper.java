@@ -4,12 +4,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import com.ra.airport.entity.Flight;
-import org.apache.logging.log4j.core.tools.picocli.CommandLine;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.RowMapper;
-import org.springframework.stereotype.Component;
 
-@Component
 public class FlightRowMapper implements RowMapper<Flight> {
 
     private static final String FLIGHT_ID = "id";
@@ -25,12 +20,12 @@ public class FlightRowMapper implements RowMapper<Flight> {
      * Map {@link ResultSet} to {@link Flight} instance.
      *
      * @param resultSet source {@link ResultSet}
+     * @param flight target {@link Flight} entity
      * @return {@link Flight} with filled fields
      * @throws SQLException standard SQL exception
      */
     @Override
-    public Flight mapRow(ResultSet resultSet, int rowNum) throws SQLException {
-        Flight flight = new Flight();
+    public Flight mapRow(final ResultSet resultSet, final Flight flight) throws SQLException {
         flight.setIdentifier(resultSet.getInt(FLIGHT_ID));
         flight.setName(resultSet.getString(NAME));
         flight.setCarrier(resultSet.getString(CARRIER));
@@ -42,7 +37,4 @@ public class FlightRowMapper implements RowMapper<Flight> {
 
         return flight;
     }
-
-
-
 }
