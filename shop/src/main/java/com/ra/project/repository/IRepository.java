@@ -1,0 +1,54 @@
+package com.ra.project.repository;
+
+import java.util.List;
+import java.util.Optional;
+
+import com.ra.project.exceptions.UserException;
+
+/**
+ * Interface represents simple CRUD-methods, which can be implemented for any entity, because it`s parameterized.
+ *
+ * @param <T/> represents an entity.
+ */
+public interface IRepository<T> {
+
+    /**
+     * Method inserts new entity to database.
+     *
+     * @param entity that will be created.
+     * @return T created entity.
+     */
+    T create(T entity) throws UserException;
+
+    /**
+     * Method returns Optional wrapper with an entity from database.
+     *
+     * @param entityId - id of searched entity.
+     * @return Optional wrapper for chosen entity.
+     */
+    Optional<T> get(Long entityId) throws UserException;
+
+    /**
+     * Method updates existed entity due to it`s new params and send updated entity to database.
+     *
+     * @param newEntity updated version of entity.
+     * @return T. Returns an updated entity.
+     */
+    T update(T newEntity) throws UserException;
+
+    /**
+     * Method will delete entity from the database.
+     *
+     * @param entityId of entity that will be deleted.
+     * @return Boolean true if entity deleted, false if not.
+     */
+    Boolean delete(Long entityId) throws UserException;
+
+    /**
+     * Method returns all entities.
+     *
+     * @return List which contains all existed entities of the type T.
+     */
+    List<T> getAll() throws UserException;
+
+}

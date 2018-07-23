@@ -66,7 +66,7 @@ ext {
             jms               : "org.springframework:spring-jms:$springVersion",
             oxm               : "org.springframework:spring-oxm:$springVersion",
             securityWeb       : "org.springframework.security:spring-security-web:$springSecurityVersion",
-            securityConfig    : "org.springframework.security:spring-security-config:$springSecurityVersion",
+            securityConfig    : "org.springframework.security:spring-security-configuration:$springSecurityVersion",
             securityTaglibs   : "org.springframework.security:spring-security-taglibs:$springSecurityVersion",
             rabbit            : "org.springframework.amqp:spring-rabbit:$springAmqpVersion",
             springSecurityTest: "org.springframework.security:spring-security-test:$springSecurityVersion",
@@ -225,5 +225,8 @@ project("study") {
     dependencies {
         compile spring.context
     }
+}
+
+project ("shop"){
 
 }
