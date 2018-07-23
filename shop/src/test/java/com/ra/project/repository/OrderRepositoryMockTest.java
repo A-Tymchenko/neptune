@@ -2,6 +2,7 @@ package com.ra.project.repository;
 
 import com.ra.project.exceptions.RepositoryException;
 import com.ra.project.model.Order;
+import com.ra.project.repository.implementation.OrderRepositoryImpl;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 

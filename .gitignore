@@ -6,5 +6,4 @@ out
 build
 *.log
 **/.gradle
-*.db
-*/db
+**/.db

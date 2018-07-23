@@ -1,4 +1,4 @@
-package com.ra.project.repository;
+package com.ra.project.repository.implementation;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -14,6 +14,7 @@ import java.util.Optional;
 import com.ra.project.config.ConnectionFactory;
 import com.ra.project.exceptions.RepositoryException;
 import com.ra.project.model.Order;
+import com.ra.project.repository.IRepository;
 import org.apache.log4j.Logger;
 
 /**
@@ -91,10 +92,10 @@ public class OrderRepositoryImpl implements IRepository<Order> {
         try (Connection connection = connectionFactory.getConnection();
              PreparedStatement statement = connection.prepareStatement(
                      "INSERT INTO ORDERS (NUMBER, PRICE, DELIVERY_INCLUDED, DELIVERY_COST, EXECUTED) "
-                             + "VALUES(?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS)) {
+                             + "VALUES(?, ?, ?, ?, ?)",
+                     Statement.RETURN_GENERATED_KEYS)) {
             setStatementValuesForCreation(statement, entity);
             statement.executeUpdate();
-
             final ResultSet primaryKeys = statement.getGeneratedKeys();
             if (primaryKeys.next()) {
                 entity.setId(primaryKeys.getLong(1));
