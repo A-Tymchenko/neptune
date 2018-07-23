@@ -4,4 +4,5 @@ plateNumber
 ) VALUES (
 'MAU',
 'Boeing',
-'LargeCarrier');
+'LargeCarrier',
+ 132498789);
