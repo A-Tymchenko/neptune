@@ -34,7 +34,7 @@ public interface WarehouseDao<T> {
      *
      * @return entity
      */
-    T getById(Integer idNumber) throws WarehouseDaoException;
+    T getById(Long idNumber) throws WarehouseDaoException;
 
     /**
      * List of entities.

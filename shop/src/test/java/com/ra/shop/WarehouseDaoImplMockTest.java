@@ -3,8 +3,7 @@ package com.ra.shop;
 import com.ra.shop.connection.ConnectionFactory;
 import com.ra.shop.dao.exception.WarehouseDaoException;
 import com.ra.shop.dao.implementation.WarehouseDaoImpl;
-import com.ra.shop.tools.Tools;
-import com.ra.shop.wharehouse.Warehouse;
+import com.ra.shop.entity.Warehouse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -45,7 +44,8 @@ public class WarehouseDaoImplMockTest {
         mockConnectionFactory = mock(ConnectionFactory.class);
         warehouseDaoImpl = new WarehouseDaoImpl(mockConnectionFactory);
         when(mockConnectionFactory.getConnection()).thenReturn(mockConnection);
-        warehouse = Tools.creteWarehouse();
+        warehouse = new Warehouse("Lola", Double.MIN_VALUE, 2);
+        warehouse.setIdNumber(1L);
         createMockByIdMethod();
     }
 
@@ -53,8 +53,8 @@ public class WarehouseDaoImplMockTest {
         when(mockConnection.prepareStatement(anyString())).thenReturn(mockStatement);
         when(mockResultSet.next()).thenReturn(true);
         when(mockStatement.executeQuery()).thenReturn(mockResultSet);
-        when(mockResultSet.getInt(1)).thenReturn(warehouse.getIdNumber());
-        when(mockResultSet.getInt("id")).thenReturn(warehouse.getIdNumber());
+        when(mockResultSet.getLong(1)).thenReturn(warehouse.getIdNumber());
+        when(mockResultSet.getLong("id")).thenReturn(warehouse.getIdNumber());
         when(mockResultSet.getString("name")).thenReturn(warehouse.getName());
         when(mockResultSet.getDouble("price")).thenReturn(warehouse.getPrice());
         when(mockResultSet.getInt("amount")).thenReturn(warehouse.getAmount());
@@ -150,7 +150,7 @@ public class WarehouseDaoImplMockTest {
     public void whenGetByIdThrowsSQLExceptionThenDaoExceptionMustBeThrown() {
         Throwable exception = assertThrows(WarehouseDaoException.class, () -> {
             when(mockConnection.prepareStatement(SELECT_WAREHOUSE_BY_ID)).thenThrow(new SQLException());
-            warehouseDaoImpl.getById(1);
+            warehouseDaoImpl.getById(1L);
         });
 
         assertEquals(exception.getMessage(), FAILED_TO_GET_WAREHOUSE_BY_ID.getMessage() + " 1");
@@ -160,7 +160,7 @@ public class WarehouseDaoImplMockTest {
     public void whenGetByIdCalledWithIdNullThenNullIsReturned() throws SQLException, WarehouseDaoException {
         when(mockConnection.prepareStatement(anyString())).thenReturn(mockStatement);
         when(mockResultSet.next()).thenReturn(false);
-        Warehouse result = warehouseDaoImpl.getById(1);
+        Warehouse result = warehouseDaoImpl.getById(1L);
 
         assertEquals(null, result);
     }

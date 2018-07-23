@@ -1,4 +1,4 @@
-package com.ra.shop.wharehouse;
+package com.ra.shop.entity;
 
 import java.io.Serializable;
 import java.util.Objects;
@@ -7,7 +7,7 @@ public class Warehouse implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    private Integer idNumber;
+    private Long idNumber;
     private String name;
     private Double price;
     private Integer amount;
@@ -21,11 +21,11 @@ public class Warehouse implements Serializable {
         this.amount = amount;
     }
 
-    public Integer getIdNumber() {
+    public Long getIdNumber() {
         return idNumber;
     }
 
-    public void setIdNumber(final Integer idNumber) {
+    public void setIdNumber(final Long idNumber) {
         this.idNumber = idNumber;
     }
 

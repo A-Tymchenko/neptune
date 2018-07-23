@@ -1,12 +1,10 @@
 package com.ra.shop;
 
-import com.ra.shop.tools.Tools;
-import com.ra.shop.wharehouse.Warehouse;
+import com.ra.shop.entity.Warehouse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class WarehouseTest {
 
@@ -15,34 +13,36 @@ public class WarehouseTest {
 
     @BeforeEach
     public void initWarehouse() {
-        firstWarehouse = Tools.creteWarehouse();
-        secondWarehouse = Tools.creteWarehouse();
+        firstWarehouse = new Warehouse("Lola", Double.MIN_VALUE, 2);
+        firstWarehouse.setIdNumber(1L);
+        secondWarehouse = new Warehouse("Lola", Double.MIN_VALUE, 2);
+        secondWarehouse.setIdNumber(1L);
     }
 
     @Test
     public void whenWarehousesTheSameEqualsReturnsTrue() {
-        assertTrue(firstWarehouse.hashCode() == secondWarehouse.hashCode());
+        assertEquals(firstWarehouse.hashCode(), secondWarehouse.hashCode());
 
-        assertTrue(firstWarehouse.equals(secondWarehouse));
+        assertEquals(firstWarehouse, secondWarehouse);
     }
 
     @Test
     public void whenWarehousesDiffersEqualsReturnFalse() {
-        firstWarehouse.setIdNumber(2);
+        firstWarehouse.setIdNumber(2L);
         assertFalse(firstWarehouse.hashCode() == secondWarehouse.hashCode());
 
-        assertFalse(firstWarehouse.equals(secondWarehouse));
+        assertNotEquals(firstWarehouse, secondWarehouse);
     }
 
     @Test
     public void whenToStringMessageMustBe() {
         String expected = "Warehouse{"
                 + "idNumber=" + 1
-                + ", name='" + "lola" + '\''
+                + ", name='" + "Lola" + '\''
                 + ", price=" + Double.MIN_VALUE
                 + ", amount=" + 2
                 + '}';
-        assertTrue(firstWarehouse.toString().equals(expected));
+        assertEquals(firstWarehouse.toString(), expected);
     }
 
     @Test
@@ -52,26 +52,26 @@ public class WarehouseTest {
 
     @Test
     public void whenDifferentIdFalseIsExpected() {
-        firstWarehouse.setIdNumber(2);
-        assertFalse(firstWarehouse.equals(secondWarehouse));
+        firstWarehouse.setIdNumber(2L);
+        assertNotEquals(firstWarehouse, secondWarehouse);
     }
 
     @Test
     public void whenDifferentNamesFalseIsExpected() {
         firstWarehouse.setName("lelia");
-        assertFalse(firstWarehouse.equals(secondWarehouse));
+        assertNotEquals(firstWarehouse, secondWarehouse);
     }
 
     @Test
     public void whenDifferentPriceFalseIsExpected() {
         firstWarehouse.setPrice(1.1);
-        assertFalse(firstWarehouse.equals(secondWarehouse));
+        assertNotEquals(firstWarehouse, secondWarehouse);
     }
 
     @Test
     public void whenDifferentAmountFalseIsExpected() {
         firstWarehouse.setAmount(1);
-        assertFalse(firstWarehouse.equals(secondWarehouse));
+        assertNotEquals(firstWarehouse, secondWarehouse);
     }
 
     @Test
@@ -81,6 +81,6 @@ public class WarehouseTest {
 
     @Test
     public void whenEqualsWithOtherClasses() {
-        assertFalse(firstWarehouse.equals(new Object()));
+        assertNotEquals(firstWarehouse, new Object());
     }
 }

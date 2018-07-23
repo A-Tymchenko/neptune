@@ -11,7 +11,7 @@ import com.ra.shop.connection.ConnectionFactory;
 import com.ra.shop.dao.WarehouseDao;
 import com.ra.shop.dao.exception.ExceptionMessage;
 import com.ra.shop.dao.exception.WarehouseDaoException;
-import com.ra.shop.wharehouse.Warehouse;
+import com.ra.shop.entity.Warehouse;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -42,7 +42,7 @@ public class WarehouseDaoImpl implements WarehouseDao<Warehouse> {
             if (!lastIdResultSet.next()) {
                 throw new WarehouseDaoException(ExceptionMessage.THE_WAREHOUSE_CANNOT_BE_NULL.getMessage());
             }
-            warehouse = getById(lastIdResultSet.getInt(1));
+            warehouse = getById(lastIdResultSet.getLong(1));
         } catch (SQLException e) {
             LOGGER.error(ExceptionMessage.FAILED_TO_CREATE_NEW_WAREHOUSE.getMessage(), e);
             throw new WarehouseDaoException(ExceptionMessage.FAILED_TO_CREATE_NEW_WAREHOUSE.getMessage());
@@ -57,7 +57,7 @@ public class WarehouseDaoImpl implements WarehouseDao<Warehouse> {
                     + "SET name = ?, price = ?, amount = ? "
                     + "WHERE id = ?");
             fillInStatement(warehouse, preparedStatement);
-            preparedStatement.setInt(ID_NUMBER, warehouse.getIdNumber());
+            preparedStatement.setLong(ID_NUMBER, warehouse.getIdNumber());
             preparedStatement.executeUpdate();
             getById(warehouse.getIdNumber());
         } catch (SQLException e) {
@@ -82,11 +82,11 @@ public class WarehouseDaoImpl implements WarehouseDao<Warehouse> {
     }
 
     @Override
-    public Warehouse getById(final Integer idNumber) throws WarehouseDaoException {
+    public Warehouse getById(final Long idNumber) throws WarehouseDaoException {
         Warehouse warehouse;
         try (Connection connection = connectionFactory.getConnection()) {
             final PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM warehouse WHERE id = ?");
-            preparedStatement.setInt(1, idNumber);
+            preparedStatement.setLong(1, idNumber);
             final ResultSet resultSet = preparedStatement.executeQuery();
             if (!resultSet.next()) {
                 return null;
@@ -123,7 +123,7 @@ public class WarehouseDaoImpl implements WarehouseDao<Warehouse> {
 
     private Warehouse getWarehouseFromResultSet(final ResultSet resultSet) throws SQLException {
         final Warehouse warehouse = new Warehouse();
-        warehouse.setIdNumber(resultSet.getInt("id"));
+        warehouse.setIdNumber(resultSet.getLong("id"));
         warehouse.setName(resultSet.getString("name"));
         warehouse.setPrice(resultSet.getDouble("price"));
         warehouse.setAmount(resultSet.getInt("amount"));

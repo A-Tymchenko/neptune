@@ -3,7 +3,7 @@ package com.ra.shop;
 import com.ra.shop.connection.ConnectionFactory;
 import com.ra.shop.dao.exception.WarehouseDaoException;
 import com.ra.shop.dao.implementation.WarehouseDaoImpl;
-import com.ra.shop.wharehouse.Warehouse;
+import com.ra.shop.entity.Warehouse;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -52,7 +52,7 @@ public class WarehouseDaoMockTest {
     public void whenGetWarehouseByIdThenReturnSqlException() throws SQLException {
         when(connectionFactory.getConnection()).thenReturn(connection);
         when(connection.prepareStatement(any(String.class))).thenThrow(SQLException.class);
-        Throwable thrown = assertThrows(WarehouseDaoException.class, () -> warehouseDao.getById(1));
+        Throwable thrown = assertThrows(WarehouseDaoException.class, () -> warehouseDao.getById(1L));
         assertNotNull(thrown.getMessage());
     }
 
