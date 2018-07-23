@@ -1,7 +1,7 @@
 package com.ra.shop;
 
 import com.ra.shop.connection.ConnectionFactory;
-import com.ra.shop.dao.WarehouseDao;
+import com.ra.shop.dao.ShopDao;
 import com.ra.shop.dao.exception.WarehouseDaoException;
 import com.ra.shop.dao.implementation.WarehouseDaoImpl;
 import com.ra.shop.entity.Warehouse;
@@ -24,7 +24,7 @@ public class WarehouseDaoImplTest {
     private static final String CREATE_TABLE_WAREHOUSE = "src/test/resources/warehouse_create_table.sql";
     private static final String DROP_TABLE_WAREHOUSE = "src/test/resources/drop_table.sql";
 
-    private WarehouseDao<Warehouse> warehouseDao;
+    private ShopDao<Warehouse> shopDao;
     private Warehouse warehouse;
 
     @BeforeEach
@@ -40,7 +40,7 @@ public class WarehouseDaoImplTest {
 
     @Test
     public void whenCreateTableThenNewWarehouseMustReturn() throws WarehouseDaoException {
-        Warehouse createdWarehouse = warehouseDao.create(warehouse);
+        Warehouse createdWarehouse = shopDao.create(warehouse);
         assertNotNull(createdWarehouse);
         Long warehouseId = createdWarehouse.getIdNumber();
         assertNotNull(warehouseId);
@@ -51,26 +51,26 @@ public class WarehouseDaoImplTest {
 
     @Test
     public void whenUpdateThenUpdatedWarehouseReturns() throws WarehouseDaoException {
-        Warehouse createdWarehouse = warehouseDao.create(warehouse);
+        Warehouse createdWarehouse = shopDao.create(warehouse);
         Warehouse expectedWarehouse = changeWarehouse(createdWarehouse);
 
-        Warehouse updatedWarehouse = warehouseDao.update(createdWarehouse);
+        Warehouse updatedWarehouse = shopDao.update(createdWarehouse);
         assertEquals(expectedWarehouse, updatedWarehouse);
     }
 
     @Test
     public void whenDeleteFalseThenReturnFalse() throws WarehouseDaoException {
-        Warehouse createdWarehouse = warehouseDao.create(warehouse);
-        warehouseDao.delete(createdWarehouse);
-        boolean result = warehouseDao.delete(createdWarehouse);
+        Warehouse createdWarehouse = shopDao.create(warehouse);
+        shopDao.delete(createdWarehouse);
+        boolean result = shopDao.delete(createdWarehouse);
 
         assertFalse(result);
     }
 
     @Test
     public void whenDeleteCorrectlyThenDeleteAndReturnTrue() throws WarehouseDaoException {
-        Warehouse createdWarehouse = warehouseDao.create(warehouse);
-        boolean result = warehouseDao.delete(createdWarehouse);
+        Warehouse createdWarehouse = shopDao.create(warehouse);
+        boolean result = shopDao.delete(createdWarehouse);
 
         assertTrue(result);
     }
@@ -78,14 +78,14 @@ public class WarehouseDaoImplTest {
     @Test
     public void whenGetAllThenWarehousesMustReturn() throws WarehouseDaoException {
         List<Warehouse> expectedList = new ArrayList<>();
-        Warehouse e1 = warehouseDao.create(warehouse);
-        Warehouse e2 = warehouseDao.create(warehouse);
-        Warehouse e3 = warehouseDao.create(warehouse);
+        Warehouse e1 = shopDao.create(warehouse);
+        Warehouse e2 = shopDao.create(warehouse);
+        Warehouse e3 = shopDao.create(warehouse);
         expectedList.add(e1);
         expectedList.add(e2);
         expectedList.add(e3);
 
-        List<Warehouse> warehouses = warehouseDao.getAll();
+        List<Warehouse> warehouses = shopDao.getAll();
 
         assertEquals(expectedList, warehouses);
     }
@@ -104,7 +104,7 @@ public class WarehouseDaoImplTest {
     }
 
     private void createWarehouse() throws IOException {
-        warehouseDao = new WarehouseDaoImpl(ConnectionFactory.getInstance());
+        shopDao = new WarehouseDaoImpl(ConnectionFactory.getInstance());
         warehouse = new Warehouse("Lola", Double.MIN_VALUE, 2);
         warehouse.setIdNumber(1L);
     }

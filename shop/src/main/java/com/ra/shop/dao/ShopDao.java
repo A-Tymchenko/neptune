@@ -7,7 +7,7 @@ import com.ra.shop.dao.exception.WarehouseDaoException;
 /**
  * CRUD methods.
  */
-public interface WarehouseDao<T> {
+public interface ShopDao<T> {
     /**
      * create and return entity.
      *

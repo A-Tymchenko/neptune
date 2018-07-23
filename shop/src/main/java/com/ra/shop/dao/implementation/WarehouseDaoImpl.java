@@ -8,14 +8,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.ra.shop.connection.ConnectionFactory;
-import com.ra.shop.dao.WarehouseDao;
+import com.ra.shop.dao.ShopDao;
 import com.ra.shop.dao.exception.ExceptionMessage;
 import com.ra.shop.dao.exception.WarehouseDaoException;
 import com.ra.shop.entity.Warehouse;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class WarehouseDaoImpl implements WarehouseDao<Warehouse> {
+public class WarehouseDaoImpl implements ShopDao<Warehouse> {
     private static final int NAME = 1;
     private static final int PRICE = 2;
     private static final int AMOUNT = 3;
