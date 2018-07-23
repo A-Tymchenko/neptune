@@ -1,4 +1,4 @@
-package com.ra.shop.servicetest;
+package com.ra.shop;
 
 public final class GoodsSchemaSql {
 

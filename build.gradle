@@ -242,7 +242,11 @@ project("advertisement_integration_test") {
 
 project("shop") {
     dependencies {
-
     }
+}
 
+project("shop_integration_test") {
+    dependencies {
+        compile project(':shop')
+    }
 }

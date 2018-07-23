@@ -1,8 +1,8 @@
-package com.ra.shop.servicetest;
+package com.ra.shop;
 
 import com.ra.shop.model.Goods;
-import com.ra.shop.service.GoodsException;
 import com.ra.shop.service.GoodsDao;
+import com.ra.shop.service.GoodsException;
 import com.ra.shop.utils.ConnectionFactory;
 import org.junit.jupiter.api.*;
 import org.mockito.Mockito;
