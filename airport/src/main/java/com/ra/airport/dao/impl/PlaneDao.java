@@ -20,7 +20,7 @@ import org.apache.logging.log4j.Logger;
 
 public class PlaneDao implements AirPortDao<Plane> {
 
-    private final ConnectionFactory connectionFactory;
+    private final transient ConnectionFactory connectionFactory;
 
     private static final String INSERT_PLANE_SQL = "INSERT INTO plane "
             + "(owner, type, model, platenumber) "
@@ -31,7 +31,7 @@ public class PlaneDao implements AirPortDao<Plane> {
 
     private static final Logger LOGGER = LogManager.getLogger(FlightDao.class);
 
-    public PlaneDao(ConnectionFactory connectionFactory) {
+    public PlaneDao(final ConnectionFactory  connectionFactory) {
         this.connectionFactory = connectionFactory; }
 
     @Override

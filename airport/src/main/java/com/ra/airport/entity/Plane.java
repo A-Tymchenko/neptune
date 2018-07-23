@@ -10,11 +10,12 @@ public class Plane implements Serializable {
     private String model;
     private String type;
     private Integer plateNumber;
+    private static final long serialVersionUID = 1L;
 
     public Plane() {
     }
 
-    public Plane(int identifier, String owner, String model, String type, int plateNumber) {
+    public Plane(final int identifier, final String owner, final String model, final String type, final int plateNumber) {
         this.identifier = identifier;
         this.owner = owner;
         this.model = model;
@@ -42,23 +43,23 @@ public class Plane implements Serializable {
         return plateNumber;
     }
 
-    public void setIdentifier(int identifier) {
+    public void setIdentifier(final int identifier) {
         this.identifier = identifier;
     }
 
-    public void setOwner(String owner) {
+    public void setOwner(final String owner) {
         this.owner = owner;
     }
 
-    public void setModel(String model) {
+    public void setModel(final String model) {
         this.model = model;
     }
 
-    public void setType(String type) {
+    public void setType(final String type) {
         this.type = type;
     }
 
-    public void setPlateNumber(int plateNumber) {
+    public void setPlateNumber(final int plateNumber) {
         this.plateNumber = plateNumber;
     }
 
