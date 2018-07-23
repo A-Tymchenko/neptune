@@ -4,8 +4,12 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import com.ra.airport.entity.Flight;
+import org.apache.logging.log4j.core.tools.picocli.CommandLine;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.stereotype.Component;
 
+@Component
 public class FlightRowMapper implements RowMapper<Flight> {
 
     private static final String FLIGHT_ID = "id";
