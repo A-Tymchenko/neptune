@@ -15,6 +15,7 @@ import java.util.List;
 
 import static com.ra.shop.dao.exception.ExceptionMessage.*;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -83,7 +84,7 @@ public class WarehouseDaoImplMockTest {
         when(mockStatement.executeUpdate()).thenReturn(1);
         boolean result = warehouseDaoImpl.delete(warehouse);
 
-        assertEquals(true, result);
+        assertTrue(result);
     }
 
     @Test
@@ -162,6 +163,30 @@ public class WarehouseDaoImplMockTest {
         when(mockResultSet.next()).thenReturn(false);
         Warehouse result = warehouseDaoImpl.getById(1L);
 
-        assertEquals(null, result);
+        assertNull(result);
+    }
+
+    @Test
+    public void whenGetWarehouseByIdThenReturnSqlException() throws SQLException {
+        when(mockConnectionFactory.getConnection()).thenReturn(mockConnection);
+        when(mockConnection.prepareStatement(any(String.class))).thenThrow(SQLException.class);
+        Throwable thrown = assertThrows(WarehouseDaoException.class, () -> warehouseDaoImpl.getById(1L));
+        assertNotNull(thrown.getMessage());
+    }
+
+    @Test
+    public void whenGetAllWarehousesThenReturnSqlException() throws SQLException {
+        when(mockConnectionFactory.getConnection()).thenReturn(mockConnection);
+        when(mockConnection.prepareStatement(any(String.class))).thenThrow(SQLException.class);
+        Throwable thrown = assertThrows(WarehouseDaoException.class, () -> warehouseDaoImpl.getAll());
+        assertNotNull(thrown.getMessage());
+    }
+
+    @Test
+    public void whenAddWarehouseThenReturnSqlException() throws SQLException {
+        when(mockConnectionFactory.getConnection()).thenReturn(mockConnection);
+        when(mockConnection.prepareStatement(any(String.class))).thenThrow(SQLException.class);
+        Throwable thrown = assertThrows(WarehouseDaoException.class, () -> warehouseDaoImpl.create(warehouse));
+        assertNotNull(thrown.getMessage());
     }
 }

@@ -19,13 +19,12 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class WarehouseDaoTest {
+public class WarehouseDaoImplTest {
 
     private static final String CREATE_TABLE_WAREHOUSE = "src/test/resources/warehouse_create_table.sql";
     private static final String DROP_TABLE_WAREHOUSE = "src/test/resources/drop_table.sql";
 
     private WarehouseDao<Warehouse> warehouseDao;
-
     private Warehouse warehouse;
 
     @BeforeEach
@@ -46,6 +45,7 @@ public class WarehouseDaoTest {
         Long warehouseId = createdWarehouse.getIdNumber();
         assertNotNull(warehouseId);
         warehouse.setIdNumber(warehouseId);
+
         assertEquals(warehouse, createdWarehouse);
     }
 
