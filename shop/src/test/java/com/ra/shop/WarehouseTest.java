@@ -76,7 +76,7 @@ public class WarehouseTest {
 
     @Test
     public void whenEqualsObjectsWithNullExpectedFalse() {
-        assertFalse(firstWarehouse.equals(null));
+        assertNotEquals(firstWarehouse,null);
     }
 
     @Test

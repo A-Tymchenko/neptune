@@ -68,7 +68,7 @@ public class WarehouseDaoImplTest {
     }
 
     @Test
-    public void whenDeleteThenDeleteAndReturnTrue() throws WarehouseDaoException {
+    public void whenDeleteCorrectlyThenDeleteAndReturnTrue() throws WarehouseDaoException {
         Warehouse createdWarehouse = warehouseDao.create(warehouse);
         boolean result = warehouseDao.delete(createdWarehouse);
 

@@ -79,12 +79,21 @@ public class WarehouseDaoImplMockTest {
     }
 
     @Test
-    public void whenDeleteMethodCalledAndEntityExistsThenTrueReturns() throws SQLException, WarehouseDaoException {
+    public void whenDeleteMethodCalledAndEntityExistsThenReturnTrue() throws SQLException, WarehouseDaoException {
         when(mockConnection.prepareStatement(DELETE_WAREHOUSE_BY_ID)).thenReturn(mockStatement);
         when(mockStatement.executeUpdate()).thenReturn(1);
         boolean result = warehouseDaoImpl.delete(warehouse);
 
         assertTrue(result);
+    }
+
+    @Test
+    public void whenDeleteMethodCalledAndEntityNotFoundThenReturnFalse() throws SQLException, WarehouseDaoException {
+        when(mockConnection.prepareStatement(anyString())).thenReturn(mockStatement);
+        when(mockStatement.executeUpdate()).thenReturn(-1);
+        boolean result = warehouseDaoImpl.delete(warehouse);
+
+        assertFalse(result);
     }
 
     @Test
