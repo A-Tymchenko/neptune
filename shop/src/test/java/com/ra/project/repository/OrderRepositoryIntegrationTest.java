@@ -3,6 +3,7 @@ package com.ra.project.repository;
 import com.ra.project.config.ConnectionFactory;
 import com.ra.project.exceptions.RepositoryException;
 import com.ra.project.model.Order;
+import com.ra.project.utils.DatabaseUtils;
 import org.h2.tools.RunScript;
 import org.junit.jupiter.api.*;
 
@@ -11,10 +12,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -22,34 +20,37 @@ public class OrderRepositoryIntegrationTest {
 
     private static ConnectionFactory factory;
     private static OrderRepositoryImpl repository;
-    private Connection connection;
+    private static Connection connection;
+    private static DatabaseUtils dbUtils;
 
     @BeforeAll
-    static void initGlobal() throws IOException {
+    static void initGlobal() throws IOException, SQLException {
         factory = ConnectionFactory.getInstance();
+        connection = factory.getConnection();
         repository = new OrderRepositoryImpl(factory);
+        dbUtils = new DatabaseUtils();
     }
 
     @BeforeEach
-    void init() throws SQLException, FileNotFoundException {
-        connection = factory.getConnection();
-        RunScript.execute(connection, new FileReader(".//src//main//resources//createOrdersTable.sql"));
+    void init() throws FileNotFoundException, SQLException {
+        dbUtils.createTable(connection);
     }
 
     @AfterEach
     void tearDown() throws FileNotFoundException, SQLException {
-        RunScript.execute(connection, new FileReader(".//src//main//resources//dropOrdersTable.sql"));
+        dbUtils.dropTable(connection);
     }
 
     @AfterAll
     static void tearDownGlobal() {
         repository = null;
+        connection = null;
         factory = null;
     }
 
     @Test
     void whenCreateOrderThenReturnCreatedOrder() throws RepositoryException {
-        Order order = new Order(1L, 10, 100d, false, 0, false);
+        Order order = new Order(10, 100d, false, 0, false);
         Order created = repository.create(order);
         assertNotNull(created);
         assertEquals(order, created);
@@ -67,7 +68,7 @@ public class OrderRepositoryIntegrationTest {
     @Test
     void whenOrderCreationFailsThenThrowRepositoryException() {
         Throwable repositoryException = assertThrows(RepositoryException.class, () -> {
-            dropTable();
+            dbUtils.dropTable(connection);
             repository.create(new Order());
         });
         assertNotNull(repositoryException);
@@ -76,9 +77,10 @@ public class OrderRepositoryIntegrationTest {
 
     @Test
     void whenGetOrderThenReturnOptionalOfOrder() throws RepositoryException {
-        Order order = new Order(2L, 20, 200d, true, 50, true);
-        repository.create(order);
-        Optional<Order> optional = repository.get(order.getId());
+        Order order = new Order(20, 200d, true, 50, true);
+        Order created = repository.create(order);
+        System.out.println(created.getId());
+        Optional<Order> optional = repository.get(created.getId());
         assertNotNull(optional);
         assertTrue(optional.isPresent());
         assertEquals(order, optional.get());
@@ -104,7 +106,7 @@ public class OrderRepositoryIntegrationTest {
     @Test
     void whenDropOrdersTableAndGetOrderThenThrowRepositoryException() {
         Throwable repositoryException = assertThrows(RepositoryException.class, () -> {
-            dropTable();
+            dbUtils.dropTable(connection);
             repository.get(getRandomId());
         });
         assertNotNull(repositoryException);
@@ -113,7 +115,7 @@ public class OrderRepositoryIntegrationTest {
 
     @Test
     void whenUpdateOrderThenReturnUpdatedOrder() throws RepositoryException {
-        Order order = new Order(3L, 30, 30d, false, 0, true);
+        Order order = new Order(30, 30d, false, 0, true);
         repository.create(order);
         order.setPrice(150d);
         order.setDeliveryIncluded(true);
@@ -139,7 +141,7 @@ public class OrderRepositoryIntegrationTest {
     @Test
     void whenDropOrdersTableAndUpdateNotExistingOrderThenThrowRepositoryException() {
         Throwable repositoryException = assertThrows(RepositoryException.class, () -> {
-            dropTable();
+            dbUtils.dropTable(connection);
             repository.update(new Order());
         });
         assertNotNull(repositoryException);
@@ -148,7 +150,7 @@ public class OrderRepositoryIntegrationTest {
 
     @Test
     void whenDeleteOrderAndOperationIsSuccessfulThenReturnTrue() throws RepositoryException {
-        Order order = new Order(4L, 404, 40d, false, 0, true);
+        Order order = new Order(404, 40d, false, 0, true);
         repository.create(order);
         Boolean isDeleted = repository.delete(order.getId());
         assertTrue(isDeleted);
@@ -174,7 +176,7 @@ public class OrderRepositoryIntegrationTest {
     @Test
     void whenDropTableAndDeleteNonExistingOrderThenThrowRepositoryException() {
         Throwable repositoryException = assertThrows(RepositoryException.class, () -> {
-            dropTable();
+            dbUtils.dropTable(connection);
             repository.delete(getRandomId());
         });
         assertNotNull(repositoryException);
@@ -202,7 +204,7 @@ public class OrderRepositoryIntegrationTest {
     @Test
     void whenDropOrdersTableAndCallGetAllMethodThenThrowRepositoryException() {
         Throwable repositoryException = assertThrows(RepositoryException.class, () -> {
-            dropTable();
+            dbUtils.dropTable(connection);
             repository.getAll();
         });
         assertNotNull(repositoryException);
@@ -217,20 +219,16 @@ public class OrderRepositoryIntegrationTest {
 
     private Order[] getOrders() {
         return new Order[] {
-                new Order(5L, 505, 50d, true, 50, true),
-                new Order(6L, 606, 60d, false, 0, false),
-                new Order(7L, 707, 70d, true, 70, true),
-                new Order(8L, 808, 80d, false, 0, false),
-                new Order(9L, 909, 90d, true, 100, true)
+                new Order(505, 50d, true, 50, true),
+                new Order(606, 60d, false, 0, false),
+                new Order(707, 70d, true, 70, true),
+                new Order(808, 80d, false, 0, false),
+                new Order(909, 90d, true, 100, true)
         };
     }
 
     private Long getRandomId() {
         return 123L;
-    }
-
-    private void dropTable() throws SQLException, FileNotFoundException {
-        RunScript.execute(connection, new FileReader(".//src//main//resources//dropOrdersTable.sql"));
     }
 
 }

@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -26,34 +27,29 @@ public class OrderRepositoryImpl implements IRepository<Order> {
     private static final Logger LOGGER = Logger.getLogger(OrderRepositoryImpl.class);
 
     /**
-     * Constant represents order identifier.
-     */
-    private static final Integer ORDER_ID = 1;
-
-    /**
      * Constant represents order number.
      */
-    private static final Integer NUMBER = 2;
+    private static final Integer NUMBER = 1;
 
     /**
      * Constant represents order total price.
      */
-    private static final Integer PRICE = 3;
+    private static final Integer PRICE = 2;
 
     /**
      * Constant represents a delivery option will be included or not.
      */
-    private static final Integer DELIVERY_INCLUDED = 4;
+    private static final Integer DELIVERY_INCLUDED = 3;
 
     /**
      * Constant represents delivery cost if option is positive.
      */
-    private static final Integer DELIVERY_COST = 5;
+    private static final Integer DELIVERY_COST = 4;
 
     /**
      * Constant represents order condition, whether it`s executed or not.
      */
-    private static final Integer EXECUTED = 6;
+    private static final Integer EXECUTED = 5;
 
     /**
      * Field connectionFactory.
@@ -73,7 +69,7 @@ public class OrderRepositoryImpl implements IRepository<Order> {
     public List<Order> getAll() throws RepositoryException {
         final List<Order> all = new ArrayList<>();
         try (Connection connection = connectionFactory.getConnection();
-                PreparedStatement statement = connection.prepareStatement("SELECT * FROM ORDERS")) {
+             PreparedStatement statement = connection.prepareStatement("SELECT * FROM ORDERS")) {
             final ResultSet resultSet = statement.executeQuery();
             while (resultSet.next()) {
                 final Order order = fillEntityWithValues(resultSet);
@@ -83,8 +79,8 @@ public class OrderRepositoryImpl implements IRepository<Order> {
                 return all;
             }
         } catch (SQLException e) {
-            LOGGER.error(e.getMessage());
-            throw new RepositoryException("Can`t get order`s list!");
+            LOGGER.error(e.getMessage(), e);
+            throw new RepositoryException("Can`t get order`s list!", e);
         }
         return Collections.emptyList();
     }
@@ -94,12 +90,18 @@ public class OrderRepositoryImpl implements IRepository<Order> {
         Objects.requireNonNull(entity);
         try (Connection connection = connectionFactory.getConnection();
              PreparedStatement statement = connection.prepareStatement(
-                     "INSERT INTO ORDERS VALUES(?, ?, ?, ?, ?, ?)")) {
+                     "INSERT INTO ORDERS (NUMBER, PRICE, DELIVERY_INCLUDED, DELIVERY_COST, EXECUTED) "
+                             + "VALUES(?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS)) {
             setStatementValuesForCreation(statement, entity);
             statement.executeUpdate();
+
+            final ResultSet primaryKeys = statement.getGeneratedKeys();
+            if (primaryKeys.next()) {
+                entity.setId(primaryKeys.getLong(1));
+            }
         } catch (SQLException e) {
-            LOGGER.error(e.getMessage());
-            throw new RepositoryException("Order creation is failed!");
+            LOGGER.error(e.getMessage(), e);
+            throw new RepositoryException("Order creation is failed!", e);
         }
         return entity;
     }
@@ -117,8 +119,8 @@ public class OrderRepositoryImpl implements IRepository<Order> {
                 return Optional.of(found);
             }
         } catch (SQLException e) {
-            LOGGER.error(e.getMessage());
-            throw new RepositoryException(String.format("Can`t get an order with id : %d", entityId));
+            LOGGER.error(e.getMessage(), e);
+            throw new RepositoryException(String.format("Can`t get an order with id : %d", entityId), e);
         }
         return Optional.empty();
     }
@@ -133,8 +135,8 @@ public class OrderRepositoryImpl implements IRepository<Order> {
             setStatementValuesForUpdate(statement, newEntity);
             statement.executeUpdate();
         } catch (SQLException e) {
-            LOGGER.error(e.getMessage());
-            throw new RepositoryException("Order updating failed!");
+            LOGGER.error(e.getMessage(), e);
+            throw new RepositoryException("Order updating failed!", e);
         }
         return newEntity;
     }
@@ -150,8 +152,8 @@ public class OrderRepositoryImpl implements IRepository<Order> {
                 return Boolean.TRUE;
             }
         } catch (SQLException e) {
-            LOGGER.error(e.getMessage());
-            throw new RepositoryException("Order deletion failed!");
+            LOGGER.error(e.getMessage(), e);
+            throw new RepositoryException("Order deletion failed!", e);
         }
         return Boolean.FALSE;
     }
@@ -180,12 +182,12 @@ public class OrderRepositoryImpl implements IRepository<Order> {
 
     /**
      * Method configuring PrepareStatement for create method.
+     *
      * @param preparedStatement PreparedStatement.
      * @param order new order.
      * @throws SQLException if any error occurs.
      */
     private void setStatementValuesForCreation(final PreparedStatement preparedStatement, final Order order) throws SQLException {
-        preparedStatement.setLong(ORDER_ID, order.getId());
         preparedStatement.setInt(NUMBER, order.getNumber());
         preparedStatement.setDouble(PRICE, order.getPrice());
         preparedStatement.setBoolean(DELIVERY_INCLUDED, order.getDeliveryIncluded());
@@ -207,7 +209,9 @@ public class OrderRepositoryImpl implements IRepository<Order> {
         final Boolean deliveryIncluded = resultSet.getBoolean("DELIVERY_INCLUDED");
         final Integer deliveryCost = resultSet.getInt("DELIVERY_COST");
         final Boolean executed = resultSet.getBoolean("EXECUTED");
-        return new Order(orderId, number, price, deliveryIncluded, deliveryCost, executed);
+        final Order order = new Order(number, price, deliveryIncluded, deliveryCost, executed);
+        order.setId(orderId);
+        return order;
     }
 
 }

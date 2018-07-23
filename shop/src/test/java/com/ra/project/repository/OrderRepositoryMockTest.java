@@ -26,7 +26,7 @@ public class OrderRepositoryMockTest {
 
     @Test
     void whenCreateOrderThenReturnCreatedOrder() throws RepositoryException {
-        Order order = new Order(1L, 10, 100D, false, 0, true);
+        Order order = new Order(10, 100D, false, 0, true);
         when(mockOrderRepository.create(order)).thenReturn(order);
         Order created = mockOrderRepository.create(order);
         assertEquals(order, created);
@@ -34,8 +34,7 @@ public class OrderRepositoryMockTest {
 
     @Test
     void whenGetOrderThenReturnOptionalOfOrder() throws RepositoryException {
-        Order order = new Order(2L, 20, 220D,
-                false, 0, true);
+        Order order = new Order(20, 220D,false, 0, true);
         when(mockOrderRepository.get(order.getId())).thenReturn(Optional.of(order));
         Optional<Order> optional = mockOrderRepository.get(order.getId());
         assertTrue(optional.isPresent());
@@ -44,7 +43,7 @@ public class OrderRepositoryMockTest {
 
     @Test
     void whenUpdateOrderThenReturnUpdatedOrder() throws RepositoryException {
-        Order order = new Order(3L, 120, 1240D,true, 50, false);
+        Order order = new Order(120, 1240D,true, 50, false);
         order.setPrice(1000D);
         when(mockOrderRepository.update(order)).thenReturn(order);
         Order updated = mockOrderRepository.update(order);
@@ -54,7 +53,7 @@ public class OrderRepositoryMockTest {
 
     @Test
     void whenDeleteOrderIsSuccessfulThenReturnTrue() throws RepositoryException {
-        Order order = new Order(4L, 1320, 330D,
+        Order order = new Order(1320, 330D,
                 true, 50, true);
         when(mockOrderRepository.delete(order.getId())).thenReturn(Boolean.TRUE);
         Boolean isRowDeleted = mockOrderRepository.delete(order.getId());
@@ -77,9 +76,9 @@ public class OrderRepositoryMockTest {
 
     private Order[] getOrders() {
         return new Order[]{
-                new Order(5L, 90, 6330D, false, 0, true),
-                new Order(6L, 80, 2330D, true, 50, true),
-                new Order(7L, 70, 1330D, true, 50, false)
+                new Order(90, 6330D, false, 0, true),
+                new Order(80, 2330D, true, 50, true),
+                new Order(70, 1330D, true, 50, false)
         };
     }
 }

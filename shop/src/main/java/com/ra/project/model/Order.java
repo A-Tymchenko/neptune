@@ -19,10 +19,9 @@ public class Order implements Serializable {
         super();
     }
 
-    public Order(Long id, Integer number, Double price, Boolean deliveryIncluded,
+    public Order(Integer number, Double price, Boolean deliveryIncluded,
                  Integer deliveryCost, Boolean executed) {
         super();
-        this.id = id;
         this.number = number;
         this.price = price;
         this.deliveryIncluded = deliveryIncluded;
