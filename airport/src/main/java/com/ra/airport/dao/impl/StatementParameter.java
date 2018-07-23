@@ -16,12 +16,11 @@ public enum StatementParameter {
     AIRPORT_TYPE(3),
     AIRPORT_ADDRESSES(4),
     AIRPORT_TERMINAL(5),
-
-    PLANE_ID(1),
-    PLANE_OWNER(2),
-    PLANE_MODEL(3),
-    PLANE_TYPE(4),
-    PLATE_NUMBER(5);
+    TICKET_NUMBER(1),
+    PASSENGER_NAME(2),
+    DOCUMENT(3),
+    SELLING_DATE(4),
+    TICKET_ID(5);
 
     private final int parameterNumber;
 

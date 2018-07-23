@@ -29,13 +29,13 @@ public class ConnectionFactory {
      */
     public static ConnectionFactory getInstance() throws IOException {
         synchronized (ConnectionFactory.class) {
-                if (factoryInstance == null) {
-                    factoryInstance = new ConnectionFactory();
-                    dataSource = new JdbcDataSource();
-                    dataSource.setURL(dbProperties.getProperty("jdbc.url"));
-                    dataSource.setUser(dbProperties.getProperty("jdbc.user"));
-                    dataSource.setPassword(dbProperties.getProperty("jdbc.password"));
-                }
+            if (factoryInstance == null) {
+                factoryInstance = new ConnectionFactory();
+                dataSource = new JdbcDataSource();
+                dataSource.setURL(dbProperties.getProperty("jdbc.url"));
+                dataSource.setUser(dbProperties.getProperty("jdbc.user"));
+                dataSource.setPassword(dbProperties.getProperty("jdbc.password"));
+            }
         }
         return factoryInstance;
     }
@@ -49,4 +49,3 @@ public class ConnectionFactory {
         return dataSource.getConnection();
     }
 }
-
