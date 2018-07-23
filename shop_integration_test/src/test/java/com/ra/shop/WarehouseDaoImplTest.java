@@ -38,6 +38,11 @@ public class WarehouseDaoImplTest {
         deleteDataBaseTable();
     }
 
+    /**
+     * testing new warehouse creation.
+     *
+     * @throws WarehouseDaoException exception
+     */
     @Test
     public void whenCreateTableThenNewWarehouseMustReturn() throws WarehouseDaoException {
         Warehouse createdWarehouse = shopDao.create(warehouse);
@@ -49,6 +54,11 @@ public class WarehouseDaoImplTest {
         assertEquals(warehouse, createdWarehouse);
     }
 
+    /**
+     * testing update warehouse.
+     *
+     * @throws WarehouseDaoException exception
+     */
     @Test
     public void whenUpdateThenUpdatedWarehouseReturns() throws WarehouseDaoException {
         Warehouse createdWarehouse = shopDao.create(warehouse);
@@ -58,6 +68,11 @@ public class WarehouseDaoImplTest {
         assertEquals(expectedWarehouse, updatedWarehouse);
     }
 
+    /**
+     * testing delete warehouse twice.
+     *
+     * @throws WarehouseDaoException exception
+     */
     @Test
     public void whenDeleteFalseThenReturnFalse() throws WarehouseDaoException {
         Warehouse createdWarehouse = shopDao.create(warehouse);
@@ -67,6 +82,11 @@ public class WarehouseDaoImplTest {
         assertFalse(result);
     }
 
+    /**
+     * testing delete warehouse.
+     *
+     * @throws WarehouseDaoException exception
+     */
     @Test
     public void whenDeleteCorrectlyThenDeleteAndReturnTrue() throws WarehouseDaoException {
         Warehouse createdWarehouse = shopDao.create(warehouse);
@@ -75,6 +95,11 @@ public class WarehouseDaoImplTest {
         assertTrue(result);
     }
 
+    /**
+     * testing getAll warehouses.
+     *
+     * @throws WarehouseDaoException exception
+     */
     @Test
     public void whenGetAllThenWarehousesMustReturn() throws WarehouseDaoException {
         List<Warehouse> expectedList = new ArrayList<>();

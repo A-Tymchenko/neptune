@@ -19,6 +19,11 @@ public class ConnectionFactoryTest {
         connectionFactory = ConnectionFactory.getInstance();
     }
 
+    /**
+     * testing if connection available
+     *
+     * @throws SQLException
+     */
     @Test
     public void whenGetConnectionTheConnectionReturned() throws SQLException {
         Connection connection = connectionFactory.getConnection();
@@ -26,6 +31,12 @@ public class ConnectionFactoryTest {
         assertNotNull(connection);
         assertFalse(connection.isClosed());
     }
+
+    /**
+     * testing whether the connection is of the singleton pattern
+     *
+     * @throws IOException
+     */
 
     @Test
     public void whenConnectionFactoryGetInstanceCallMultipleTimesTheSameConnectionReturned() throws IOException {

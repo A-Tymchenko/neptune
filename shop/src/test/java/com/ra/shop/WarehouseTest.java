@@ -19,6 +19,11 @@ public class WarehouseTest {
         secondWarehouse.setIdNumber(1L);
     }
 
+    /**
+     * testing equals method with 2 equal objects.
+     *
+     * @return true
+     */
     @Test
     public void whenWarehousesTheSameEqualsReturnsTrue() {
         assertEquals(firstWarehouse.hashCode(), secondWarehouse.hashCode());
@@ -26,6 +31,11 @@ public class WarehouseTest {
         assertEquals(firstWarehouse, secondWarehouse);
     }
 
+    /**
+     * testing equals method with 2 different objects.
+     *
+     * @return false
+     */
     @Test
     public void whenWarehousesDiffersEqualsReturnFalse() {
         firstWarehouse.setIdNumber(2L);
@@ -34,6 +44,11 @@ public class WarehouseTest {
         assertNotEquals(firstWarehouse, secondWarehouse);
     }
 
+    /**
+     * testing toString method.
+     *
+     * @return correct string
+     */
     @Test
     public void whenToStringMessageMustBe() {
         String expected = "Warehouse{"
@@ -45,40 +60,75 @@ public class WarehouseTest {
         assertEquals(firstWarehouse.toString(), expected);
     }
 
+    /**
+     * testing equals method with 2 equal objects.
+     *
+     * @return true
+     */
     @Test
     public void whenEqualsObjectsTrueExpected() {
         assertTrue(firstWarehouse.equals(secondWarehouse));
     }
 
+    /**
+     * testing equals method with 2 different objects.
+     *
+     * @return false
+     */
     @Test
     public void whenDifferentIdFalseIsExpected() {
         firstWarehouse.setIdNumber(2L);
         assertNotEquals(firstWarehouse, secondWarehouse);
     }
 
+    /**
+     * testing equals method with 2 different objects.
+     *
+     * @return false
+     */
     @Test
     public void whenDifferentNamesFalseIsExpected() {
         firstWarehouse.setName("lelia");
         assertNotEquals(firstWarehouse, secondWarehouse);
     }
 
+    /**
+     * testing equals method with 2 different objects.
+     *
+     * @return false
+     */
     @Test
     public void whenDifferentPriceFalseIsExpected() {
         firstWarehouse.setPrice(1.1);
         assertNotEquals(firstWarehouse, secondWarehouse);
     }
 
+    /**
+     * testing equals method with 2 different objects.
+     *
+     * @return false
+     */
     @Test
     public void whenDifferentAmountFalseIsExpected() {
         firstWarehouse.setAmount(1);
         assertNotEquals(firstWarehouse, secondWarehouse);
     }
 
+    /**
+     * testing equals method with null.
+     *
+     * @return false
+     */
     @Test
     public void whenEqualsObjectsWithNullExpectedFalse() {
         assertNotEquals(firstWarehouse,null);
     }
 
+    /**
+     * testing equals method with 2 different objects.
+     *
+     * @return false
+     */
     @Test
     public void whenEqualsWithOtherClasses() {
         assertNotEquals(firstWarehouse, new Object());

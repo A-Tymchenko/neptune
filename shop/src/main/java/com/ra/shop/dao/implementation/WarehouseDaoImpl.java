@@ -29,6 +29,12 @@ public class WarehouseDaoImpl implements ShopDao<Warehouse> {
         WarehouseDaoImpl.connectionFactory = connectionFactory;
     }
 
+    /**
+     *  Method adds new Warehouse to the Data Base.
+     *
+     * @param warehouse to save
+     * @return new Warehouse
+     */
     @Override
     public Warehouse create(Warehouse warehouse) throws WarehouseDaoException {
         try (Connection connection = connectionFactory.getConnection()) {
@@ -50,6 +56,12 @@ public class WarehouseDaoImpl implements ShopDao<Warehouse> {
         return warehouse;
     }
 
+    /**
+     * Update Warehouse to Data Base.
+     *
+     * @param warehouse to update
+     * @return new Warehouse
+     */
     @Override
     public Warehouse update(final Warehouse warehouse) throws WarehouseDaoException {
         try (Connection connection = connectionFactory.getConnection()) {
@@ -67,6 +79,12 @@ public class WarehouseDaoImpl implements ShopDao<Warehouse> {
         return warehouse;
     }
 
+    /**
+     * Method deletes the warehouse from a Data Base by id.
+     *
+     * @param warehouse Warehouse we want delete
+     * @return count of deleted rows
+     */
     @Override
     public boolean delete(final Warehouse warehouse) throws WarehouseDaoException {
         boolean result;
@@ -81,6 +99,12 @@ public class WarehouseDaoImpl implements ShopDao<Warehouse> {
         return result;
     }
 
+    /**
+     * Method returns warehouse from a Data Base by id.
+     *
+     * @param idNumber Warehouse id
+     * @return warehouse
+     */
     @Override
     public Warehouse getById(final Long idNumber) throws WarehouseDaoException {
         Warehouse warehouse;
@@ -99,6 +123,11 @@ public class WarehouseDaoImpl implements ShopDao<Warehouse> {
         }
     }
 
+    /**
+     * Method returns List of Warehouses from a Data Base by id.
+     *
+     * @return list of warehouses or empty list
+     */
     @Override
     public List<Warehouse> getAll() throws WarehouseDaoException {
         final List<Warehouse> warehouses = new ArrayList<>();
@@ -115,12 +144,24 @@ public class WarehouseDaoImpl implements ShopDao<Warehouse> {
         return warehouses;
     }
 
+    /**
+     * Method fills in preparedStatement from the warehouse.
+     *
+     * @param preparedStatement to save
+     * @param warehouse to save
+     */
     private void fillInStatement(final Warehouse warehouse, final PreparedStatement preparedStatement) throws SQLException {
         preparedStatement.setString(NAME, warehouse.getName());
         preparedStatement.setDouble(PRICE, warehouse.getPrice());
         preparedStatement.setInt(AMOUNT, warehouse.getAmount());
     }
 
+    /**
+     * Method retrieves a warehouse from the preparedStatement.
+     *
+     * @param resultSet received from a Data Base
+     * @return warehouse with filled fields
+     */
     private Warehouse getWarehouseFromResultSet(final ResultSet resultSet) throws SQLException {
         final Warehouse warehouse = new Warehouse();
         warehouse.setIdNumber(resultSet.getLong("id"));
