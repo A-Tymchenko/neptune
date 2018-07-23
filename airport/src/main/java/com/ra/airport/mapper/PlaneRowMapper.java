@@ -1,11 +1,9 @@
 package com.ra.airport.mapper;
 
-import com.ra.airport.entity.Plane;
-
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-
+import com.ra.airport.entity.Plane;
 
 public class PlaneRowMapper implements RowMapper<Plane> {
 
@@ -26,7 +24,7 @@ public class PlaneRowMapper implements RowMapper<Plane> {
      */
     @Override
     public Plane mapRow(final ResultSet resultSet, final Plane plane) throws SQLException {
-        plane.setId(resultSet.getInt(PLANE_ID));
+        plane.setIdentifier(resultSet.getInt(PLANE_ID));
         plane.setOwner(resultSet.getString(OWNER));
         plane.setType(resultSet.getString(TYPE));
         plane.setModel(resultSet.getString(MODEL));

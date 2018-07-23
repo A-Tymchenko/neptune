@@ -5,7 +5,7 @@ import java.util.Objects;
 
 public class Plane implements Serializable {
 
-    private Integer id;
+    private Integer identifier;
     private String owner;
     private String model;
     private String type;
@@ -14,16 +14,16 @@ public class Plane implements Serializable {
     public Plane() {
     }
 
-    public Plane(int id, String owner, String model, String type, int plateNumber) {
-        this.id = id;
+    public Plane(int identifier, String owner, String model, String type, int plateNumber) {
+        this.identifier = identifier;
         this.owner = owner;
         this.model = model;
         this.type = type;
         this.plateNumber = plateNumber;
     }
 
-    public Integer getId() {
-        return id;
+    public Integer getIdentifier() {
+        return identifier;
     }
 
     public String getOwner() {
@@ -42,8 +42,8 @@ public class Plane implements Serializable {
         return plateNumber;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setIdentifier(int identifier) {
+        this.identifier = identifier;
     }
 
     public void setOwner(String owner) {
@@ -62,7 +62,6 @@ public class Plane implements Serializable {
         this.plateNumber = plateNumber;
     }
 
-
     @Override
     public boolean equals(final Object object) {
         if (this == object) {
@@ -72,7 +71,7 @@ public class Plane implements Serializable {
             return false;
         }
         final Plane plane = (Plane) object;
-        return Objects.equals(id, plane.id)
+        return Objects.equals(identifier, plane.identifier)
                 && Objects.equals(owner, plane.owner)
                 && Objects.equals(model, plane.model)
                 && Objects.equals(type, plane.type)
@@ -81,18 +80,18 @@ public class Plane implements Serializable {
 
     @Override
     public String toString() {
-        return "Plane{" +
-                "id=" + id +
-                ", owner='" + owner + '\'' +
-                ", model='" + model + '\'' +
-                ", type='" + type + '\'' +
-                ", plateNumber=" + plateNumber +
-                '}';
+        return "Plane{"
+                + "identifier=" + identifier
+                + ", owner='" + owner + '\''
+                + ", model='" + model + '\''
+                + ", type='" + type + '\''
+                + ", plateNumber=" + plateNumber
+                + '}';
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id,owner,model,type, plateNumber);
+        return Objects.hash(identifier, owner, model, type, plateNumber);
     }
 }
 

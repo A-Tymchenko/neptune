@@ -25,7 +25,7 @@ public abstract class DataCreationHelper {
 
     public static Plane createPlane(){
         Plane plane = new Plane();
-        plane.setId(1);
+        plane.setIdentifier(1);
         plane.setPlateNumber(2);
         plane.setModel(SPACE);
         plane.setType(SPACE);

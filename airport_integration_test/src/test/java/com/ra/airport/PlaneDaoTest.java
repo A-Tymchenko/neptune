@@ -67,9 +67,9 @@ public class PlaneDaoTest {
     public void whenCreateThenNewPlaneWithIdShouldBeReturned() throws AirPortDaoException {
         Plane createdPlane = planeDao.create(plane);
         assertNotNull(createdPlane);
-        Integer planeId = createdPlane.getId();
+        Integer planeId = createdPlane.getIdentifier();
         assertNotNull(planeId);
-        plane.setId(planeId);
+        plane.setIdentifier(planeId);
         assertEquals(plane, createdPlane);
     }
 

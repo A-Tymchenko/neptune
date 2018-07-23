@@ -29,7 +29,7 @@ public class PlaneTest {
 
     @Test
     public void whenHashCodeIsTheDifferentForObjectsEqualsShouldReturnFalseForThem() {
-        secondPlane.setId(2);
+        secondPlane.setIdentifier(2);
         assertFalse(firstPlane.hashCode() == secondPlane.hashCode());
 
         assertFalse(this.firstPlane.equals(secondPlane));
@@ -37,7 +37,7 @@ public class PlaneTest {
 
     @Test
     public void whenToStringCorrectMessageShouldBeReturned() {
-        String expected = "Plane{id=1, owner=' ', model=' ', type=' ', plateNumber=2}";
+        String expected = "Plane{identifier=1, owner=' ', model=' ', type=' ', plateNumber=2}";
         assertEquals(expected, secondPlane.toString());
     }
 
@@ -48,7 +48,7 @@ public class PlaneTest {
 
     @Test
     public void whenEqualsObjectsWithTheDifferentIdsFalseShouldBeReturned() {
-        secondPlane.setId(2);
+        secondPlane.setIdentifier(2);
         assertFalse(firstPlane.equals(secondPlane));
     }
 

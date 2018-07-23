@@ -58,8 +58,8 @@ public class PlaneDaoMockitoTest {
         when(mockConnection.prepareStatement(SELECT_PLANE_BY_ID_SQL)).thenReturn(mockStatement);
         when(mockResultSet.next()).thenReturn(true);
         when(mockStatement.executeQuery()).thenReturn(mockResultSet);
-        when(mockResultSet.getInt(1)).thenReturn(plane.getId());
-        when(mockResultSet.getInt("id")).thenReturn(plane.getId());
+        when(mockResultSet.getInt(1)).thenReturn(plane.getIdentifier());
+        when(mockResultSet.getInt("id")).thenReturn(plane.getIdentifier());
         when(mockResultSet.getString("owner")).thenReturn(plane.getOwner());
         when(mockResultSet.getString("model")).thenReturn(plane.getModel());
         when(mockResultSet.getString("type")).thenReturn(plane.getType());
