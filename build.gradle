@@ -73,8 +73,8 @@ ext {
             webSocket         : "org.springframework:spring-websocket:$springVersion",
             messaging         : "org.springframework:spring-messaging:$springVersion",
             batchCore         : "org.springframework.batch:spring-batch-core:$springBatchVersion",
-            batchIntegration  : "org.springframework.batch:spring-batch-tools:$springBatchIntegrationVersion",
-            integrationFile   : "org.springframework.tools:spring-tools-file:$springIntegrationVersion",
+            batchIntegration  : "org.springframework.batch:spring-batch-integration:$springBatchIntegrationVersion",
+            integrationFile   : "org.springframework.integration:spring-integration-file:$springIntegrationVersion",
             webflux           : "org.springframework:spring-webflux:$springVersion"
 
     ]
