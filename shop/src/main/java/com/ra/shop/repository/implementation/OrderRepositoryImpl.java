@@ -1,4 +1,4 @@
-package com.ra.repository.implementation;
+package com.ra.shop.repository.implementation;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -11,10 +11,10 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
-import com.ra.config.ConnectionFactory;
-import com.ra.exceptions.RepositoryException;
-import com.ra.model.Order;
-import com.ra.repository.IRepository;
+import com.ra.shop.config.ConnectionFactory;
+import com.ra.shop.exceptions.RepositoryException;
+import com.ra.shop.model.Order;
+import com.ra.shop.repository.IRepository;
 import org.apache.log4j.Logger;
 
 /**

@@ -1,4 +1,4 @@
-package com.ra.exceptions;
+package com.ra.shop.exceptions;
 
 /**
  * Exception can be thrown if CRUD operations can`t be performed.

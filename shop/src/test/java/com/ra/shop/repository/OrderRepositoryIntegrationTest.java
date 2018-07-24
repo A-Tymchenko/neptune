@@ -1,10 +1,10 @@
-package com.ra.project.repository;
+package com.ra.shop.repository;
 
-import com.ra.config.ConnectionFactory;
-import com.ra.exceptions.RepositoryException;
-import com.ra.model.Order;
-import com.ra.repository.implementation.OrderRepositoryImpl;
-import com.ra.utils.DatabaseUtils;
+import com.ra.shop.config.ConnectionFactory;
+import com.ra.shop.exceptions.RepositoryException;
+import com.ra.shop.model.Order;
+import com.ra.shop.repository.implementation.OrderRepositoryImpl;
+import com.ra.shop.utils.DatabaseUtils;
 import org.junit.jupiter.api.*;
 
 import java.io.FileNotFoundException;

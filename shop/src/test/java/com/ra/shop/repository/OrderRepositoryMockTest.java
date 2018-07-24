@@ -1,8 +1,8 @@
-package com.ra.project.repository;
+package com.ra.shop.repository;
 
-import com.ra.exceptions.RepositoryException;
-import com.ra.model.Order;
-import com.ra.repository.implementation.OrderRepositoryImpl;
+import com.ra.shop.exceptions.RepositoryException;
+import com.ra.shop.model.Order;
+import com.ra.shop.repository.implementation.OrderRepositoryImpl;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 

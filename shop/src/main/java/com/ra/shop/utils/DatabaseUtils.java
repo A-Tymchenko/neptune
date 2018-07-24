@@ -1,4 +1,4 @@
-package com.ra.utils;
+package com.ra.shop.utils;
 
 import java.io.FileNotFoundException;
 import java.io.FileReader;
