@@ -16,17 +16,17 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class AirportDAOImplTest {
 
-    ConnectionFactory conn;
+    ConnectionFactory connection;
     Airport airport;
     AirportDAOImpl airportImpl;
 
     @BeforeEach
     public void initH2() throws SQLException, IOException {
-        conn = ConnectionFactory.getInstance();
-        conn.getConnection().createStatement().executeUpdate("RUNSCRIPT FROM 'src/test/resources/sql/dbschema.sql'");
-        conn.getConnection().createStatement().executeUpdate("RUNSCRIPT FROM 'src/test/resources/sql/test-data.sql'");
+        connection = ConnectionFactory.getInstance();
+        connection.getConnection().createStatement().executeUpdate("RUNSCRIPT FROM 'src/test/resources/sql/airport_create_table.sql'");
+        connection.getConnection().createStatement().executeUpdate("RUNSCRIPT FROM 'src/test/resources/sql/airport_insert_data.sql'");
         airport = new Airport(1,"Kenedy", 12345, "international", "New York", 10);
-        airportImpl = new AirportDAOImpl(conn);
+        airportImpl = new AirportDAOImpl(connection);
     }
 
     @Test
@@ -72,7 +72,7 @@ public class AirportDAOImplTest {
 
     @Test
     public void getAirports() throws AirPortDaoException {
-        AirportDAOImpl apim = new AirportDAOImpl(conn);
+        AirportDAOImpl apim = new AirportDAOImpl(connection);
         List<Airport> list = apim.getAll();
         assertEquals(list.size(), 7);
     }
