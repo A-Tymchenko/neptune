@@ -131,7 +131,7 @@ public class WarehouseDaoImplMockTest {
     }
 
     /**
-     * testing create method to throw FAILED_TO_CREATE_NEW_WAREHOUSE Exception.
+     * testing create method to throw FAILED_TO_CREATE_NEW_SHOP Exception.
      */
     @Test
     public void whenCreateMethodCalledThrowsSQLExceptionThenDaoExceptionMustBeThrown() {
@@ -140,11 +140,11 @@ public class WarehouseDaoImplMockTest {
             warehouseDaoImpl.create(warehouse);
         });
 
-        assertEquals(exception.getMessage(), FAILED_TO_CREATE_NEW_WAREHOUSE.getMessage());
+        assertEquals(exception.getMessage(), FAILED_TO_CREATE_NEW_SHOP.getMessage());
     }
 
     /**
-     * testing create method to throw THE_WAREHOUSE_CANNOT_BE_NULL Exception.
+     * testing create method to throw THE_SHOP_CANNOT_BE_NULL Exception.
      */
     @Test
     public void whenCreateMethodCalledWithIdNullThenDaoExceptionMustBeThrown() {
@@ -154,11 +154,11 @@ public class WarehouseDaoImplMockTest {
             warehouseDaoImpl.create(warehouse);
         });
 
-        assertEquals(exception.getMessage(), THE_WAREHOUSE_CANNOT_BE_NULL.getMessage());
+        assertEquals(exception.getMessage(), THE_SHOP_CANNOT_BE_NULL.getMessage());
     }
 
     /**
-     * testing update method to throw FAILED_TO_UPDATE_WAREHOUSE Exception.
+     * testing update method to throw FAILED_TO_UPDATE_SHOP Exception.
      */
     @Test
     public void whenUpdateMethodCalledThrowsSQLExceptionThenDaoExceptionMustBeThrown() {
@@ -167,11 +167,11 @@ public class WarehouseDaoImplMockTest {
             warehouseDaoImpl.update(warehouse);
         });
 
-        assertEquals(exception.getMessage(), FAILED_TO_UPDATE_WAREHOUSE.getMessage());
+        assertEquals(exception.getMessage(), FAILED_TO_UPDATE_SHOP.getMessage());
     }
 
     /**
-     * testing delete method to throw FAILED_TO_DELETE_WAREHOUSE Exception.
+     * testing delete method to throw FAILED_TO_DELETE_SHOP Exception.
      */
     @Test
     public void whenDeleteMethodCalledThrowsSQLExceptionThenDaoExceptionMustBeThrown() {
@@ -180,11 +180,11 @@ public class WarehouseDaoImplMockTest {
             warehouseDaoImpl.delete(warehouse.getIdNumber());
         });
 
-        assertEquals(exception.getMessage(), FAILED_TO_DELETE_WAREHOUSE.getMessage());
+        assertEquals(exception.getMessage(), FAILED_TO_DELETE_SHOP.getMessage());
     }
 
     /**
-     * testing getAll method to throw FAILED_TO_GET_ALL_WAREHOUSES Exception.
+     * testing getAll method to throw FAILED_TO_GET_ALL_SHOP Exception.
      */
     @Test
     public void whenGetAllMethodCalledThrowsSQLExceptionThenDaoExceptionMustBeThrown() {
@@ -193,11 +193,11 @@ public class WarehouseDaoImplMockTest {
             warehouseDaoImpl.getAll();
         });
 
-        assertEquals(exception.getMessage(), FAILED_TO_GET_ALL_WAREHOUSES.getMessage());
+        assertEquals(exception.getMessage(), FAILED_TO_GET_ALL_SHOP.getMessage());
     }
 
     /**
-     * testing get method to throw FAILED_TO_GET_WAREHOUSE_BY_ID Exception.
+     * testing get method to throw FAILED_TO_GET_SHOP_BY_ID Exception.
      */
     @Test
     public void whenGetByIdThrowsSQLExceptionThenDaoExceptionMustBeThrown() {
@@ -206,7 +206,7 @@ public class WarehouseDaoImplMockTest {
             warehouseDaoImpl.get(1L);
         });
 
-        assertEquals(exception.getMessage(), FAILED_TO_GET_WAREHOUSE_BY_ID.getMessage() + " 1");
+        assertEquals(exception.getMessage(), FAILED_TO_GET_SHOP_BY_ID.getMessage() + " 1");
     }
 
     /**

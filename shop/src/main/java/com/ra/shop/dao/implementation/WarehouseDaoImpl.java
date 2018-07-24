@@ -47,12 +47,12 @@ public class WarehouseDaoImpl implements IRepository<Warehouse> {
             insertStatement.executeUpdate();
             final ResultSet lastIdResultSet = getLastId.executeQuery();
             if (!lastIdResultSet.next()) {
-                throw new DAOException(ExceptionMessage.THE_WAREHOUSE_CANNOT_BE_NULL.getMessage());
+                throw new DAOException(ExceptionMessage.THE_SHOP_CANNOT_BE_NULL.getMessage());
             }
             warehouse = get(lastIdResultSet.getLong(1)).get();
         } catch (SQLException e) {
-            LOGGER.error(ExceptionMessage.FAILED_TO_CREATE_NEW_WAREHOUSE.getMessage(), e);
-            throw new DAOException(ExceptionMessage.FAILED_TO_CREATE_NEW_WAREHOUSE.getMessage());
+            LOGGER.error(ExceptionMessage.FAILED_TO_CREATE_NEW_SHOP.getMessage(), e);
+            throw new DAOException(ExceptionMessage.FAILED_TO_CREATE_NEW_SHOP.getMessage());
         }
         return warehouse;
     }
@@ -74,8 +74,8 @@ public class WarehouseDaoImpl implements IRepository<Warehouse> {
             preparedStatement.executeUpdate();
             get(warehouse.getIdNumber());
         } catch (SQLException e) {
-            LOGGER.error(ExceptionMessage.FAILED_TO_UPDATE_WAREHOUSE.getMessage(), e);
-            throw new DAOException(ExceptionMessage.FAILED_TO_UPDATE_WAREHOUSE.getMessage(), e);
+            LOGGER.error(ExceptionMessage.FAILED_TO_UPDATE_SHOP.getMessage(), e);
+            throw new DAOException(ExceptionMessage.FAILED_TO_UPDATE_SHOP.getMessage(), e);
         }
         return warehouse;
     }
@@ -94,8 +94,8 @@ public class WarehouseDaoImpl implements IRepository<Warehouse> {
             preparedStatement.setLong(1, entityId);
             result = preparedStatement.executeUpdate() > 0;
         } catch (SQLException e) {
-            LOGGER.error(ExceptionMessage.FAILED_TO_DELETE_WAREHOUSE.getMessage(), e);
-            throw new DAOException(ExceptionMessage.FAILED_TO_DELETE_WAREHOUSE.getMessage());
+            LOGGER.error(ExceptionMessage.FAILED_TO_DELETE_SHOP.getMessage(), e);
+            throw new DAOException(ExceptionMessage.FAILED_TO_DELETE_SHOP.getMessage());
         }
         return result;
     }
@@ -119,8 +119,8 @@ public class WarehouseDaoImpl implements IRepository<Warehouse> {
             warehouse = Optional.of(getWarehouseFromResultSet(resultSet));
             return warehouse;
         } catch (SQLException e) {
-            LOGGER.error(ExceptionMessage.FAILED_TO_GET_WAREHOUSE_BY_ID.getMessage(), e);
-            throw new DAOException(ExceptionMessage.FAILED_TO_GET_WAREHOUSE_BY_ID.getMessage() + " " + idNumber);
+            LOGGER.error(ExceptionMessage.FAILED_TO_GET_SHOP_BY_ID.getMessage(), e);
+            throw new DAOException(ExceptionMessage.FAILED_TO_GET_SHOP_BY_ID.getMessage() + " " + idNumber);
         }
     }
 
@@ -139,8 +139,8 @@ public class WarehouseDaoImpl implements IRepository<Warehouse> {
                 warehouses.add(getWarehouseFromResultSet(resultSet));
             }
         } catch (SQLException e) {
-            LOGGER.error(ExceptionMessage.FAILED_TO_GET_ALL_WAREHOUSES.getMessage(), e);
-            throw new DAOException(ExceptionMessage.FAILED_TO_GET_ALL_WAREHOUSES.getMessage());
+            LOGGER.error(ExceptionMessage.FAILED_TO_GET_ALL_SHOP.getMessage(), e);
+            throw new DAOException(ExceptionMessage.FAILED_TO_GET_ALL_SHOP.getMessage());
         }
         return warehouses;
     }

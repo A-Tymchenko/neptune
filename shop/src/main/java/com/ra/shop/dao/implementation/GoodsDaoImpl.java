@@ -54,8 +54,8 @@ public class GoodsDaoImpl implements IRepository<Goods> {
                 entity.setId(generatedKeys.getLong(FIRST_SQL_COLUMN));
             }
         } catch (SQLException ex) {
-            LOGGER.error(ExceptionMessage.FAILED_TO_CREATE_NEW_WAREHOUSE.getMessage(), ex);
-            throw new DAOException(ExceptionMessage.FAILED_TO_CREATE_NEW_WAREHOUSE.getMessage(), ex);
+            LOGGER.error(ExceptionMessage.FAILED_TO_CREATE_NEW_SHOP.getMessage(), ex);
+            throw new DAOException(ExceptionMessage.FAILED_TO_CREATE_NEW_SHOP.getMessage(), ex);
         }
         return (Goods) get(entity.getId()).get();
     }
@@ -84,8 +84,8 @@ public class GoodsDaoImpl implements IRepository<Goods> {
                 return Optional.of(createGoods(resultSet));
             }
         } catch (SQLException ex) {
-            LOGGER.error(ExceptionMessage.FAILED_TO_GET_WAREHOUSE_BY_ID.getMessage(), ex);
-            throw new DAOException(ExceptionMessage.FAILED_TO_GET_WAREHOUSE_BY_ID.getMessage() + " " + entityId, ex);
+            LOGGER.error(ExceptionMessage.FAILED_TO_GET_SHOP_BY_ID.getMessage(), ex);
+            throw new DAOException(ExceptionMessage.FAILED_TO_GET_SHOP_BY_ID.getMessage() + " " + entityId, ex);
         }
         return Optional.empty();
     }
@@ -106,8 +106,8 @@ public class GoodsDaoImpl implements IRepository<Goods> {
             statement.setLong(FOURTH_SQL_INDEX, newEntity.getId());
             statement.executeUpdate();
         } catch (SQLException ex) {
-            LOGGER.error(ExceptionMessage.FAILED_TO_UPDATE_WAREHOUSE.getMessage(), ex);
-            throw new DAOException(ExceptionMessage.FAILED_TO_UPDATE_WAREHOUSE.getMessage(), ex);
+            LOGGER.error(ExceptionMessage.FAILED_TO_UPDATE_SHOP.getMessage(), ex);
+            throw new DAOException(ExceptionMessage.FAILED_TO_UPDATE_SHOP.getMessage(), ex);
         }
         return (Goods) get(newEntity.getId()).get();
     }
@@ -127,8 +127,8 @@ public class GoodsDaoImpl implements IRepository<Goods> {
             statement.setLong(FIRST_SQL_INDEX, entityId);
             return statement.executeUpdate() > 0;
         } catch (SQLException ex) {
-            LOGGER.error(ExceptionMessage.FAILED_TO_DELETE_WAREHOUSE.getMessage(), ex);
-            throw new DAOException(ExceptionMessage.FAILED_TO_DELETE_WAREHOUSE.getMessage(), ex);
+            LOGGER.error(ExceptionMessage.FAILED_TO_DELETE_SHOP.getMessage(), ex);
+            throw new DAOException(ExceptionMessage.FAILED_TO_DELETE_SHOP.getMessage(), ex);
         }
     }
 
@@ -147,8 +147,8 @@ public class GoodsDaoImpl implements IRepository<Goods> {
                 goods.add(createGoods(resultSet));
             }
         } catch (SQLException ex) {
-            LOGGER.error(ExceptionMessage.FAILED_TO_GET_ALL_WAREHOUSES.getMessage(), ex);
-            throw new DAOException(ExceptionMessage.FAILED_TO_GET_ALL_WAREHOUSES.getMessage(), ex);
+            LOGGER.error(ExceptionMessage.FAILED_TO_GET_ALL_SHOP.getMessage(), ex);
+            throw new DAOException(ExceptionMessage.FAILED_TO_GET_ALL_SHOP.getMessage(), ex);
         }
         return goods;
     }
