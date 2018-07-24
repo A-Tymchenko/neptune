@@ -25,7 +25,7 @@ import static org.mockito.Mockito.when;
 public class PlaneDaoMockitoTest {
 
     private static final String INSERT_PLANE_SQL = "INSERT INTO plane "
-            +"(owner, type, model, platenumber) "
+            +"(owner, model, type, platenumber) "
             +" VALUES(?,?,?,?)";
     private static final String UPDATE_PLANE_SQL = "UPDATE plane "
             +"SET owner = ?, model = ?, type = ?, platenumber = ?"
