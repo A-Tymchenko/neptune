@@ -1,4 +1,4 @@
-package com.ra.project.repository;
+package com.ra.project.repository.implementation;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -13,6 +13,7 @@ import java.util.Optional;
 import com.ra.project.configuration.ConnectionFactory;
 import com.ra.project.exceptions.UserException;
 import com.ra.project.model.User;
+import com.ra.project.repository.IRepository;
 import org.apache.log4j.Logger;
 
 /**
@@ -185,7 +186,7 @@ public class UserRepositoryImpl implements IRepository<User> {
      * Method returns resultSet with user params inside.
      *
      * @param resultSet resultSet.
-     * @return new USer that filled with values from resultSet.
+     * @return new User that filled with values from resultSet.
      * @throws SQLException if any error occurs.
      */
     private User fillEntityWithValues(final ResultSet resultSet) throws SQLException {

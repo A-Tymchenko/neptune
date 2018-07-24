@@ -3,6 +3,7 @@ package com.ra.project.repository;
 import com.ra.project.configuration.ConnectionFactory;
 import com.ra.project.exceptions.UserException;
 import com.ra.project.model.User;
+import com.ra.project.repository.implementation.UserRepositoryImpl;
 import org.h2.tools.RunScript;
 import org.junit.jupiter.api.*;
 
@@ -57,7 +58,7 @@ public class UserRepositoryIntegrationTest {
     }
 
     @Test
-    void whenCreateNullOrderThenThrowNullPointerException() {
+    void whenCreateNullUserThenThrowNullPointerException() {
         Throwable nullPointerException = assertThrows(NullPointerException.class, () -> {
             repository.create(null);
         });
@@ -96,11 +97,11 @@ public class UserRepositoryIntegrationTest {
 
     @Test
     void whenGetUserWithNullIdThenThrowNullPointerException() {
-        Throwable nullPointeException = assertThrows(NullPointerException.class, () -> {
+        Throwable nullPointerException = assertThrows(NullPointerException.class, () -> {
             repository.get(null);
         });
-        assertNotNull(nullPointeException);
-        assertEquals(NullPointerException.class, nullPointeException.getClass());
+        assertNotNull(nullPointerException);
+        assertEquals(NullPointerException.class, nullPointerException.getClass());
     }
 
     @Test
@@ -150,7 +151,7 @@ public class UserRepositoryIntegrationTest {
     }
 
     @Test
-    void whenDeleteOrderAndOperationIsSuccessfulThenReturnTrue() throws UserException {
+    void whenDeleteUserAndOperationIsSuccessfulThenReturnTrue() throws UserException {
         User user = new User(4L, "3806754352134", "Taras", "Mazur",
                 "Ukraine", "mazur_123@gmail.com");
         repository.create(user);
@@ -186,25 +187,25 @@ public class UserRepositoryIntegrationTest {
     }
 
     @Test
-    void whenGetAllOrdersThenReturnListOfExistingOrders() throws UserException {
+    void whenGetAllUsersThenReturnListOfExistingUsers() throws UserException {
         User[] users = getUsers();
         List<User> expected = new ArrayList<>();
         Collections.addAll(expected, users);
-        addOrdersToDB(users);
+        addUsersToDB(users);
         List<User> actual = repository.getAll();
         assertNotNull(actual);
         assertArrayEquals(expected.toArray(), actual.toArray());
     }
 
     @Test
-    void whenNoOrdersWereCreatedThenReturnCollectionsEmptyList() throws UserException {
+    void whenNoUsersWereCreatedThenReturnCollectionsEmptyList() throws UserException {
         List<User> users = repository.getAll();
         assertTrue(users.isEmpty());
         assertEquals(Collections.emptyList(), users);
     }
 
     @Test
-    void whenDropOrdersTableAndCallGetAllMethodThenThrowRepositoryException() {
+    void whenDropUsersTableAndCallGetAllMethodThenThrowRepositoryException() {
         Throwable repositoryException = assertThrows(UserException.class, () -> {
             dropTable();
             repository.getAll();
@@ -213,7 +214,7 @@ public class UserRepositoryIntegrationTest {
         assertEquals(UserException.class, repositoryException.getClass());
     }
 
-    private void addOrdersToDB(User[] users) throws UserException {
+    private void addUsersToDB(User[] users) throws UserException {
         for (int i = 0; i < users.length; i++) {
             repository.create(users[i]);
         }
