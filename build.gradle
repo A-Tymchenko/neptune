@@ -225,6 +225,7 @@ project("study") {
     dependencies {
         compile spring.context
     }
+}
 
 project("advertisement") {
     dependencies {
