@@ -44,9 +44,7 @@ public interface AirPortDao<T> {
      * @throws AirPortDaoException exception for DAO layer
      */
     Optional<T> getById(Integer entityId) throws AirPortDaoException;
-
-
-
+    
     /**
      * Return all entities from DB by T type.
      * If entities absent in DB return empty {@link List}.
