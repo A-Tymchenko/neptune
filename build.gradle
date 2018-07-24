@@ -239,5 +239,3 @@ project("shop_integration_test") {
         compile project(':shop')
     }
 }
-
-

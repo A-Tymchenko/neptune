@@ -1,10 +1,9 @@
 package com.ra.shop;
 
-import com.ra.shop.connection.ConnectionFactory;
-import com.ra.shop.dao.IRepository;
-import com.ra.shop.dao.exception.DAOException;
-import com.ra.shop.dao.implementation.WarehouseDaoImpl;
-import com.ra.shop.entity.Warehouse;
+import com.ra.shop.config.ConnectionFactory;
+import com.ra.shop.exceptions.DAOException;
+import com.ra.shop.model.Warehouse;
+import com.ra.shop.repository.implementation.WarehouseDaoImpl;
 import org.h2.tools.RunScript;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -24,7 +23,7 @@ public class WarehouseDaoImplTest {
     private static final String CREATE_TABLE_WAREHOUSE = "src/test/resources/warehouse_create_table.sql";
     private static final String DROP_TABLE_WAREHOUSE = "src/test/resources/drop_table.sql";
 
-    private IRepository<Warehouse> IRepository;
+    private WarehouseDaoImpl IRepository;
     private Warehouse warehouse;
 
     @BeforeEach

@@ -1,19 +1,21 @@
 package com.ra.shop;
 
-import com.ra.shop.connection.ConnectionFactory;
-import com.ra.shop.dao.exception.DAOException;
-import com.ra.shop.dao.implementation.WarehouseDaoImpl;
-import com.ra.shop.entity.Warehouse;
+import com.ra.shop.config.ConnectionFactory;
+import com.ra.shop.exceptions.DAOException;
+import com.ra.shop.repository.implementation.WarehouseDaoImpl;
+import com.ra.shop.model.Warehouse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 
-import static com.ra.shop.dao.exception.ExceptionMessage.*;
+import static com.ra.shop.enums.ExceptionMessage.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
@@ -38,13 +40,13 @@ public class WarehouseDaoImplMockTest {
     private Warehouse warehouse;
 
     @BeforeEach
-    public void init() throws SQLException {
+    public void init() throws SQLException, IOException {
         mockConnection = mock(Connection.class);
         mockStatement = mock(PreparedStatement.class);
         mockResultSet = mock(ResultSet.class);
-        mockConnectionFactory = mock(ConnectionFactory.class);
-        warehouseDaoImpl = new WarehouseDaoImpl(mockConnectionFactory);
-        when(mockConnectionFactory.getConnection()).thenReturn(mockConnection);
+        mockConnectionFactory = Mockito.spy(ConnectionFactory.getInstance());
+        warehouseDaoImpl = Mockito.spy(new WarehouseDaoImpl(mockConnectionFactory));
+        Mockito.doReturn(mockConnection).when(mockConnectionFactory).getConnection();
         warehouse = new Warehouse("Lola", Double.MIN_VALUE, 2);
         warehouse.setIdNumber(1L);
         createMockByIdMethod();

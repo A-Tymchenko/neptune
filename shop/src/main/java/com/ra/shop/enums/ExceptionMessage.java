@@ -1,4 +1,4 @@
-package com.ra.shop.dao.exception;
+package com.ra.shop.enums;
 
 public enum ExceptionMessage {
 

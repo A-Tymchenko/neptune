@@ -1,9 +1,9 @@
 package com.ra.shop;
 
-import com.ra.shop.connection.ConnectionFactory;
-import com.ra.shop.dao.exception.DAOException;
-import com.ra.shop.dao.implementation.GoodsDaoImpl;
-import com.ra.shop.entity.Goods;
+import com.ra.shop.config.ConnectionFactory;
+import com.ra.shop.exceptions.DAOException;
+import com.ra.shop.repository.implementation.GoodsDaoImpl;
+import com.ra.shop.model.Goods;
 import org.h2.tools.RunScript;
 import org.junit.jupiter.api.*;
 

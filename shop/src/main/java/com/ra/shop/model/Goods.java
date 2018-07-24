@@ -1,4 +1,4 @@
-package com.ra.shop.entity;
+package com.ra.shop.model;
 
 import java.io.Serializable;
 import java.util.Objects;

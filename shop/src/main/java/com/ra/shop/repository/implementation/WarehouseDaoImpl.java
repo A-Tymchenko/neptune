@@ -1,4 +1,4 @@
-package com.ra.shop.dao.implementation;
+package com.ra.shop.repository.implementation;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -8,11 +8,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import com.ra.shop.connection.ConnectionFactory;
-import com.ra.shop.dao.IRepository;
-import com.ra.shop.dao.exception.DAOException;
-import com.ra.shop.dao.exception.ExceptionMessage;
-import com.ra.shop.entity.Warehouse;
+import com.ra.shop.config.ConnectionFactory;
+import com.ra.shop.enums.ExceptionMessage;
+import com.ra.shop.exceptions.DAOException;
+import com.ra.shop.model.Warehouse;
+import com.ra.shop.repository.IRepository;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 

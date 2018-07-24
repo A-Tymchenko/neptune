@@ -1,6 +1,6 @@
 package com.ra.shop;
 
-import com.ra.shop.connection.ConnectionFactory;
+import com.ra.shop.config.ConnectionFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
