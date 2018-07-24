@@ -34,7 +34,8 @@ public abstract class DataCreationHelper {
         ticket.setSellingDate(Timestamp.valueOf("2018-07-24 08:00:00"));
         return ticket;
     }
-       public static Plane createPlane() {
+
+    public static Plane createPlane() {
         Plane plane = new Plane();
         plane.setIdentifier(1);
         plane.setPlateNumber(2);
@@ -43,5 +44,4 @@ public abstract class DataCreationHelper {
         plane.setOwner(SPACE);
         return plane;
     }
-
 }
