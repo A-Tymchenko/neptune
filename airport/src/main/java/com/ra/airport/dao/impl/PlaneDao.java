@@ -134,7 +134,7 @@ public class PlaneDao implements AirPortDao<Plane> {
         preparedStatement.setString(StatementParameter.PLANE_OWNER.get(), plane.getOwner());
         preparedStatement.setString(StatementParameter.PLANE_MODEL.get(), plane.getModel());
         preparedStatement.setString(StatementParameter.PLANE_TYPE.get(), plane.getType());
-        preparedStatement.setInt(StatementParameter.PLATE_NUMBER.get(), plane.getPlateNumber());
+        preparedStatement.setInt(StatementParameter.PLANE_PLATE_NUMBER.get(), plane.getPlateNumber());
         if (plane.getIdentifier() != null) {
             preparedStatement.setInt(StatementParameter.PLANE_ID.get(), plane.getIdentifier());
         }

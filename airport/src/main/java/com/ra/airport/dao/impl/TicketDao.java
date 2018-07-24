@@ -20,8 +20,9 @@ import org.apache.logging.log4j.Logger;
  * Implementation of {@link AirPortDao} interface.
  */
 public class TicketDao implements AirPortDao<Ticket> {
+
     private final transient ConnectionFactory connectionFactory;
-    private static final transient Logger LOGGER = LogManager.getLogger(TicketDao.class);
+    private static final Logger LOGGER = LogManager.getLogger(TicketDao.class);
 
     public TicketDao(final ConnectionFactory connectionFactory) {
         this.connectionFactory = connectionFactory;
@@ -184,8 +185,8 @@ public class TicketDao implements AirPortDao<Ticket> {
      */
     private void fillPreparedStatement(final Ticket ticket, final PreparedStatement preparedStatement) throws SQLException {
         preparedStatement.setString(StatementParameter.TICKET_NUMBER.get(), ticket.getTicketNumber());
-        preparedStatement.setString(StatementParameter.PASSENGER_NAME.get(), ticket.getPassengerName());
-        preparedStatement.setString(StatementParameter.DOCUMENT.get(), ticket.getDocument());
-        preparedStatement.setTimestamp(StatementParameter.SELLING_DATE.get(), ticket.getSellingDate());
+        preparedStatement.setString(StatementParameter.TICKET_PASSENGER_NAME.get(), ticket.getPassengerName());
+        preparedStatement.setString(StatementParameter.TICKET_DOCUMENT.get(), ticket.getDocument());
+        preparedStatement.setTimestamp(StatementParameter.TICKET_SELLING_DATE.get(), ticket.getSellingDate());
     }
 }
