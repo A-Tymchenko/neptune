@@ -102,8 +102,7 @@ public class UserRepositoryImpl implements IRepository<User> {
         Objects.requireNonNull(newEntity);
         try (Connection connection = connectionFactory.getConnection();
              PreparedStatement statement = connection.prepareStatement(
-                     "UPDATE USERS SET PHONE_NUMBER = ?, NAME = ?, SECOND_NAME = ?, " +
-                             "COUNTRY = ?, EMAIL_ADDRESS = ? WHERE USER_ID = ?")) {
+                     "UPDATE USERS SET PHONE_NUMBER= ?,NAME = ?,SECOND_NAME= ?,COUNTRY= ?,EMAIL_ADDRESS= ? WHERE USER_ID= ?")) {
             setStatementValuesForUpdate(statement, newEntity);
             statement.executeUpdate();
         } catch (SQLException e) {
@@ -113,30 +112,10 @@ public class UserRepositoryImpl implements IRepository<User> {
         return newEntity;
     }
 
-//    @Override
-//    public Boolean delete(final Long entityId) throws  UserException {
-//        Objects.requireNonNull(entityId);
-//        try (Connection connection = connectionFactory.getConnection();
-//             PreparedStatement statement = connection.prepareStatement("DELETE FROM USERS WHERE USER_ID = ?")) {
-//            statement.setLong(1, entityId);
-//            final int deleted = statement.executeUpdate();
-//            if (deleted > 0) {
-//                return Boolean.TRUE;
-//            }
-//        } catch (SQLException e) {
-//            LOGGER.error(e.getMessage());
-//            throw new UserException("User deletion failed!");
-//        }
-//        return Boolean.FALSE;
-//    }
-
-
-
     @Override
     public Boolean delete(final Long entityId) throws UserException {
         try (Connection connection = connectionFactory.getConnection()) {
-            final PreparedStatement statement =
-                    connection.prepareStatement("DELETE FROM USERS WHERE USER_ID = ?");
+            final PreparedStatement statement = connection.prepareStatement("DELETE FROM USERS WHERE USER_ID = ?");
             statement.setLong(1, entityId);
             return statement.executeUpdate() > 0;
         } catch (SQLException ex) {

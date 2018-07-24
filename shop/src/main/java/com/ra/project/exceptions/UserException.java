@@ -1,6 +1,5 @@
 package com.ra.project.exceptions;
 
-import com.ra.project.model.User;
 
 /**
  * Exception can be thrown if CRUD operations can`t be performed.
