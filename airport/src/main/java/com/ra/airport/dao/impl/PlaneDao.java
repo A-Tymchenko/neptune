@@ -29,7 +29,7 @@ public class PlaneDao implements AirPortDao<Plane> {
             + "SET owner = ?, model = ?, type = ?, platenumber = ?"
             + "WHERE id = ?";
 
-    private static final Logger LOGGER = LogManager.getLogger(FlightDao.class);
+    private static final Logger LOGGER = LogManager.getLogger(PlaneDao.class);
 
     public PlaneDao(final ConnectionFactory  connectionFactory) {
         this.connectionFactory = connectionFactory; }
