@@ -225,14 +225,18 @@ project("study") {
     dependencies {
         compile spring.context
     }
+
+project("advertisement") {
+    dependencies {
+        compile group: 'org.apache.logging.log4j', name: 'log4j-core', version: '2.10.0'
+        compile group: 'org.apache.logging.log4j', name: 'log4j-api', version: '2.10.0'
+        compile group: 'com.lmax', name: 'disruptor', version: '3.4.1'
+    }
 }
 
-project("airport") {
+project("advertisement_integration_test") {
     dependencies {
-        compileClasspath db.h2
-        compile group: 'org.apache.logging.log4j', name: 'log4j-api', version: '2.11.0'
-        compile group: 'org.apache.logging.log4j', name: 'log4j-core', version: '2.11.0'
-        compile group: 'com.lmax', name: 'disruptor', version: '3.4.2'
+        compile project(':advertisement')
     }
 }
 
@@ -241,6 +245,3 @@ project("airport_integration_test") {
         compile project(":airport")
     }
 }
-
-
-

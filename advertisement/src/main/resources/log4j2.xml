@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="INFO">
+    <Appenders>
+        # Console appender
+        <Console name="console-logger" target="SYSTEM_OUT">
+            # Pattern of log message for console appender
+            <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss} %p %m%n"/>
+        </Console>
+
+        # File appender
+        <File name="advertisement-logger" fileName="./target/log4j2/advertisement-logs/advertisement-log4j2.log"
+              immediateFlush="false" append="false">
+            # Pattern of log message for file appender
+            <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss} %p %m%n"/>
+        </File>
+    </Appenders>
+
+    <Loggers>
+        <AsyncRoot level="DEBUG">
+            <AppenderRef ref="advertisement-logger"/>
+            <AppenderRef ref="console-logger"/>
+        </AsyncRoot>
+    </Loggers>
+</Configuration>
