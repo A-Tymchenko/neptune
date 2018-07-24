@@ -6,4 +6,8 @@ out
 build
 *.log
 */buildSrc/.gradle
+.gradle
+.editorconfig
+*.db
 **/.gradle
+
