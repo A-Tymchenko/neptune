@@ -42,7 +42,7 @@
     </Appenders>
     <Loggers>
         # Override log level for specified package
-        <Logger name="com.ra.airport" level="DEBUG">
+        <Logger name="com.ra.shop" level="DEBUG">
             <AppenderRef ref="debug_logs"/>
             <AppenderRef ref="error_logs"/>
         </Logger>
