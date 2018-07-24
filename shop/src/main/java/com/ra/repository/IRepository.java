@@ -1,9 +1,9 @@
-package com.ra.project.repository;
+package com.ra.repository;
 
 import java.util.List;
 import java.util.Optional;
 
-import com.ra.project.exceptions.RepositoryException;
+import com.ra.exceptions.RepositoryException;
 
 /**
  * Interface represents simple CRUD-methods, which can be implemented for any entity, because it`s parameterized.

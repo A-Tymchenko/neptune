@@ -1,4 +1,4 @@
-package com.ra.project.config;
+package com.ra.config;
 
 import java.io.IOException;
 import java.sql.Connection;

@@ -1,4 +1,4 @@
-package com.ra.project.model;
+package com.ra.model;
 
 import java.io.Serializable;
 import java.util.Objects;

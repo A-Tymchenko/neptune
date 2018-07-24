@@ -1,4 +1,4 @@
-package com.ra.project.exceptions;
+package com.ra.exceptions;
 
 /**
  * Exception can be thrown if CRUD operations can`t be performed.
