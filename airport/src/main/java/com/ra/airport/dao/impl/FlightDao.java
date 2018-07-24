@@ -60,8 +60,7 @@ public class FlightDao implements AirPortDao<Flight> {
             jdbcTemplate.update(INSERT_FLIGHT_SQL, ps -> fillPreparedStatement(flight, ps));
             Integer flightId = jdbcTemplate.queryForObject("SELECT SCOPE_IDENTITY()", Integer.class);
 
-            AirPortDaoException airPortDaoException = new AirPortDaoException(ExceptionMessage.FAILED_TO_CREATE_NEW_FLIGHT.get());
-            return getById(flightId).orElseThrow(() -> airPortDaoException);
+            return getById(flightId).get();
         } catch (EmptyResultDataAccessException | BadSqlGrammarException e) {
             LOGGER.error(ExceptionMessage.FAILED_TO_CREATE_NEW_FLIGHT.toString(), e);
             throw new AirPortDaoException(ExceptionMessage.FAILED_TO_CREATE_NEW_FLIGHT.get(), e);
@@ -76,12 +75,12 @@ public class FlightDao implements AirPortDao<Flight> {
      * @throws AirPortDaoException exception for DAO layer
      */
     public Flight update(Flight flight) throws AirPortDaoException {
-        final String errorMessage = ExceptionMessage.FAILED_TO_UPDATE_FLIGHT_WITH_ID.get() + flight.getIdentifier();
         try {
             jdbcTemplate.update(UPDATE_FLIGHT_SQL, ps -> fillPreparedStatement(flight, ps));
 
-            return getById(flight.getIdentifier()).orElseThrow(() -> new AirPortDaoException(errorMessage));
+            return getById(flight.getIdentifier()).get();
         } catch (EmptyResultDataAccessException | BadSqlGrammarException e) {
+            final String errorMessage = ExceptionMessage.FAILED_TO_UPDATE_FLIGHT_WITH_ID.get() + flight.getIdentifier();
             LOGGER.error(errorMessage, e);
             throw new AirPortDaoException(errorMessage, e);
         }
@@ -119,13 +118,12 @@ public class FlightDao implements AirPortDao<Flight> {
             throw new AirPortDaoException(ExceptionMessage.FLIGHT_ID_CANNOT_BE_NULL.get());
         }
         try {
-            Optional<Flight> flight = Optional.ofNullable(jdbcTemplate.queryForObject("SELECT * FROM flight WHERE id = ?", rowMapper));
-            flight.orElseThrow(() -> new AirPortDaoException(errorMessage));
+            Flight flight = jdbcTemplate.queryForObject("SELECT * FROM flight WHERE id = ?", rowMapper);
+            return Optional.ofNullable(flight);
         } catch (EmptyResultDataAccessException | BadSqlGrammarException e) {
             LOGGER.error(errorMessage, e);
             throw new AirPortDaoException(errorMessage, e);
         }
-        return Optional.empty();
     }
 
     /**
