@@ -20,7 +20,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class WarehouseDaoImplTest {
 
-    private static final String CREATE_TABLE_WAREHOUSE = "src/test/resources/warehouse_create_table.sql";
+    private static final String CREATE_TABLE_WAREHOUSE = "src/test/resources/create_table.sql";
     private static final String DROP_TABLE_WAREHOUSE = "src/test/resources/drop_table.sql";
 
     private WarehouseDaoImpl IRepository;

@@ -20,8 +20,8 @@ import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
 public class GoodsDaoImplTest {
 
-    private static final String CREATE_TABLE_GOODS = "src/test/resources/goods_create_table.sql";
-    private static final String DROP_TABLE_GOODS = "src/test/resources/goods_drop_table.sql";
+    private static final String CREATE_TABLE_GOODS = "src/test/resources/create_table.sql";
+    private static final String DROP_TABLE_GOODS = "src/test/resources/drop_table.sql";
     private GoodsDaoImpl dao;
     private Goods existingGoods = new Goods("Camel", 7622210609779l, 1.2f);
     private Long existingGoodsID;
@@ -215,7 +215,6 @@ public class GoodsDaoImplTest {
             @Test
             public void updatingResultWithZeroId() throws Exception {
                 assertGoodsCountIs(1);
-                System.out.println(existingGoods.getId());
                 assertThrows(NoSuchElementException.class, () -> dao.update(existingGoodsZeroId));
             }
 

@@ -13,8 +13,7 @@ import com.ra.shop.enums.ExceptionMessage;
 import com.ra.shop.exceptions.DAOException;
 import com.ra.shop.model.Warehouse;
 import com.ra.shop.repository.IRepository;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.apache.log4j.Logger;
 
 public class WarehouseDaoImpl implements IRepository<Warehouse> {
     private static final int NAME = 1;
@@ -22,7 +21,7 @@ public class WarehouseDaoImpl implements IRepository<Warehouse> {
     private static final int AMOUNT = 3;
     private static final int ID_NUMBER = 4;
 
-    private static final Logger LOGGER = LogManager.getLogger(WarehouseDaoImpl.class);
+    private static final Logger LOGGER = Logger.getLogger(WarehouseDaoImpl.class);
 
     private static ConnectionFactory connectionFactory;
 

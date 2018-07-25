@@ -5,6 +5,8 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Properties;
 
+import com.ra.shop.repository.implementation.OrderRepositoryImpl;
+import org.apache.log4j.Logger;
 import org.h2.jdbcx.JdbcDataSource;
 
 /**
@@ -14,6 +16,10 @@ import org.h2.jdbcx.JdbcDataSource;
 @SuppressWarnings("PMD.ClassWithOnlyPrivateConstructorsShouldBeFinal")
 public class ConnectionFactory {
 
+    /**
+     * Logger.
+     */
+    private static final Logger LOGGER = Logger.getLogger(OrderRepositoryImpl.class);
     /**
      * Static field Properties.
      */
@@ -34,10 +40,10 @@ public class ConnectionFactory {
      *
      * @throws IOException if any error occurs.
      */
-    @SuppressWarnings("PMD.ClassWithOnlyPrivateConstructorsShouldBeFinal")
     private ConnectionFactory() throws IOException {
         properties = new Properties();
         properties.load(ClassLoader.getSystemResourceAsStream("db.properties"));
+        LOGGER.info("ConnectionFactory set end");
     }
 
     /**
@@ -78,5 +84,4 @@ public class ConnectionFactory {
     public Connection getConnection() throws SQLException {
         return dataSource.getConnection();
     }
-
 }

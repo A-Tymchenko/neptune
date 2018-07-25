@@ -10,7 +10,7 @@ import java.util.Objects;
 public class Goods implements Serializable {
 
     private static final long serialVersionUID = 1L;
-    private Long idNumber; //NOPMD
+    private Long idNumber;
     private String name;
     private Long barcode;
     private float price;
