@@ -46,12 +46,12 @@ public class PlaneDaoTest {
 
     private void createDataBaseTable() throws SQLException, IOException {
         Connection connection = ConnectionFactory.getInstance().getConnection();
-        RunScript.execute(connection, new FileReader("src/test/resources/sql/plane_table_backup.sql"));
+        RunScript.execute(connection, new FileReader("src/test/resources/sql/create_table_skripts.sql"));
     }
 
     private void deleteTable() throws SQLException, IOException {
         Connection connection = ConnectionFactory.getInstance().getConnection();
-        RunScript.execute(connection, new FileReader("src/test/resources/sql/remove_plane_table.sql"));
+        RunScript.execute(connection, new FileReader("src/test/resources/sql/remove_table_skripts.sql"));
     }
 
     private void createPlane() throws IOException {

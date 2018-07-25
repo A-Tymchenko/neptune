@@ -4,6 +4,7 @@ import com.ra.airport.dao.exception.AirPortDaoException;
 import com.ra.airport.entity.Airport;
 import com.ra.airport.dao.impl.AirportDAOImpl;
 import com.ra.airport.factory.ConnectionFactory;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -23,10 +24,15 @@ public class AirportDAOImplTest {
     @BeforeEach
     public void initH2() throws SQLException, IOException {
         connection = ConnectionFactory.getInstance();
-        connection.getConnection().createStatement().executeUpdate("RUNSCRIPT FROM 'src/test/resources/sql/airport_create_table.sql'");
-        connection.getConnection().createStatement().executeUpdate("RUNSCRIPT FROM 'src/test/resources/sql/airport_insert_data.sql'");
+        connection.getConnection().createStatement().executeUpdate("RUNSCRIPT FROM 'src/test/resources/sql/create_table_skripts.sql'");
+        connection.getConnection().createStatement().executeUpdate("RUNSCRIPT FROM 'src/test/resources/sql/tables_backup(data).sql'");
         airport = new Airport(1,"Kenedy", 12345, "international", "New York", 10);
         airportImpl = new AirportDAOImpl(connection);
+    }
+
+    @AfterEach
+    public void removeTable() throws SQLException {
+        connection.getConnection().createStatement().executeUpdate("RUNSCRIPT FROM 'src/test/resources/sql/remove_table_skripts.sql'");
     }
 
     @Test

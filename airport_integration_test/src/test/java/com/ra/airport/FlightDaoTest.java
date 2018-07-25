@@ -53,12 +53,12 @@ public class FlightDaoTest {
 
     private void createDataBaseTable() throws SQLException, IOException {
         Connection connection = ConnectionFactory.getInstance().getConnection();
-        RunScript.execute(connection, new FileReader("src/test/resources/sql/flight_table_backup.sql"));
+        RunScript.execute(connection, new FileReader("src/test/resources/sql/create_table_skripts.sql"));
     }
 
     private void deleteTable() throws SQLException, IOException {
         Connection connection = ConnectionFactory.getInstance().getConnection();
-        RunScript.execute(connection, new FileReader("src/test/resources/sql/remove_flight_table.sql"));
+        RunScript.execute(connection, new FileReader("src/test/resources/sql/remove_table_skripts.sql"));
     }
 
     private void createFlight() throws IOException {

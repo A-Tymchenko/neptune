@@ -44,13 +44,13 @@ class TicketDaoTest {
 
     private void createDataBaseTable() throws SQLException, IOException {
         Connection connection = ConnectionFactory.getInstance().getConnection();
-        urlToTicketScript = ClassLoader.getSystemResource("./sql/ticket_create_table.sql");
+        urlToTicketScript = ClassLoader.getSystemResource("./sql/create_table_skripts.sql");
         RunScript.execute(connection, new FileReader(urlToTicketScript.getPath()));
     }
 
     private void deleteTable() throws SQLException, IOException {
         Connection connection = ConnectionFactory.getInstance().getConnection();
-        urlToTicketScript = ClassLoader.getSystemResource("./sql/ticket_drop_table.sql");
+        urlToTicketScript = ClassLoader.getSystemResource("./sql/remove_table_skripts.sql");
         RunScript.execute(connection, new FileReader(urlToTicketScript.getPath()));
     }
 
