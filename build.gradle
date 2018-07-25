@@ -66,7 +66,7 @@ ext {
             jms               : "org.springframework:spring-jms:$springVersion",
             oxm               : "org.springframework:spring-oxm:$springVersion",
             securityWeb       : "org.springframework.security:spring-security-web:$springSecurityVersion",
-            securityConfig    : "org.springframework.security:spring-security-configuration:$springSecurityVersion",
+            securityConfig    : "org.springframework.security:spring-security-config:$springSecurityVersion",
             securityTaglibs   : "org.springframework.security:spring-security-taglibs:$springSecurityVersion",
             rabbit            : "org.springframework.amqp:spring-rabbit:$springAmqpVersion",
             springSecurityTest: "org.springframework.security:spring-security-test:$springSecurityVersion",
@@ -227,6 +227,17 @@ project("study") {
     }
 }
 
-project ("shop"){
+project("shop") {
+    dependencies {
+        compileClasspath db.h2
+        compile group: 'org.apache.logging.log4j', name: 'log4j-api', version: '2.11.0'
+        compile group: 'org.apache.logging.log4j', name: 'log4j-core', version: '2.11.0'
+        compile group: 'com.lmax', name: 'disruptor', version: '3.4.2'
+    }
+}
 
+project("shop_integration_test") {
+    dependencies {
+        compile project(':shop')
+    }
 }

@@ -1,7 +1,7 @@
 package com.ra.shop;
 
-import com.ra.shop.configuration.ConnectionFactory;
-import com.ra.shop.exceptions.UserException;
+import com.ra.shop.config.ConnectionFactory;
+import com.ra.shop.exceptions.DAOException;
 import com.ra.shop.model.User;
 import com.ra.shop.repository.implementation.UserRepositoryImpl;
 import com.ra.shop.utils.DatabaseUtils;
@@ -48,7 +48,7 @@ public class UserRepositoryIntegrationTest {
     }
 
     @Test
-    void whenCreateUserThenReturnCreatedUser() throws UserException {
+    void whenCreateUserThenReturnCreatedUser() throws DAOException {
         User user = new User(1L, "3809978957860", "Pasha", "Vakula",
                 "Poland", "vakula_2123@gmail.com");
         User created = repository.create(user);
@@ -67,16 +67,16 @@ public class UserRepositoryIntegrationTest {
 
     @Test
     void whenUserCreationFailsThenThrowRepositoryException() {
-        Throwable repositoryException = assertThrows(UserException.class, () -> {
+        Throwable repositoryException = assertThrows(DAOException.class, () -> {
             dbUtils.dropTable(connection);
             repository.create(new User());
         });
         assertNotNull(repositoryException);
-        assertEquals(UserException.class, repositoryException.getClass());
+        assertEquals(DAOException.class, repositoryException.getClass());
     }
 
     @Test
-    void whenGetUserThenReturnOptionalOfUser() throws UserException {
+    void whenGetUserThenReturnOptionalOfUser() throws DAOException {
         User user = new User(2L, "3809934252275", "Pasha", "Volum",
                 "Moscow", "pasha_213@gmail.com");
         User created = repository.create(user);
@@ -88,7 +88,7 @@ public class UserRepositoryIntegrationTest {
     }
 
     @Test
-    void whenGetUserWithNonExistingIdThenReturnOptionalEmpty() throws UserException {
+    void whenGetUserWithNonExistingIdThenReturnOptionalEmpty() throws DAOException {
         Optional<User> optional = repository.get(getRandomId());
         assertNotNull(optional);
         assertFalse(optional.isPresent());
@@ -106,16 +106,16 @@ public class UserRepositoryIntegrationTest {
 
     @Test
     void whenDropOrdersTableAndGetOrderThenThrowRepositoryException() {
-        Throwable repositoryException = assertThrows(UserException.class, () -> {
+        Throwable repositoryException = assertThrows(DAOException.class, () -> {
             dbUtils.dropTable(connection);
             repository.get(getRandomId());
         });
         assertNotNull(repositoryException);
-        assertEquals(UserException.class, repositoryException.getClass());
+        assertEquals(DAOException.class, repositoryException.getClass());
     }
 
     @Test
-    void whenUpdateUserThenReturnUpdatedUser() throws UserException {
+    void whenUpdateUserThenReturnUpdatedUser() throws DAOException {
         User user = new User(3L, "3806642341542", "Murchik", "Babulin",
                 "USA", "murchik_21@gmail.com");
         repository.create(user);
@@ -142,16 +142,16 @@ public class UserRepositoryIntegrationTest {
 
     @Test
     void whenDropUsersTableAndUpdateNotExistingUserThenThrowRepositoryException() {
-        Throwable repositoryException = assertThrows(UserException.class, () -> {
+        Throwable repositoryException = assertThrows(DAOException.class, () -> {
             dbUtils.dropTable(connection);
             repository.update(new User());
         });
         assertNotNull(repositoryException);
-        assertEquals(UserException.class, repositoryException.getClass());
+        assertEquals(DAOException.class, repositoryException.getClass());
     }
 
     @Test
-    void whenDeleteUserAndOperationIsSuccessfulThenReturnTrue() throws UserException {
+    void whenDeleteUserAndOperationIsSuccessfulThenReturnTrue() throws DAOException {
         User user = new User(4L, "3806754352134", "Taras", "Mazur",
                 "Ukraine", "mazur_123@gmail.com");
         repository.create(user);
@@ -161,7 +161,7 @@ public class UserRepositoryIntegrationTest {
     }
 
     @Test
-    void whenDeleteNonExistingUserAndOperationIsFailedThenReturnFalse() throws UserException {
+    void whenDeleteNonExistingUserAndOperationIsFailedThenReturnFalse() throws DAOException{
         Boolean isDeleted = repository.delete(getRandomId());
         assertFalse(isDeleted);
         assertEquals(Optional.empty(), repository.get(getRandomId()));
@@ -178,16 +178,16 @@ public class UserRepositoryIntegrationTest {
 
     @Test
     void whenDropTableAndDeleteNonExistingUserThenThrowRepositoryException() {
-        Throwable repositoryException = assertThrows(UserException.class, () -> {
+        Throwable repositoryException = assertThrows(DAOException.class, () -> {
             dbUtils.dropTable(connection);
             repository.delete(getRandomId());
         });
         assertNotNull(repositoryException);
-        assertEquals(UserException.class, repositoryException.getClass());
+        assertEquals(DAOException.class, repositoryException.getClass());
     }
 
     @Test
-    void whenGetAllUsersThenReturnListOfExistingUsers() throws UserException {
+    void whenGetAllUsersThenReturnListOfExistingUsers() throws DAOException {
         User[] users = getUsers();
         List<User> expected = new ArrayList<>();
         Collections.addAll(expected, users);
@@ -198,7 +198,7 @@ public class UserRepositoryIntegrationTest {
     }
 
     @Test
-    void whenNoUsersWereCreatedThenReturnCollectionsEmptyList() throws UserException {
+    void whenNoUsersWereCreatedThenReturnCollectionsEmptyList() throws DAOException {
         List<User> users = repository.getAll();
         assertTrue(users.isEmpty());
         assertEquals(Collections.emptyList(), users);
@@ -206,15 +206,15 @@ public class UserRepositoryIntegrationTest {
 
     @Test
     void whenDropUsersTableAndCallGetAllMethodThenThrowRepositoryException() {
-        Throwable repositoryException = assertThrows(UserException.class, () -> {
+        Throwable repositoryException = assertThrows(DAOException.class, () -> {
             dbUtils.dropTable(connection);
             repository.getAll();
         });
         assertNotNull(repositoryException);
-        assertEquals(UserException.class, repositoryException.getClass());
+        assertEquals(DAOException.class, repositoryException.getClass());
     }
 
-    private void addUsersToDB(User[] users) throws UserException {
+    private void addUsersToDB(User[] users) throws DAOException {
         for (int i = 0; i < users.length; i++) {
             repository.create(users[i]);
         }

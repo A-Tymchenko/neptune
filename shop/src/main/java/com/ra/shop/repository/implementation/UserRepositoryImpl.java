@@ -11,8 +11,8 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
-import com.ra.shop.configuration.ConnectionFactory;
-import com.ra.shop.exceptions.UserException;
+import com.ra.shop.config.ConnectionFactory;
+import com.ra.shop.exceptions.DAOException;
 import com.ra.shop.model.User;
 import com.ra.shop.repository.IRepository;
 import org.apache.log4j.Logger;
@@ -44,7 +44,7 @@ public class UserRepositoryImpl implements IRepository<User> {
     }
 
     @Override
-    public List<User> getAll() throws UserException {
+    public List<User> getAll() throws DAOException {
         final List<User> all = new ArrayList<>();
         try (Connection connection = connectionFactory.getConnection();
              PreparedStatement statement = connection.prepareStatement("SELECT * FROM USERS")) {
@@ -58,13 +58,13 @@ public class UserRepositoryImpl implements IRepository<User> {
             }
         } catch (SQLException e) {
             LOGGER.error(e.getMessage());
-            throw new UserException("Can`t get user`s list!");
+            throw new DAOException("Can`t get user`s list!");
         }
         return Collections.emptyList();
     }
 
     @Override
-    public User create(final User entity) throws UserException {
+    public User create(final User entity) throws DAOException {
         Objects.requireNonNull(entity);
         try (Connection connection = connectionFactory.getConnection();
              PreparedStatement statement = connection.prepareStatement(
@@ -79,13 +79,13 @@ public class UserRepositoryImpl implements IRepository<User> {
             }
         } catch (SQLException e) {
             LOGGER.error(e.getMessage(), e);
-            throw new UserException("User creation is failed!", e);
+            throw new DAOException("User creation is failed!", e);
         }
         return entity;
     }
 
     @Override
-    public Optional<User> get(final Long entityId) throws UserException {
+    public Optional<User> get(final Long entityId) throws DAOException {
         Objects.requireNonNull(entityId);
         User found;
         try (Connection connection = connectionFactory.getConnection();
@@ -98,13 +98,13 @@ public class UserRepositoryImpl implements IRepository<User> {
             }
         } catch (SQLException e) {
             LOGGER.error(e.getMessage());
-            throw new UserException(String.format("Can`t get an user with id : %d", entityId));
+            throw new DAOException(String.format("Can`t get an user with id : %d", entityId));
         }
         return Optional.empty();
     }
 
     @Override
-    public User update(final User newEntity) throws UserException {
+    public User update(final User newEntity) throws DAOException {
         Objects.requireNonNull(newEntity);
         try (Connection connection = connectionFactory.getConnection();
              PreparedStatement statement = connection.prepareStatement(
@@ -113,20 +113,20 @@ public class UserRepositoryImpl implements IRepository<User> {
             statement.executeUpdate();
         } catch (SQLException e) {
             LOGGER.error(e.getMessage());
-            throw new UserException("User updating failed!");
+            throw new DAOException("User updating failed!");
         }
         return newEntity;
     }
 
     @Override
-    public Boolean delete(final Long entityId) throws UserException {
+    public Boolean delete(final Long entityId) throws DAOException {
         try (Connection connection = connectionFactory.getConnection()) {
             final PreparedStatement statement = connection.prepareStatement("DELETE FROM USERS WHERE USER_ID = ?");
             statement.setLong(1, entityId);
             return statement.executeUpdate() > 0;
         } catch (SQLException ex) {
             LOGGER.error(ex.getMessage());
-            throw new UserException(ex.getMessage(), ex);
+            throw new DAOException(ex.getMessage(), ex);
         }
     }
 

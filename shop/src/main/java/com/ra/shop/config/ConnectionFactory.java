@@ -1,4 +1,4 @@
-package com.ra.shop.configuration;
+package com.ra.shop.config;
 
 import java.io.IOException;
 import java.sql.Connection;
@@ -80,4 +80,3 @@ public class ConnectionFactory {
     }
 
 }
-
