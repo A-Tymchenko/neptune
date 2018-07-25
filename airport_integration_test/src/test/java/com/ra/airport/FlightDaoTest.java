@@ -1,5 +1,6 @@
 package com.ra.airport;
 
+import com.ra.airport.config.AirPortConfiguration;
 import com.ra.airport.dao.AirPortDao;
 import com.ra.airport.dao.exception.AirPortDaoException;
 import com.ra.airport.dao.impl.FlightDao;
@@ -9,6 +10,12 @@ import org.h2.tools.RunScript;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.jdbc.Sql;
+import org.springframework.test.context.jdbc.SqlGroup;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.io.FileReader;
 import java.io.IOException;
@@ -27,6 +34,12 @@ import static org.junit.jupiter.api.Assertions.*;
 /**
  * Tests for {@link FlightDao} class
  */
+@ExtendWith(SpringExtension.class)
+@ContextConfiguration(classes = {AirPortConfiguration.class})
+//@SqlGroup({
+//        @Sql(scripts = "/resources/sql/flight_table_backup.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD),
+//        @Sql(scripts = "DROP TABLE flight", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
+//})
 public class FlightDaoTest {
 
     private static final String DATE_TIME_FORMAT = "yyyy-MM-dd HH:mm:ss";
@@ -36,6 +49,7 @@ public class FlightDaoTest {
     private static final String WIZZ_AIR = "Wizz Air";
     private static final Double FARE_100 = 100.0;
 
+    @Autowired
     private AirPortDao<Flight> airPortDao;
 
     private Flight flight;
@@ -65,7 +79,6 @@ public class FlightDaoTest {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern(DATE_TIME_FORMAT);
         LocalDateTime departureDate = LocalDateTime.parse(DEPARTURE_DATE, formatter);
         LocalDateTime arrivalDate = LocalDateTime.parse(ARRIVAL_DATE, formatter);
-        airPortDao = new FlightDao(ConnectionFactory.getInstance());
         flight = new Flight();
         flight.setName(KYIV_ROME);
         flight.setCarrier(WIZZ_AIR);

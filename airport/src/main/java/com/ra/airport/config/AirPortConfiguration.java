@@ -1,4 +1,4 @@
-package com.ra.airport.configuration;
+package com.ra.airport.config;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
@@ -13,7 +13,10 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import javax.sql.DataSource;
 
 @PropertySource("classpath:config.properties")
-@ComponentScan("com.ra.airport.dao.impl")
+@ComponentScan(basePackages = {
+        "com.ra.airport.dao.impl",
+        "com.ra.airport.mapper"
+})
 @Configuration
 public class AirPortConfiguration {
 

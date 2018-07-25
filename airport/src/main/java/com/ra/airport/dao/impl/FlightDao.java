@@ -18,6 +18,7 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Time;
 import java.sql.Timestamp;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -59,8 +60,7 @@ public class FlightDao implements AirPortDao<Flight> {
         try {
             jdbcTemplate.update(INSERT_FLIGHT_SQL, ps -> fillPreparedStatement(flight, ps));
             Integer flightId = jdbcTemplate.queryForObject("SELECT SCOPE_IDENTITY()", Integer.class);
-
-            return getById(flightId).get();
+            return getById(flightId).orElse(flight);
         } catch (EmptyResultDataAccessException | BadSqlGrammarException e) {
             LOGGER.error(ExceptionMessage.FAILED_TO_CREATE_NEW_FLIGHT.toString(), e);
             throw new AirPortDaoException(ExceptionMessage.FAILED_TO_CREATE_NEW_FLIGHT.get(), e);
@@ -77,8 +77,7 @@ public class FlightDao implements AirPortDao<Flight> {
     public Flight update(Flight flight) throws AirPortDaoException {
         try {
             jdbcTemplate.update(UPDATE_FLIGHT_SQL, ps -> fillPreparedStatement(flight, ps));
-
-            return getById(flight.getIdentifier()).get();
+            return getById(flight.getIdentifier()).orElse(flight);
         } catch (EmptyResultDataAccessException | BadSqlGrammarException e) {
             final String errorMessage = ExceptionMessage.FAILED_TO_UPDATE_FLIGHT_WITH_ID.get() + flight.getIdentifier();
             LOGGER.error(errorMessage, e);
@@ -96,7 +95,7 @@ public class FlightDao implements AirPortDao<Flight> {
      */
     public boolean delete(final Flight flight) throws AirPortDaoException {
         try {
-            int deletedRowCount = jdbcTemplate.update("DELETE FROM flight WHERE id = ?", ps -> fillPreparedStatement(flight, ps));
+            int deletedRowCount = jdbcTemplate.update("DELETE FROM flight WHERE id = ?", flight.getIdentifier());
             return deletedRowCount > 0;
         } catch (EmptyResultDataAccessException | BadSqlGrammarException e) {
             final String errorMessage = ExceptionMessage.FAILED_TO_DELETE_FLIGHT_WITH_ID.get() + flight.getIdentifier();
@@ -118,7 +117,7 @@ public class FlightDao implements AirPortDao<Flight> {
             throw new AirPortDaoException(ExceptionMessage.FLIGHT_ID_CANNOT_BE_NULL.get());
         }
         try {
-            Flight flight = jdbcTemplate.queryForObject("SELECT * FROM flight WHERE id = ?", rowMapper);
+            Flight flight = jdbcTemplate.queryForObject("SELECT * FROM flight WHERE id = ?", Arrays.asList(flightId).toArray(),rowMapper);
             return Optional.ofNullable(flight);
         } catch (EmptyResultDataAccessException | BadSqlGrammarException e) {
             LOGGER.error(errorMessage, e);
