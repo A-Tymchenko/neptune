@@ -1,8 +1,8 @@
-package com.ra.project.repository;
+package com.ra.shop;
 
-import com.ra.project.exceptions.UserException;
-import com.ra.project.model.User;
-import com.ra.project.repository.implementation.UserRepositoryImpl;
+import com.ra.shop.exceptions.UserException;
+import com.ra.shop.model.User;
+import com.ra.shop.repository.implementation.UserRepositoryImpl;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
@@ -73,10 +73,6 @@ public class UserRepositoryMockTest {
         List<User> actual = mockUserRepository.getAll();
         assertEquals(expected.size(), actual.size());
     }
-
-//    private long getRandomId() {
-//        return 123L;
-//    }
 
     private User[] getUsers() {
         return new User[]{

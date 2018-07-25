@@ -1,4 +1,4 @@
-package com.ra.project.exceptions;
+package com.ra.shop.exceptions;
 
 
 /**

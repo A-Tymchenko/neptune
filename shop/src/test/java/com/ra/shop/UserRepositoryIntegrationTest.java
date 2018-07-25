@@ -1,21 +1,17 @@
-package com.ra.project.repository;
+package com.ra.shop;
 
-import com.ra.project.configuration.ConnectionFactory;
-import com.ra.project.exceptions.UserException;
-import com.ra.project.model.User;
-import com.ra.project.repository.implementation.UserRepositoryImpl;
-import org.h2.tools.RunScript;
+import com.ra.shop.configuration.ConnectionFactory;
+import com.ra.shop.exceptions.UserException;
+import com.ra.shop.model.User;
+import com.ra.shop.repository.implementation.UserRepositoryImpl;
+import com.ra.shop.utils.DatabaseUtils;
 import org.junit.jupiter.api.*;
 
 import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -23,28 +19,31 @@ public class UserRepositoryIntegrationTest {
 
     private static ConnectionFactory factory;
     private static UserRepositoryImpl repository;
-    private Connection connection;
+    private static Connection connection;
+    private static DatabaseUtils dbUtils;
 
     @BeforeAll
-    static void initGlobal() throws IOException {
+    static void initGlobal() throws IOException, SQLException {
         factory = ConnectionFactory.getInstance();
+        connection = factory.getConnection();
         repository = new UserRepositoryImpl(factory);
+        dbUtils = new DatabaseUtils();
     }
 
     @BeforeEach
-    void init() throws SQLException, FileNotFoundException {
-        connection = factory.getConnection();
-        RunScript.execute(connection, new FileReader(".//src//main//resources//createUsersTable.sql"));
+    void init() throws FileNotFoundException, SQLException {
+        dbUtils.createTable(connection);
     }
 
     @AfterEach
     void tearDown() throws FileNotFoundException, SQLException {
-        RunScript.execute(connection, new FileReader(".//src//main//resources//dropUsersTable.sql"));
+        dbUtils.dropTable(connection);
     }
 
     @AfterAll
     static void tearDownGlobal() {
         repository = null;
+        connection = null;
         factory = null;
     }
 
@@ -69,7 +68,7 @@ public class UserRepositoryIntegrationTest {
     @Test
     void whenUserCreationFailsThenThrowRepositoryException() {
         Throwable repositoryException = assertThrows(UserException.class, () -> {
-            dropTable();
+            dbUtils.dropTable(connection);
             repository.create(new User());
         });
         assertNotNull(repositoryException);
@@ -80,8 +79,9 @@ public class UserRepositoryIntegrationTest {
     void whenGetUserThenReturnOptionalOfUser() throws UserException {
         User user = new User(2L, "3809934252275", "Pasha", "Volum",
                 "Moscow", "pasha_213@gmail.com");
-        repository.create(user);
-        Optional<User> optional = repository.get(user.getId());
+        User created = repository.create(user);
+        System.out.println(created.getId());
+        Optional<User> optional = repository.get(created.getId());
         assertNotNull(optional);
         assertTrue(optional.isPresent());
         assertEquals(user, optional.get());
@@ -105,9 +105,9 @@ public class UserRepositoryIntegrationTest {
     }
 
     @Test
-    void whenDropUsersTableAndGetUserThenThrowRepositoryException() {
+    void whenDropOrdersTableAndGetOrderThenThrowRepositoryException() {
         Throwable repositoryException = assertThrows(UserException.class, () -> {
-            dropTable();
+            dbUtils.dropTable(connection);
             repository.get(getRandomId());
         });
         assertNotNull(repositoryException);
@@ -119,15 +119,15 @@ public class UserRepositoryIntegrationTest {
         User user = new User(3L, "3806642341542", "Murchik", "Babulin",
                 "USA", "murchik_21@gmail.com");
         repository.create(user);
-        user.setName("Gala");
-        user.setSecondName("Dabush");
-        user.setCountry("Ukraine");
+        user.setName("Gugulya");
+        user.setSecondName("Zahrema");
+        user.setCountry("Turkey");
         User updated = repository.update(user);
         assertNotNull(updated);
         assertAll(() -> {
-            assertEquals("Gala", user.getName());
-            assertEquals("Dabush", user.getSecondName());
-            assertEquals("Ukraine", user.getCountry());
+            assertEquals("Gugulya", user.getName());
+            assertEquals("Zahrema", user.getSecondName());
+            assertEquals("Turkey",  user.getCountry());
         });
     }
 
@@ -143,7 +143,7 @@ public class UserRepositoryIntegrationTest {
     @Test
     void whenDropUsersTableAndUpdateNotExistingUserThenThrowRepositoryException() {
         Throwable repositoryException = assertThrows(UserException.class, () -> {
-            dropTable();
+            dbUtils.dropTable(connection);
             repository.update(new User());
         });
         assertNotNull(repositoryException);
@@ -179,7 +179,7 @@ public class UserRepositoryIntegrationTest {
     @Test
     void whenDropTableAndDeleteNonExistingUserThenThrowRepositoryException() {
         Throwable repositoryException = assertThrows(UserException.class, () -> {
-            dropTable();
+            dbUtils.dropTable(connection);
             repository.delete(getRandomId());
         });
         assertNotNull(repositoryException);
@@ -207,7 +207,7 @@ public class UserRepositoryIntegrationTest {
     @Test
     void whenDropUsersTableAndCallGetAllMethodThenThrowRepositoryException() {
         Throwable repositoryException = assertThrows(UserException.class, () -> {
-            dropTable();
+            dbUtils.dropTable(connection);
             repository.getAll();
         });
         assertNotNull(repositoryException);
@@ -236,11 +236,7 @@ public class UserRepositoryIntegrationTest {
     }
 
     private Long getRandomId() {
-        return 123L;
-    }
-
-    private void dropTable() throws SQLException, FileNotFoundException {
-        RunScript.execute(connection, new FileReader(".//src//main//resources//dropUsersTable.sql"));
+        return 654L;
     }
 
 }

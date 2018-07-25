@@ -1,4 +1,4 @@
-package com.ra.project.configuration;
+package com.ra.shop.configuration;
 
 import java.io.IOException;
 import java.sql.Connection;
@@ -11,7 +11,8 @@ import org.h2.jdbcx.JdbcDataSource;
  * Class perform factory creation.
  * This factory is needed for performing connections to database.
  */
-public final class ConnectionFactory {
+@SuppressWarnings("PMD.ClassWithOnlyPrivateConstructorsShouldBeFinal")
+public class ConnectionFactory {
 
     /**
      * Static field Properties.
@@ -33,6 +34,7 @@ public final class ConnectionFactory {
      *
      * @throws IOException if any error occurs.
      */
+    @SuppressWarnings("PMD.ClassWithOnlyPrivateConstructorsShouldBeFinal")
     private ConnectionFactory() throws IOException {
         properties = new Properties();
         properties.load(ClassLoader.getSystemResourceAsStream("db.properties"));

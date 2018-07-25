@@ -1,19 +1,20 @@
-package com.ra.project.repository.implementation;
+package com.ra.shop.repository.implementation;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
-import com.ra.project.configuration.ConnectionFactory;
-import com.ra.project.exceptions.UserException;
-import com.ra.project.model.User;
-import com.ra.project.repository.IRepository;
+import com.ra.shop.configuration.ConnectionFactory;
+import com.ra.shop.exceptions.UserException;
+import com.ra.shop.model.User;
+import com.ra.shop.repository.IRepository;
 import org.apache.log4j.Logger;
 
 /**
@@ -21,13 +22,12 @@ import org.apache.log4j.Logger;
  */
 public class UserRepositoryImpl implements IRepository<User> {
 
-    private static final Logger LOGGER = Logger.getLogger(UserException.class);
-    private static final int USER_ID = 1;
-    private static final int PHONE_NUMBER = 2;
-    private static final int NAME = 3;
-    private static final int SECOND_NAME = 4;
-    private static final int COUNTRY = 5;
-    private static final int EMAIL_ADDRESS = 6;
+    private static final Logger LOGGER = Logger.getLogger(UserRepositoryImpl.class);
+    private static final int PHONE_NUMBER = 1;
+    private static final int NAME = 2;
+    private static final int SECOND_NAME = 3;
+    private static final int COUNTRY = 4;
+    private static final int EMAIL_ADDRESS = 5;
 
     /**
      * Field connectionFactory.
@@ -68,12 +68,18 @@ public class UserRepositoryImpl implements IRepository<User> {
         Objects.requireNonNull(entity);
         try (Connection connection = connectionFactory.getConnection();
              PreparedStatement statement = connection.prepareStatement(
-                     "INSERT INTO USERS VALUES(?, ?, ?, ?, ?, ?)")) {
+                     "INSERT INTO USERS (PHONE_NUMBER, NAME, SECOND_NAME, COUNTRY, EMAIL_ADDRESS) "
+                             + "VALUES(?, ?, ?, ?, ?)",
+                     Statement.RETURN_GENERATED_KEYS)) {
             setStatementValuesForCreation(statement, entity);
             statement.executeUpdate();
+            final ResultSet primaryKeys = statement.getGeneratedKeys();
+            if (primaryKeys.next()) {
+                entity.setId(primaryKeys.getLong(1));
+            }
         } catch (SQLException e) {
-            LOGGER.error(e.getMessage());
-            throw new UserException("User creation is failed!");
+            LOGGER.error(e.getMessage(), e);
+            throw new UserException("User creation is failed!", e);
         }
         return entity;
     }
@@ -153,7 +159,6 @@ public class UserRepositoryImpl implements IRepository<User> {
      * @throws SQLException if any error occurs.
      */
     private void setStatementValuesForCreation(final PreparedStatement preparedStatement, final User user) throws SQLException {
-        preparedStatement.setLong(USER_ID, user.getId());
         preparedStatement.setString(PHONE_NUMBER, user.getPhoneNumber());
         preparedStatement.setString(NAME, user.getName());
         preparedStatement.setString(SECOND_NAME, user.getSecondName());
