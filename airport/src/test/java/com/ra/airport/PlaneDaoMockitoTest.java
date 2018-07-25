@@ -56,6 +56,9 @@ public class PlaneDaoMockitoTest {
 
     private void createMocksFromGetByIdMethod() throws SQLException {
         when(mockConnection.prepareStatement(SELECT_PLANE_BY_ID_SQL)).thenReturn(mockStatement);
+        when(mockConnection.prepareStatement(INSERT_PLANE_SQL)).thenReturn(mockStatement);
+        when(mockConnection.prepareStatement(DELETE_PLANE_BY_ID_SQL)).thenReturn(mockStatement);
+        when(mockConnection.prepareStatement(SELECT_LAST_GENERATED_ID_SQL)).thenReturn(mockStatement);
         when(mockResultSet.next()).thenReturn(true);
         when(mockStatement.executeQuery()).thenReturn(mockResultSet);
         when(mockResultSet.getInt(1)).thenReturn(plane.getIdentifier());
@@ -68,16 +71,13 @@ public class PlaneDaoMockitoTest {
 
     @Test
     public void whenCreateThenCorrectSQLShouldBeExecutedAndCorrectEntityShouldBeReturned() throws SQLException, AirPortDaoException {
-        when(mockConnection.prepareStatement(INSERT_PLANE_SQL)).thenReturn(mockStatement);
-        when(mockConnection.prepareStatement(SELECT_LAST_GENERATED_ID_SQL)).thenReturn(mockStatement);
+
         Plane result = planeDao.create(plane);
         assertEquals(plane, result);
     }
 
     @Test
     public void whenCreateReturnNullGeneratedIdThenDAOExceptionShouldBeThrown() throws SQLException, AirPortDaoException {
-        when(mockConnection.prepareStatement(INSERT_PLANE_SQL)).thenReturn(mockStatement);
-        when(mockConnection.prepareStatement(SELECT_LAST_GENERATED_ID_SQL)).thenReturn(mockStatement);
         when(mockResultSet.next()).thenReturn(false);
         Throwable exception =  assertThrows(AirPortDaoException.class,() -> {
             planeDao.create(plane);
@@ -96,7 +96,6 @@ public class PlaneDaoMockitoTest {
 
     @Test
     public void whenDeleteThenCorrectSQLShouldBeExecutedAndTrueShouldBeReturned() throws AirPortDaoException, SQLException {
-        when(mockConnection.prepareStatement(DELETE_PLANE_BY_ID_SQL)).thenReturn(mockStatement);
         when(mockStatement.executeUpdate()).thenReturn(1);
         boolean result = planeDao.delete(plane);
         assertEquals(true, result);
@@ -104,7 +103,6 @@ public class PlaneDaoMockitoTest {
 
     @Test
     public void whenDeleteStatementExecuteReturnOThenFalseShouldBeReturned() throws SQLException, AirPortDaoException {
-        when(mockConnection.prepareStatement(DELETE_PLANE_BY_ID_SQL)).thenReturn(mockStatement);
         when(mockStatement.executeUpdate()).thenReturn(0);
         boolean result = planeDao.delete(plane);
 

@@ -55,9 +55,10 @@ public class TicketDaoMockitoTest {
     }
 
     private void createMocksFromGetByIdMethod() throws SQLException {
-        when(mockConnection.prepareStatement(SELECT_TICKET_BY_ID_SQL)).thenReturn(mockStatement);
         when(mockResultSet.next()).thenReturn(true);
         when(mockStatement.executeQuery()).thenReturn(mockResultSet);
+        when(mockConnection.prepareStatement(SELECT_TICKET_BY_ID_SQL)).thenReturn(mockStatement);
+        when(mockConnection.prepareStatement(DELETE_TICKET_BY_ID_SQL)).thenReturn(mockStatement);
         when(mockResultSet.getInt("TICKET_ID")).thenReturn(ticket.getTicketId());
         when(mockResultSet.getString("TICKET_NUMBER")).thenReturn(ticket.getTicketNumber());
         when(mockResultSet.getString("PASSENGER_NAME")).thenReturn(ticket.getPassengerName());
@@ -76,7 +77,6 @@ public class TicketDaoMockitoTest {
 
     @Test
     public void whenGetTicketByIdThenReturnEmptyOption() throws SQLException, AirPortDaoException {
-        when(mockConnection.prepareStatement(SELECT_TICKET_BY_ID_SQL)).thenReturn(mockStatement);
         when(mockStatement.executeQuery()).thenReturn(mockResultSet);
         when(mockResultSet.next()).thenReturn(false);
         Optional<Ticket> result = ticketDao.getById(1);
@@ -85,7 +85,6 @@ public class TicketDaoMockitoTest {
 
     @Test
     public void whenGetTicketByIdThenReturnOptionalTicket() throws SQLException, AirPortDaoException {
-        when(mockConnection.prepareStatement(SELECT_TICKET_BY_ID_SQL)).thenReturn(mockStatement);
         when(mockStatement.executeQuery()).thenReturn(mockResultSet);
         when(mockResultSet.next()).thenReturn(true);
         Optional<Ticket> result = ticketDao.getById(1);
@@ -103,7 +102,6 @@ public class TicketDaoMockitoTest {
 
     @Test
     public void whenDeleteThenCorrectSQLShouldBeExecutedAndTrueShouldBeReturned() throws AirPortDaoException, SQLException {
-        when(mockConnection.prepareStatement(DELETE_TICKET_BY_ID_SQL)).thenReturn(mockStatement);
         when(mockStatement.executeUpdate()).thenReturn(1);
         boolean result = ticketDao.delete(ticket);
 
@@ -112,7 +110,6 @@ public class TicketDaoMockitoTest {
 
     @Test
     public void whenDeleteStatementExecuteReturnOThenFalseShouldBeReturned() throws SQLException, AirPortDaoException {
-        when(mockConnection.prepareStatement(DELETE_TICKET_BY_ID_SQL)).thenReturn(mockStatement);
         when(mockStatement.executeUpdate()).thenReturn(0);
         boolean result = ticketDao.delete(ticket);
 

@@ -49,6 +49,10 @@ public class AirportDAOImplMockitoTest {
         airportDAO = new AirportDAOImpl(connectionFactory);
         Mockito.when(connectionFactory.getConnection()).thenReturn(connection);
         Mockito.when(statement.executeQuery()).thenReturn(resultSet);
+        Mockito.when(connection.prepareStatement(INSERT_QUERY)).thenReturn(statement);
+        Mockito.when(connection.prepareStatement(SELECT_BY_ID_QUERY)).thenReturn(statement);
+        Mockito.when(connection.prepareStatement(DELETE_QUERY)).thenReturn(statement);
+        Mockito.when(connection.prepareStatement(LAST_INSERT_ID)).thenReturn(statement);
         createAirport();
     }
 
@@ -80,7 +84,6 @@ public class AirportDAOImplMockitoTest {
 
     @Test
     public void whenGetAirportByIdThenReturnEmptyOption() throws SQLException, AirPortDaoException {
-        Mockito.when(connection.prepareStatement(SELECT_BY_ID_QUERY)).thenReturn(statement);
         Mockito.when(resultSet.next()).thenReturn(false);
         Optional<Airport> result = airportDAO.getById(1);
         assertEquals(result, Optional.empty());
@@ -106,18 +109,13 @@ public class AirportDAOImplMockitoTest {
 
     @Test
     public void whenAddAirportThenReturnTrueAirport() throws SQLException, AirPortDaoException {
-        Mockito.when(connection.prepareStatement(INSERT_QUERY)).thenReturn(statement);
-        Mockito.when(connection.prepareStatement(LAST_INSERT_ID)).thenReturn(statement);
         Mockito.when(resultSet.next()).thenReturn(true).thenReturn(true).thenReturn(false);
-        Mockito.when(connection.prepareStatement(SELECT_BY_ID_QUERY)).thenReturn(statement);
         Airport result = airportDAO.create(airport);
         assertEquals(result, airport);
     }
 
     @Test
     public void whenAddAirportThenReturnFalseAirport() throws SQLException, AirPortDaoException {
-        Mockito.when(connection.prepareStatement(INSERT_QUERY)).thenReturn(statement);
-        Mockito.when(connection.prepareStatement(LAST_INSERT_ID)).thenReturn(statement);
         Mockito.when(resultSet.next()).thenReturn(false);
         Airport result = airportDAO.create(airport);
         assertEquals(result, airport);
@@ -135,7 +133,6 @@ public class AirportDAOImplMockitoTest {
     @Test
     public void whenUpdateAirportThenReturnCorrectAirport() throws SQLException, AirPortDaoException {
         Mockito.when(connection.prepareStatement(UPDATE_QUERY)).thenReturn(statement);
-        Mockito.when(connection.prepareStatement(SELECT_BY_ID_QUERY)).thenReturn(statement);
         Mockito.when(resultSet.next()).thenReturn(true).thenReturn(false);
         Airport result = airportDAO.update(airport);
         assertEquals(result, airport);
@@ -153,7 +150,6 @@ public class AirportDAOImplMockitoTest {
 
     @Test
     public void whenDeleteAirportThenReturnTrue() throws SQLException, AirPortDaoException {
-        Mockito.when(connection.prepareStatement(DELETE_QUERY)).thenReturn(statement);
         Mockito.when(statement.executeUpdate()).thenReturn(1);
         boolean result = airportDAO.delete(airport);
         assertEquals(result, true);
@@ -161,7 +157,6 @@ public class AirportDAOImplMockitoTest {
 
     @Test
     public void whenDeleteAirportThenReturnFalse() throws SQLException, AirPortDaoException {
-        Mockito.when(connection.prepareStatement(DELETE_QUERY)).thenReturn(statement);
         Mockito.when(statement.executeUpdate()).thenReturn(0);
         boolean result = airportDAO.delete(airport);
         assertEquals(result, false);
