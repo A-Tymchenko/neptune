@@ -1,52 +1,49 @@
 package com.ra.airport;
 
-import com.ra.airport.configuration.AirPortConfiguration;
 import com.ra.airport.dao.exception.AirPortDaoException;
-import com.ra.airport.dao.impl.AirportDAOImplSpring;
 import com.ra.airport.entity.Airport;
+import com.ra.airport.dao.impl.AirportDAOImpl;
+import com.ra.airport.factory.ConnectionFactory;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 
-@ExtendWith(SpringExtension.class)
-@ContextConfiguration(classes = {AirPortConfiguration.class})
-class AirportDAOSpringImplTest {
+public class AirportDAOImplTest {
 
-    @Autowired
-    JdbcTemplate jdbcTemplate;
+    ConnectionFactory connection;
     Airport airport;
-    @Autowired
-    AirportDAOImplSpring airportImpl;
+    AirportDAOImpl airportImpl;
 
     @BeforeEach
     public void initH2() throws SQLException, IOException {
-        jdbcTemplate.update("RUNSCRIPT FROM 'src/test/resources/sql/dbschema.sql'");
-        jdbcTemplate.update("RUNSCRIPT FROM 'src/test/resources/sql/test-data.sql'");
+        connection = ConnectionFactory.getInstance();
+        connection.getConnection().createStatement().executeUpdate("RUNSCRIPT FROM 'src/test/resources/sql/create_table_skripts.sql'");
+        connection.getConnection().createStatement().executeUpdate("RUNSCRIPT FROM 'src/test/resources/sql/tables_backup(data).sql'");
         airport = new Airport(1,"Kenedy", 12345, "international", "New York", 10);
+        airportImpl = new AirportDAOImpl(connection);
+    }
+
+    @AfterEach
+    public void removeTable() throws SQLException {
+        connection.getConnection().createStatement().executeUpdate("RUNSCRIPT FROM 'src/test/resources/sql/remove_table_skripts.sql'");
     }
 
     @Test
-    void whenAddAirportThenReturnCreatedAirportWitsId() throws AirPortDaoException {
+    public void whenAddAirportThenReturnCreatedAirportWitsId() throws AirPortDaoException {
         Airport createdAirport = airportImpl.create(airport);
         airport.setApId(createdAirport.getApId());
         assertEquals(createdAirport, airport);
     }
 
     @Test
-    void whenUpdateAirportThenReturnCreatedAirportWitsId() throws AirPortDaoException {
+    public void whenUpdateAirportThenReturnCreatedAirportWitsId() throws AirPortDaoException {
         Airport createdAirport = airportImpl.update(airport);
         airport.setApId(createdAirport.getApId());
         assertEquals(createdAirport, airport);
@@ -55,6 +52,12 @@ class AirportDAOSpringImplTest {
     @Test
     public void whenDeleteAirportThenReturnTrue() throws AirPortDaoException {
         assertEquals(airportImpl.delete(airport), true);
+    }
+
+    @Test
+    public void whenDeleteAirportThenReturnFalse() throws AirPortDaoException {
+        airport.setApId(10);
+        assertEquals(airportImpl.delete(airport), false);
     }
 
     @Test
@@ -68,16 +71,15 @@ class AirportDAOSpringImplTest {
     }
 
     @Test
-    public void whenGetAirportByIdThenThrowAirPortDaoException() throws AirPortDaoException {
-        Throwable thrown = assertThrows(AirPortDaoException.class, () -> {
-            airportImpl.getById(8);
-        });
-        assertNotNull(thrown.getMessage());
+    public void whenGetAirportByIdThenReturnEmptyAirport() throws AirPortDaoException {
+        Optional<Airport> optionalAirport = airportImpl.getById(8);
+        assertEquals(optionalAirport.isPresent(), false);
     }
 
     @Test
     public void getAirports() throws AirPortDaoException {
-        List<Airport> list = airportImpl.getAll();
+        AirportDAOImpl apim = new AirportDAOImpl(connection);
+        List<Airport> list = apim.getAll();
         assertEquals(list.size(), 7);
     }
 }
