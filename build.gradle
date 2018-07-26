@@ -239,6 +239,7 @@ project("advertisement_integration_test") {
     dependencies {
         compile project(':advertisement')
     }
+}
     
 project("airport") {
     dependencies {
