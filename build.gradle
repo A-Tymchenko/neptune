@@ -216,13 +216,12 @@ dependencies {
 
 }
 
-
 repositories {
     mavenCentral()
 }
 
-project("study") {
-    dependencies {
+project("study"){
+    dependencies{
         compile spring.context
     }
 }
@@ -240,7 +239,7 @@ project("advertisement_integration_test") {
         compile project(':advertisement')
     }
 }
-    
+
 project("airport") {
     dependencies {
         compileClasspath db.h2
@@ -256,6 +255,4 @@ project("airport_integration_test") {
         compile project(":airport")
     }
 }
-
-
-
+        

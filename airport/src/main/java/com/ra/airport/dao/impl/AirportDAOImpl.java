@@ -48,7 +48,7 @@ public class AirportDAOImpl implements AirPortDao<Airport> {
     }
 
     @Override
-    public Airport update(Airport airport) throws AirPortDaoException {
+    public Airport update(final Airport airport) throws AirPortDaoException {
         final String query = "UPDATE Airport SET apname = ?, apnum = ?, aptype = ?, addresses = ?, terminalcount = ?"
                 + " WHERE apid = ?";
         try (Connection connection = connectionFactory.getConnection()) {
@@ -56,7 +56,6 @@ public class AirportDAOImpl implements AirPortDao<Airport> {
             fillPreparedStatement(airport, statement);
             statement.setInt(StatementParameter.AIRPORT_ID.get(), airport.getApId());
             statement.executeUpdate();
-            airport = getById(airport.getApId()).get();
         } catch (SQLException e) {
             final String errorMessage = ExceptionMessage.FAILED_TO_UPDATE_AIRPORT_WITH_ID.get() + airport.getApId();
             LOGGER.error(errorMessage, e);

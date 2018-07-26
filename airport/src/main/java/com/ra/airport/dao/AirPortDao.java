@@ -52,5 +52,5 @@ public interface AirPortDao<T> {
      * @return List entities
      * @throws AirPortDaoException exception for DAO layer
      */
-    List<T> getAll() throws AirPortDaoException;
+    List<T> getAll() throws AirPortDaoException, AirPortDaoException;
 }
