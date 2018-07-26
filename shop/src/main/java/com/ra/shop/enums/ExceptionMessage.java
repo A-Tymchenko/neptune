@@ -7,9 +7,7 @@ public enum ExceptionMessage {
     FAILED_TO_DELETE_SHOP("Failed to delete shop"),
     FAILED_TO_GET_SHOP_BY_ID("Failed to get the shop by id"),
     FAILED_TO_GET_ALL_SHOP("Failed to get all shop"),
-    THE_SHOP_CANNOT_BE_NULL("Shop cannot be null"),
-    FAILED_TO_RETRIEVE_DATA_FROM_RESULTSET_IN_SHOP_CONSTRUCTOR("Shop constructor "
-            + "failed to retrieve data from ResultSet");
+    THE_SHOP_CANNOT_BE_NULL("Shop cannot be null");
 
     private final String message;
 
