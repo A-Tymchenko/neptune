@@ -15,18 +15,18 @@ import com.ra.shop.model.Warehouse;
 import com.ra.shop.repository.IRepository;
 import org.apache.log4j.Logger;
 
-public class WarehouseDaoImpl implements IRepository<Warehouse> {
+public class WarehouseRepositoryImpl implements IRepository<Warehouse> {
     private static final int NAME = 1;
     private static final int PRICE = 2;
     private static final int AMOUNT = 3;
     private static final int ID_NUMBER = 4;
 
-    private static final Logger LOGGER = Logger.getLogger(WarehouseDaoImpl.class);
+    private static final Logger LOGGER = Logger.getLogger(WarehouseRepositoryImpl.class);
 
     private static ConnectionFactory connectionFactory;
 
-    public WarehouseDaoImpl(final ConnectionFactory connectionFactory) {
-        WarehouseDaoImpl.connectionFactory = connectionFactory;
+    public WarehouseRepositoryImpl(final ConnectionFactory connectionFactory) {
+        WarehouseRepositoryImpl.connectionFactory = connectionFactory;
     }
 
     /**

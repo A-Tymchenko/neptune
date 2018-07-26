@@ -18,9 +18,9 @@ import org.apache.log4j.Logger;
 /**
  * CRUD for Goods.
  */
-public class GoodsDaoImpl implements IRepository<Goods> {
+public class GoodsRepositoryImpl implements IRepository<Goods> {
 
-    private static final Logger LOGGER = Logger.getLogger(GoodsDaoImpl.class);
+    private static final Logger LOGGER = Logger.getLogger(GoodsRepositoryImpl.class);
     private static final Integer FIRST_SQL_INDEX = 1;
     private static final Integer SECOND_SQL_INDEX = 2;
     private static final Integer THIRD_SQL_INDEX = 3;
@@ -28,7 +28,7 @@ public class GoodsDaoImpl implements IRepository<Goods> {
     private static final Integer FIRST_SQL_COLUMN = 1;
     private final transient ConnectionFactory connFactory;
 
-    public GoodsDaoImpl(final ConnectionFactory connFactory) {
+    public GoodsRepositoryImpl(final ConnectionFactory connFactory) {
         this.connFactory = connFactory;
     }
 

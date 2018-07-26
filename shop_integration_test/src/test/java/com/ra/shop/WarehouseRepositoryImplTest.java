@@ -3,7 +3,7 @@ package com.ra.shop;
 import com.ra.shop.config.ConnectionFactory;
 import com.ra.shop.exceptions.RepositoryException;
 import com.ra.shop.model.Warehouse;
-import com.ra.shop.repository.implementation.WarehouseDaoImpl;
+import com.ra.shop.repository.implementation.WarehouseRepositoryImpl;
 import org.h2.tools.RunScript;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -18,12 +18,12 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class WarehouseDaoImplTest {
+public class WarehouseRepositoryImplTest {
 
     private static final String CREATE_TABLE_WAREHOUSE = "src/test/resources/create_table.sql";
     private static final String DROP_TABLE_WAREHOUSE = "src/test/resources/drop_table.sql";
 
-    private WarehouseDaoImpl IRepository;
+    private WarehouseRepositoryImpl IRepository;
     private Warehouse warehouse;
 
     @BeforeEach
@@ -128,7 +128,7 @@ public class WarehouseDaoImplTest {
     }
 
     private void createWarehouse() throws IOException {
-        IRepository = new WarehouseDaoImpl(ConnectionFactory.getInstance());
+        IRepository = new WarehouseRepositoryImpl(ConnectionFactory.getInstance());
         warehouse = new Warehouse("Lola", Double.MIN_VALUE, 2);
         warehouse.setIdNumber(1L);
     }

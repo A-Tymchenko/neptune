@@ -4,10 +4,11 @@ import com.ra.shop.config.ConnectionFactory;
 import com.ra.shop.exceptions.RepositoryException;
 import com.ra.shop.model.User;
 import com.ra.shop.repository.implementation.UserRepositoryImpl;
-import com.ra.shop.utils.DatabaseUtils;
+import org.h2.tools.RunScript;
 import org.junit.jupiter.api.*;
 
 import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -17,27 +18,27 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class UserRepositoryIntegrationTest {
 
+    private static final String CREATE_TABLE_USER = "src/test/resources/create_table.sql";
+    private static final String DROP_TABLE_USER = "src/test/resources/drop_table.sql";
     private static ConnectionFactory factory;
     private static UserRepositoryImpl repository;
     private static Connection connection;
-    private static DatabaseUtils dbUtils;
 
     @BeforeAll
     static void initGlobal() throws IOException, SQLException {
         factory = ConnectionFactory.getInstance();
         connection = factory.getConnection();
         repository = new UserRepositoryImpl(factory);
-        dbUtils = new DatabaseUtils();
     }
 
     @BeforeEach
     void init() throws FileNotFoundException, SQLException {
-        dbUtils.createTable(connection);
+        RunScript.execute(connection, new FileReader(CREATE_TABLE_USER));
     }
 
     @AfterEach
     void tearDown() throws FileNotFoundException, SQLException {
-        dbUtils.dropTable(connection);
+        dropTable(connection);
     }
 
     @AfterAll
@@ -68,7 +69,7 @@ public class UserRepositoryIntegrationTest {
     @Test
     void whenUserCreationFailsThenThrowRepositoryException() {
         Throwable repositoryException = assertThrows(RepositoryException.class, () -> {
-            dbUtils.dropTable(connection);
+            dropTable(connection);
             repository.create(new User());
         });
         assertNotNull(repositoryException);
@@ -107,7 +108,7 @@ public class UserRepositoryIntegrationTest {
     @Test
     void whenDropOrdersTableAndGetOrderThenThrowRepositoryException() {
         Throwable repositoryException = assertThrows(RepositoryException.class, () -> {
-            dbUtils.dropTable(connection);
+            dropTable(connection);
             repository.get(getRandomId());
         });
         assertNotNull(repositoryException);
@@ -143,7 +144,7 @@ public class UserRepositoryIntegrationTest {
     @Test
     void whenDropUsersTableAndUpdateNotExistingUserThenThrowRepositoryException() {
         Throwable repositoryException = assertThrows(RepositoryException.class, () -> {
-            dbUtils.dropTable(connection);
+            dropTable(connection);
             repository.update(new User());
         });
         assertNotNull(repositoryException);
@@ -179,7 +180,7 @@ public class UserRepositoryIntegrationTest {
     @Test
     void whenDropTableAndDeleteNonExistingUserThenThrowRepositoryException() {
         Throwable repositoryException = assertThrows(RepositoryException.class, () -> {
-            dbUtils.dropTable(connection);
+            dropTable(connection);
             repository.delete(getRandomId());
         });
         assertNotNull(repositoryException);
@@ -207,7 +208,7 @@ public class UserRepositoryIntegrationTest {
     @Test
     void whenDropUsersTableAndCallGetAllMethodThenThrowRepositoryException() {
         Throwable repositoryException = assertThrows(RepositoryException.class, () -> {
-            dbUtils.dropTable(connection);
+            dropTable(connection);
             repository.getAll();
         });
         assertNotNull(repositoryException);
@@ -233,6 +234,10 @@ public class UserRepositoryIntegrationTest {
                 new User(9L, "3806675474848", "Vladimir", "Lenin",
                         "Soviet Union", "vladimir_1939@gmail.com")
         };
+    }
+
+    public void dropTable(final Connection connection) throws FileNotFoundException, SQLException {
+        RunScript.execute(connection, new FileReader(DROP_TABLE_USER));
     }
 
     private Long getRandomId() {

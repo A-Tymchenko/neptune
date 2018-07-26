@@ -1,7 +1,7 @@
 package com.ra.shop;
 
 import com.ra.shop.exceptions.RepositoryException;
-import com.ra.shop.repository.implementation.GoodsDaoImpl;
+import com.ra.shop.repository.implementation.GoodsRepositoryImpl;
 import com.ra.shop.model.Goods;
 import com.ra.shop.config.ConnectionFactory;
 import org.junit.jupiter.api.*;
@@ -18,9 +18,9 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-public class GoodsDaoImplMockTest {
+public class GoodsRepositoryImplMockTest {
 
-    private static GoodsDaoImpl dao;
+    private static GoodsRepositoryImpl dao;
     private Goods existingGoods = new Goods("Camel", 7622210609779l, 1.2f);
     private static ConnectionFactory mockedConnectionFactory;
     private Connection mockedConnection;
@@ -32,7 +32,7 @@ public class GoodsDaoImplMockTest {
     @BeforeEach
     public void createSchema() {
         mockedConnectionFactory = mock(ConnectionFactory.class);
-        dao = new GoodsDaoImpl(mockedConnectionFactory);
+        dao = new GoodsRepositoryImpl(mockedConnectionFactory);
         existingGoods.setId(1l);
     }
 
@@ -167,7 +167,7 @@ public class GoodsDaoImplMockTest {
          */
         @BeforeEach
         public void setUp() throws SQLException, IOException {
-            dao = new GoodsDaoImpl(mockedConnectionFactory());
+            dao = new GoodsRepositoryImpl(mockedConnectionFactory());
         }
 
         private ConnectionFactory mockedConnectionFactory() throws SQLException {

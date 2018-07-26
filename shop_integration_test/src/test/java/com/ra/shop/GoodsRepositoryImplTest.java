@@ -2,7 +2,7 @@ package com.ra.shop;
 
 import com.ra.shop.config.ConnectionFactory;
 import com.ra.shop.exceptions.RepositoryException;
-import com.ra.shop.repository.implementation.GoodsDaoImpl;
+import com.ra.shop.repository.implementation.GoodsRepositoryImpl;
 import com.ra.shop.model.Goods;
 import org.h2.tools.RunScript;
 import org.junit.jupiter.api.*;
@@ -18,11 +18,11 @@ import java.util.NoSuchElementException;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
-public class GoodsDaoImplTest {
+public class GoodsRepositoryImplTest {
 
+    private GoodsRepositoryImpl dao;
     private static final String CREATE_TABLE_GOODS = "src/test/resources/create_table.sql";
     private static final String DROP_TABLE_GOODS = "src/test/resources/drop_table.sql";
-    private GoodsDaoImpl dao;
     private Goods existingGoods = new Goods("Camel", 7622210609779l, 1.2f);
     private Long existingGoodsID;
 
@@ -51,7 +51,7 @@ public class GoodsDaoImplTest {
 
         @BeforeEach
         public void setUp() throws Exception {
-            dao = new GoodsDaoImpl(ConnectionFactory.getInstance());
+            dao = new GoodsRepositoryImpl(ConnectionFactory.getInstance());
             existingGoods.setId(1l);
             Goods result = dao.create(existingGoods);
             existingGoodsID = result.getId();
