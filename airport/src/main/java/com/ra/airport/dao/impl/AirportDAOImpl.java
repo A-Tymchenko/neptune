@@ -1,10 +1,7 @@
 package com.ra.airport.dao.impl;
 
-import java.sql.Connection;
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -12,67 +9,67 @@ import com.ra.airport.dao.AirPortDao;
 import com.ra.airport.dao.exception.AirPortDaoException;
 import com.ra.airport.dao.exception.ExceptionMessage;
 import com.ra.airport.entity.Airport;
-
-import com.ra.airport.factory.ConnectionFactory;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.jdbc.BadSqlGrammarException;
+import org.springframework.jdbc.core.BeanPropertyRowMapper;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.stereotype.Component;
 
+@Component
 public class AirportDAOImpl implements AirPortDao<Airport> {
 
-    private final transient ConnectionFactory connectionFactory;
+    private static JdbcTemplate jdbcTemplate;
 
     private static final Logger LOGGER = LogManager.getLogger(AirportDAOImpl.class);
 
-    public AirportDAOImpl(final ConnectionFactory connectionFactory) {
-        this.connectionFactory = connectionFactory;
+    @Autowired
+    public AirportDAOImpl(final JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
     }
 
     @Override
-    public Airport create(Airport airport) throws AirPortDaoException {
-        final String query = "INSERT INTO Airport(apname, apnum, aptype, addresses, terminalcount) "
-                + "VALUES(?, ?, ?, ?, ?)";
-        try (Connection connection = connectionFactory.getConnection()) {
-            final PreparedStatement statement = connection.prepareStatement(query);
-            fillPreparedStatement(airport, statement);
-            statement.executeUpdate();
-            final ResultSet resultSet = connection.prepareStatement("Select LAST_INSERT_ID() from Airport").executeQuery();
-            if (resultSet.next()) {
-                airport = getById(resultSet.getInt(1)).get();
-            }
-        } catch (SQLException e) {
+    public Airport create(final Airport airport) throws AirPortDaoException {
+        try {
+            final String query = "INSERT INTO Airport(apname, apnum, aptype, address, terminalcount) "
+                    + "VALUES(?, ?, ?, ?, ?)";
+            jdbcTemplate.update(query, statement -> fillPreparedStatement(statement, airport));
+            return this.getById(jdbcTemplate.queryForObject("SELECT SCOPE_IDENTITY()", Integer.class)).get();
+        } catch (EmptyResultDataAccessException | BadSqlGrammarException e) {
             final String errorMessage = ExceptionMessage.FAILED_TO_CREATE_NEW_AIRPORT.get() + airport.getApId();
             LOGGER.error(errorMessage, e);
             throw new AirPortDaoException(errorMessage, e);
         }
-        return airport;
+
     }
 
     @Override
     public Airport update(final Airport airport) throws AirPortDaoException {
-        final String query = "UPDATE Airport SET apname = ?, apnum = ?, aptype = ?, addresses = ?, terminalcount = ?"
-                + " WHERE apid = ?";
-        try (Connection connection = connectionFactory.getConnection()) {
-            final PreparedStatement statement = connection.prepareStatement(query);
-            fillPreparedStatement(airport, statement);
-            statement.setInt(StatementParameter.AIRPORT_ID.get(), airport.getApId());
-            statement.executeUpdate();
-        } catch (SQLException e) {
+        try {
+            final String query = "UPDATE Airport SET apname = ?, apnum = ?, aptype = ?, address = ?, terminalcount = ?"
+                    + " WHERE apid = ?";
+            jdbcTemplate.update(query, statement -> {
+                fillPreparedStatement(statement, airport);
+                statement.setInt(StatementParameter.AIRPORT_ID.get(), airport.getApId());
+            });
+            return airport;
+        } catch (EmptyResultDataAccessException | BadSqlGrammarException e) {
             final String errorMessage = ExceptionMessage.FAILED_TO_UPDATE_AIRPORT_WITH_ID.get() + airport.getApId();
             LOGGER.error(errorMessage, e);
             throw new AirPortDaoException(errorMessage, e);
         }
-        return airport;
+
     }
 
     @Override
     public boolean delete(final Airport airport) throws AirPortDaoException {
-        final String query = "DELETE FROM Airport "
-                + "WHERE apid = ?";
-        try (Connection connection = connectionFactory.getConnection()) {
-            final PreparedStatement statement = connection.prepareStatement(query);
-            statement.setInt(1, airport.getApId());
-            return statement.executeUpdate() > 0;
-        } catch (SQLException e) {
+        try {
+            final String query = "DELETE FROM Airport "
+                    + "WHERE apid = ?";
+            return jdbcTemplate.update(query, statement -> statement.setInt(1, airport.getApId())) > 0;
+        } catch (EmptyResultDataAccessException | BadSqlGrammarException e) {
             final String errorMessage = ExceptionMessage.FAILED_TO_DELETE_AIRPORT_WITH_ID.get() + airport.getApId();
             LOGGER.error(errorMessage, e);
             throw new AirPortDaoException(errorMessage, e);
@@ -80,54 +77,31 @@ public class AirportDAOImpl implements AirPortDao<Airport> {
     }
 
     @Override
-    public Optional<Airport> getById(final Integer apid) throws AirPortDaoException {
-        final String query = "Select * From Airport Where apid = ?";
-        Optional<Airport> optionalAirport;
-        try (Connection connection = connectionFactory.getConnection()) {
-            final PreparedStatement statement = connection.prepareStatement(query);
-            statement.setInt(1, apid);
-            final ResultSet resultSet = statement.executeQuery();
-            if (resultSet.next()) {
-                optionalAirport = Optional.of(createAirport(resultSet));
-                return optionalAirport;
-            }
-        } catch (SQLException e) {
-            final String errorMessage = ExceptionMessage.FAILED_TO_GET_AIRPORT_WITH_ID.get() + apid;
+    public Optional<Airport> getById(final Integer entityId) throws AirPortDaoException {
+        try {
+            final String query = "Select * From Airport Where apid = ?";
+            return Optional.of(jdbcTemplate.queryForObject(query, BeanPropertyRowMapper.newInstance(Airport.class), entityId));
+        } catch (EmptyResultDataAccessException | BadSqlGrammarException e) {
+            final String errorMessage = ExceptionMessage.FAILED_TO_GET_AIRPORT_WITH_ID.get() + entityId;
             LOGGER.error(errorMessage, e);
             throw new AirPortDaoException(errorMessage, e);
         }
-        return Optional.empty();
     }
 
     @Override
     public List<Airport> getAll() throws AirPortDaoException {
-        final String query = "Select * From Airport";
-        try (Connection connection = connectionFactory.getConnection()) {
-            final List<Airport> list = new ArrayList<>();
-            final PreparedStatement statement = connection.prepareStatement(query);
-            final ResultSet resultSet = statement.executeQuery();
-            while (resultSet.next()) {
-                list.add(createAirport(resultSet));
-            }
-            return list;
-        } catch (SQLException e) {
+        try {
+            final String query = "Select * From Airport";
+            return jdbcTemplate.query(query, BeanPropertyRowMapper.newInstance(Airport.class));
+        } catch (EmptyResultDataAccessException | BadSqlGrammarException e) {
             final String errorMessage = ExceptionMessage.FAILED_TO_GET_ALL_AIRPORTS.get();
             LOGGER.error(errorMessage, e);
             throw new AirPortDaoException(errorMessage, e);
         }
+
     }
 
-    private Airport createAirport(final ResultSet resultSet) throws SQLException {
-
-        return new Airport(resultSet.getInt("apid"),
-                resultSet.getString("apname"),
-                resultSet.getInt("apnum"),
-                resultSet.getString("aptype"),
-                resultSet.getString("addresses"),
-                resultSet.getInt("terminalcount"));
-    }
-
-    private void fillPreparedStatement(final Airport airport, final PreparedStatement statement) throws SQLException {
+    private void fillPreparedStatement(final PreparedStatement statement, final Airport airport) throws SQLException {
         statement.setString(StatementParameter.AIRPORT_NAME.get(), airport.getApName());
         statement.setInt(StatementParameter.AIRPORT_NUM.get(), airport.getApNum());
         statement.setString(StatementParameter.AIRPORT_TYPE.get(), airport.getApType());
