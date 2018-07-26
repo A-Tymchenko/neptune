@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.BadSqlGrammarException;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 
 import java.sql.PreparedStatement;
@@ -38,12 +39,12 @@ public class FlightDao implements AirPortDao<Flight> {
 
     private static final Logger LOGGER = LogManager.getLogger(FlightDao.class);
 
-    private FlightRowMapper rowMapper;
+    private RowMapper<Flight> rowMapper;
 
     private JdbcTemplate jdbcTemplate;
 
     @Autowired
-    public FlightDao(JdbcTemplate jdbcTemplate, FlightRowMapper rowMapper) {
+    public FlightDao(JdbcTemplate jdbcTemplate, RowMapper<Flight> rowMapper) {
         this.jdbcTemplate = jdbcTemplate;
         this.rowMapper = rowMapper;
     }
