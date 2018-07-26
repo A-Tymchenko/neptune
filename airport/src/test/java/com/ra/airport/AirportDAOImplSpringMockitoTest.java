@@ -44,7 +44,7 @@ class AirportDAOImplSpringMockitoTest {
             + " WHERE apid = ?";
     private static final String DELETE_QUERY = "DELETE FROM Airport "
             + "WHERE apid = ?";
-    private static final String LAST_INSERT_ID = "Select LAST_INSERT_ID() from Airport";
+    private static final String LAST_INSERT_ID = "SELECT SCOPE_IDENTITY()";
 
     @BeforeEach
     public void init() {
@@ -70,25 +70,15 @@ class AirportDAOImplSpringMockitoTest {
             ((PreparedStatementSetter)invocation.getArguments()[1]).setValues(statement);
             return null;
         }).when(jdbcTemplate).update(Mockito.eq(INSERT_QUERY), Mockito.any(PreparedStatementSetter.class));
-        Mockito.when(jdbcTemplate.queryForRowSet(LAST_INSERT_ID)).thenReturn(sqlRowSet);
-        Mockito.when(sqlRowSet.next()).thenReturn(true).thenReturn(false);
-        Mockito.when(sqlRowSet.getInt(1)).thenReturn(8);
+        Mockito.when(jdbcTemplate.queryForObject(LAST_INSERT_ID, Integer.class)).thenReturn(8);
         Mockito.when(jdbcTemplate.queryForObject(Mockito.eq(SELECT_BY_ID_QUERY), Mockito.any(BeanPropertyRowMapper.class), Mockito.eq(8))).thenReturn(airport);
         Airport createdAirport = airportDAO.create(airport);
         assertEquals(createdAirport, airport);
     }
 
     @Test
-    void whenCreateAirportThenReturnAirportWitsIdFalse() throws AirPortDaoException {
-        Mockito.when(jdbcTemplate.queryForRowSet(LAST_INSERT_ID)).thenReturn(sqlRowSet);
-        Mockito.when(sqlRowSet.next()).thenReturn(false);
-        Airport createdAirport = airportDAO.create(airport);
-        assertEquals(createdAirport, airport);
-    }
-
-    @Test
     void whenCreateAirportThenThrowExseption() {
-        Mockito.when(jdbcTemplate.queryForRowSet(LAST_INSERT_ID)).thenThrow(BadSqlGrammarException.class);
+        Mockito.when(jdbcTemplate.queryForObject(LAST_INSERT_ID, Integer.class)).thenThrow(BadSqlGrammarException.class);
         Throwable thrown = assertThrows(AirPortDaoException.class, () -> {
             airportDAO.create(airport);
         });

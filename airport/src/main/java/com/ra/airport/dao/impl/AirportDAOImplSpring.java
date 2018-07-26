@@ -16,7 +16,6 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.BadSqlGrammarException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -35,11 +34,7 @@ public class AirportDAOImplSpring implements AirPortDao<Airport> {
             final String query = "INSERT INTO Airport(apname, apnum, aptype, address, terminalcount) "
                     + "VALUES(?, ?, ?, ?, ?)";
             jdbcTemplate.update(query, statement -> fillPreparedStatement(statement, airport));
-            final SqlRowSet sqlRowSet = jdbcTemplate.queryForRowSet("Select LAST_INSERT_ID() from Airport");
-            if (sqlRowSet.next()) {
-                return this.getById(sqlRowSet.getInt(1)).get();
-            }
-            return airport;
+            return this.getById(jdbcTemplate.queryForObject("SELECT SCOPE_IDENTITY()", Integer.class)).get();
         } catch (EmptyResultDataAccessException | BadSqlGrammarException e) {
             final String errorMessage = ExceptionMessage.FAILED_TO_CREATE_NEW_AIRPORT.get() + airport.getApId();
             LOGGER.error(errorMessage, e);
