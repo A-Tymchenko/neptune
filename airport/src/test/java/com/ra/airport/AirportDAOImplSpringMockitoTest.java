@@ -1,41 +1,30 @@
 package com.ra.airport;
 
-import com.ra.airport.configuration.AirPortConfiguration;
 import com.ra.airport.dao.exception.AirPortDaoException;
 import com.ra.airport.dao.impl.AirportDAOImplSpring;
 import com.ra.airport.entity.Airport;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.*;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.BadSqlGrammarException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.PreparedStatementSetter;
-import org.springframework.jdbc.core.RowMapper;
-import org.springframework.jdbc.support.rowset.SqlRowSet;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@ExtendWith(SpringExtension.class)
-@ContextConfiguration(classes = {AirPortConfiguration.class})
 class AirportDAOImplSpringMockitoTest {
 
     @Mock
     private JdbcTemplate jdbcTemplate;
+    @Mock
+    private PreparedStatement statement;
     @InjectMocks
-    @Autowired
     private AirportDAOImplSpring airportDAO;
     private Airport airport;
-    private SqlRowSet sqlRowSet;
-    PreparedStatement statement;
     private static final String INSERT_QUERY = "INSERT INTO Airport(apname, apnum, aptype, address, terminalcount) "
             + "VALUES(?, ?, ?, ?, ?)";
     private static final String SELECT_BY_ID_QUERY = "Select * From Airport Where apid = ?";
@@ -50,18 +39,6 @@ class AirportDAOImplSpringMockitoTest {
     public void init() {
         MockitoAnnotations.initMocks(this);
         airport = new Airport(8,"Kenedy", 4949034, "International", "USA New Yourk", 10);
-        sqlRowSet = Mockito.mock(SqlRowSet.class);
-        statement = Mockito.mock(PreparedStatement.class);
-        createAirport();
-    }
-
-    private void createAirport() {
-        Mockito.when(sqlRowSet.getInt("apid")).thenReturn(airport.getApId());
-        Mockito.when(sqlRowSet.getString("apname")).thenReturn(airport.getApName());
-        Mockito.when(sqlRowSet.getInt("apnum")).thenReturn(airport.getApNum());
-        Mockito.when(sqlRowSet.getString("aptype")).thenReturn(airport.getApType());
-        Mockito.when(sqlRowSet.getString("address")).thenReturn(airport.getAddress());
-        Mockito.when(sqlRowSet.getInt("terminalcount")).thenReturn(airport.getTerminalCount());
     }
 
     @Test

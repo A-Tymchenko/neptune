@@ -21,12 +21,14 @@ import org.springframework.stereotype.Component;
 @Component
 public class AirportDAOImplSpring implements AirPortDao<Airport> {
 
-    @Autowired
-    private transient JdbcTemplate jdbcTemplate;
+    private static JdbcTemplate jdbcTemplate;
 
     private static final Logger LOGGER = LogManager.getLogger(AirportDAOImplSpring.class);
 
-    public AirportDAOImplSpring() { }
+    @Autowired
+    public AirportDAOImplSpring(final JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
+    }
 
     @Override
     public Airport create(final Airport airport) throws AirPortDaoException {
