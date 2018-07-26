@@ -9,7 +9,7 @@ import com.ra.shop.exceptions.RepositoryException;
 /**
  * Interface represents simple CRUD-methods, which can be implemented for any entity, because it`s parameterized.
  *
- * @param <T/> represents an entity.
+ * @param <T> represents an entity.
  */
 public interface IRepository<T> {
 
