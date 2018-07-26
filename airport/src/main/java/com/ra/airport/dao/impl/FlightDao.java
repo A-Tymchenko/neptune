@@ -1,5 +1,7 @@
 package com.ra.airport.dao.impl;
 
+import static com.ra.airport.dao.impl.StatementParameter.FLIGHT_DEPARTURE_DATE;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -21,7 +23,6 @@ import com.ra.airport.mapper.RowMapper;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-
 /**
  * Implementation of {@link AirPortDao} interface.
  */
@@ -36,7 +37,7 @@ public class FlightDao implements AirPortDao<Flight> {
 
     private static final Logger LOGGER = LogManager.getLogger(FlightDao.class);
 
-    private static ConnectionFactory connectionFactory;
+    private final transient ConnectionFactory connectionFactory;
 
     public FlightDao(final ConnectionFactory connectionFactory) {
         this.connectionFactory = connectionFactory;
@@ -179,15 +180,15 @@ public class FlightDao implements AirPortDao<Flight> {
      * @throws SQLException exception for DAO layer
      */
     private void fillPreparedStatement(final Flight flight, final PreparedStatement preparedStatement) throws SQLException {
-        preparedStatement.setString(StatementParameter.NAME.get(), flight.getName());
-        preparedStatement.setString(StatementParameter.CARRIER.get(), flight.getCarrier());
-        preparedStatement.setTime(StatementParameter.DURATION.get(), Time.valueOf(flight.getDuration()));
-        preparedStatement.setBoolean(StatementParameter.MEAL_ON.get(), flight.getMealOn());
-        preparedStatement.setDouble(StatementParameter.FARE.get(), flight.getFare());
-        preparedStatement.setTimestamp(StatementParameter.DEPARTURE_DATE.get(), Timestamp.valueOf(flight.getDepartureDate()));
-        preparedStatement.setTimestamp(StatementParameter.ARRIVAL_DATE.get(), Timestamp.valueOf(flight.getArrivalDate()));
+        preparedStatement.setString(StatementParameter.FLIGHT_NAME.get(), flight.getName());
+        preparedStatement.setString(StatementParameter.FLIGHT_CARRIER.get(), flight.getCarrier());
+        preparedStatement.setTime(StatementParameter.FLIGHT_DURATION.get(), Time.valueOf(flight.getDuration()));
+        preparedStatement.setBoolean(StatementParameter.FLIGHT_MEAL_ON.get(), flight.getMealOn());
+        preparedStatement.setDouble(StatementParameter.FLIGHT_FARE.get(), flight.getFare());
+        preparedStatement.setTimestamp(FLIGHT_DEPARTURE_DATE.get(), Timestamp.valueOf(flight.getDepartureDate()));
+        preparedStatement.setTimestamp(StatementParameter.FLIGHT_ARRIVAL_DATE.get(), Timestamp.valueOf(flight.getArrivalDate()));
         if (flight.getIdentifier() != null) {
-            preparedStatement.setInt(StatementParameter.IDENTIFIER.get(), flight.getIdentifier());
+            preparedStatement.setInt(StatementParameter.FLIGHT_ID.get(), flight.getIdentifier());
         }
     }
 }
