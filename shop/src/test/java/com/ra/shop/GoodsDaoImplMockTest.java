@@ -1,6 +1,6 @@
 package com.ra.shop;
 
-import com.ra.shop.exceptions.DAOException;
+import com.ra.shop.exceptions.RepositoryException;
 import com.ra.shop.repository.implementation.GoodsDaoImpl;
 import com.ra.shop.model.Goods;
 import com.ra.shop.config.ConnectionFactory;
@@ -67,21 +67,21 @@ public class GoodsDaoImplMockTest {
             }
 
             @Test
-            public void whenDeletionGoodsThenReturnTrue() throws DAOException, SQLException {
+            public void whenDeletionGoodsThenReturnTrue() throws RepositoryException, SQLException {
                 when(mockedConnection.prepareStatement("DELETE FROM GOODS WHERE ID = ?")).thenReturn(mockedStatement);
                 when(mockedStatement.executeUpdate()).thenReturn(1);
                 assertTrue(dao.delete(existingGoods.getId()));
             }
 
             @Test
-            public void whenDeletionGoodsThenReturnFalse() throws DAOException, SQLException {
+            public void whenDeletionGoodsThenReturnFalse() throws RepositoryException, SQLException {
                 when(mockedConnection.prepareStatement("DELETE FROM GOODS WHERE ID = ?")).thenReturn(mockedStatement);
                 when(mockedStatement.executeUpdate()).thenReturn(-1);
                 assertFalse(dao.delete(existingGoods.getId()));
             }
 
             @Test
-            public void whenUpdationGoodsThenReturnEqualsGoods() throws SQLException, DAOException {
+            public void whenUpdationGoodsThenReturnEqualsGoods() throws SQLException, RepositoryException {
                 when(mockedConnection.prepareStatement("UPDATE GOODS SET NAME = ?, BARCODE = ?, PRICE = ? WHERE ID = ?"))
                         .thenReturn(mockedStatement);
                 Goods goods = dao.update(existingGoods);
@@ -93,7 +93,7 @@ public class GoodsDaoImplMockTest {
             }
 
             @Test
-            public void whenCreatedGoodsWithFalseNextIdThenReturnEqualsGoods() throws SQLException, DAOException {
+            public void whenCreatedGoodsWithFalseNextIdThenReturnEqualsGoods() throws SQLException, RepositoryException {
                 when(mockedConnection.prepareStatement("INSERT INTO GOODS (NAME, BARCODE, PRICE) VALUES (?,?,?)"))
                         .thenReturn(mockedStatement);
                 when(mockedStatement.executeUpdate()).thenReturn(1);
@@ -110,7 +110,7 @@ public class GoodsDaoImplMockTest {
             }
 
             @Test
-            public void whenCreatedGoodsWithTrueNextIdThenReturnNotEqualsGoods() throws SQLException, DAOException {
+            public void whenCreatedGoodsWithTrueNextIdThenReturnNotEqualsGoods() throws SQLException, RepositoryException {
                 when(mockedConnection.prepareStatement("INSERT INTO GOODS (NAME, BARCODE, PRICE) VALUES (?,?,?)"))
                         .thenReturn(mockedStatement);
                 when(mockedConnection.prepareStatement("SELECT LAST_INSERT_ID()"))
@@ -128,7 +128,7 @@ public class GoodsDaoImplMockTest {
             }
 
             @Test
-            public void whenGetGoodsWithFalseNextGoodsThenReturnNotPresentGoods() throws DAOException, SQLException {
+            public void whenGetGoodsWithFalseNextGoodsThenReturnNotPresentGoods() throws RepositoryException, SQLException {
                 when(mockedConnection.prepareStatement("SELECT * FROM GOODS WHERE ID = ?")).thenReturn(mockedStatement);
                 when(mockedStatement.executeQuery()).thenReturn(mockedResultSet);
                 when(mockedResultSet.next()).thenReturn(false);
@@ -137,7 +137,7 @@ public class GoodsDaoImplMockTest {
 
             @Test
             public void whenGetGoodsWithTrueNextGoodsThenReturnEqualsGoods() throws
-                    SQLException, DAOException {
+                    SQLException, RepositoryException {
                 when(mockedConnection.prepareStatement("SELECT * FROM GOODS WHERE ID = ?")).thenReturn(mockedStatement);
                 when(mockedStatement.executeQuery()).thenReturn(mockedResultSet);
                 when(mockedResultSet.next()).thenReturn(true);

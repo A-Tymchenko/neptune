@@ -1,7 +1,7 @@
 package com.ra.shop;
 
 import com.ra.shop.config.ConnectionFactory;
-import com.ra.shop.exceptions.DAOException;
+import com.ra.shop.exceptions.RepositoryException;
 import com.ra.shop.repository.implementation.GoodsDaoImpl;
 import com.ra.shop.model.Goods;
 import org.h2.tools.RunScript;
@@ -79,7 +79,7 @@ public class GoodsDaoImplTest {
             }
 
             @Test
-            public void deletionShouldBeFailureAndNotAffectExistingGoods() throws DAOException {
+            public void deletionShouldBeFailureAndNotAffectExistingGoods() throws RepositoryException {
                 final Goods nonExistingGoods = new Goods("Marlboro", 4050300003924l, 3.4f);
                 nonExistingGoods.setId(getNonExistingGoodId());
                 assertGoodsCountIs(1);
@@ -88,7 +88,7 @@ public class GoodsDaoImplTest {
             }
 
             @Test
-            public void updationShouldBeFailureAndNotAffectExistingGoods() throws DAOException {
+            public void updationShouldBeFailureAndNotAffectExistingGoods() throws RepositoryException {
                 final Long nonExistingId = getNonExistingGoodId();
                 final String newName = "Dunhill";
                 final Long newBarcode = 4820005924653l;
@@ -99,7 +99,7 @@ public class GoodsDaoImplTest {
             }
 
             @Test
-            public void retrieveShouldReturnNoGoods() throws DAOException {
+            public void retrieveShouldReturnNoGoods() throws RepositoryException {
                 assertFalse(dao.get(getNonExistingGoodId()).isPresent());
             }
         }
@@ -112,7 +112,7 @@ public class GoodsDaoImplTest {
         public class ExistingGoods {
 
             @Test
-            public void addingShouldResultInFailureAndNotAffectExistingGoods() throws DAOException {
+            public void addingShouldResultInFailureAndNotAffectExistingGoods() throws RepositoryException {
                 Goods existingGoods = new Goods("Camel", 7622210609779l, 1.2f);
                 existingGoods.setId(existingGoodsID);
                 Goods result = dao.create(existingGoods);
@@ -123,7 +123,7 @@ public class GoodsDaoImplTest {
             }
 
             @Test
-            public void deletionShouldBeSuccessAndGoodsShouldBeNonAccessible() throws DAOException {
+            public void deletionShouldBeSuccessAndGoodsShouldBeNonAccessible() throws RepositoryException {
                 boolean result = dao.delete(existingGoods.getId());
 
                 assertEquals(true, result);
@@ -132,7 +132,7 @@ public class GoodsDaoImplTest {
             }
 
             @Test
-            public void updationShouldBeSuccessAndAccessingTheSameGoodsShouldReturnUpdatedInformation() throws DAOException {
+            public void updationShouldBeSuccessAndAccessingTheSameGoodsShouldReturnUpdatedInformation() throws RepositoryException {
                 final String newName = "L&M";
                 final Long newBarcode = 740617152326l;
                 final Float newPrice = 32.7f;
@@ -181,7 +181,7 @@ public class GoodsDaoImplTest {
 
             @Test
             public void getingResultWithNullId() {
-                assertThrows(DAOException.class, () -> dao.get(null));
+                assertThrows(RepositoryException.class, () -> dao.get(null));
             }
         }
 
@@ -234,7 +234,7 @@ public class GoodsDaoImplTest {
         }
     }
 
-    private void assertGoodsCountIs(int count) throws DAOException {
+    private void assertGoodsCountIs(int count) throws RepositoryException {
         List<Goods> allGoods = dao.getAll();
         assertTrue(allGoods.size() == count);
     }

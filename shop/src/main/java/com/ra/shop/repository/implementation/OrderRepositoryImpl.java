@@ -12,6 +12,7 @@ import java.util.Objects;
 import java.util.Optional;
 
 import com.ra.shop.config.ConnectionFactory;
+import com.ra.shop.enums.ExceptionMessage;
 import com.ra.shop.exceptions.RepositoryException;
 import com.ra.shop.model.Order;
 import com.ra.shop.repository.IRepository;
@@ -81,7 +82,7 @@ public class OrderRepositoryImpl implements IRepository<Order> {
             }
         } catch (SQLException e) {
             LOGGER.error(e.getMessage(), e);
-            throw new RepositoryException("Can`t get order`s list!", e);
+            throw new RepositoryException(ExceptionMessage.FAILED_TO_GET_ALL_ORDER.getMessage(), e);
         }
         return Collections.emptyList();
     }
@@ -102,7 +103,7 @@ public class OrderRepositoryImpl implements IRepository<Order> {
             }
         } catch (SQLException e) {
             LOGGER.error(e.getMessage(), e);
-            throw new RepositoryException("Order creation is failed!", e);
+            throw new RepositoryException(ExceptionMessage.FAILED_TO_CREATE_NEW_ORDER.getMessage(), e);
         }
         return entity;
     }
@@ -121,7 +122,7 @@ public class OrderRepositoryImpl implements IRepository<Order> {
             }
         } catch (SQLException e) {
             LOGGER.error(e.getMessage(), e);
-            throw new RepositoryException(String.format("Can`t get an order with id : %d", entityId), e);
+            throw new RepositoryException(ExceptionMessage.FAILED_TO_GET_ORDER_BY_ID.getMessage() + " " + entityId, e);
         }
         return Optional.empty();
     }
@@ -137,13 +138,13 @@ public class OrderRepositoryImpl implements IRepository<Order> {
             statement.executeUpdate();
         } catch (SQLException e) {
             LOGGER.error(e.getMessage(), e);
-            throw new RepositoryException("Order updating failed!", e);
+            throw new RepositoryException(ExceptionMessage.FAILED_TO_UPDATE_ORDER.getMessage(), e);
         }
         return newEntity;
     }
 
     @Override
-    public Boolean delete(final Long entityId) throws  RepositoryException {
+    public Boolean delete(final Long entityId) throws RepositoryException {
         Objects.requireNonNull(entityId);
         try (Connection connection = connectionFactory.getConnection();
              PreparedStatement statement = connection.prepareStatement("DELETE FROM ORDERS WHERE ORDER_ID = ?")) {
@@ -154,7 +155,7 @@ public class OrderRepositoryImpl implements IRepository<Order> {
             }
         } catch (SQLException e) {
             LOGGER.error(e.getMessage(), e);
-            throw new RepositoryException("Order deletion failed!", e);
+            throw new RepositoryException(ExceptionMessage.FAILED_TO_DELETE_ORDER.getMessage(), e);
         }
         return Boolean.FALSE;
     }
@@ -185,7 +186,7 @@ public class OrderRepositoryImpl implements IRepository<Order> {
      * Method configuring PrepareStatement for create method.
      *
      * @param preparedStatement PreparedStatement.
-     * @param order new order.
+     * @param order             new order.
      * @throws SQLException if any error occurs.
      */
     private void setStatementValuesForCreation(final PreparedStatement preparedStatement, final Order order) throws SQLException {

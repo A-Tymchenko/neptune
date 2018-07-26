@@ -10,7 +10,7 @@ import java.util.Optional;
 
 import com.ra.shop.config.ConnectionFactory;
 import com.ra.shop.enums.ExceptionMessage;
-import com.ra.shop.exceptions.DAOException;
+import com.ra.shop.exceptions.RepositoryException;
 import com.ra.shop.model.Goods;
 import com.ra.shop.repository.IRepository;
 import org.apache.log4j.Logger;
@@ -39,20 +39,20 @@ public class GoodsDaoImpl implements IRepository<Goods> {
      * @return Entity inserted to database, with added 'ID' from DB.
      */
     @Override
-    public Goods create(final Goods entity) throws DAOException {
+    public Goods create(final Goods entity) throws RepositoryException {
         try (Connection connection = connFactory.getConnection()) {
             final PreparedStatement statement =
-                connection.prepareStatement("INSERT INTO GOODS (NAME, BARCODE, PRICE) VALUES (?,?,?)");
+                    connection.prepareStatement("INSERT INTO GOODS (NAME, BARCODE, PRICE) VALUES (?,?,?)");
             setStatementGoodsInSQLIndexes(statement, entity);
             statement.executeUpdate();
             final ResultSet generatedKeys = connection
-                .prepareStatement("SELECT LAST_INSERT_ID()").executeQuery();
+                    .prepareStatement("SELECT LAST_INSERT_ID()").executeQuery();
             if (generatedKeys.next()) {
                 entity.setId(generatedKeys.getLong(FIRST_SQL_COLUMN));
             }
         } catch (SQLException ex) {
-            LOGGER.error(ExceptionMessage.FAILED_TO_CREATE_NEW_SHOP.getMessage(), ex);
-            throw new DAOException(ExceptionMessage.FAILED_TO_CREATE_NEW_SHOP.getMessage(), ex);
+            LOGGER.error(ExceptionMessage.FAILED_TO_CREATE_NEW_GOODS.getMessage(), ex);
+            throw new RepositoryException(ExceptionMessage.FAILED_TO_CREATE_NEW_GOODS.getMessage(), ex);
         }
         return (Goods) get(entity.getId()).get();
     }
@@ -64,23 +64,22 @@ public class GoodsDaoImpl implements IRepository<Goods> {
      * @return Optional entity.
      */
     @Override
-    public Optional get(final Long entityId) throws DAOException {
+    public Optional get(final Long entityId) throws RepositoryException {
         if (entityId == null) {
-            final String errorNull = "Attempt to get goods with ID = NULL";
-            LOGGER.error(errorNull);
-            throw new DAOException(errorNull);
+            LOGGER.error(ExceptionMessage.THE_GOODS_CANNOT_BE_NULL.getMessage());
+            throw new RepositoryException(ExceptionMessage.THE_GOODS_CANNOT_BE_NULL.getMessage());
         }
         try (Connection connection = connFactory.getConnection()) {
             final PreparedStatement statement =
-                connection.prepareStatement("SELECT * FROM GOODS WHERE ID = ?");
+                    connection.prepareStatement("SELECT * FROM GOODS WHERE ID = ?");
             statement.setLong(FIRST_SQL_INDEX, entityId);
             final ResultSet resultSet = statement.executeQuery();
             if (resultSet.next()) {
                 return Optional.of(createGoods(resultSet));
             }
         } catch (SQLException ex) {
-            LOGGER.error(ExceptionMessage.FAILED_TO_GET_SHOP_BY_ID.getMessage(), ex);
-            throw new DAOException(ExceptionMessage.FAILED_TO_GET_SHOP_BY_ID.getMessage() + " " + entityId, ex);
+            LOGGER.error(ExceptionMessage.FAILED_TO_GET_GOODS_BY_ID.getMessage(), ex);
+            throw new RepositoryException(ExceptionMessage.FAILED_TO_GET_GOODS_BY_ID.getMessage() + " " + entityId, ex);
         }
         return Optional.empty();
     }
@@ -92,16 +91,16 @@ public class GoodsDaoImpl implements IRepository<Goods> {
      * @return update entity.
      */
     @Override
-    public Goods update(final Goods newEntity) throws DAOException {
+    public Goods update(final Goods newEntity) throws RepositoryException {
         try (Connection connection = connFactory.getConnection()) {
             final PreparedStatement statement =
-                connection.prepareStatement("UPDATE GOODS SET NAME = ?, BARCODE = ?, PRICE = ? WHERE ID = ?");
+                    connection.prepareStatement("UPDATE GOODS SET NAME = ?, BARCODE = ?, PRICE = ? WHERE ID = ?");
             setStatementGoodsInSQLIndexes(statement, newEntity);
             statement.setLong(FOURTH_SQL_INDEX, newEntity.getId());
             statement.executeUpdate();
         } catch (SQLException ex) {
-            LOGGER.error(ExceptionMessage.FAILED_TO_UPDATE_SHOP.getMessage(), ex);
-            throw new DAOException(ExceptionMessage.FAILED_TO_UPDATE_SHOP.getMessage(), ex);
+            LOGGER.error(ExceptionMessage.FAILED_TO_UPDATE_GOODS.getMessage(), ex);
+            throw new RepositoryException(ExceptionMessage.FAILED_TO_UPDATE_GOODS.getMessage(), ex);
         }
         return (Goods) get(newEntity.getId()).get();
     }
@@ -113,15 +112,15 @@ public class GoodsDaoImpl implements IRepository<Goods> {
      * @return true else false.
      */
     @Override
-    public Boolean delete(final Long entityId) throws DAOException {
+    public Boolean delete(final Long entityId) throws RepositoryException {
         try (Connection connection = connFactory.getConnection()) {
             final PreparedStatement statement =
-                connection.prepareStatement("DELETE FROM GOODS WHERE ID = ?");
+                    connection.prepareStatement("DELETE FROM GOODS WHERE ID = ?");
             statement.setLong(FIRST_SQL_INDEX, entityId);
             return statement.executeUpdate() > 0;
         } catch (SQLException ex) {
-            LOGGER.error(ExceptionMessage.FAILED_TO_DELETE_SHOP.getMessage(), ex);
-            throw new DAOException(ExceptionMessage.FAILED_TO_DELETE_SHOP.getMessage(), ex);
+            LOGGER.error(ExceptionMessage.FAILED_TO_DELETE_GOODS.getMessage(), ex);
+            throw new RepositoryException(ExceptionMessage.FAILED_TO_DELETE_GOODS.getMessage(), ex);
         }
     }
 
@@ -131,7 +130,7 @@ public class GoodsDaoImpl implements IRepository<Goods> {
      * @return List entity.
      */
     @Override
-    public List getAll() throws DAOException {
+    public List getAll() throws RepositoryException {
         final List<Goods> goods = new ArrayList<>();
         try (Connection connection = connFactory.getConnection()) {
             final ResultSet resultSet = connection.prepareStatement("SELECT * FROM GOODS").executeQuery();
@@ -139,8 +138,8 @@ public class GoodsDaoImpl implements IRepository<Goods> {
                 goods.add(createGoods(resultSet));
             }
         } catch (SQLException ex) {
-            LOGGER.error(ExceptionMessage.FAILED_TO_GET_ALL_SHOP.getMessage(), ex);
-            throw new DAOException(ExceptionMessage.FAILED_TO_GET_ALL_SHOP.getMessage(), ex);
+            LOGGER.error(ExceptionMessage.FAILED_TO_GET_ALL_GOODS.getMessage(), ex);
+            throw new RepositoryException(ExceptionMessage.FAILED_TO_GET_ALL_GOODS.getMessage(), ex);
         }
         return goods;
     }
@@ -165,8 +164,8 @@ public class GoodsDaoImpl implements IRepository<Goods> {
      */
     private Goods createGoods(final ResultSet resultSet) throws SQLException {
         final Goods goods = new Goods(resultSet.getString("NAME"),
-            resultSet.getLong("BARCODE"),
-            resultSet.getFloat("PRICE"));
+                resultSet.getLong("BARCODE"),
+                resultSet.getFloat("PRICE"));
         goods.setId(resultSet.getLong("ID"));
         return goods;
     }

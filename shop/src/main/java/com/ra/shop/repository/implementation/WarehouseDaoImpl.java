@@ -10,7 +10,7 @@ import java.util.Optional;
 
 import com.ra.shop.config.ConnectionFactory;
 import com.ra.shop.enums.ExceptionMessage;
-import com.ra.shop.exceptions.DAOException;
+import com.ra.shop.exceptions.RepositoryException;
 import com.ra.shop.model.Warehouse;
 import com.ra.shop.repository.IRepository;
 import org.apache.log4j.Logger;
@@ -30,13 +30,13 @@ public class WarehouseDaoImpl implements IRepository<Warehouse> {
     }
 
     /**
-     *  Method adds new Warehouse to the Data Base.
+     * Method adds new Warehouse to the Data Base.
      *
      * @param warehouse to save
      * @return new Warehouse
      */
     @Override
-    public Warehouse create(Warehouse warehouse) throws DAOException {
+    public Warehouse create(Warehouse warehouse) throws RepositoryException {
         try (Connection connection = connectionFactory.getConnection()) {
             final PreparedStatement insertStatement = connection.prepareStatement("INSERT INTO warehouse "
                     + "(name, price, amount) "
@@ -46,12 +46,12 @@ public class WarehouseDaoImpl implements IRepository<Warehouse> {
             insertStatement.executeUpdate();
             final ResultSet lastIdResultSet = getLastId.executeQuery();
             if (!lastIdResultSet.next()) {
-                throw new DAOException(ExceptionMessage.THE_SHOP_CANNOT_BE_NULL.getMessage());
+                throw new RepositoryException(ExceptionMessage.THE_WAREHOUSE_CANNOT_BE_NULL.getMessage());
             }
             warehouse = get(lastIdResultSet.getLong(1)).get();
         } catch (SQLException e) {
-            LOGGER.error(ExceptionMessage.FAILED_TO_CREATE_NEW_SHOP.getMessage(), e);
-            throw new DAOException(ExceptionMessage.FAILED_TO_CREATE_NEW_SHOP.getMessage());
+            LOGGER.error(ExceptionMessage.FAILED_TO_CREATE_NEW_WAREHOUSE.getMessage(), e);
+            throw new RepositoryException(ExceptionMessage.FAILED_TO_CREATE_NEW_WAREHOUSE.getMessage());
         }
         return warehouse;
     }
@@ -63,7 +63,7 @@ public class WarehouseDaoImpl implements IRepository<Warehouse> {
      * @return new Warehouse
      */
     @Override
-    public Warehouse update(final Warehouse warehouse) throws DAOException {
+    public Warehouse update(final Warehouse warehouse) throws RepositoryException {
         try (Connection connection = connectionFactory.getConnection()) {
             final PreparedStatement preparedStatement = connection.prepareStatement("UPDATE warehouse "
                     + "SET name = ?, price = ?, amount = ? "
@@ -73,8 +73,8 @@ public class WarehouseDaoImpl implements IRepository<Warehouse> {
             preparedStatement.executeUpdate();
             get(warehouse.getIdNumber());
         } catch (SQLException e) {
-            LOGGER.error(ExceptionMessage.FAILED_TO_UPDATE_SHOP.getMessage(), e);
-            throw new DAOException(ExceptionMessage.FAILED_TO_UPDATE_SHOP.getMessage(), e);
+            LOGGER.error(ExceptionMessage.FAILED_TO_UPDATE_WAREHOUSE.getMessage(), e);
+            throw new RepositoryException(ExceptionMessage.FAILED_TO_UPDATE_WAREHOUSE.getMessage(), e);
         }
         return warehouse;
     }
@@ -86,15 +86,15 @@ public class WarehouseDaoImpl implements IRepository<Warehouse> {
      * @return count of deleted rows
      */
     @Override
-    public Boolean delete(final Long entityId) throws DAOException {
+    public Boolean delete(final Long entityId) throws RepositoryException {
         boolean result;
         try (Connection connection = connectionFactory.getConnection()) {
             final PreparedStatement preparedStatement = connection.prepareStatement("DELETE FROM warehouse WHERE id = ?");
             preparedStatement.setLong(1, entityId);
             result = preparedStatement.executeUpdate() > 0;
         } catch (SQLException e) {
-            LOGGER.error(ExceptionMessage.FAILED_TO_DELETE_SHOP.getMessage(), e);
-            throw new DAOException(ExceptionMessage.FAILED_TO_DELETE_SHOP.getMessage());
+            LOGGER.error(ExceptionMessage.FAILED_TO_DELETE_WAREHOUSE.getMessage(), e);
+            throw new RepositoryException(ExceptionMessage.FAILED_TO_DELETE_WAREHOUSE.getMessage());
         }
         return result;
     }
@@ -106,7 +106,7 @@ public class WarehouseDaoImpl implements IRepository<Warehouse> {
      * @return Optional of warehouse or empty optional
      */
     @Override
-    public Optional<Warehouse> get(final Long idNumber) throws DAOException {
+    public Optional<Warehouse> get(final Long idNumber) throws RepositoryException {
         Optional<Warehouse> warehouse = Optional.empty();
         try (Connection connection = connectionFactory.getConnection()) {
             final PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM warehouse WHERE id = ?");
@@ -118,8 +118,8 @@ public class WarehouseDaoImpl implements IRepository<Warehouse> {
             warehouse = Optional.of(getWarehouseFromResultSet(resultSet));
             return warehouse;
         } catch (SQLException e) {
-            LOGGER.error(ExceptionMessage.FAILED_TO_GET_SHOP_BY_ID.getMessage(), e);
-            throw new DAOException(ExceptionMessage.FAILED_TO_GET_SHOP_BY_ID.getMessage() + " " + idNumber);
+            LOGGER.error(ExceptionMessage.FAILED_TO_GET_WAREHOUSE_BY_ID.getMessage(), e);
+            throw new RepositoryException(ExceptionMessage.FAILED_TO_GET_WAREHOUSE_BY_ID.getMessage() + " " + idNumber);
         }
     }
 
@@ -129,7 +129,7 @@ public class WarehouseDaoImpl implements IRepository<Warehouse> {
      * @return list of warehouses or empty list
      */
     @Override
-    public List<Warehouse> getAll() throws DAOException {
+    public List<Warehouse> getAll() throws RepositoryException {
         final List<Warehouse> warehouses = new ArrayList<>();
         try (Connection connection = connectionFactory.getConnection()) {
             final PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM warehouse");
@@ -138,8 +138,8 @@ public class WarehouseDaoImpl implements IRepository<Warehouse> {
                 warehouses.add(getWarehouseFromResultSet(resultSet));
             }
         } catch (SQLException e) {
-            LOGGER.error(ExceptionMessage.FAILED_TO_GET_ALL_SHOP.getMessage(), e);
-            throw new DAOException(ExceptionMessage.FAILED_TO_GET_ALL_SHOP.getMessage());
+            LOGGER.error(ExceptionMessage.FAILED_TO_GET_ALL_WAREHOUSE.getMessage(), e);
+            throw new RepositoryException(ExceptionMessage.FAILED_TO_GET_ALL_WAREHOUSE.getMessage());
         }
         return warehouses;
     }
@@ -148,7 +148,7 @@ public class WarehouseDaoImpl implements IRepository<Warehouse> {
      * Method fills in preparedStatement from the warehouse.
      *
      * @param preparedStatement to save
-     * @param warehouse to save
+     * @param warehouse         to save
      */
     private void fillInStatement(final Warehouse warehouse, final PreparedStatement preparedStatement) throws SQLException {
         preparedStatement.setString(NAME, warehouse.getName());

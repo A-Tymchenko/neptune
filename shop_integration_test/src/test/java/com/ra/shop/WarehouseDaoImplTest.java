@@ -1,7 +1,7 @@
 package com.ra.shop;
 
 import com.ra.shop.config.ConnectionFactory;
-import com.ra.shop.exceptions.DAOException;
+import com.ra.shop.exceptions.RepositoryException;
 import com.ra.shop.model.Warehouse;
 import com.ra.shop.repository.implementation.WarehouseDaoImpl;
 import org.h2.tools.RunScript;
@@ -40,10 +40,10 @@ public class WarehouseDaoImplTest {
     /**
      * testing new warehouse creation.
      *
-     * @throws DAOException exception
+     * @throws RepositoryException exception
      */
     @Test
-    public void whenCreateTableThenNewWarehouseMustReturn() throws DAOException {
+    public void whenCreateTableThenNewWarehouseMustReturn() throws RepositoryException {
         Warehouse createdWarehouse = IRepository.create(warehouse);
         assertNotNull(createdWarehouse);
         Long warehouseId = createdWarehouse.getIdNumber();
@@ -56,10 +56,10 @@ public class WarehouseDaoImplTest {
     /**
      * testing update warehouse.
      *
-     * @throws DAOException exception
+     * @throws RepositoryException exception
      */
     @Test
-    public void whenUpdateThenUpdatedWarehouseReturns() throws DAOException {
+    public void whenUpdateThenUpdatedWarehouseReturns() throws RepositoryException {
         Warehouse createdWarehouse = IRepository.create(warehouse);
         Warehouse expectedWarehouse = changeWarehouse(createdWarehouse);
 
@@ -70,10 +70,10 @@ public class WarehouseDaoImplTest {
     /**
      * testing delete warehouse twice.
      *
-     * @throws DAOException exception
+     * @throws RepositoryException exception
      */
     @Test
-    public void whenDeleteFalseThenReturnFalse() throws DAOException {
+    public void whenDeleteFalseThenReturnFalse() throws RepositoryException {
         Warehouse createdWarehouse = IRepository.create(warehouse);
         IRepository.delete(createdWarehouse.getIdNumber());
         boolean result = IRepository.delete(createdWarehouse.getIdNumber());
@@ -84,10 +84,10 @@ public class WarehouseDaoImplTest {
     /**
      * testing delete warehouse.
      *
-     * @throws DAOException exception
+     * @throws RepositoryException exception
      */
     @Test
-    public void whenDeleteCorrectlyThenDeleteAndReturnTrue() throws DAOException {
+    public void whenDeleteCorrectlyThenDeleteAndReturnTrue() throws RepositoryException {
         Warehouse createdWarehouse = IRepository.create(warehouse);
         boolean result = IRepository.delete(createdWarehouse.getIdNumber());
 
@@ -97,10 +97,10 @@ public class WarehouseDaoImplTest {
     /**
      * testing getAll warehouses.
      *
-     * @throws DAOException exception
+     * @throws RepositoryException exception
      */
     @Test
-    public void whenGetAllThenWarehousesMustReturn() throws DAOException {
+    public void whenGetAllThenWarehousesMustReturn() throws RepositoryException {
         List<Warehouse> expectedList = new ArrayList<>();
         Warehouse e1 = IRepository.create(warehouse);
         Warehouse e2 = IRepository.create(warehouse);

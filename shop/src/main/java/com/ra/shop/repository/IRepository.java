@@ -3,7 +3,6 @@ package com.ra.shop.repository;
 import java.util.List;
 import java.util.Optional;
 
-import com.ra.shop.exceptions.DAOException;
 import com.ra.shop.exceptions.RepositoryException;
 
 /**
@@ -19,7 +18,7 @@ public interface IRepository<T> {
      * @param entity that will be created.
      * @return T created entity.
      */
-    T create(T entity) throws RepositoryException, DAOException;
+    T create(T entity) throws RepositoryException;
 
     /**
      * Method returns Optional wrapper with an entity from database.
@@ -27,7 +26,7 @@ public interface IRepository<T> {
      * @param entityId - id of searched entity.
      * @return Optional wrapper for chosen entity.
      */
-    Optional<T> get(Long entityId) throws RepositoryException, DAOException;
+    Optional<T> get(Long entityId) throws RepositoryException;
 
     /**
      * Method updates existed entity due to it`s new params and send updated entity to database.
@@ -35,7 +34,7 @@ public interface IRepository<T> {
      * @param newEntity updated version of entity.
      * @return T. Returns an updated entity.
      */
-    T update(T newEntity) throws RepositoryException, DAOException;
+    T update(T newEntity) throws RepositoryException;
 
     /**
      * Method will delete entity from the database.
@@ -43,13 +42,13 @@ public interface IRepository<T> {
      * @param entityId of entity that will be deleted.
      * @return Boolean true if entity deleted, false if not.
      */
-    Boolean delete(Long entityId) throws RepositoryException, DAOException;
+    Boolean delete(Long entityId) throws RepositoryException;
 
     /**
      * Method returns all entities.
      *
      * @return List which contains all existed entities of the type T.
      */
-    List<T> getAll() throws RepositoryException, DAOException;
+    List<T> getAll() throws RepositoryException;
 
 }

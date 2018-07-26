@@ -1,6 +1,6 @@
 package com.ra.shop;
 
-import com.ra.shop.exceptions.DAOException;
+import com.ra.shop.exceptions.RepositoryException;
 import com.ra.shop.model.User;
 import com.ra.shop.repository.implementation.UserRepositoryImpl;
 import org.junit.jupiter.api.BeforeAll;
@@ -26,7 +26,7 @@ public class UserRepositoryMockTest {
     }
 
     @Test
-    void whenCreateUserThenReturnCreatedUser() throws DAOException {
+    void whenCreateUserThenReturnCreatedUser() throws RepositoryException {
         User user = new User(2L, "3809934252275", "Pasha", "Volum",
                 "Moscow", "pasha_213@gmail.com");
         when(mockUserRepository.create(user)).thenReturn(user);
@@ -35,7 +35,7 @@ public class UserRepositoryMockTest {
     }
 
     @Test
-    void whenGetUserThenReturnOptionalOfUser() throws DAOException{
+    void whenGetUserThenReturnOptionalOfUser() throws RepositoryException{
         User user = new User(3L, "3806642341542", "Murchik", "Babulin",
                 "USA", "murchik_21@gmail.com");
         when(mockUserRepository.get(user.getId())).thenReturn(Optional.of(user));
@@ -45,7 +45,7 @@ public class UserRepositoryMockTest {
     }
 
     @Test
-    void whenUpdateUserThenReturnUpdatedUser() throws DAOException {
+    void whenUpdateUserThenReturnUpdatedUser() throws RepositoryException {
         User user = new User(4L, "3806754352134", "Taras", "Mazur",
                 "Ukraine", "mazur_123@gmail.com");
         user.setName("Narhayer");
@@ -56,7 +56,7 @@ public class UserRepositoryMockTest {
     }
 
     @Test
-    void whenDeleteUserIsSuccessfulThenReturnTrue() throws DAOException {
+    void whenDeleteUserIsSuccessfulThenReturnTrue() throws RepositoryException {
         User user = new User(8L, "3809765435266", "Taras ", "Shevchenko",
                 "Ukraine", "taras_13@gmail.com");
         when(mockUserRepository.delete(user.getId())).thenReturn(Boolean.TRUE);
@@ -65,7 +65,7 @@ public class UserRepositoryMockTest {
     }
 
     @Test
-    void whenGetAllUsersThenReturnListOfUsers() throws DAOException {
+    void whenGetAllUsersThenReturnListOfUsers() throws RepositoryException {
         User[] users = getUsers();
         List<User> expected = new ArrayList<>();
         Collections.addAll(expected, users);
