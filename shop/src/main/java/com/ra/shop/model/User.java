@@ -4,11 +4,11 @@ import java.io.Serializable;
 import java.util.Objects;
 
 /**
- * Entity represents an user that contains all important information.
+ * Entity represents user that contains all important information.
  */
 public class User implements Serializable {
 
-    private long id;
+    private Long id;
     private String phoneNumber;
     private String name;
     private String secondName;
@@ -19,10 +19,9 @@ public class User implements Serializable {
         super();
     }
 
-    public User(Long id, String phoneNumber, String name, String secondName,
+    public User(String phoneNumber, String name, String secondName,
                  String country, String emailAddress) {
         super();
-        this.id = id;
         this.phoneNumber = phoneNumber;
         this.name = name;
         this.secondName = secondName;
@@ -30,11 +29,11 @@ public class User implements Serializable {
         this.emailAddress = emailAddress;
     }
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
