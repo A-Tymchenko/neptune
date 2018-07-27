@@ -58,6 +58,7 @@ public class PlaneDao implements AirPortDao<Plane> {
     public Plane update(Plane plane) throws AirPortDaoException {
         try (Connection connection = connectionFactory.getConnection()) {
             final PreparedStatement preparedStatement = connection.prepareStatement(UPDATE_PLANE_SQL);
+            preparedStatement.setInt(StatementParameter.PLANE_ID.get(), plane.getIdentifier());
             fillPreparedStatement(plane, preparedStatement);
             preparedStatement.executeUpdate();
             plane = getById(plane.getIdentifier()).get();
@@ -135,8 +136,5 @@ public class PlaneDao implements AirPortDao<Plane> {
         preparedStatement.setString(StatementParameter.PLANE_MODEL.get(), plane.getModel());
         preparedStatement.setString(StatementParameter.PLANE_TYPE.get(), plane.getType());
         preparedStatement.setInt(StatementParameter.PLANE_PLATE_NUMBER.get(), plane.getPlateNumber());
-        if (plane.getIdentifier() != null) {
-            preparedStatement.setInt(StatementParameter.PLANE_ID.get(), plane.getIdentifier());
-        }
     }
 }
