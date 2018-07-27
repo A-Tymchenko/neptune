@@ -60,7 +60,8 @@ public class TicketDao  implements AirPortDao<Ticket> {
     public Ticket create(final Ticket ticket) throws AirPortDaoException {
         try {
             final GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
-            int num = namedParameterJdbcTemplate.update(INSERT_SQL, new BeanPropertySqlParameterSource(ticket), keyHolder, new String[] {"ID"});
+            namedParameterJdbcTemplate.update(INSERT_SQL,
+                    new BeanPropertySqlParameterSource(ticket), keyHolder, new String[] {"ID"});
             ticket.setTicketId(keyHolder.getKey().intValue());
         } catch (DataAccessException e) {
             LOGGER.error(ExceptionMessage.FAILED_TO_CREATE_NEW_TICKET.toString(), e);
@@ -80,7 +81,8 @@ public class TicketDao  implements AirPortDao<Ticket> {
     @Override
     public Ticket update(final Ticket ticket) throws AirPortDaoException {
         try {
-            namedParameterJdbcTemplate.update(UPDATE_SQL, new BeanPropertySqlParameterSource(ticket));
+            namedParameterJdbcTemplate.update(UPDATE_SQL,
+                    new BeanPropertySqlParameterSource(ticket));
         } catch (DataAccessException e) {
             final String errorMessage = ExceptionMessage.FAILED_TO_UPDATE_TICKET_WITH_ID.get() + ticket.getTicketId();
             LOGGER.error(errorMessage, e);
@@ -120,8 +122,8 @@ public class TicketDao  implements AirPortDao<Ticket> {
     public Optional<Ticket> getById(final Integer idTicket) throws AirPortDaoException {
         try {
             return Optional.of(namedParameterJdbcTemplate.queryForObject(SELECT_BY_ID_SQL,
-                    new MapSqlParameterSource("ticketId", idTicket), (resultSet, i) -> {
-                        return getTicketFromResultSet(resultSet);}));
+                    new MapSqlParameterSource("ticketId", idTicket),
+                    (resultSet, i) -> { return getTicketFromResultSet(resultSet); }));
         } catch (DataAccessException e) {
             final String errorMessage = ExceptionMessage.FAILED_TO_GET_TICKET_WITH_ID.get() + idTicket;
             LOGGER.error(errorMessage, e);
@@ -139,9 +141,9 @@ public class TicketDao  implements AirPortDao<Ticket> {
     @Override
     public List<Ticket> getAll() throws AirPortDaoException {
         try {
-            return namedParameterJdbcTemplate.query(SELECT_ALL_SQL, (resultSet, i) -> {
-                    return getTicketFromResultSet(resultSet);});
-            } catch (DataAccessException e) {
+            return namedParameterJdbcTemplate.query(SELECT_ALL_SQL,
+                    (resultSet, i) -> { return getTicketFromResultSet(resultSet); });
+        } catch (DataAccessException e) {
             final String message = ExceptionMessage.FAILED_TO_GET_ALL_TICKETS.get();
             LOGGER.error(message, e);
             throw new AirPortDaoException(message, e);
