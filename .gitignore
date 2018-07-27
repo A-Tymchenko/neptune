@@ -2,9 +2,9 @@
 *.iml
 */build
 */out
+*/logs
 out
 build
 *.log
-**/.gradle
-**/.db
-.editorconfig
+/buildSrc/.gradle
+.gradle
