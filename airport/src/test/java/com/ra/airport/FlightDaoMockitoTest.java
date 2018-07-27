@@ -1,22 +1,15 @@
 package com.ra.airport;
 
-import com.ra.airport.config.AirPortConfiguration;
 import com.ra.airport.dao.exception.AirPortDaoException;
 import com.ra.airport.dao.impl.FlightDao;
 import com.ra.airport.entity.Flight;
-import com.ra.airport.factory.ConnectionFactory;
 import com.ra.airport.helper.DataCreationHelper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mockito;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.PreparedStatementSetter;
 import org.springframework.jdbc.core.RowMapper;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.sql.*;
 import java.time.LocalDateTime;
@@ -41,9 +34,9 @@ public class FlightDaoMockitoTest {
     private static final String INSERT_FLIGHT_SQL = "INSERT INTO flight " +
             "(name, carrier, duration, meal_on, fare, departure_date, arrival_date) " +
             " VALUES(?,?,?,?,?,?,?)";
-    private static final String UPDATE_FLIGHT_SQL = "UPDATE flight SET name = ?, carrier = ?, duration = ?, meal_on = ?, fare = ?, departure_date = ?, arrival_date = ? WHERE id = ?";
-    private static final String SELECT_FLIGHT_BY_ID_SQL = "SELECT * FROM flight WHERE id = ?";
-    private static final String DELETE_FLIGHT_BY_ID_SQL = "DELETE FROM flight WHERE id = ?";
+    private static final String UPDATE_FLIGHT_SQL = "UPDATE flight SET name = ?, carrier = ?, duration = ?, meal_on = ?, fare = ?, departure_date = ?, arrival_date = ? WHERE flId = ?";
+    private static final String SELECT_FLIGHT_BY_ID_SQL = "SELECT * FROM flight WHERE flId = ?";
+    private static final String DELETE_FLIGHT_BY_ID_SQL = "DELETE FROM flight WHERE flId = ?";
     private static final String SELECT_LAST_GENERATED_ID_SQL = "SELECT SCOPE_IDENTITY()";
     private static final String SELECT_ALL_FLIGHTS_SQL ="SELECT * FROM flight";
 
@@ -52,7 +45,6 @@ public class FlightDaoMockitoTest {
 
     private JdbcTemplate mockJdbcTemplate;
     private PreparedStatement mockStatement;
-    private RowMapper<Flight> rowMapper;
 
     @BeforeEach
     public void init() {
@@ -61,8 +53,7 @@ public class FlightDaoMockitoTest {
         flight.setArrivalDate(LocalDateTime.now().plusHours(1));
         mockStatement = mock(PreparedStatement.class);
         mockJdbcTemplate = mock(JdbcTemplate.class);
-        rowMapper = mock(RowMapper.class);
-        flightDao = new FlightDao(mockJdbcTemplate, rowMapper);
+        flightDao = new FlightDao(mockJdbcTemplate);
 
         when(mockJdbcTemplate.queryForObject(SELECT_LAST_GENERATED_ID_SQL, Integer.class)).thenReturn(1);
         when(mockJdbcTemplate.queryForObject(eq(SELECT_FLIGHT_BY_ID_SQL), any(Object[].class), any(RowMapper.class))).thenReturn(flight);
@@ -75,7 +66,9 @@ public class FlightDaoMockitoTest {
             return null;
         }).when(mockJdbcTemplate).update(eq(INSERT_FLIGHT_SQL), any(PreparedStatementSetter.class));
 
-        Flight result = flightDao.create(flight);
+        Flight flightWithoutId = flight;
+        flightWithoutId.setFlId(null);
+        Flight result = flightDao.create(flightWithoutId);
 
         assertEquals(flight, result);
     }

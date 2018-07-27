@@ -9,7 +9,7 @@ import java.util.Objects;
  */
 public class Flight {
 
-   private Integer identifier;
+   private Integer flId;
    private String name;
    private String carrier;
    private LocalTime duration;
@@ -20,12 +20,12 @@ public class Flight {
 
     public Flight() {}
 
-    public Integer getIdentifier() {
-        return identifier;
+    public Integer getFlId() {
+        return flId;
     }
 
-    public void setIdentifier(final Integer identifier) {
-        this.identifier = identifier;
+    public void setFlId(final Integer flId) {
+        this.flId = flId;
     }
 
     public String getName() {
@@ -93,7 +93,7 @@ public class Flight {
             return false;
         }
         final Flight flight = (Flight) object;
-        return Objects.equals(identifier, flight.identifier)
+        return Objects.equals(flId, flight.flId)
                 && Objects.equals(name, flight.name)
                 && Objects.equals(carrier, flight.carrier)
                 && Objects.equals(duration, flight.duration)
@@ -106,7 +106,7 @@ public class Flight {
     @Override
     public String toString() {
         return "Flight{"
-                + "id=" + identifier
+                + "id=" + flId
                 + ", name='" + name + '\''
                 + ", carrier='" + carrier + '\''
                 + ", duration=" + duration
@@ -119,6 +119,6 @@ public class Flight {
 
     @Override
     public int hashCode() {
-        return Objects.hash(identifier, name, carrier, duration, departureDate, arrivalDate, fare, mealOn);
+        return Objects.hash(flId, name, carrier, duration, departureDate, arrivalDate, fare, mealOn);
     }
 }
