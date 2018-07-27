@@ -20,7 +20,6 @@ import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -77,7 +76,7 @@ public class FlightDaoTest {
     }
 
     @Test
-    public void whenCreateThenNewFlightWithIdShouldBeReturned() throws AirPortDaoException {
+    void whenCreateThenNewFlightWithIdShouldBeReturned() throws AirPortDaoException {
         Flight createdFlight = airPortDao.create(flight);
         assertNotNull(createdFlight);
         Integer flightId = createdFlight.getIdentifier();
@@ -87,7 +86,7 @@ public class FlightDaoTest {
     }
 
     @Test
-    public void whenUpdateThenUpdatedFlightShouldBeReturned() throws AirPortDaoException {
+    void whenUpdateThenUpdatedFlightShouldBeReturned() throws AirPortDaoException {
         Flight createdFlight = airPortDao.create(flight);
         Flight expectedFlight = changeFlight(createdFlight);
 
@@ -97,7 +96,7 @@ public class FlightDaoTest {
     }
 
     @Test
-    public void whenDeleteThenDeleteObjectAndReturnTrue() throws AirPortDaoException {
+    void whenDeleteThenDeleteObjectAndReturnTrue() throws AirPortDaoException {
         Flight createdFlight = airPortDao.create(flight);
         boolean result = airPortDao.delete(createdFlight);
 
@@ -105,9 +104,8 @@ public class FlightDaoTest {
     }
 
     @Test
-    public void whenGetAllThenFlightsFromDBShouldBeReturned() throws AirPortDaoException {
+    void whenGetAllThenFlightsFromDBShouldBeReturned() throws AirPortDaoException {
         List<Flight> expectedResult = new ArrayList<>();
-        expectedResult.add(airPortDao.create(flight));
         expectedResult.add(airPortDao.create(flight));
 
         List<Flight> flights = airPortDao.getAll();
