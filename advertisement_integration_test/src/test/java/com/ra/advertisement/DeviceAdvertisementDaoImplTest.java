@@ -31,11 +31,9 @@ class DeviceAdvertisementDaoImplTest {
 
     /**
      * testing successful result of create method which save info regarding Device into DB
-     *
-     * @throws Exception
      */
     @Test
-    void insertValidDataIntoDbAndGetItsFromThereWithGeneratedIddReturnTrue() throws Exception {
+    void insertValidDataIntoDbAndGetItsFromThereWithGeneratedIddReturnTrue() {
         Device deviceCreated = deviceDao.create(DEVICE);
         Device actual = deviceDao.getById(deviceCreated.getDevId());
         assertAll("actual",
@@ -48,11 +46,9 @@ class DeviceAdvertisementDaoImplTest {
 
     /**
      * testing successful result of getById method which gets info regarding Device from DB
-     *
-     * @throws Exception
      */
     @Test
-    void getObjectByIdExecutedReturnTrue() throws Exception {
+    void getObjectByIdExecutedReturnTrue() {
         Device deviceCreated = deviceDao.create(DEVICE);
         Device actual = deviceDao.getById(deviceCreated.getDevId());
         assertAll("actual",
@@ -65,11 +61,9 @@ class DeviceAdvertisementDaoImplTest {
 
     /**
      * testing successful result of delete method which delete info regarding Device from DB
-     *
-     * @throws Exception
      */
     @Test
-    void deleteValidDataExecutedReturnTrue() throws Exception {
+    void deleteValidDataExecutedReturnTrue() {
         Device deviceCreated = deviceDao.create(DEVICE);
         Integer actual = deviceDao.delete(deviceCreated);
         assertEquals(Integer.valueOf(1), actual);
@@ -77,11 +71,9 @@ class DeviceAdvertisementDaoImplTest {
 
     /**
      * testing successful result of getAll method which gets info regarding all Devices from DB
-     *
-     * @throws Exception
      */
     @Test
-    void getAllObjectExecutedAndListIsNotEmptyReturnTrue() throws Exception {
+    void getAllObjectExecutedAndListIsNotEmptyReturnTrue() {
         deviceDao.create(DEVICE);
         boolean actual = deviceDao.getAll().isEmpty();
         assertEquals(Boolean.valueOf(false), actual);
@@ -89,11 +81,9 @@ class DeviceAdvertisementDaoImplTest {
 
     /**
      * testing successful result of update method which updates info regarding Device in DB
-     *
-     * @throws Exception
      */
     @Test
-    void updateDataExecutedAndAllFieldsOfDeviceRecievedAndCheckedReturnTrue() throws Exception {
+    void updateDataExecutedAndAllFieldsOfDeviceRecievedAndCheckedReturnTrue() {
         deviceDao.create(DEVICE);
         Device deviceUpdated = deviceDao.update(DEVICE_UPDATE);
         Device actual = deviceDao.getById(deviceUpdated.getDevId());

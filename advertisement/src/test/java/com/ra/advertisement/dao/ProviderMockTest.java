@@ -31,7 +31,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(SpringExtension.class)
-@ContextConfiguration(classes = {AdvertisementConfiguration.class, AdvertisementAdvertisementDaoImpl.class})
+@ContextConfiguration(classes = {AdvertisementConfiguration.class, ProviderAdvertisementDaoImpl.class})
 public class ProviderMockTest {
     private static JdbcTemplate mockjdbcTemplate;
     private static ProviderAdvertisementDaoImpl providerDao;
@@ -49,7 +49,7 @@ public class ProviderMockTest {
     }
 
     @BeforeEach
-    public void reInitAdvertisementDao() throws SQLException {
+    public void reInitAdvertisementDao() {
         mockkeyHolder = mock(KeyHolder.class);
         mockStatement = mock(PreparedStatement.class);
         provider = new Provider(1l, "Coca Cola", "Lviv", "22-45-18", "Ukraine");
@@ -63,7 +63,7 @@ public class ProviderMockTest {
      * Testing method addProvider when result true.
      */
     @Test
-    public void addProviderExecuteSuccessfuldReturnTrue() throws SQLException {
+    public void addProviderExecuteSuccessfuldReturnTrue() {
         when(mockjdbcTemplate.update(any(PreparedStatementCreator.class), any(KeyHolder.class))).thenReturn(1);
         when(mockkeyHolder.getKey()).thenReturn(1L);
         Provider providerCreated = providerDao.create(providerNoId);

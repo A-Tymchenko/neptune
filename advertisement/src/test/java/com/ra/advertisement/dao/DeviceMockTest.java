@@ -31,7 +31,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(SpringExtension.class)
-@ContextConfiguration(classes = {AdvertisementConfiguration.class, AdvertisementAdvertisementDaoImpl.class})
+@ContextConfiguration(classes = {AdvertisementConfiguration.class, DeviceAdvertisementDaoImpl.class})
 public class DeviceMockTest {
     private static JdbcTemplate mockjdbcTemplate;
     private static DeviceAdvertisementDaoImpl deviceDao;
@@ -49,7 +49,7 @@ public class DeviceMockTest {
     }
 
     @BeforeEach
-    public void reInitAdvertisementDao() throws SQLException {
+    public void reInitAdvertisementDao() {
         mockkeyHolder = mock(KeyHolder.class);
         mockStatement = mock(PreparedStatement.class);
         device = new Device(1L, "Nokia", "25-10", "Mobile Phone");
@@ -64,7 +64,7 @@ public class DeviceMockTest {
      * Testing method addDevice when result true.
      */
     @Test
-    public void addDevicetExecuteSuccessfuldReturnTrue() throws SQLException {
+    public void addDevicetExecuteSuccessfuldReturnTrue() {
         when(mockjdbcTemplate.update(any(PreparedStatementCreator.class), any(KeyHolder.class))).thenReturn(1);
         when(mockkeyHolder.getKey()).thenReturn(1L);
         Device deviceCreated = deviceDao.create(deviceNoId);

@@ -33,11 +33,9 @@ class PublisherAdvertisementDaoImplTest {
 
     /**
      * testing successful result of create method which save info regarding Publisher into DB
-     *
-     * @throws Exception
      */
     @Test
-    void insertValidDataIntoDbAndGetItsFromThereWithGeneratedIddReturnTrue() throws Exception {
+    void insertValidDataIntoDbAndGetItsFromThereWithGeneratedIddReturnTrue() {
         Publisher publisherCreated = publisherDao.create(PUBLISHER);
         Publisher actual = publisherDao.getById(publisherCreated.getPubId());
         assertAll("actual",
@@ -51,11 +49,9 @@ class PublisherAdvertisementDaoImplTest {
 
     /**
      * testing successful result of getById method which gets info regarding Publisher from DB
-     *
-     * @throws Exception
      */
     @Test
-    void getObjectByIdExecutedReturnTrue() throws Exception {
+    void getObjectByIdExecutedReturnTrue() {
         Publisher publisherCreated = publisherDao.create(PUBLISHER);
         Publisher actual = publisherDao.getById(publisherCreated.getPubId());
         assertAll("actual",
@@ -69,11 +65,9 @@ class PublisherAdvertisementDaoImplTest {
 
     /**
      * testing successful result of delete method which delete info regarding Publisher from DB
-     *
-     * @throws Exception
      */
     @Test
-    void deleteValidDataExecutedReturnTrue() throws Exception {
+    void deleteValidDataExecutedReturnTrue() {
         Publisher publisherCreated = publisherDao.create(PUBLISHER);
         Integer actual = publisherDao.delete(publisherCreated);
         assertEquals(Integer.valueOf(1), actual);
@@ -81,11 +75,9 @@ class PublisherAdvertisementDaoImplTest {
 
     /**
      * testing successful result of getAll method which gets info regarding all Publishers from DB
-     *
-     * @throws Exception
      */
     @Test
-    void getAllObjectExecutedAndListIsNotEmptyReturnTrue() throws Exception {
+    void getAllObjectExecutedAndListIsNotEmptyReturnTrue() {
         publisherDao.create(PUBLISHER);
         boolean actual = publisherDao.getAll().isEmpty();
         assertEquals(Boolean.valueOf(false), actual);
@@ -93,11 +85,9 @@ class PublisherAdvertisementDaoImplTest {
 
     /**
      * testing successful result of update method which updates info regarding Publisher in DB
-     *
-     * @throws Exception
      */
     @Test
-    void updateDataExecutedAndAllFieldsOfProviderRecievedAndCheckedReturnTrue() throws Exception {
+    void updateDataExecutedAndAllFieldsOfProviderRecievedAndCheckedReturnTrue() {
         publisherDao.create(PUBLISHER);
         Publisher publisherUpdated = publisherDao.update(PUBLISHER_UPDATE);
         Publisher actual = publisherDao.getById(publisherUpdated.getPubId());

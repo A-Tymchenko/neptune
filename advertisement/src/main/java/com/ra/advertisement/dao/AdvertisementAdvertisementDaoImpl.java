@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import com.ra.advertisement.entity.Advertisement;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -22,6 +23,7 @@ public final class AdvertisementAdvertisementDaoImpl implements AdvertisementDao
     private static final Integer LANGUAGE = 4;
     private static final Integer AD_ID = 5;
 
+    @Autowired
     public AdvertisementAdvertisementDaoImpl(final JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
@@ -42,8 +44,8 @@ public final class AdvertisementAdvertisementDaoImpl implements AdvertisementDao
                     preparedStatementForCreateOrUpdate(preparedStatement, advertisement);
                     return preparedStatement;
                 }, keyHolder);
-        final Long deviceKey = (Long) keyHolder.getKey();
-        return jdbcTemplate.queryForObject(GET_ADVERT_BY_ID, BeanPropertyRowMapper.newInstance(Advertisement.class), deviceKey);
+        final Long advertKey = (Long) keyHolder.getKey();
+        return jdbcTemplate.queryForObject(GET_ADVERT_BY_ID, BeanPropertyRowMapper.newInstance(Advertisement.class), advertKey);
     }
 
     /**
@@ -106,7 +108,7 @@ public final class AdvertisementAdvertisementDaoImpl implements AdvertisementDao
      * @param advertisement     advertisement where we get fields from
      * @throws SQLException Sqlexception
      */
-    public void preparedStatementForCreateOrUpdate(final PreparedStatement preparedStatement,
+    private void preparedStatementForCreateOrUpdate(final PreparedStatement preparedStatement,
                                                    final Advertisement advertisement) throws SQLException {
         preparedStatement.setString(TITLE, advertisement.getTitle());
         preparedStatement.setString(CONTEXT, advertisement.getContext());

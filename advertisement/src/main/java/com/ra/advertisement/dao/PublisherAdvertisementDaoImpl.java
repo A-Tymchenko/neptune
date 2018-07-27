@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import com.ra.advertisement.entity.Publisher;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -22,6 +23,7 @@ public final class PublisherAdvertisementDaoImpl implements AdvertisementDao<Pub
     private static final Integer COUNTRY = 4;
     private static final Integer PUB_ID = 5;
 
+    @Autowired
     public PublisherAdvertisementDaoImpl(final JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
@@ -105,7 +107,7 @@ public final class PublisherAdvertisementDaoImpl implements AdvertisementDao<Pub
      * @param publisher         publisher where we get fields from
      * @throws SQLException Sqlexception
      */
-    public void preparedStatementForCreateOrUpdate(final PreparedStatement preparedStatement,
+    private void preparedStatementForCreateOrUpdate(final PreparedStatement preparedStatement,
                                                    final Publisher publisher) throws SQLException {
         preparedStatement.setString(NAME, publisher.getName());
         preparedStatement.setString(ADDRESS, publisher.getAddress());

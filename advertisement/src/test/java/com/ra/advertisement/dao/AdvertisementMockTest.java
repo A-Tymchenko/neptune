@@ -41,7 +41,7 @@ public class AdvertisementMockTest {
     }
 
     @BeforeEach
-    public void reInitAdvertisementDao() throws SQLException {
+    public void reInitAdvertisementDao() {
         mockkeyHolder = mock(KeyHolder.class);
         mockStatement = mock(PreparedStatement.class);
         advertisement = new Advertisement(1L, "Welcome advert", "Welcome to Ukraine",
@@ -58,7 +58,7 @@ public class AdvertisementMockTest {
      * Testing method addAdvertisement when result true.
      */
     @Test
-    public void addAdvertisementExecuteSuccessfuldReturnTrue() throws SQLException {
+    public void addAdvertisementExecuteSuccessfuldReturnTrue() {
         when(mockjdbcTemplate.update(any(PreparedStatementCreator.class), any(KeyHolder.class))).thenReturn(1);
         when(mockkeyHolder.getKey()).thenReturn(1L);
         Advertisement advertisementCreated = advertisementDao.create(advertisementNoId);
@@ -72,8 +72,6 @@ public class AdvertisementMockTest {
 
     /**
      * Testing method addAdvertisement when we don't get id of created entity.
-     *
-     * @throws SQLException exception.
      */
     @Test
     public void addAdvertisementAndDontGetGeneratedIdReturnTrue() {

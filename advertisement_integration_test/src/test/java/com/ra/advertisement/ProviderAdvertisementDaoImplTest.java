@@ -33,11 +33,9 @@ class ProviderAdvertisementDaoImplTest {
 
     /**
      * testing successful result of create method which save info regarding Provider into DB
-     *
-     * @throws Exception
      */
     @Test
-    void insertValidDataIntoDbAndGetItsFromThereWithGeneratedIddReturnTrue() throws Exception {
+    void insertValidDataIntoDbAndGetItsFromThereWithGeneratedIddReturnTrue() {
         Provider providerCreated = providerDao.create(PROVIDER);
         Provider actual = providerDao.getById(providerCreated.getProvId());
         assertAll("actual",
@@ -51,11 +49,9 @@ class ProviderAdvertisementDaoImplTest {
 
     /**
      * testing successful result of getById method which gets info regarding Provider from DB
-     *
-     * @throws Exception
      */
     @Test
-    void getObjectByIdExecutedReturnTrue() throws Exception {
+    void getObjectByIdExecutedReturnTrue() {
         Provider providerCreated = providerDao.create(PROVIDER);
         Provider actual = providerDao.getById(providerCreated.getProvId());
         assertAll("actual",
@@ -69,11 +65,9 @@ class ProviderAdvertisementDaoImplTest {
 
     /**
      * testing successful result of delete method which delete info regarding Provider from DB
-     *
-     * @throws Exception
      */
     @Test
-    void deleteValidDataExecutedReturnTrue() throws Exception {
+    void deleteValidDataExecutedReturnTrue() {
         Provider providerCreated = providerDao.create(PROVIDER);
         Integer actual = providerDao.delete(providerCreated);
         assertEquals(Integer.valueOf(1), actual);
@@ -81,11 +75,9 @@ class ProviderAdvertisementDaoImplTest {
 
     /**
      * testing successful result of getAll method which gets info regarding all Providers from DB
-     *
-     * @throws Exception
      */
     @Test
-    void getAllObjectExecutedAndListIsNotEmptyReturnTrue() throws Exception {
+    void getAllObjectExecutedAndListIsNotEmptyReturnTrue() {
         providerDao.create(PROVIDER);
         boolean actual = providerDao.getAll().isEmpty();
         assertEquals(Boolean.valueOf(false), actual);
@@ -93,11 +85,9 @@ class ProviderAdvertisementDaoImplTest {
 
     /**
      * testing successful result of update method which updates info regarding Provider in DB
-     *
-     * @throws Exception
      */
     @Test
-    void updateDataExecutedAndAllFieldsOfProviderRecievedAndCheckedReturnTrue() throws Exception {
+    void updateDataExecutedAndAllFieldsOfProviderRecievedAndCheckedReturnTrue() {
         providerDao.create(PROVIDER);
         Provider providerUpdated = providerDao.update(PROVIDER_UPDATE);
         Provider actual = providerDao.getById(providerUpdated.getProvId());

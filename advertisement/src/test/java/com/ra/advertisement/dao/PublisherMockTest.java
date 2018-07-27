@@ -1,7 +1,6 @@
 package com.ra.advertisement.dao;
 
 import com.ra.advertisement.config.AdvertisementConfiguration;
-import com.ra.advertisement.entity.Provider;
 import com.ra.advertisement.entity.Publisher;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
@@ -19,7 +18,6 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.sql.PreparedStatement;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -32,7 +30,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(SpringExtension.class)
-@ContextConfiguration(classes = {AdvertisementConfiguration.class, AdvertisementAdvertisementDaoImpl.class})
+@ContextConfiguration(classes = {AdvertisementConfiguration.class, PublisherAdvertisementDaoImpl.class})
 public class PublisherMockTest {
     private static JdbcTemplate mockjdbcTemplate;
     private static PublisherAdvertisementDaoImpl publisherDao;

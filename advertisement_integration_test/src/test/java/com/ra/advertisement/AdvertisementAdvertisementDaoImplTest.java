@@ -33,11 +33,9 @@ class AdvertisementAdvertisementDaoImplTest {
 
     /**
      * testing successful result of create method which save info regarding Advertisement into DB
-     *
-     * @throws Exception
      */
     @Test
-    void insertValidDataIntoDbAndGetItsFromThereWithGeneratedIddReturnTrue() throws Exception {
+    void insertValidDataIntoDbAndGetItsFromThereWithGeneratedIddReturnTrue() {
         Advertisement advertisementCreated = advertisementDao.create(ADVERTISEMENT);
         Advertisement actual = advertisementDao.getById(advertisementCreated.getAdId());
         assertAll("actual",
@@ -51,11 +49,9 @@ class AdvertisementAdvertisementDaoImplTest {
 
     /**
      * testing successful result of getById method which gets info regarding Advertisement from DB
-     *
-     * @throws Exception
      */
     @Test
-    void getObjectByIdExecutedReturnTrue() throws Exception {
+    void getObjectByIdExecutedReturnTrue() {
         Advertisement advertisementCreated = advertisementDao.create(ADVERTISEMENT);
         Advertisement actual = advertisementDao.getById(advertisementCreated.getAdId());
         assertAll("actual",
@@ -68,11 +64,9 @@ class AdvertisementAdvertisementDaoImplTest {
 
     /**
      * testing successful result of delete method which delete info regarding Advertisement from DB
-     *
-     * @throws Exception
      */
     @Test
-    void deleteValidDataExecutedReturnTrue() throws Exception {
+    void deleteValidDataExecutedReturnTrue() {
         Advertisement advertisementCreated = advertisementDao.create(ADVERTISEMENT);
         Integer actual = advertisementDao.delete(advertisementCreated);
         assertEquals(Integer.valueOf(1), actual);
@@ -80,11 +74,9 @@ class AdvertisementAdvertisementDaoImplTest {
 
     /**
      * testing successful result of getAll method which gets info regarding all Advertisement from DB
-     *
-     * @throws Exception
      */
     @Test
-    void getAllObjectExecutedAndListIsNotEmptyReturnTrue() throws Exception {
+    void getAllObjectExecutedAndListIsNotEmptyReturnTrue() {
         advertisementDao.create(ADVERTISEMENT);
         boolean actual = advertisementDao.getAll().isEmpty();
         assertEquals(Boolean.valueOf(false), actual);
@@ -92,11 +84,9 @@ class AdvertisementAdvertisementDaoImplTest {
 
     /**
      * testing successful result of update method which updates info regarding Advertisement in DB
-     *
-     * @throws Exception
      */
     @Test
-    void updateDataExecutedAndAllFieldsOfAdvertisementRecievedAndCheckedReturnTrue() throws Exception {
+    void updateDataExecutedAndAllFieldsOfAdvertisementRecievedAndCheckedReturnTrue() {
         advertisementDao.create(ADVERTISEMENT);
         Advertisement advertisementUpdated = advertisementDao.update(ADVERTISEMENT_UPDATE);
         Advertisement actual = advertisementDao.getById(advertisementUpdated.getAdId());

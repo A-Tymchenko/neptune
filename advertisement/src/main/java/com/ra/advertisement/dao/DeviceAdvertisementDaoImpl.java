@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import com.ra.advertisement.entity.Device;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -21,6 +22,7 @@ public final class DeviceAdvertisementDaoImpl implements AdvertisementDao<Device
     private static final Integer DEVICE_TYPE = 3;
     private static final Integer DEV_ID = 4;
 
+    @Autowired
     public DeviceAdvertisementDaoImpl(final JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
@@ -103,7 +105,7 @@ public final class DeviceAdvertisementDaoImpl implements AdvertisementDao<Device
      * @param device            device where we get fields from
      * @throws SQLException Sqlexception
      */
-    public void preparedStatementForCreateOrUpdate(final PreparedStatement preparedStatement,
+    private void preparedStatementForCreateOrUpdate(final PreparedStatement preparedStatement,
                                                    final Device device) throws SQLException {
         preparedStatement.setString(NAME, device.getName());
         preparedStatement.setString(MODEL, device.getModel());
