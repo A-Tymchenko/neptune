@@ -15,7 +15,6 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.sql.PreparedStatement;
-import java.sql.SQLException;
 import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;

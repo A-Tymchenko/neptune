@@ -18,7 +18,6 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.sql.PreparedStatement;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -77,8 +76,6 @@ public class DeviceMockTest {
 
     /**
      * Testing method addADevice when we don't get id of created entity.
-     *
-     * @throws SQLException exception.
      */
     @Test
     public void addDeviceAndDontGetGeneratedIdReturnTrue() {
@@ -119,6 +116,7 @@ public class DeviceMockTest {
                 () -> assertEquals(result.getModel(), deviceUpdated.getModel()),
                 () -> assertEquals(result.getDeviceType(), deviceUpdated.getDeviceType()));
     }
+
     /**
      * Testing method getAllDevices when result true.
      */

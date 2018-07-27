@@ -18,7 +18,6 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.sql.PreparedStatement;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -77,8 +76,6 @@ public class ProviderMockTest {
 
     /**
      * Testing method addAProvider when we don't get id of created entity.
-     *
-     * @throws SQLException exception.
      */
     @Test
     public void addProviderAndDontGetGeneratedIdReturnTrue() {
