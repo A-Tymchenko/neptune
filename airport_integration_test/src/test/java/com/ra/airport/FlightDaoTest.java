@@ -10,6 +10,7 @@ import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import com.ra.airport.config.AirPortConfiguration;
 import com.ra.airport.dao.AirPortDao;
 import com.ra.airport.dao.exception.AirPortDaoException;
@@ -35,6 +36,7 @@ import static org.junit.jupiter.api.Assertions.*;
 @ContextConfiguration(classes = {AirPortConfiguration.class})
 @SqlGroup({
         @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = "classpath:sql/create_table_skripts.sql"),
+        @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = "classpath:sql/tables_backup(data).sql"),
         @Sql(executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD, scripts = "classpath:sql/remove_table_skripts.sql")
 })
 public class FlightDaoTest {
@@ -89,31 +91,31 @@ public class FlightDaoTest {
 
     @Test
     public void whenUpdateThenUpdatedFlightShouldBeReturned() throws AirPortDaoException {
-        Flight createdFlight = airPortDao.create(flight);
-        Flight expectedFlight = changeFlight(createdFlight);
+        Optional<Flight> optionalFlight = airPortDao.getById(1);
 
-        Flight updatedFlight = airPortDao.update(createdFlight);
+        assertNotEquals(Optional.empty(), optionalFlight);
+        Flight flight = optionalFlight.get();
+        Flight expectedFlight = changeFlight(flight);
+        Flight updatedFlight = airPortDao.update(flight);
 
         assertEquals(expectedFlight, updatedFlight);
     }
 
     @Test
     public void whenDeleteThenDeleteObjectAndReturnTrue() throws AirPortDaoException {
-        Flight createdFlight = airPortDao.create(flight);
-        boolean result = airPortDao.delete(createdFlight);
+        Optional<Flight> optionalFlight = airPortDao.getById(1);
+
+        assertNotEquals(Optional.empty(), optionalFlight);
+        boolean result = airPortDao.delete(optionalFlight.get());
 
         assertTrue(result);
     }
 
     @Test
     public void whenGetAllThenFlightsFromDBShouldBeReturned() throws AirPortDaoException {
-        List<Flight> expectedResult = new ArrayList<>();
-        expectedResult.add(airPortDao.create(flight));
-        expectedResult.add(airPortDao.create(flight));
-
         List<Flight> flights = airPortDao.getAll();
 
-        assertEquals(expectedResult, flights);
+        assertTrue(flights.size() == 2);
     }
 
     private Flight changeFlight(Flight flight) {

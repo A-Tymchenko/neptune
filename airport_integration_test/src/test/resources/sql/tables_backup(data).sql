@@ -10,6 +10,8 @@ INSERT INTO AIRPORT (APNAME, APNUM, APTYPE, ADDRESSES, TERMINALCOUNT) VALUES ('O
 --FLIGHT
 INSERT INTO flight (name,carrier,duration,meal_on, fare,departure_date,arrival_date) VALUES (
 'Kyiv-Rome', 'Wizz Air', '02:00:00', true, 100, '2018-06-17 13:15:00', '2018-06-17 15:16:00');
+INSERT INTO flight (name,carrier,duration,meal_on, fare,departure_date,arrival_date) VALUES (
+'Kyiv-Paris', 'MAU', '03:00:00', true, 200, '2018-07-17 13:15:00', '2018-07-17 16:16:00');
 
 --PLANE
 INSERT INTO plane (owner,model,type, plateNumber) VALUES ('MAU', 'Boeing', 'LargeCarrier', 132498789);
