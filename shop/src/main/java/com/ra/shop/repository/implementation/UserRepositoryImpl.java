@@ -182,7 +182,9 @@ public class UserRepositoryImpl implements IRepository<User> {
         final String secondName = resultSet.getString("SECOND_NAME");
         final String country = resultSet.getString("COUNTRY");
         final String emailAddress = resultSet.getString("EMAIL_ADDRESS");
-        return new User(userId, phoneNumber, name, secondName, country, emailAddress);
+        final User user = new User(phoneNumber, name, secondName, country, emailAddress);
+        user.setId(userId);
+        return user;
     }
 
 }
