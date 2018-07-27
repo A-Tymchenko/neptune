@@ -50,7 +50,7 @@ public class UserRepositoryIntegrationTest {
 
     @Test
     void whenCreateUserThenReturnCreatedUser() throws RepositoryException {
-        User user = new User(1L, "3809978957860", "Pasha", "Vakula",
+        User user = new User("3809978957860", "Pasha", "Vakula",
                 "Poland", "vakula_2123@gmail.com");
         User created = repository.create(user);
         assertNotNull(created);
@@ -78,7 +78,7 @@ public class UserRepositoryIntegrationTest {
 
     @Test
     void whenGetUserThenReturnOptionalOfUser() throws RepositoryException {
-        User user = new User(2L, "3809934252275", "Pasha", "Volum",
+        User user = new User("3809934252275", "Pasha", "Volum",
                 "Moscow", "pasha_213@gmail.com");
         User created = repository.create(user);
         System.out.println(created.getId());
@@ -117,7 +117,7 @@ public class UserRepositoryIntegrationTest {
 
     @Test
     void whenUpdateUserThenReturnUpdatedUser() throws RepositoryException {
-        User user = new User(3L, "3806642341542", "Murchik", "Babulin",
+        User user = new User("3806642341542", "Murchik", "Babulin",
                 "USA", "murchik_21@gmail.com");
         repository.create(user);
         user.setName("Gugulya");
@@ -153,7 +153,7 @@ public class UserRepositoryIntegrationTest {
 
     @Test
     void whenDeleteUserAndOperationIsSuccessfulThenReturnTrue() throws RepositoryException {
-        User user = new User(4L, "3806754352134", "Taras", "Mazur",
+        User user = new User("3806754352134", "Taras", "Mazur",
                 "Ukraine", "mazur_123@gmail.com");
         repository.create(user);
         Boolean isDeleted = repository.delete(user.getId());
@@ -223,15 +223,15 @@ public class UserRepositoryIntegrationTest {
 
     private User[] getUsers() {
         return new User[]{
-                new User(5L, "3806734536743", "Adolf", "Hitlerl",
+                new User("3806734536743", "Adolf", "Hitlerl",
                         "German", "adolfyk_1945@gmail.com"),
-                new User(6L, "3809942434543", "Joseph", "Stalin",
+                new User("3809942434543", "Joseph", "Stalin",
                         "Soviet Union", "joseph_1941@gmail.com"),
-                new User(7L, "3809923153421", "Taras", "Bulba",
+                new User("3809923153421", "Taras", "Bulba",
                         "Ukraine", "bulba_100500@gmail.com"),
-                new User(8L, "3809765435266", "Taras ", "Shevchenko",
+                new User("3809765435266", "Taras ", "Shevchenko",
                         "Ukraine", "taras_13@gmail.com"),
-                new User(9L, "3806675474848", "Vladimir", "Lenin",
+                new User("3806675474848", "Vladimir", "Lenin",
                         "Soviet Union", "vladimir_1939@gmail.com")
         };
     }
