@@ -4,14 +4,10 @@ import com.ra.shop.config.ConnectionFactory;
 import com.ra.shop.exceptions.RepositoryException;
 import com.ra.shop.model.Order;
 import com.ra.shop.repository.implementation.OrderRepositoryImpl;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 
 import java.sql.*;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
@@ -43,8 +39,8 @@ public class OrderRepositoryMockTest {
     void whenCreateOrderThenReturnCreatedOrderWithId() throws SQLException, RepositoryException {
         Order order = new Order(10, 100D, false, 0, true);
         when(connection.prepareStatement("INSERT INTO ORDERS (NUMBER, PRICE, DELIVERY_INCLUDED, DELIVERY_COST, EXECUTED) "
-                        + "VALUES(?, ?, ?, ?, ?)",
-                Statement.RETURN_GENERATED_KEYS)).thenReturn(statement);
+                + "VALUES(?, ?, ?, ?, ?)",
+            Statement.RETURN_GENERATED_KEYS)).thenReturn(statement);
         when(statement.getGeneratedKeys()).thenReturn(resultSet);
         when(resultSet.next()).thenReturn(Boolean.TRUE).thenReturn(Boolean.FALSE);
         Order created = mockOrderRepository.create(order);
@@ -56,8 +52,8 @@ public class OrderRepositoryMockTest {
     void whenCreateOrderThenReturnOrderWithoutSettedId() throws SQLException, RepositoryException {
         Order order = new Order(10, 100D, false, 0, true);
         when(connection.prepareStatement("INSERT INTO ORDERS (NUMBER, PRICE, DELIVERY_INCLUDED, DELIVERY_COST, EXECUTED) "
-                        + "VALUES(?, ?, ?, ?, ?)",
-                Statement.RETURN_GENERATED_KEYS)).thenReturn(statement);
+                + "VALUES(?, ?, ?, ?, ?)",
+            Statement.RETURN_GENERATED_KEYS)).thenReturn(statement);
         when(statement.getGeneratedKeys()).thenReturn(resultSet);
         when(resultSet.next()).thenReturn(Boolean.FALSE);
         Order created = mockOrderRepository.create(order);
@@ -68,9 +64,9 @@ public class OrderRepositoryMockTest {
     void whenCreateOrderThenThrowRepositoryException() throws RepositoryException, SQLException {
         Order order = new Order(10, 100D, false, 0, true);
         when(connection.prepareStatement("INSERT INTO ORDERS (NUMBER, PRICE, DELIVERY_INCLUDED, DELIVERY_COST, EXECUTED) "
-                        + "VALUES(?, ?, ?, ?, ?)",
-                Statement.RETURN_GENERATED_KEYS))
-                .thenThrow(new SQLException());
+                + "VALUES(?, ?, ?, ?, ?)",
+            Statement.RETURN_GENERATED_KEYS))
+            .thenThrow(new SQLException());
         Throwable repositoryException = assertThrows(RepositoryException.class, () -> {
             mockOrderRepository.create(order);
         });
@@ -82,7 +78,7 @@ public class OrderRepositoryMockTest {
     void whenGetOrderThenReturnOptionalOfOrder() throws SQLException, RepositoryException {
         Order order = new Order(10, 100D, false, 0, true);
         when(connection.prepareStatement("SELECT * FROM ORDERS WHERE ORDER_ID = ?"))
-                .thenReturn(statement);
+            .thenReturn(statement);
         when(statement.executeQuery()).thenReturn(resultSet);
         when(resultSet.next()).thenReturn(Boolean.TRUE).thenReturn(Boolean.FALSE);
         Optional<Order> optional = mockOrderRepository.get(1L);
@@ -93,7 +89,7 @@ public class OrderRepositoryMockTest {
     void whenGetOrderThenReturnOptionalEmpty() throws SQLException, RepositoryException {
         Order order = new Order(10, 100D, false, 0, true);
         when(connection.prepareStatement("SELECT * FROM ORDERS WHERE ORDER_ID = ?"))
-                .thenReturn(statement);
+            .thenReturn(statement);
         when(statement.executeQuery()).thenReturn(resultSet);
         when(resultSet.next()).thenReturn(Boolean.FALSE);
         Optional<Order> optional = mockOrderRepository.get(1L);
@@ -105,7 +101,7 @@ public class OrderRepositoryMockTest {
         Order order = new Order(10, 100D, false, 0, true);
         order.setId(5L);
         when(connection.prepareStatement("SELECT * FROM ORDERS WHERE ORDER_ID = ?"))
-                .thenThrow(new SQLException());
+            .thenThrow(new SQLException());
         Throwable repositoryException = assertThrows(RepositoryException.class, () -> {
             mockOrderRepository.get(order.getId());
         });
@@ -120,7 +116,7 @@ public class OrderRepositoryMockTest {
         order.setDeliveryCost(100);
         order.setId(2L);
         when(connection.prepareStatement("UPDATE ORDERS SET NUMBER = ?, PRICE = ?, DELIVERY_INCLUDED = ?, "
-                + "DELIVERY_COST = ?, EXECUTED = ? WHERE ORDER_ID = ?")).thenReturn(statement);
+            + "DELIVERY_COST = ?, EXECUTED = ? WHERE ORDER_ID = ?")).thenReturn(statement);
         Order updated = mockOrderRepository.update(order);
         assertAll(() -> {
             assertEquals(order.getDeliveryIncluded(), updated.getDeliveryIncluded());
@@ -132,8 +128,8 @@ public class OrderRepositoryMockTest {
     void whenUpdateOrderThenThrowRepositoryException() throws RepositoryException, SQLException {
         Order order = new Order(10, 100D, false, 0, true);
         when(connection.prepareStatement("UPDATE ORDERS SET NUMBER = ?, PRICE = ?, DELIVERY_INCLUDED = ?, "
-                + "DELIVERY_COST = ?, EXECUTED = ? WHERE ORDER_ID = ?"))
-                .thenThrow(new SQLException());
+            + "DELIVERY_COST = ?, EXECUTED = ? WHERE ORDER_ID = ?"))
+            .thenThrow(new SQLException());
         Throwable repositoryException = assertThrows(RepositoryException.class, () -> {
             mockOrderRepository.update(order);
         });

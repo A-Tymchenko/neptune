@@ -7,11 +7,8 @@ import com.ra.shop.repository.implementation.UserRepositoryImpl;
 import org.h2.tools.RunScript;
 import org.junit.jupiter.api.*;
 
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
-import java.sql.Connection;
-import java.sql.SQLException;
+import java.io.*;
+import java.sql.*;
 import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -51,7 +48,7 @@ public class UserRepositoryIntegrationTest {
     @Test
     void whenCreateUserThenReturnCreatedUser() throws RepositoryException {
         User user = new User("3809978957860", "Pasha", "Vakula",
-                "Poland", "vakula_2123@gmail.com");
+            "Poland", "vakula_2123@gmail.com");
         User created = repository.create(user);
         assertNotNull(created);
         assertEquals(user, created);
@@ -79,7 +76,7 @@ public class UserRepositoryIntegrationTest {
     @Test
     void whenGetUserThenReturnOptionalOfUser() throws RepositoryException {
         User user = new User("3809934252275", "Pasha", "Volum",
-                "Moscow", "pasha_213@gmail.com");
+            "Moscow", "pasha_213@gmail.com");
         User created = repository.create(user);
         System.out.println(created.getId());
         Optional<User> optional = repository.get(created.getId());
@@ -118,7 +115,7 @@ public class UserRepositoryIntegrationTest {
     @Test
     void whenUpdateUserThenReturnUpdatedUser() throws RepositoryException {
         User user = new User("3806642341542", "Murchik", "Babulin",
-                "USA", "murchik_21@gmail.com");
+            "USA", "murchik_21@gmail.com");
         repository.create(user);
         user.setName("Gugulya");
         user.setSecondName("Zahrema");
@@ -154,7 +151,7 @@ public class UserRepositoryIntegrationTest {
     @Test
     void whenDeleteUserAndOperationIsSuccessfulThenReturnTrue() throws RepositoryException {
         User user = new User("3806754352134", "Taras", "Mazur",
-                "Ukraine", "mazur_123@gmail.com");
+            "Ukraine", "mazur_123@gmail.com");
         repository.create(user);
         Boolean isDeleted = repository.delete(user.getId());
         assertTrue(isDeleted);
@@ -223,16 +220,16 @@ public class UserRepositoryIntegrationTest {
 
     private User[] getUsers() {
         return new User[]{
-                new User("3806734536743", "Adolf", "Hitlerl",
-                        "German", "adolfyk_1945@gmail.com"),
-                new User("3809942434543", "Joseph", "Stalin",
-                        "Soviet Union", "joseph_1941@gmail.com"),
-                new User("3809923153421", "Taras", "Bulba",
-                        "Ukraine", "bulba_100500@gmail.com"),
-                new User("3809765435266", "Taras ", "Shevchenko",
-                        "Ukraine", "taras_13@gmail.com"),
-                new User("3806675474848", "Vladimir", "Lenin",
-                        "Soviet Union", "vladimir_1939@gmail.com")
+            new User("3806734536743", "Adolf", "Hitlerl",
+                "German", "adolfyk_1945@gmail.com"),
+            new User("3809942434543", "Joseph", "Stalin",
+                "Soviet Union", "joseph_1941@gmail.com"),
+            new User("3809923153421", "Taras", "Bulba",
+                "Ukraine", "bulba_100500@gmail.com"),
+            new User("3809765435266", "Taras ", "Shevchenko",
+                "Ukraine", "taras_13@gmail.com"),
+            new User("3806675474848", "Vladimir", "Lenin",
+                "Soviet Union", "vladimir_1939@gmail.com")
         };
     }
 

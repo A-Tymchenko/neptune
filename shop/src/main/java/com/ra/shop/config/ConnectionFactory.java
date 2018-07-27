@@ -20,6 +20,7 @@ public class ConnectionFactory {
      * Logger.
      */
     private static final Logger LOGGER = Logger.getLogger(OrderRepositoryImpl.class);
+
     /**
      * Static field Properties.
      */

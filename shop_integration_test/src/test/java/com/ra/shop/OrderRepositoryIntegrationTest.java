@@ -7,11 +7,8 @@ import com.ra.shop.repository.implementation.OrderRepositoryImpl;
 import org.h2.tools.RunScript;
 import org.junit.jupiter.api.*;
 
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
-import java.sql.Connection;
-import java.sql.SQLException;
+import java.io.*;
+import java.sql.*;
 import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -219,11 +216,11 @@ public class OrderRepositoryIntegrationTest {
 
     private Order[] getOrders() {
         return new Order[]{
-                new Order(505, 50d, true, 50, true),
-                new Order(606, 60d, false, 0, false),
-                new Order(707, 70d, true, 70, true),
-                new Order(808, 80d, false, 0, false),
-                new Order(909, 90d, true, 100, true)
+            new Order(505, 50d, true, 50, true),
+            new Order(606, 60d, false, 0, false),
+            new Order(707, 70d, true, 70, true),
+            new Order(808, 80d, false, 0, false),
+            new Order(909, 90d, true, 100, true)
         };
     }
 
