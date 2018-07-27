@@ -4,17 +4,15 @@ import com.ra.airport.configuration.AirPortConfiguration;
 import com.ra.airport.dao.exception.AirPortDaoException;
 import com.ra.airport.dao.impl.AirportDAOImpl;
 import com.ra.airport.entity.Airport;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import java.io.IOException;
-import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
 
@@ -24,24 +22,20 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = {AirPortConfiguration.class})
+@Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = "classpath:sql/create_table_skripts.sql")
+@Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = "classpath:sql/tables_backup(data).sql")
+@Sql(executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD, scripts = "classpath:sql/remove_table_skripts.sql")
 class AirportDAOImplTest {
 
     @Autowired
     JdbcTemplate jdbcTemplate;
-    Airport airport;
     @Autowired
     AirportDAOImpl airportImpl;
+    Airport airport;
 
     @BeforeEach
-    public void initH2() throws SQLException, IOException {
-        jdbcTemplate.update("RUNSCRIPT FROM 'src/test/resources/sql/create_table_skripts.sql'");
-        jdbcTemplate.update("RUNSCRIPT FROM 'src/test/resources/sql/tables_backup(data).sql'");
+    public void initH2() {
         airport = new Airport(1,"Kenedy", 12345, "international", "New York", 10);
-    }
-
-    @AfterEach
-    public void destroyH2() {
-        jdbcTemplate.update("RUNSCRIPT FROM 'src/test/resources/sql/remove_table_skripts.sql'");
     }
 
     @Test
