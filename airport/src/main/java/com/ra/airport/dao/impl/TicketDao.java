@@ -25,7 +25,6 @@ import org.springframework.stereotype.Repository;
 public class TicketDao  implements AirPortDao<Ticket> {
     private static final Logger LOGGER = LogManager.getLogger(TicketDao.class);
 
-    @Autowired
     private  NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
     @Autowired
@@ -59,7 +58,8 @@ public class TicketDao  implements AirPortDao<Ticket> {
             final GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
             namedParameterJdbcTemplate.update(INSERT_SQL,
                     new BeanPropertySqlParameterSource(ticket), keyHolder, new String[] {"ID"});
-            ticket.setTicketId(keyHolder.getKey().intValue());
+            int num = keyHolder.getKey().intValue();
+            ticket.setTicketId(num);
         } catch (DataAccessException e) {
             LOGGER.error(ExceptionMessage.FAILED_TO_CREATE_NEW_TICKET.toString(), e);
             throw new AirPortDaoException(ExceptionMessage.FAILED_TO_CREATE_NEW_TICKET.get(), e);

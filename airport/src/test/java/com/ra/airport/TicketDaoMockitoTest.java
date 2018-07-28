@@ -72,7 +72,7 @@ public class TicketDaoMockitoTest {
     void whenCreateTicketThenReturnTicketWithIdTrue() throws AirPortDaoException {
         Mockito.when(namedParameterJdbcTemplate.update(Mockito.eq(INSERT_SQL),
                 Mockito.any(BeanPropertySqlParameterSource.class),
-                Mockito.any(GeneratedKeyHolder.class), new String[] {"ID"})).thenReturn(1);
+                Mockito.any(GeneratedKeyHolder.class), Mockito.eq(new String[] {"ID"}))).thenReturn(1);
         Ticket createdAirport = ticketDao.create(ticket);
         assertEquals(createdAirport, ticket);
     }
