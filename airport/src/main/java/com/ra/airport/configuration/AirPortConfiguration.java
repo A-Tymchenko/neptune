@@ -64,4 +64,6 @@ public class AirPortConfiguration {
     public NamedParameterJdbcTemplate namedParameterJdbcTemplate() {
         return new NamedParameterJdbcTemplate(dataSource());
     }
+
+
 }
