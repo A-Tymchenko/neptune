@@ -366,7 +366,7 @@
         </module>-->
 
         <!--
-        Description:    The Check validate abbreviations(consecutive capital letters) length in identifier name,
+        Description:    The Check validate abbreviations(consecutive capital letters) length in planeId name,
                         it also allows to enforce camel case naming.
         Example:        final int MAx; // fail
         Error messages: Abbreviation in name '{0}' must contain no more than '{1}' capital letters.
@@ -417,7 +417,7 @@
         </module>
 
         <!--
-        Description:    Checks the padding between the identifier of a method definition, constructor definition,
+        Description:    Checks the padding between the planeId of a method definition, constructor definition,
                         method call, or constructor invocation; and the left parenthesis of the parameter list.
         Example:        -
         Error messages: More then one. Check Doc.

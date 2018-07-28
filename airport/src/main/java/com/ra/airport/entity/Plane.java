@@ -5,7 +5,7 @@ import java.util.Objects;
 
 public class Plane implements Serializable {
 
-    private Integer identifier;
+    private Integer planeId;
     private String owner;
     private String model;
     private String type;
@@ -15,16 +15,16 @@ public class Plane implements Serializable {
     public Plane() {
     }
 
-    public Plane(final int identifier, final String owner, final String model, final String type, final int plateNumber) {
-        this.identifier = identifier;
+    public Plane(final int planeId, final String owner, final String model, final String type, final int plateNumber) {
+        this.planeId = planeId;
         this.owner = owner;
         this.model = model;
         this.type = type;
         this.plateNumber = plateNumber;
     }
 
-    public Integer getIdentifier() {
-        return identifier;
+    public Integer getPlaneId() {
+        return planeId;
     }
 
     public String getOwner() {
@@ -43,8 +43,8 @@ public class Plane implements Serializable {
         return plateNumber;
     }
 
-    public void setIdentifier(final int identifier) {
-        this.identifier = identifier;
+    public void setPlaneId(final Integer planeId) {
+        this.planeId = planeId;
     }
 
     public void setOwner(final String owner) {
@@ -72,7 +72,7 @@ public class Plane implements Serializable {
             return false;
         }
         final Plane plane = (Plane) object;
-        return Objects.equals(identifier, plane.identifier)
+        return Objects.equals(planeId, plane.planeId)
                 && Objects.equals(owner, plane.owner)
                 && Objects.equals(model, plane.model)
                 && Objects.equals(type, plane.type)
@@ -82,7 +82,7 @@ public class Plane implements Serializable {
     @Override
     public String toString() {
         return "Plane{"
-                + "identifier=" + identifier
+                + "planeId=" + planeId
                 + ", owner='" + owner + '\''
                 + ", model='" + model + '\''
                 + ", type='" + type + '\''
@@ -92,7 +92,7 @@ public class Plane implements Serializable {
 
     @Override
     public int hashCode() {
-        return Objects.hash(identifier, owner, model, type, plateNumber);
+        return Objects.hash(planeId, owner, model, type, plateNumber);
     }
 }
 
