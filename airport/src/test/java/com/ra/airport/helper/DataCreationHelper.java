@@ -8,6 +8,7 @@ import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 
+//THIS IS TOTAl S@#$@$T!!!
 public abstract class DataCreationHelper {
 
     private static final String SPACE = " ";
@@ -27,7 +28,7 @@ public abstract class DataCreationHelper {
 
     public static Ticket createTicket() {
         Ticket ticket = new Ticket();
-        ticket.setTicketId(1);
+        ticket.setTicketId(1);// if remove this everything will failed
         ticket.setTicketNumber("AA111-BB111");
         ticket.setPassengerName("John Dow");
         ticket.setDocument("QQ12345678QQ");

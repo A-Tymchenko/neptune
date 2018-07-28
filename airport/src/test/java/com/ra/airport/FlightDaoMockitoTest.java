@@ -30,7 +30,7 @@ public class FlightDaoMockitoTest {
     private static final String SELECT_FLIGHT_BY_ID_SQL = "SELECT * FROM flight WHERE id = ?";
     private static final String DELETE_FLIGHT_BY_ID_SQL = "DELETE FROM flight WHERE id = ?";
     private static final String SELECT_LAST_GENERATED_ID_SQL = "SELECT SCOPE_IDENTITY()";
-    private static final String SELECT_ALL_FLIGHTS_SQL ="SELECT * FROM flight";
+    private static final String SELECT_ALL_FLIGHTS_SQL = "SELECT * FROM flight";
 
     private static ConnectionFactory connectionFactory;
     private Connection mockConnection;
@@ -40,7 +40,7 @@ public class FlightDaoMockitoTest {
     private Flight flight;
 
     @BeforeEach
-    public void init() throws SQLException {
+    void init() throws SQLException {
         mockConnection = mock(Connection.class);
         mockStatement = mock(PreparedStatement.class);
         mockResultSet = mock(ResultSet.class);
@@ -72,20 +72,10 @@ public class FlightDaoMockitoTest {
     }
 
     @Test
-    public void whenCreateThenCorrectSQLShouldBeExecutedAndCorrectEntityShouldBeReturned() throws SQLException, AirPortDaoException {
+    void whenCreateThenCorrectSQLShouldBeExecutedAndCorrectEntityShouldBeReturned() throws SQLException, AirPortDaoException {
         Flight result = flightDao.create(flight);
 
         assertEquals(flight, result);
-    }
-
-    @Test
-    public void whenCreateReturnNullGeneratedIdThenDAOExceptionShouldBeThrown() throws SQLException, AirPortDaoException {
-        when(mockResultSet.next()).thenReturn(false);
-        Throwable exception =  assertThrows(AirPortDaoException.class,() -> {
-            flightDao.create(flight);
-        });
-
-        assertEquals(exception.getMessage(), FLIGHT_ID_CANNOT_BE_NULL.get());
     }
 
     @Test
@@ -102,7 +92,7 @@ public class FlightDaoMockitoTest {
         when(mockStatement.executeUpdate()).thenReturn(1);
         boolean result = flightDao.delete(flight);
 
-        assertEquals(true, result);
+        assertTrue(result);
     }
 
     @Test
@@ -110,13 +100,13 @@ public class FlightDaoMockitoTest {
         when(mockStatement.executeUpdate()).thenReturn(0);
         boolean result = flightDao.delete(flight);
 
-        assertEquals(false, result);
+        assertFalse(result);
     }
 
     @Test
     public void whenGetAllThenCorrectSQLShouldBeExecutedAndCorrectListReturned() throws AirPortDaoException, SQLException {
         when(mockConnection.prepareStatement(SELECT_ALL_FLIGHTS_SQL)).thenReturn(mockStatement);
-        when(mockResultSet.next()).thenReturn(true,false);
+        when(mockResultSet.next()).thenReturn(true, false);
         List<Flight> flights = flightDao.getAll();
 
         assertFalse(flights.isEmpty());
@@ -125,14 +115,14 @@ public class FlightDaoMockitoTest {
     @Test
     public void whenGetByIdReturnEmptyResultSetThenEmptyOptionalShouldBeReturned() throws AirPortDaoException, SQLException {
         when(mockResultSet.next()).thenReturn(false);
-        Optional<Flight> flight = flightDao.getById(Integer.valueOf(1));
+        Optional<Flight> flight = flightDao.getById(1);
 
         assertEquals(Optional.empty(), flight);
     }
 
     @Test
     public void whenGetByIdNullPassedThenDAOExceptionShouldBeThrown() {
-        Throwable exception =  assertThrows(AirPortDaoException.class,() -> {
+        Throwable exception = assertThrows(AirPortDaoException.class, () -> {
             flightDao.getById(null);
         });
 
@@ -150,27 +140,27 @@ public class FlightDaoMockitoTest {
     }
 
     @Test
-    public void whenUpdateThrownSQlExceptionThenDAOExceptionShouldBeThrownToo() {
+    void whenUpdateThrownSQlExceptionThenDAOExceptionShouldBeThrownToo() {
         Throwable exception = assertThrows(AirPortDaoException.class, () -> {
             when(mockConnection.prepareStatement(UPDATE_FLIGHT_SQL)).thenThrow(new SQLException());
             flightDao.update(flight);
         });
 
-        assertEquals(exception.getMessage(), FAILED_TO_UPDATE_FLIGHT_WITH_ID.get()+1);
+        assertEquals(exception.getMessage(), FAILED_TO_UPDATE_FLIGHT_WITH_ID.get() + 1);
     }
 
     @Test
-    public void whenDeleteThrownSQlExceptionThenDAOExceptionShouldBeThrownToo() {
+    void whenDeleteThrownSQlExceptionThenDAOExceptionShouldBeThrownToo() {
         Throwable exception = assertThrows(AirPortDaoException.class, () -> {
             when(mockConnection.prepareStatement(DELETE_FLIGHT_BY_ID_SQL)).thenThrow(new SQLException());
             flightDao.delete(flight);
         });
 
-        assertEquals(exception.getMessage(), FAILED_TO_DELETE_FLIGHT_WITH_ID.get()+1);
+        assertEquals(exception.getMessage(), FAILED_TO_DELETE_FLIGHT_WITH_ID.get() + 1);
     }
 
     @Test
-    public void whenGetAllThrownSQlExceptionThenDAOExceptionShouldBeThrownToo() {
+    void whenGetAllThrownSQlExceptionThenDAOExceptionShouldBeThrownToo() {
         Throwable exception = assertThrows(AirPortDaoException.class, () -> {
             when(mockConnection.prepareStatement(SELECT_ALL_FLIGHTS_SQL)).thenThrow(new SQLException());
             flightDao.getAll();
@@ -180,12 +170,21 @@ public class FlightDaoMockitoTest {
     }
 
     @Test
-    public void whenGetByIdThrownSQlExceptionThenDAOExceptionShouldBeThrownToo() {
+    void whenGetByIdThrownSQlExceptionThenDAOExceptionShouldBeThrownToo() {
         Throwable exception = assertThrows(AirPortDaoException.class, () -> {
             when(mockConnection.prepareStatement(SELECT_FLIGHT_BY_ID_SQL)).thenThrow(new SQLException());
-            flightDao.getById(Integer.valueOf(1));
+            flightDao.getById(1);
         });
 
-        assertEquals(exception.getMessage(), FAILED_TO_GET_FLIGHT_WITH_ID.get()+1);
+        assertEquals(exception.getMessage(), FAILED_TO_GET_FLIGHT_WITH_ID.get() + 1);
+    }
+
+    @Test
+    void whenGeneratedIdRSReturnNullThenNextIdentifierIsNull() throws Exception {
+        when(mockConnection.prepareStatement(SELECT_LAST_GENERATED_ID_SQL)).thenReturn(mockStatement);
+        when(mockResultSet.next()).thenReturn(false);
+        Flight result = flightDao.create(flight);
+
+        assertNull(result.getIdentifier());
     }
 }
