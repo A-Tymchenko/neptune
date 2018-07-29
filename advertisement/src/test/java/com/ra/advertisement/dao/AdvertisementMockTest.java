@@ -6,23 +6,16 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
 import org.springframework.jdbc.core.*;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.sql.PreparedStatement;
 import java.util.*;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Matchers.*;
-import static org.mockito.Mockito.*;
-
-@ExtendWith(SpringExtension.class)
-@ContextConfiguration(classes = {AdvertisementConfiguration.class, AdvertisementAdvertisementDaoImpl.class})
+@ContextConfiguration(classes = {AdvertisementConfiguration.class})
 public class AdvertisementMockTest {
     private static JdbcTemplate mockjdbcTemplate;
     private static AdvertisementAdvertisementDaoImpl advertisementDao;
@@ -35,22 +28,22 @@ public class AdvertisementMockTest {
 
     @BeforeAll
     public static void init() {
-        mockjdbcTemplate = mock(JdbcTemplate.class);
+        mockjdbcTemplate = Mockito.mock(JdbcTemplate.class);
         advertisementDao = new AdvertisementAdvertisementDaoImpl(mockjdbcTemplate);
     }
 
     @BeforeEach
     public void reInitAdvertisementDao() {
-        mockkeyHolder = mock(KeyHolder.class);
-        mockStatement = mock(PreparedStatement.class);
+        mockkeyHolder = Mockito.mock(KeyHolder.class);
+        mockStatement = Mockito.mock(PreparedStatement.class);
         advertisement = new Advertisement(1L, "Welcome advert", "Welcome to Ukraine",
                 "url", "Ukrainian");
         advertisementNoId = new Advertisement("Welcome advert", "Welcome to Ukraine",
                 "url", "Ukrainian");
         advertisementUpdated = new Advertisement(1l, "Update", "Update",
                 "url", "Ukrainian");
-        when(mockjdbcTemplate.queryForObject(Mockito.eq(GET_ADVERT_BY_ID), Mockito.any(RowMapper.class), Mockito.any(Long.class)))
-                .thenReturn(advertisement);
+
+
     }
 
     /**
@@ -58,15 +51,16 @@ public class AdvertisementMockTest {
      */
     @Test
     public void addAdvertisementExecuteSuccessfuldReturnTrue() {
-        when(mockjdbcTemplate.update(any(PreparedStatementCreator.class), any(KeyHolder.class))).thenReturn(1);
-        when(mockkeyHolder.getKey()).thenReturn(1L);
+        Mockito.when(mockjdbcTemplate.update(Mockito.any(PreparedStatementCreator.class), Mockito.any(KeyHolder.class))).thenReturn(1);
+        Mockito.when(mockkeyHolder.getKey()).thenReturn(1L);
         Advertisement advertisementCreated = advertisementDao.create(advertisementNoId);
-        assertAll("advertisementCreated",
-                () -> assertEquals(advertisementCreated.getAdId(), advertisement.getAdId()),
-                () -> assertEquals(advertisementCreated.getTitle(), advertisement.getTitle()),
-                () -> assertEquals(advertisementCreated.getContext(), advertisement.getContext()),
-                () -> assertEquals(advertisementCreated.getImageUrl(), advertisement.getImageUrl()),
-                () -> assertEquals(advertisementCreated.getLanguage(), advertisement.getLanguage()));
+        advertisementCreated.setAdId((Long) (mockkeyHolder.getKey()));
+        Assertions.assertAll("advertisementCreated",
+                () -> Assertions.assertEquals(advertisementCreated.getAdId(), advertisement.getAdId()),
+                () -> Assertions.assertEquals(advertisementCreated.getTitle(), advertisement.getTitle()),
+                () -> Assertions.assertEquals(advertisementCreated.getContext(), advertisement.getContext()),
+                () -> Assertions.assertEquals(advertisementCreated.getImageUrl(), advertisement.getImageUrl()),
+                () -> Assertions.assertEquals(advertisementCreated.getLanguage(), advertisement.getLanguage()));
     }
 
     /**
@@ -74,10 +68,10 @@ public class AdvertisementMockTest {
      */
     @Test
     public void addAdvertisementAndDontGetGeneratedIdReturnTrue() {
-        when(mockjdbcTemplate.update(any(PreparedStatementCreator.class), any(KeyHolder.class))).thenReturn(1);
-        when(mockkeyHolder.getKey()).thenReturn(0L);
-        Advertisement advertisementCreated = advertisementDao.create(advertisementNoId);
-        assertEquals(advertisementCreated.getAdId(), advertisement.getAdId());
+        Mockito.when(mockjdbcTemplate.update(Mockito.any(PreparedStatementCreator.class), Mockito.any(KeyHolder.class))).thenReturn(1);
+        Mockito.when(mockkeyHolder.getKey()).thenReturn(null);
+        advertisementDao.create(advertisementNoId);
+        Assertions.assertTrue(mockkeyHolder.getKey() == null);
     }
 
     /**
@@ -86,7 +80,7 @@ public class AdvertisementMockTest {
     @Test
     public void deleteAdvertisementSuccessfulReturnTrue() {
         final String DELETE_ADVERT = "DELETE FROM ADVERTISEMENT WHERE AD_ID=?";
-        when(mockjdbcTemplate.update(DELETE_ADVERT, advertisement.getAdId())).thenReturn(1);
+        Mockito.when(mockjdbcTemplate.update(DELETE_ADVERT, advertisement.getAdId())).thenReturn(1);
         Integer result = advertisementDao.delete(advertisement);
         Assertions.assertTrue(result == 1);
     }
@@ -96,22 +90,22 @@ public class AdvertisementMockTest {
      */
     @Test
     public void updateAdvertisementSuccessfulReturnTrue() {
+        int resultFromDB = 0;
         final String UPDATE_ADVERT = "update ADVERTISEMENT set TITLE = ?, CONTEXT= ?, IMAGE_URL = ?,"
                 + " LANGUAGE = ? where AD_ID = ?";
-        when(mockjdbcTemplate.update(eq(UPDATE_ADVERT), Mockito.any(PreparedStatement.class))).thenReturn(1);
-        when(mockjdbcTemplate.queryForObject(Mockito.eq(GET_ADVERT_BY_ID), Mockito.any(RowMapper.class),
-                Mockito.any(Long.class))).thenReturn(advertisementUpdated);
+        Mockito.when(mockjdbcTemplate.update(Mockito.eq(UPDATE_ADVERT), Mockito.any(PreparedStatement.class))).thenReturn(resultFromDB = 1);
         Mockito.doAnswer(invocation -> {
             ((PreparedStatementSetter) invocation.getArguments()[1]).setValues(mockStatement);
             return null;
         }).when(mockjdbcTemplate).update(Mockito.eq(UPDATE_ADVERT), Mockito.any(PreparedStatementSetter.class));
-        Advertisement result = advertisementDao.update(advertisement);
-        assertAll("result",
-                () -> assertEquals(result.getAdId(), advertisementUpdated.getAdId()),
-                () -> assertEquals(result.getTitle(), advertisementUpdated.getTitle()),
-                () -> assertEquals(result.getContext(), advertisementUpdated.getContext()),
-                () -> assertEquals(result.getImageUrl(), advertisementUpdated.getImageUrl()),
-                () -> assertEquals(result.getLanguage(), advertisementUpdated.getLanguage()));
+        Advertisement updated = advertisementDao.update(advertisementUpdated);
+        Assertions.assertEquals(1, resultFromDB);
+        Assertions.assertAll("updated",
+                () -> Assertions.assertEquals(updated.getAdId(), advertisementUpdated.getAdId()),
+                () -> Assertions.assertEquals(updated.getTitle(), advertisementUpdated.getTitle()),
+                () -> Assertions.assertEquals(updated.getContext(), advertisementUpdated.getContext()),
+                () -> Assertions.assertEquals(updated.getImageUrl(), advertisementUpdated.getImageUrl()),
+                () -> Assertions.assertEquals(updated.getLanguage(), advertisementUpdated.getLanguage()));
     }
 
     /**
@@ -121,9 +115,9 @@ public class AdvertisementMockTest {
     public void getAllAdvertisementExecutedReturnTrue() {
         final String GET_ALL_ADVERTS = "SELECT * FROM ADVERTISEMENT";
         List listFromQueryForList = createListOfMap();
-        Mockito.when(mockjdbcTemplate.queryForList(eq(GET_ALL_ADVERTS))).thenReturn(listFromQueryForList);
+        Mockito.when(mockjdbcTemplate.queryForList(Mockito.eq(GET_ALL_ADVERTS))).thenReturn(listFromQueryForList);
         List<Advertisement> result = advertisementDao.getAll();
-        assertTrue(!result.isEmpty());
+        Assertions.assertTrue(!result.isEmpty());
     }
 
     /**
@@ -131,13 +125,15 @@ public class AdvertisementMockTest {
      */
     @Test
     public void advertisementGetByIdReturnAdvertisementReturnTrue() {
+        Mockito.when(mockjdbcTemplate.queryForObject(Mockito.eq(GET_ADVERT_BY_ID), Mockito.any(RowMapper.class), Mockito.any(Long.class)))
+                .thenReturn(advertisement);
         Advertisement result = advertisementDao.getById(advertisement.getAdId());
-        assertAll("result",
-                () -> assertEquals(result.getAdId(), advertisement.getAdId()),
-                () -> assertEquals(result.getTitle(), advertisement.getTitle()),
-                () -> assertEquals(result.getContext(), advertisement.getContext()),
-                () -> assertEquals(result.getImageUrl(), advertisement.getImageUrl()),
-                () -> assertEquals(result.getLanguage(), advertisement.getLanguage()));
+        Assertions.assertAll("result",
+                () -> Assertions.assertEquals(result.getAdId(), advertisement.getAdId()),
+                () -> Assertions.assertEquals(result.getTitle(), advertisement.getTitle()),
+                () -> Assertions.assertEquals(result.getContext(), advertisement.getContext()),
+                () -> Assertions.assertEquals(result.getImageUrl(), advertisement.getImageUrl()),
+                () -> Assertions.assertEquals(result.getLanguage(), advertisement.getLanguage()));
     }
 
     /**
@@ -148,13 +144,13 @@ public class AdvertisementMockTest {
         List<Map<String, Object>> listToMapFrom = createListOfMap();
         List<Advertisement> result = advertisementDao.mapListFromQueryForList(listToMapFrom);
         Advertisement advertisementresult = result.get(0);
-        assertTrue(!result.isEmpty());
-        assertAll("advertisementresult",
-                () -> assertEquals(advertisementresult.getAdId(), advertisement.getAdId()),
-                () -> assertEquals(advertisementresult.getTitle(), advertisement.getTitle()),
-                () -> assertEquals(advertisementresult.getContext(), advertisement.getContext()),
-                () -> assertEquals(advertisementresult.getImageUrl(), advertisement.getImageUrl()),
-                () -> assertEquals(advertisementresult.getLanguage(), advertisement.getLanguage()));
+        Assertions.assertTrue(!result.isEmpty());
+        Assertions.assertAll("advertisementresult",
+                () -> Assertions.assertEquals(advertisementresult.getAdId(), advertisement.getAdId()),
+                () -> Assertions.assertEquals(advertisementresult.getTitle(), advertisement.getTitle()),
+                () -> Assertions.assertEquals(advertisementresult.getContext(), advertisement.getContext()),
+                () -> Assertions.assertEquals(advertisementresult.getImageUrl(), advertisement.getImageUrl()),
+                () -> Assertions.assertEquals(advertisementresult.getLanguage(), advertisement.getLanguage()));
     }
 
     /**

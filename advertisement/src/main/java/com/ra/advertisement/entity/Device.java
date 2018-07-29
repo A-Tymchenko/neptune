@@ -1,5 +1,8 @@
 package com.ra.advertisement.entity;
 
+import org.springframework.stereotype.Component;
+
+@Component
 public class Device {
     private Long devId;
     private String name;

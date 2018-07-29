@@ -12,7 +12,9 @@ import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
+import org.springframework.stereotype.Component;
 
+@Component("advertDao")
 public final class AdvertisementAdvertisementDaoImpl implements AdvertisementDao<Advertisement> {
     private final transient JdbcTemplate jdbcTemplate;
     private final transient KeyHolder keyHolder = new GeneratedKeyHolder();
@@ -45,7 +47,8 @@ public final class AdvertisementAdvertisementDaoImpl implements AdvertisementDao
                     return preparedStatement;
                 }, keyHolder);
         final Long advertKey = (Long) keyHolder.getKey();
-        return jdbcTemplate.queryForObject(GET_ADVERT_BY_ID, BeanPropertyRowMapper.newInstance(Advertisement.class), advertKey);
+        advertisement.setAdId(advertKey);
+        return advertisement;
     }
 
     /**
@@ -85,8 +88,7 @@ public final class AdvertisementAdvertisementDaoImpl implements AdvertisementDao
             preparedStatementForCreateOrUpdate(ps, advertisement);
             ps.setLong(AD_ID, advertisement.getAdId());
         });
-        return jdbcTemplate.queryForObject(GET_ADVERT_BY_ID, BeanPropertyRowMapper.newInstance(Advertisement.class),
-                advertisement.getAdId());
+        return advertisement;
     }
 
     /**

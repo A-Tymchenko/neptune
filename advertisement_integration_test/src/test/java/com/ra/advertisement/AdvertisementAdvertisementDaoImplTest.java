@@ -4,6 +4,7 @@ import com.ra.advertisement.config.AdvertisementConfiguration;
 import com.ra.advertisement.dao.AdvertisementAdvertisementDaoImpl;
 import com.ra.advertisement.dao.AdvertisementDao;
 import com.ra.advertisement.entity.Advertisement;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
@@ -12,9 +13,6 @@ import org.springframework.jdbc.datasource.init.DatabasePopulatorUtils;
 import org.springframework.jdbc.datasource.init.ResourceDatabasePopulator;
 
 import javax.sql.DataSource;
-
-import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class AdvertisementAdvertisementDaoImplTest {
     private AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(AdvertisementConfiguration.class);
@@ -36,15 +34,8 @@ class AdvertisementAdvertisementDaoImplTest {
      */
     @Test
     void insertValidDataIntoDbAndGetItsFromThereWithGeneratedIddReturnTrue() {
-        Advertisement advertisementCreated = advertisementDao.create(ADVERTISEMENT);
-        Advertisement actual = advertisementDao.getById(advertisementCreated.getAdId());
-        assertAll("actual",
-                () -> assertEquals(advertisementCreated.getAdId(), actual.getAdId()),
-                () -> assertEquals(advertisementCreated.getTitle(), actual.getTitle()),
-                () -> assertEquals(advertisementCreated.getContext(), actual.getContext()),
-                () -> assertEquals(advertisementCreated.getImageUrl(), actual.getImageUrl()),
-                () -> assertEquals(advertisementCreated.getLanguage(), actual.getLanguage())
-        );
+        advertisementDao.create(ADVERTISEMENT);
+        Assertions.assertTrue(ADVERTISEMENT.getAdId() != null);
     }
 
     /**
@@ -54,12 +45,12 @@ class AdvertisementAdvertisementDaoImplTest {
     void getObjectByIdExecutedReturnTrue() {
         Advertisement advertisementCreated = advertisementDao.create(ADVERTISEMENT);
         Advertisement actual = advertisementDao.getById(advertisementCreated.getAdId());
-        assertAll("actual",
-                () -> assertEquals(advertisementCreated.getAdId(), actual.getAdId()),
-                () -> assertEquals(advertisementCreated.getTitle(), actual.getTitle()),
-                () -> assertEquals(advertisementCreated.getContext(), actual.getContext()),
-                () -> assertEquals(advertisementCreated.getImageUrl(), actual.getImageUrl()),
-                () -> assertEquals(advertisementCreated.getLanguage(), actual.getLanguage()));
+        Assertions.assertAll("actual",
+                () -> Assertions.assertEquals(advertisementCreated.getAdId(), actual.getAdId()),
+                () -> Assertions.assertEquals(advertisementCreated.getTitle(), actual.getTitle()),
+                () -> Assertions.assertEquals(advertisementCreated.getContext(), actual.getContext()),
+                () -> Assertions.assertEquals(advertisementCreated.getImageUrl(), actual.getImageUrl()),
+                () -> Assertions.assertEquals(advertisementCreated.getLanguage(), actual.getLanguage()));
     }
 
     /**
@@ -69,7 +60,7 @@ class AdvertisementAdvertisementDaoImplTest {
     void deleteValidDataExecutedReturnTrue() {
         Advertisement advertisementCreated = advertisementDao.create(ADVERTISEMENT);
         Integer actual = advertisementDao.delete(advertisementCreated);
-        assertEquals(Integer.valueOf(1), actual);
+        Assertions.assertEquals(Integer.valueOf(1), actual);
     }
 
     /**
@@ -79,7 +70,7 @@ class AdvertisementAdvertisementDaoImplTest {
     void getAllObjectExecutedAndListIsNotEmptyReturnTrue() {
         advertisementDao.create(ADVERTISEMENT);
         boolean actual = advertisementDao.getAll().isEmpty();
-        assertEquals(Boolean.valueOf(false), actual);
+        Assertions.assertEquals(Boolean.valueOf(false), actual);
     }
 
     /**
@@ -90,11 +81,11 @@ class AdvertisementAdvertisementDaoImplTest {
         advertisementDao.create(ADVERTISEMENT);
         Advertisement advertisementUpdated = advertisementDao.update(ADVERTISEMENT_UPDATE);
         Advertisement actual = advertisementDao.getById(advertisementUpdated.getAdId());
-        assertAll("actual",
-                () -> assertEquals(advertisementUpdated.getAdId(), actual.getAdId()),
-                () -> assertEquals(advertisementUpdated.getTitle(), actual.getTitle()),
-                () -> assertEquals(advertisementUpdated.getContext(), actual.getContext()),
-                () -> assertEquals(advertisementUpdated.getImageUrl(), actual.getImageUrl()),
-                () -> assertEquals(advertisementUpdated.getLanguage(), actual.getLanguage()));
+        Assertions.assertAll("actual",
+                () -> Assertions.assertEquals(advertisementUpdated.getAdId(), actual.getAdId()),
+                () -> Assertions.assertEquals(advertisementUpdated.getTitle(), actual.getTitle()),
+                () -> Assertions.assertEquals(advertisementUpdated.getContext(), actual.getContext()),
+                () -> Assertions.assertEquals(advertisementUpdated.getImageUrl(), actual.getImageUrl()),
+                () -> Assertions.assertEquals(advertisementUpdated.getLanguage(), actual.getLanguage()));
     }
 }

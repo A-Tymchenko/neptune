@@ -4,6 +4,7 @@ import com.ra.advertisement.config.AdvertisementConfiguration;
 import com.ra.advertisement.dao.AdvertisementDao;
 import com.ra.advertisement.dao.PublisherAdvertisementDaoImpl;
 import com.ra.advertisement.entity.Publisher;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
@@ -12,9 +13,6 @@ import org.springframework.jdbc.datasource.init.DatabasePopulatorUtils;
 import org.springframework.jdbc.datasource.init.ResourceDatabasePopulator;
 
 import javax.sql.DataSource;
-
-import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class PublisherAdvertisementDaoImplTest {
     private AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(AdvertisementConfiguration.class);
@@ -36,15 +34,8 @@ class PublisherAdvertisementDaoImplTest {
      */
     @Test
     void insertValidDataIntoDbAndGetItsFromThereWithGeneratedIddReturnTrue() {
-        Publisher publisherCreated = publisherDao.create(PUBLISHER);
-        Publisher actual = publisherDao.getById(publisherCreated.getPubId());
-        assertAll("actual",
-                () -> assertEquals(publisherCreated.getPubId(), actual.getPubId()),
-                () -> assertEquals(publisherCreated.getName(), actual.getName()),
-                () -> assertEquals(publisherCreated.getAddress(), actual.getAddress()),
-                () -> assertEquals(publisherCreated.getCountry(), actual.getCountry()),
-                () -> assertEquals(publisherCreated.getTelephone(), actual.getTelephone())
-        );
+        publisherDao.create(PUBLISHER);
+        Assertions.assertTrue(PUBLISHER.getPubId() != null);
     }
 
     /**
@@ -54,12 +45,12 @@ class PublisherAdvertisementDaoImplTest {
     void getObjectByIdExecutedReturnTrue() {
         Publisher publisherCreated = publisherDao.create(PUBLISHER);
         Publisher actual = publisherDao.getById(publisherCreated.getPubId());
-        assertAll("actual",
-                () -> assertEquals(publisherCreated.getPubId(), actual.getPubId()),
-                () -> assertEquals(publisherCreated.getName(), actual.getName()),
-                () -> assertEquals(publisherCreated.getAddress(), actual.getAddress()),
-                () -> assertEquals(publisherCreated.getCountry(), actual.getCountry()),
-                () -> assertEquals(publisherCreated.getTelephone(), actual.getTelephone())
+        Assertions.assertAll("actual",
+                () -> Assertions.assertEquals(publisherCreated.getPubId(), actual.getPubId()),
+                () -> Assertions.assertEquals(publisherCreated.getName(), actual.getName()),
+                () -> Assertions.assertEquals(publisherCreated.getAddress(), actual.getAddress()),
+                () -> Assertions.assertEquals(publisherCreated.getCountry(), actual.getCountry()),
+                () -> Assertions.assertEquals(publisherCreated.getTelephone(), actual.getTelephone())
         );
     }
 
@@ -70,7 +61,7 @@ class PublisherAdvertisementDaoImplTest {
     void deleteValidDataExecutedReturnTrue() {
         Publisher publisherCreated = publisherDao.create(PUBLISHER);
         Integer actual = publisherDao.delete(publisherCreated);
-        assertEquals(Integer.valueOf(1), actual);
+        Assertions.assertEquals(Integer.valueOf(1), actual);
     }
 
     /**
@@ -80,7 +71,7 @@ class PublisherAdvertisementDaoImplTest {
     void getAllObjectExecutedAndListIsNotEmptyReturnTrue() {
         publisherDao.create(PUBLISHER);
         boolean actual = publisherDao.getAll().isEmpty();
-        assertEquals(Boolean.valueOf(false), actual);
+        Assertions.assertEquals(Boolean.valueOf(false), actual);
     }
 
     /**
@@ -91,12 +82,12 @@ class PublisherAdvertisementDaoImplTest {
         publisherDao.create(PUBLISHER);
         Publisher publisherUpdated = publisherDao.update(PUBLISHER_UPDATE);
         Publisher actual = publisherDao.getById(publisherUpdated.getPubId());
-        assertAll("actual",
-                () -> assertEquals(publisherUpdated.getPubId(), actual.getPubId()),
-                () -> assertEquals(publisherUpdated.getName(), actual.getName()),
-                () -> assertEquals(publisherUpdated.getAddress(), actual.getAddress()),
-                () -> assertEquals(publisherUpdated.getCountry(), actual.getCountry()),
-                () -> assertEquals(publisherUpdated.getTelephone(), actual.getTelephone())
+        Assertions.assertAll("actual",
+                () -> Assertions.assertEquals(publisherUpdated.getPubId(), actual.getPubId()),
+                () -> Assertions.assertEquals(publisherUpdated.getName(), actual.getName()),
+                () -> Assertions.assertEquals(publisherUpdated.getAddress(), actual.getAddress()),
+                () -> Assertions.assertEquals(publisherUpdated.getCountry(), actual.getCountry()),
+                () -> Assertions.assertEquals(publisherUpdated.getTelephone(), actual.getTelephone())
         );
     }
 }

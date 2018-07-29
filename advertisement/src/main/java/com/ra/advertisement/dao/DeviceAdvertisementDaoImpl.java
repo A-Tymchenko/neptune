@@ -12,7 +12,9 @@ import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
+import org.springframework.stereotype.Component;
 
+@Component("deviceDao")
 public final class DeviceAdvertisementDaoImpl implements AdvertisementDao<Device> {
     private final transient JdbcTemplate jdbcTemplate;
     private final transient KeyHolder keyHolder = new GeneratedKeyHolder();
@@ -43,7 +45,8 @@ public final class DeviceAdvertisementDaoImpl implements AdvertisementDao<Device
                     return preparedStatement;
                 }, keyHolder);
         final Long deviceKey = (Long) keyHolder.getKey();
-        return jdbcTemplate.queryForObject(GET_DEVICE_BY_ID, BeanPropertyRowMapper.newInstance(Device.class), deviceKey);
+        device.setDevId(deviceKey);
+        return device;
     }
 
     /**
@@ -82,8 +85,7 @@ public final class DeviceAdvertisementDaoImpl implements AdvertisementDao<Device
             preparedStatementForCreateOrUpdate(ps, device);
             ps.setLong(DEV_ID, device.getDevId());
         });
-        return jdbcTemplate.queryForObject(GET_DEVICE_BY_ID, BeanPropertyRowMapper.newInstance(Device.class),
-                device.getDevId());
+        return device;
     }
 
     /**

@@ -1,5 +1,8 @@
 package com.ra.advertisement.entity;
 
+import org.springframework.stereotype.Component;
+
+@Component
 public class Provider {
     private Long provId;
     private String name;

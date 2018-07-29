@@ -4,6 +4,7 @@ import com.ra.advertisement.config.AdvertisementConfiguration;
 import com.ra.advertisement.dao.AdvertisementDao;
 import com.ra.advertisement.dao.ProviderAdvertisementDaoImpl;
 import com.ra.advertisement.entity.Provider;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
@@ -12,9 +13,6 @@ import org.springframework.jdbc.datasource.init.DatabasePopulatorUtils;
 import org.springframework.jdbc.datasource.init.ResourceDatabasePopulator;
 
 import javax.sql.DataSource;
-
-import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class ProviderAdvertisementDaoImplTest {
     private AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(AdvertisementConfiguration.class);
@@ -36,15 +34,8 @@ class ProviderAdvertisementDaoImplTest {
      */
     @Test
     void insertValidDataIntoDbAndGetItsFromThereWithGeneratedIddReturnTrue() {
-        Provider providerCreated = providerDao.create(PROVIDER);
-        Provider actual = providerDao.getById(providerCreated.getProvId());
-        assertAll("actual",
-                () -> assertEquals(providerCreated.getProvId(), actual.getProvId()),
-                () -> assertEquals(providerCreated.getName(), actual.getName()),
-                () -> assertEquals(providerCreated.getAddress(), actual.getAddress()),
-                () -> assertEquals(providerCreated.getCountry(), actual.getCountry()),
-                () -> assertEquals(providerCreated.getTelephone(), actual.getTelephone())
-        );
+        providerDao.create(PROVIDER);
+        Assertions.assertTrue(PROVIDER.getProvId() != null);
     }
 
     /**
@@ -54,12 +45,12 @@ class ProviderAdvertisementDaoImplTest {
     void getObjectByIdExecutedReturnTrue() {
         Provider providerCreated = providerDao.create(PROVIDER);
         Provider actual = providerDao.getById(providerCreated.getProvId());
-        assertAll("actual",
-                () -> assertEquals(providerCreated.getProvId(), actual.getProvId()),
-                () -> assertEquals(providerCreated.getName(), actual.getName()),
-                () -> assertEquals(providerCreated.getAddress(), actual.getAddress()),
-                () -> assertEquals(providerCreated.getCountry(), actual.getCountry()),
-                () -> assertEquals(providerCreated.getTelephone(), actual.getTelephone())
+        Assertions.assertAll("actual",
+                () -> Assertions.assertEquals(providerCreated.getProvId(), actual.getProvId()),
+                () -> Assertions.assertEquals(providerCreated.getName(), actual.getName()),
+                () -> Assertions.assertEquals(providerCreated.getAddress(), actual.getAddress()),
+                () -> Assertions.assertEquals(providerCreated.getCountry(), actual.getCountry()),
+                () -> Assertions.assertEquals(providerCreated.getTelephone(), actual.getTelephone())
         );
     }
 
@@ -70,7 +61,7 @@ class ProviderAdvertisementDaoImplTest {
     void deleteValidDataExecutedReturnTrue() {
         Provider providerCreated = providerDao.create(PROVIDER);
         Integer actual = providerDao.delete(providerCreated);
-        assertEquals(Integer.valueOf(1), actual);
+        Assertions.assertEquals(Integer.valueOf(1), actual);
     }
 
     /**
@@ -80,7 +71,7 @@ class ProviderAdvertisementDaoImplTest {
     void getAllObjectExecutedAndListIsNotEmptyReturnTrue() {
         providerDao.create(PROVIDER);
         boolean actual = providerDao.getAll().isEmpty();
-        assertEquals(Boolean.valueOf(false), actual);
+        Assertions.assertEquals(Boolean.valueOf(false), actual);
     }
 
     /**
@@ -91,12 +82,12 @@ class ProviderAdvertisementDaoImplTest {
         providerDao.create(PROVIDER);
         Provider providerUpdated = providerDao.update(PROVIDER_UPDATE);
         Provider actual = providerDao.getById(providerUpdated.getProvId());
-        assertAll("actual",
-                () -> assertEquals(providerUpdated.getProvId(), actual.getProvId()),
-                () -> assertEquals(providerUpdated.getName(), actual.getName()),
-                () -> assertEquals(providerUpdated.getAddress(), actual.getAddress()),
-                () -> assertEquals(providerUpdated.getCountry(), actual.getCountry()),
-                () -> assertEquals(providerUpdated.getTelephone(), actual.getTelephone())
+        Assertions.assertAll("actual",
+                () -> Assertions.assertEquals(providerUpdated.getProvId(), actual.getProvId()),
+                () -> Assertions.assertEquals(providerUpdated.getName(), actual.getName()),
+                () -> Assertions.assertEquals(providerUpdated.getAddress(), actual.getAddress()),
+                () -> Assertions.assertEquals(providerUpdated.getCountry(), actual.getCountry()),
+                () -> Assertions.assertEquals(providerUpdated.getTelephone(), actual.getTelephone())
         );
     }
 }
