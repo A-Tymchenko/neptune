@@ -1,9 +1,10 @@
-package com.ra.airport.configuration;
+package com.ra.airport.config;
 
 import javax.sql.DataSource;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -12,6 +13,9 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 import org.springframework.jdbc.core.JdbcTemplate;
 
+/**
+ * Spring configuration class for working with DB through {@link com.ra.airport.dao.impl.FlightDao} class.
+ */
 @PropertySource("classpath:config.properties")
 @ComponentScan("com.ra.airport.dao.impl")
 @Configuration
@@ -21,9 +25,8 @@ public class AirPortConfiguration {
     private transient Environment environment;
 
     /**
-     * Method rigister dataSource Bean.
-     *
-     * @return HikariDataSource.
+     * Return {@link DataSource} bean.
+     * @return data source bean
      */
     @Bean
     public DataSource dataSource() {
@@ -31,10 +34,9 @@ public class AirPortConfiguration {
     }
 
     /**
-     * Method rigister dataSourceConfig Bean.
-     *
-     * @return HikariConfig.
-    */
+     * Return {@link HikariConfig} bean. Set main properties to it.
+     * @return return config for {@link DataSource} bean
+     */
     @Bean
     public HikariConfig dataSourceConfig() {
         final HikariConfig config = new HikariConfig();
@@ -45,9 +47,8 @@ public class AirPortConfiguration {
     }
 
     /**
-     * Method rigister jdbcTemplate Bean.
-     *
-     * @return JdbcTemplate.
+     * Return {@link JdbcTemplate} bean.
+     * @return template
      */
     @Bean
     public JdbcTemplate jdbcTemplate() {
