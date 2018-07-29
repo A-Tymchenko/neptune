@@ -42,11 +42,11 @@ public class GoodsRepositoryImpl implements IRepository<Goods> {
     public Goods create(final Goods entity) throws RepositoryException {
         try (Connection connection = connFactory.getConnection()) {
             final PreparedStatement statement =
-                    connection.prepareStatement("INSERT INTO GOODS (NAME, BARCODE, PRICE) VALUES (?,?,?)");
+                connection.prepareStatement("INSERT INTO GOODS (NAME, BARCODE, PRICE) VALUES (?,?,?)");
             setStatementGoodsInSQLIndexes(statement, entity);
             statement.executeUpdate();
             final ResultSet generatedKeys = connection
-                    .prepareStatement("SELECT LAST_INSERT_ID()").executeQuery();
+                .prepareStatement("SELECT LAST_INSERT_ID()").executeQuery();
             if (generatedKeys.next()) {
                 entity.setId(generatedKeys.getLong(FIRST_SQL_COLUMN));
             }
@@ -54,7 +54,7 @@ public class GoodsRepositoryImpl implements IRepository<Goods> {
             LOGGER.error(ExceptionMessage.FAILED_TO_CREATE_NEW_GOODS.getMessage(), ex);
             throw new RepositoryException(ExceptionMessage.FAILED_TO_CREATE_NEW_GOODS.getMessage(), ex);
         }
-        return (Goods) get(entity.getId()).get();
+        return entity;
     }
 
     /**
@@ -64,18 +64,14 @@ public class GoodsRepositoryImpl implements IRepository<Goods> {
      * @return Optional entity.
      */
     @Override
-    public Optional get(final Long entityId) throws RepositoryException {
-        if (entityId == null) {
-            LOGGER.error(ExceptionMessage.THE_GOODS_CANNOT_BE_NULL.getMessage());
-            throw new RepositoryException(ExceptionMessage.THE_GOODS_CANNOT_BE_NULL.getMessage());
-        }
+    public Optional<Goods> get(final long entityId) throws RepositoryException {
         try (Connection connection = connFactory.getConnection()) {
             final PreparedStatement statement =
-                    connection.prepareStatement("SELECT * FROM GOODS WHERE ID = ?");
+                connection.prepareStatement("SELECT * FROM GOODS WHERE ID = ?");
             statement.setLong(FIRST_SQL_INDEX, entityId);
             final ResultSet resultSet = statement.executeQuery();
             if (resultSet.next()) {
-                return Optional.of(createGoods(resultSet));
+                return Optional.of(getGoodsFromResultSet(resultSet));
             }
         } catch (SQLException ex) {
             LOGGER.error(ExceptionMessage.FAILED_TO_GET_GOODS_BY_ID.getMessage(), ex);
@@ -94,7 +90,7 @@ public class GoodsRepositoryImpl implements IRepository<Goods> {
     public Goods update(final Goods newEntity) throws RepositoryException {
         try (Connection connection = connFactory.getConnection()) {
             final PreparedStatement statement =
-                    connection.prepareStatement("UPDATE GOODS SET NAME = ?, BARCODE = ?, PRICE = ? WHERE ID = ?");
+                connection.prepareStatement("UPDATE GOODS SET NAME = ?, BARCODE = ?, PRICE = ? WHERE ID = ?");
             setStatementGoodsInSQLIndexes(statement, newEntity);
             statement.setLong(FOURTH_SQL_INDEX, newEntity.getId());
             statement.executeUpdate();
@@ -102,7 +98,7 @@ public class GoodsRepositoryImpl implements IRepository<Goods> {
             LOGGER.error(ExceptionMessage.FAILED_TO_UPDATE_GOODS.getMessage(), ex);
             throw new RepositoryException(ExceptionMessage.FAILED_TO_UPDATE_GOODS.getMessage(), ex);
         }
-        return (Goods) get(newEntity.getId()).get();
+        return newEntity;
     }
 
     /**
@@ -112,10 +108,10 @@ public class GoodsRepositoryImpl implements IRepository<Goods> {
      * @return true else false.
      */
     @Override
-    public Boolean delete(final Long entityId) throws RepositoryException {
+    public boolean delete(final long entityId) throws RepositoryException {
         try (Connection connection = connFactory.getConnection()) {
             final PreparedStatement statement =
-                    connection.prepareStatement("DELETE FROM GOODS WHERE ID = ?");
+                connection.prepareStatement("DELETE FROM GOODS WHERE ID = ?");
             statement.setLong(FIRST_SQL_INDEX, entityId);
             return statement.executeUpdate() > 0;
         } catch (SQLException ex) {
@@ -130,12 +126,12 @@ public class GoodsRepositoryImpl implements IRepository<Goods> {
      * @return List entity.
      */
     @Override
-    public List getAll() throws RepositoryException {
+    public List<Goods> getAll() throws RepositoryException {
         final List<Goods> goods = new ArrayList<>();
         try (Connection connection = connFactory.getConnection()) {
             final ResultSet resultSet = connection.prepareStatement("SELECT * FROM GOODS").executeQuery();
             while (resultSet.next()) {
-                goods.add(createGoods(resultSet));
+                goods.add(getGoodsFromResultSet(resultSet));
             }
         } catch (SQLException ex) {
             LOGGER.error(ExceptionMessage.FAILED_TO_GET_ALL_GOODS.getMessage(), ex);
@@ -162,10 +158,10 @@ public class GoodsRepositoryImpl implements IRepository<Goods> {
      * @param resultSet with DataBase.
      * @return Goods.
      */
-    private Goods createGoods(final ResultSet resultSet) throws SQLException {
+    private Goods getGoodsFromResultSet(final ResultSet resultSet) throws SQLException {
         final Goods goods = new Goods(resultSet.getString("NAME"),
-                resultSet.getLong("BARCODE"),
-                resultSet.getFloat("PRICE"));
+            resultSet.getLong("BARCODE"),
+            resultSet.getFloat("PRICE"));
         goods.setId(resultSet.getLong("ID"));
         return goods;
     }

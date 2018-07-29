@@ -93,14 +93,14 @@ public class UserRepositoryIntegrationTest {
         assertEquals(Optional.empty(), optional);
     }
 
-    @Test
-    void whenGetUserWithNullIdThenThrowNullPointerException() {
-        Throwable nullPointerException = assertThrows(NullPointerException.class, () -> {
-            repository.get(null);
-        });
-        assertNotNull(nullPointerException);
-        assertEquals(NullPointerException.class, nullPointerException.getClass());
-    }
+//    @Test
+//    void whenGetUserWithNullIdThenThrowNullPointerException() {
+//        Throwable nullPointerException = assertThrows(NullPointerException.class, () -> {
+//            repository.get(null);
+//        });
+//        assertNotNull(nullPointerException);
+//        assertEquals(NullPointerException.class, nullPointerException.getClass());
+//    }
 
     @Test
     void whenDropOrdersTableAndGetOrderThenThrowRepositoryException() {
@@ -165,14 +165,14 @@ public class UserRepositoryIntegrationTest {
         assertEquals(Optional.empty(), repository.get(getRandomId()));
     }
 
-    @Test
-    void whenDeleteUserWithNullIdThenThrowNullPointerException() {
-        Throwable nullPointer = assertThrows(NullPointerException.class, () -> {
-            repository.delete(null);
-        });
-        assertNotNull(nullPointer);
-        assertEquals(NullPointerException.class, nullPointer.getClass());
-    }
+//    @Test
+//    void whenDeleteUserWithNullIdThenThrowNullPointerException() {
+//        Throwable nullPointer = assertThrows(NullPointerException.class, () -> {
+//            repository.delete(null);
+//        });
+//        assertNotNull(nullPointer);
+//        assertEquals(NullPointerException.class, nullPointer.getClass());
+//    }
 
     @Test
     void whenDropTableAndDeleteNonExistingUserThenThrowRepositoryException() {

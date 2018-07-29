@@ -117,17 +117,11 @@ public class GoodsRepositoryImplMockTest {
                 Goods goods = dao.create(existingGoods);
                 assertEquals(existingGoods.getId(), 2l, 0.0002);
                 assertAll("goods",
-                    () -> assertFalse(goods.getId().equals(existingGoods.getId())),
+                    () -> assertEquals(goods.getId(), existingGoods.getId()),
                     () -> assertEquals(goods.getName(), existingGoods.getName()),
                     () -> assertEquals(goods.getBarcode(), existingGoods.getBarcode()),
                     () -> assertEquals(goods.getPrice(), existingGoods.getPrice()));
             }
-
-            @Test
-            void getingResultWithNullId() {
-                assertThrows(RepositoryException.class, () -> dao.get(null));
-            }
-
 
             @Test
             void whenGetGoodsWithFalseNextGoodsThenReturnNotPresentGoods() throws RepositoryException, SQLException {

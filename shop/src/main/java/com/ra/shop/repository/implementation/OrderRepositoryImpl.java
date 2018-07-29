@@ -109,7 +109,7 @@ public class OrderRepositoryImpl implements IRepository<Order> {
     }
 
     @Override
-    public Optional<Order> get(final Long entityId) throws RepositoryException {
+    public Optional<Order> get(final long entityId) throws RepositoryException {
         Objects.requireNonNull(entityId);
         Order found;
         try (Connection connection = connectionFactory.getConnection();
@@ -144,7 +144,7 @@ public class OrderRepositoryImpl implements IRepository<Order> {
     }
 
     @Override
-    public Boolean delete(final Long entityId) throws RepositoryException {
+    public boolean delete(final long entityId) throws RepositoryException {
         Objects.requireNonNull(entityId);
         try (Connection connection = connectionFactory.getConnection();
              PreparedStatement statement = connection.prepareStatement("DELETE FROM ORDERS WHERE ORDER_ID = ?")) {

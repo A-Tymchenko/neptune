@@ -86,7 +86,7 @@ public class WarehouseRepositoryImpl implements IRepository<Warehouse> {
      * @return count of deleted rows
      */
     @Override
-    public Boolean delete(final Long entityId) throws RepositoryException {
+    public boolean delete(final long entityId) throws RepositoryException {
         boolean result;
         try (Connection connection = connectionFactory.getConnection()) {
             final PreparedStatement preparedStatement = connection.prepareStatement("DELETE FROM warehouse WHERE id = ?");
@@ -106,7 +106,7 @@ public class WarehouseRepositoryImpl implements IRepository<Warehouse> {
      * @return Optional of warehouse or empty optional
      */
     @Override
-    public Optional<Warehouse> get(final Long idNumber) throws RepositoryException {
+    public Optional<Warehouse> get(final long idNumber) throws RepositoryException {
         Optional<Warehouse> warehouse = Optional.empty();
         try (Connection connection = connectionFactory.getConnection()) {
             final PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM warehouse WHERE id = ?");

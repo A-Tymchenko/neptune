@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.util.Objects;
 
 /**
- * Entity good.
+ * Entity goods.
  */
 
 public class Goods implements Serializable {
@@ -14,9 +14,6 @@ public class Goods implements Serializable {
     private String name;
     private Long barcode;
     private float price;
-
-    public Goods() {
-    }
 
     public Goods(final String name, final Long barcode, final float price) {
         this.name = name;
@@ -66,24 +63,23 @@ public class Goods implements Serializable {
         }
         final Goods goods = (Goods) obj;
         return Float.compare(goods.price, price) == 0
-                && Objects.equals(idNumber, goods.idNumber)
-                && Objects.equals(name, goods.name)
-                && Objects.equals(barcode, goods.barcode);
+            && Objects.equals(idNumber, goods.idNumber)
+            && Objects.equals(name, goods.name)
+            && Objects.equals(barcode, goods.barcode);
     }
 
     @Override
     public int hashCode() {
-
         return Objects.hash(idNumber, name, barcode, price);
     }
 
     @Override
     public String toString() {
         return "Goods{"
-                + "id=" + idNumber
-                + ", name='" + name + '\''
-                + ", barcode=" + barcode
-                + ", price=" + price
-                + '}';
+            + "id=" + idNumber
+            + ", name='" + name + '\''
+            + ", barcode=" + barcode
+            + ", price=" + price
+            + '}';
     }
 }
