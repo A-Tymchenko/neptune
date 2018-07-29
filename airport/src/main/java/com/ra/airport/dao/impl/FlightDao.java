@@ -120,8 +120,7 @@ public class FlightDao implements AirPortDao<Flight> {
         }
         try {
             final BeanPropertyRowMapper<Flight> rowMapper = BeanPropertyRowMapper.newInstance(Flight.class);
-            final Object[] queryParams = {flightId};
-            final Flight flight = jdbcTemplate.queryForObject("SELECT * FROM flight WHERE flId = ?", queryParams, rowMapper);
+            final Flight flight = jdbcTemplate.queryForObject("SELECT * FROM flight WHERE flId = ?", rowMapper, flightId);
             return Optional.ofNullable(flight);
         } catch (EmptyResultDataAccessException | BadSqlGrammarException e) {
             final String errorMessage = ExceptionMessage.FAILED_TO_GET_FLIGHT_WITH_ID.get() + flightId;

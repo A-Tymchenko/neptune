@@ -174,7 +174,7 @@ public class FlightDaoMockitoTest {
     @Test
     public void whenGetByIdThrownSQlExceptionThenDAOExceptionShouldBeThrownToo() {
         Throwable exception = assertThrows(AirPortDaoException.class, () -> {
-            when(mockJdbcTemplate.queryForObject(eq(SELECT_FLIGHT_BY_ID_SQL), any(Object[].class), any(RowMapper.class)))
+            when(mockJdbcTemplate.queryForObject(eq(SELECT_FLIGHT_BY_ID_SQL), any(RowMapper.class), any(Integer.class)))
                     .thenThrow(EmptyResultDataAccessException.class);
             flightDao.getById(Integer.valueOf(1));
         });
