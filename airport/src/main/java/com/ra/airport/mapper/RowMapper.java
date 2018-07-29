@@ -19,3 +19,4 @@ public interface RowMapper<T> {
      */
     T mapRow(ResultSet resultSet, T entity) throws SQLException;
 }
+

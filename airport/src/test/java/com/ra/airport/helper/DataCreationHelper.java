@@ -12,19 +12,6 @@ public abstract class DataCreationHelper {
 
     private static final String SPACE = " ";
 
-    public static Flight createFlight() {
-        Flight flight = new Flight();
-        flight.setIdentifier(1);
-        flight.setName(SPACE);
-        flight.setCarrier(SPACE);
-        flight.setDuration(LocalTime.NOON);
-        flight.setFare(Double.MIN_VALUE);
-        flight.setMealOn(true);
-        flight.setDepartureDate(LocalDateTime.MIN);
-        flight.setArrivalDate(LocalDateTime.MAX);
-        return flight;
-    }
-
     public static Ticket createTicket() {
         Ticket ticket = new Ticket();
         ticket.setTicketId(1);
