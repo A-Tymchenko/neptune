@@ -1,5 +1,6 @@
 package com.ra.airport.dao.impl;
 
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Time;
@@ -19,6 +20,8 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.BadSqlGrammarException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
 /**
@@ -52,10 +55,11 @@ public class FlightDao implements AirPortDao<Flight> {
      * @throws AirPortDaoException exception for DAO layer
      */
     public Flight create(final Flight flight) throws AirPortDaoException {
+        final KeyHolder keyHolder = new GeneratedKeyHolder();
         try {
-            jdbcTemplate.update(INSERT_FLIGHT_SQL, ps -> fillPreparedStatement(flight, ps));
-            final Integer flightId = jdbcTemplate.queryForObject("SELECT SCOPE_IDENTITY()", Integer.class);
-            return getById(flightId).orElse(flight);
+            jdbcTemplate.update(connection -> createPreparedStatement(flight, connection, INSERT_FLIGHT_SQL), keyHolder);
+            flight.setFlId((Integer) keyHolder.getKey());
+            return flight;
         } catch (EmptyResultDataAccessException | BadSqlGrammarException e) {
             LOGGER.error(ExceptionMessage.FAILED_TO_CREATE_NEW_FLIGHT.toString(), e);
             throw new AirPortDaoException(ExceptionMessage.FAILED_TO_CREATE_NEW_FLIGHT.get(), e);
@@ -71,8 +75,12 @@ public class FlightDao implements AirPortDao<Flight> {
      */
     public Flight update(final Flight flight) throws AirPortDaoException {
         try {
-            jdbcTemplate.update(UPDATE_FLIGHT_SQL, ps -> fillPreparedStatement(flight, ps));
-            return getById(flight.getFlId()).orElse(flight);
+            jdbcTemplate.update(connection -> {
+                final PreparedStatement preparedStatement = createPreparedStatement(flight, connection, UPDATE_FLIGHT_SQL);
+                preparedStatement.setInt(StatementParameter.FLIGHT_ID.get(), flight.getFlId());
+                return preparedStatement;
+            });
+            return flight;
         } catch (EmptyResultDataAccessException | BadSqlGrammarException e) {
             final String errorMessage = ExceptionMessage.FAILED_TO_UPDATE_FLIGHT_WITH_ID.get() + flight.getFlId();
             LOGGER.error(errorMessage, e);
@@ -142,14 +150,17 @@ public class FlightDao implements AirPortDao<Flight> {
     }
 
     /**
-     * Fill {@link PreparedStatement} parameters.
+     * Create {@link PreparedStatement} and fill parameters.
      * Get them from {@link Flight} entity.
      *
-     * @param flight            entity
-     * @param preparedStatement statement for filling
+     * @param flight entity
+     * @param connection connection for {@link PreparedStatement} instance creation.
+     * @return {@link PreparedStatement} instance
      * @throws SQLException exception for DAO layer
      */
-    private void fillPreparedStatement(final Flight flight, final PreparedStatement preparedStatement) throws SQLException {
+    private PreparedStatement createPreparedStatement(final Flight flight, final Connection connection,
+                                                      final String sql) throws SQLException {
+        final PreparedStatement preparedStatement = connection.prepareStatement(sql);
         final LocalDateTime departureDate = flight.getDepartureDate();
         preparedStatement.setString(StatementParameter.FLIGHT_NAME.get(), flight.getName());
         preparedStatement.setString(StatementParameter.FLIGHT_CARRIER.get(), flight.getCarrier());
@@ -158,8 +169,7 @@ public class FlightDao implements AirPortDao<Flight> {
         preparedStatement.setDouble(StatementParameter.FLIGHT_FARE.get(), flight.getFare());
         preparedStatement.setTimestamp(StatementParameter.FLIGHT_DEPARTURE_DATE.get(), Timestamp.valueOf(departureDate));
         preparedStatement.setTimestamp(StatementParameter.FLIGHT_ARRIVAL_DATE.get(), Timestamp.valueOf(flight.getArrivalDate()));
-        if (flight.getFlId() != null) {
-            preparedStatement.setInt(StatementParameter.FLIGHT_ID.get(), flight.getFlId());
-        }
+
+        return preparedStatement;
     }
 }

@@ -1,14 +1,9 @@
 package com.ra.airport;
 
-import java.io.FileReader;
-import java.io.IOException;
-import java.sql.Connection;
-import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import com.ra.airport.config.AirPortConfiguration;
@@ -16,9 +11,6 @@ import com.ra.airport.dao.AirPortDao;
 import com.ra.airport.dao.exception.AirPortDaoException;
 import com.ra.airport.dao.impl.FlightDao;
 import com.ra.airport.entity.Flight;
-import com.ra.airport.factory.ConnectionFactory;
-import org.h2.tools.RunScript;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -53,16 +45,6 @@ public class FlightDaoTest {
     @BeforeEach
     public void beforeTest() {
         createFlight();
-    }
-
-    @AfterEach
-    public void afterTest() throws SQLException, IOException {
-        deleteTable();
-    }
-    
-    private void deleteTable() throws SQLException, IOException {
-        Connection connection = ConnectionFactory.getInstance().getConnection();
-        RunScript.execute(connection, new FileReader("src/test/resources/sql/remove_table_skripts.sql"));
     }
 
     private void createFlight() {

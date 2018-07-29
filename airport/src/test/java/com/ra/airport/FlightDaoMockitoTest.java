@@ -3,16 +3,17 @@ package com.ra.airport;
 import com.ra.airport.dao.exception.AirPortDaoException;
 import com.ra.airport.dao.impl.FlightDao;
 import com.ra.airport.entity.Flight;
-import com.ra.airport.helper.DataCreationHelper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.PreparedStatementSetter;
+import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.support.KeyHolder;
 
 import java.sql.*;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -44,17 +45,21 @@ public class FlightDaoMockitoTest {
     private Flight flight;
 
     private JdbcTemplate mockJdbcTemplate;
-    private PreparedStatement mockStatement;
+    private Connection mockConnection;
+    private PreparedStatement mockPreparedStatement;
 
     @BeforeEach
-    public void init() {
-        flight = DataCreationHelper.createFlight();
+    public void init() throws SQLException {
+        createFlight();
         flight.setDepartureDate(LocalDateTime.now());
         flight.setArrivalDate(LocalDateTime.now().plusHours(1));
-        mockStatement = mock(PreparedStatement.class);
+        mockConnection = mock(Connection.class);
+        mockPreparedStatement = mock(PreparedStatement.class);
         mockJdbcTemplate = mock(JdbcTemplate.class);
         flightDao = new FlightDao(mockJdbcTemplate);
 
+        when(mockConnection.prepareStatement(INSERT_FLIGHT_SQL)).thenReturn(mockPreparedStatement);
+        when(mockConnection.prepareStatement(UPDATE_FLIGHT_SQL)).thenReturn(mockPreparedStatement);
         when(mockJdbcTemplate.queryForObject(SELECT_LAST_GENERATED_ID_SQL, Integer.class)).thenReturn(1);
         when(mockJdbcTemplate.queryForObject(eq(SELECT_FLIGHT_BY_ID_SQL), any(Object[].class), any(RowMapper.class))).thenReturn(flight);
     }
@@ -62,10 +67,9 @@ public class FlightDaoMockitoTest {
     @Test
     public void whenCreateThenCorrectSQLShouldBeExecutedAndCorrectEntityShouldBeReturned() throws AirPortDaoException {
         doAnswer(invocation -> {
-            ((PreparedStatementSetter)invocation.getArguments()[1]).setValues(mockStatement);
+            ((PreparedStatementCreator) invocation.getArguments()[0]).createPreparedStatement(mockConnection);
             return null;
-        }).when(mockJdbcTemplate).update(eq(INSERT_FLIGHT_SQL), any(PreparedStatementSetter.class));
-
+        }).when(mockJdbcTemplate).update(any(PreparedStatementCreator.class), any(KeyHolder.class));
         Flight flightWithoutId = flight;
         flightWithoutId.setFlId(null);
         Flight result = flightDao.create(flightWithoutId);
@@ -74,22 +78,11 @@ public class FlightDaoMockitoTest {
     }
 
     @Test
-    public void whenCreateReturnNullGeneratedIdThenDAOExceptionShouldBeThrown() throws AirPortDaoException {
-        when(mockJdbcTemplate.queryForObject(SELECT_LAST_GENERATED_ID_SQL, Integer.class)).thenReturn(null);
-        Throwable exception =  assertThrows(AirPortDaoException.class,() -> {
-            flightDao.create(flight);
-        });
-        
-        assertEquals(exception.getMessage(), FLIGHT_ID_CANNOT_BE_NULL.get());
-    }
-
-    @Test
     public void whenUpdateThenCorrectSQLShouldBeExecutedAndCorrectEntityShouldBeReturned() throws AirPortDaoException {
         doAnswer(invocation -> {
-            ((PreparedStatementSetter)invocation.getArguments()[1]).setValues(mockStatement);
+            ((PreparedStatementCreator) invocation.getArguments()[1]).createPreparedStatement(mockConnection);
             return null;
-        }).when(mockJdbcTemplate).update(eq(UPDATE_FLIGHT_SQL), any(PreparedStatementSetter.class));
-
+        }).when(mockJdbcTemplate).update(any(PreparedStatementCreator.class), any(KeyHolder.class));
         Flight result = flightDao.update(flight);
 
         assertEquals(flight, result);
@@ -97,7 +90,6 @@ public class FlightDaoMockitoTest {
 
     @Test
     public void whenDeleteThenCorrectSQLShouldBeExecutedAndTrueShouldBeReturned() throws AirPortDaoException {
-
         when(mockJdbcTemplate.update(DELETE_FLIGHT_BY_ID_SQL,1)).thenReturn(1);
         boolean result = flightDao.delete(flight);
 
@@ -140,7 +132,7 @@ public class FlightDaoMockitoTest {
     @Test
     public void whenCreateThrownEmptyResultDataAccessExceptionThenDAOExceptionShouldBeThrownToo() {
         Throwable exception = assertThrows(AirPortDaoException.class, () -> {
-            when(mockJdbcTemplate.update(eq(INSERT_FLIGHT_SQL), any(PreparedStatementSetter.class))).thenThrow(EmptyResultDataAccessException.class);
+            when(mockJdbcTemplate.update(any(PreparedStatementCreator.class), any(KeyHolder.class))).thenThrow(EmptyResultDataAccessException.class);
             flightDao.create(flight);
         });
 
@@ -150,7 +142,7 @@ public class FlightDaoMockitoTest {
     @Test
     public void whenUpdateThrownEmptyResultDataAccessExceptionThenDAOExceptionShouldBeThrownToo() {
         Throwable exception = assertThrows(AirPortDaoException.class, () -> {
-            when(mockJdbcTemplate.update(eq(UPDATE_FLIGHT_SQL), any(PreparedStatementSetter.class))).thenThrow(EmptyResultDataAccessException.class);
+            when(mockJdbcTemplate.update(any(PreparedStatementCreator.class))).thenThrow(EmptyResultDataAccessException.class);
             flightDao.update(flight);
         });
 
@@ -188,5 +180,17 @@ public class FlightDaoMockitoTest {
         });
 
         assertEquals(exception.getMessage(), FAILED_TO_GET_FLIGHT_WITH_ID.get()+1);
+    }
+
+    public void createFlight() {
+        flight = new Flight();
+        flight.setFlId(1);
+        flight.setName(" ");
+        flight.setCarrier(" ");
+        flight.setDuration(LocalTime.NOON);
+        flight.setFare(Double.MIN_VALUE);
+        flight.setMealOn(true);
+        flight.setDepartureDate(LocalDateTime.MIN);
+        flight.setArrivalDate(LocalDateTime.MAX);
     }
 }
