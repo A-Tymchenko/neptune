@@ -16,9 +16,11 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.BadSqlGrammarException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.stereotype.Component;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
+import org.springframework.stereotype.Repository;
 
-@Component
+@Repository
 public class AirportDAOImpl implements AirPortDao<Airport> {
 
     private static JdbcTemplate jdbcTemplate;
@@ -32,11 +34,17 @@ public class AirportDAOImpl implements AirPortDao<Airport> {
 
     @Override
     public Airport create(final Airport airport) throws AirPortDaoException {
+        final KeyHolder keyHolder = new GeneratedKeyHolder();
         try {
             final String query = "INSERT INTO Airport(apname, apnum, aptype, address, terminalcount) "
                     + "VALUES(?, ?, ?, ?, ?)";
-            jdbcTemplate.update(query, statement -> fillPreparedStatement(statement, airport));
-            return this.getById(jdbcTemplate.queryForObject("SELECT SCOPE_IDENTITY()", Integer.class)).get();
+            jdbcTemplate.update(connection -> {
+                final PreparedStatement preparedStatement = connection.prepareStatement(query);
+                fillPreparedStatement(preparedStatement, airport);
+                return  preparedStatement;
+            }, keyHolder);
+            airport.setApId((Integer) keyHolder.getKey());
+            return airport;
         } catch (EmptyResultDataAccessException | BadSqlGrammarException e) {
             final String errorMessage = ExceptionMessage.FAILED_TO_CREATE_NEW_AIRPORT.get() + airport.getApId();
             LOGGER.error(errorMessage, e);
@@ -77,12 +85,13 @@ public class AirportDAOImpl implements AirPortDao<Airport> {
     }
 
     @Override
-    public Optional<Airport> getById(final Integer entityId) throws AirPortDaoException {
+    public Optional<Airport> getById(final Integer airportId) throws AirPortDaoException {
         try {
             final String query = "Select * From Airport Where apid = ?";
-            return Optional.of(jdbcTemplate.queryForObject(query, BeanPropertyRowMapper.newInstance(Airport.class), entityId));
+            final BeanPropertyRowMapper<Airport> rowMapper = BeanPropertyRowMapper.newInstance(Airport.class);
+            return Optional.ofNullable(jdbcTemplate.queryForObject(query, rowMapper, airportId));
         } catch (EmptyResultDataAccessException | BadSqlGrammarException e) {
-            final String errorMessage = ExceptionMessage.FAILED_TO_GET_AIRPORT_WITH_ID.get() + entityId;
+            final String errorMessage = ExceptionMessage.FAILED_TO_GET_AIRPORT_WITH_ID.get() + airportId;
             LOGGER.error(errorMessage, e);
             throw new AirPortDaoException(errorMessage, e);
         }
