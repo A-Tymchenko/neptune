@@ -1,6 +1,6 @@
 package com.ra.airport;
 
-import com.ra.airport.configuration.AirPortConfiguration;
+import com.ra.airport.config.AirPortConfiguration;
 import com.ra.airport.dao.exception.AirPortDaoException;
 import com.ra.airport.dao.impl.AirportDAOImpl;
 import com.ra.airport.entity.Airport;
