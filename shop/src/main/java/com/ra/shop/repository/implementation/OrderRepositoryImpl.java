@@ -112,7 +112,7 @@ public class OrderRepositoryImpl implements IRepository<Order> {
             statement.setLong(1, entityId);
             final ResultSet res = statement.executeQuery();
             if (res.next()) {
-                Order found = fillEntityWithValues(res);
+                final Order found = fillEntityWithValues(res);
                 return Optional.of(found);
             }
         } catch (SQLException e) {
