@@ -39,8 +39,8 @@ public class WarehouseRepositoryImpl implements IRepository<Warehouse> {
     public Warehouse create(Warehouse warehouse) throws RepositoryException {
         try (Connection connection = connectionFactory.getConnection()) {
             final PreparedStatement insertStatement = connection.prepareStatement("INSERT INTO warehouse "
-                + "(name, price, amount) "
-                + " VALUES(?,?,?)");
+                    + "(name, price, amount) "
+                    + " VALUES(?,?,?)");
             final PreparedStatement getLastId = connection.prepareStatement("SELECT LAST_INSERT_ID()");
             fillInStatement(warehouse, insertStatement);
             insertStatement.executeUpdate();
@@ -66,8 +66,8 @@ public class WarehouseRepositoryImpl implements IRepository<Warehouse> {
     public Warehouse update(final Warehouse warehouse) throws RepositoryException {
         try (Connection connection = connectionFactory.getConnection()) {
             final PreparedStatement preparedStatement = connection.prepareStatement("UPDATE warehouse "
-                + "SET name = ?, price = ?, amount = ? "
-                + "WHERE id = ?");
+                    + "SET name = ?, price = ?, amount = ? "
+                    + "WHERE id = ?");
             fillInStatement(warehouse, preparedStatement);
             preparedStatement.setLong(ID_NUMBER, warehouse.getIdNumber());
             preparedStatement.executeUpdate();

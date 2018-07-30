@@ -8,7 +8,6 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 
 import com.ra.shop.config.ConnectionFactory;
@@ -66,12 +65,11 @@ public class UserRepositoryImpl implements IRepository<User> {
 
     @Override
     public User create(final User entity) throws RepositoryException {
-        Objects.requireNonNull(entity);
         try (Connection connection = connectionFactory.getConnection();
              PreparedStatement statement = connection.prepareStatement(
-                     "INSERT INTO USERS (PHONE_NUMBER, NAME, SECOND_NAME, COUNTRY, EMAIL_ADDRESS) "
-                             + "VALUES(?, ?, ?, ?, ?)",
-                     Statement.RETURN_GENERATED_KEYS)) {
+                 "INSERT INTO USERS (PHONE_NUMBER, NAME, SECOND_NAME, COUNTRY, EMAIL_ADDRESS) "
+                     + "VALUES(?, ?, ?, ?, ?)",
+                 Statement.RETURN_GENERATED_KEYS)) {
             setStatementValuesForCreation(statement, entity);
             statement.executeUpdate();
             final ResultSet primaryKeys = statement.getGeneratedKeys();
@@ -87,7 +85,6 @@ public class UserRepositoryImpl implements IRepository<User> {
 
     @Override
     public Optional<User> get(final long entityId) throws RepositoryException {
-        Objects.requireNonNull(entityId);
         User found;
         try (Connection connection = connectionFactory.getConnection();
              PreparedStatement statement = connection.prepareStatement("SELECT * FROM USERS WHERE USER_ID = ?")) {
@@ -106,10 +103,9 @@ public class UserRepositoryImpl implements IRepository<User> {
 
     @Override
     public User update(final User newEntity) throws RepositoryException {
-        Objects.requireNonNull(newEntity);
         try (Connection connection = connectionFactory.getConnection();
              PreparedStatement statement = connection.prepareStatement(
-                     "UPDATE USERS SET PHONE_NUMBER= ?,NAME = ?,SECOND_NAME= ?,COUNTRY= ?,EMAIL_ADDRESS= ? WHERE USER_ID= ?")) {
+                 "UPDATE USERS SET PHONE_NUMBER= ?,NAME = ?,SECOND_NAME= ?,COUNTRY= ?,EMAIL_ADDRESS= ? WHERE USER_ID= ?")) {
             setStatementValuesForUpdate(statement, newEntity);
             statement.executeUpdate();
         } catch (SQLException e) {

@@ -79,38 +79,38 @@ public class GoodsRepositoryImplMockTest {
             @Test
             void whenUpdationGoodsThenReturnEqualsGoods() throws SQLException, RepositoryException {
                 when(mockedConnection.prepareStatement("UPDATE GOODS SET NAME = ?, BARCODE = ?, PRICE = ? WHERE ID = ?"))
-                    .thenReturn(mockedStatement);
+                        .thenReturn(mockedStatement);
                 Goods goods = dao.update(existingGoods);
                 assertAll("goods",
-                    () -> assertEquals(goods.getId(), existingGoods.getId()),
-                    () -> assertEquals(goods.getName(), existingGoods.getName()),
-                    () -> assertEquals(goods.getBarcode(), existingGoods.getBarcode()),
-                    () -> assertEquals(goods.getPrice(), existingGoods.getPrice()));
+                        () -> assertEquals(goods.getId(), existingGoods.getId()),
+                        () -> assertEquals(goods.getName(), existingGoods.getName()),
+                        () -> assertEquals(goods.getBarcode(), existingGoods.getBarcode()),
+                        () -> assertEquals(goods.getPrice(), existingGoods.getPrice()));
             }
 
             @Test
             void whenCreatedGoodsWithFalseNextIdThenReturnEqualsGoods() throws SQLException, RepositoryException {
                 when(mockedConnection.prepareStatement("INSERT INTO GOODS (NAME, BARCODE, PRICE) VALUES (?,?,?)"))
-                    .thenReturn(mockedStatement);
+                        .thenReturn(mockedStatement);
                 when(mockedStatement.executeUpdate()).thenReturn(1);
                 when(mockedConnection.prepareStatement("SELECT LAST_INSERT_ID()"))
-                    .thenReturn(mockedStatementKey);
+                        .thenReturn(mockedStatementKey);
                 when(mockedStatementKey.executeQuery()).thenReturn(mockedResultSetForKey);
                 when(mockedResultSetForKey.next()).thenReturn(false);
                 Goods goods = dao.create(existingGoods);
                 assertAll("goods",
-                    () -> assertEquals(goods.getId(), existingGoods.getId()),
-                    () -> assertEquals(goods.getName(), existingGoods.getName()),
-                    () -> assertEquals(goods.getBarcode(), existingGoods.getBarcode()),
-                    () -> assertEquals(goods.getPrice(), existingGoods.getPrice()));
+                        () -> assertEquals(goods.getId(), existingGoods.getId()),
+                        () -> assertEquals(goods.getName(), existingGoods.getName()),
+                        () -> assertEquals(goods.getBarcode(), existingGoods.getBarcode()),
+                        () -> assertEquals(goods.getPrice(), existingGoods.getPrice()));
             }
 
             @Test
             void whenCreatedGoodsWithTrueNextIdThenReturnNotEqualsGoods() throws SQLException, RepositoryException {
                 when(mockedConnection.prepareStatement("INSERT INTO GOODS (NAME, BARCODE, PRICE) VALUES (?,?,?)"))
-                    .thenReturn(mockedStatement);
+                        .thenReturn(mockedStatement);
                 when(mockedConnection.prepareStatement("SELECT LAST_INSERT_ID()"))
-                    .thenReturn(mockedStatementKey);
+                        .thenReturn(mockedStatementKey);
                 when(mockedStatementKey.executeQuery()).thenReturn(mockedResultSetForKey);
                 when(mockedResultSetForKey.next()).thenReturn(true);
                 when(mockedResultSetForKey.getLong(1)).thenReturn(2l);
@@ -133,16 +133,16 @@ public class GoodsRepositoryImplMockTest {
 
             @Test
             void whenGetGoodsWithTrueNextGoodsThenReturnEqualsGoods() throws
-                SQLException, RepositoryException {
+                    SQLException, RepositoryException {
                 when(mockedConnection.prepareStatement("SELECT * FROM GOODS WHERE ID = ?")).thenReturn(mockedStatement);
                 when(mockedStatement.executeQuery()).thenReturn(mockedResultSet);
                 when(mockedResultSet.next()).thenReturn(true);
                 Goods goods = (Goods) dao.get(existingGoods.getId()).get();
                 assertAll("goods",
-                    () -> assertEquals(goods.getId(), existingGoods.getId()),
-                    () -> assertEquals(goods.getName(), existingGoods.getName()),
-                    () -> assertEquals(goods.getBarcode(), existingGoods.getBarcode()),
-                    () -> assertEquals(goods.getPrice(), existingGoods.getPrice()));
+                        () -> assertEquals(goods.getId(), existingGoods.getId()),
+                        () -> assertEquals(goods.getName(), existingGoods.getName()),
+                        () -> assertEquals(goods.getBarcode(), existingGoods.getBarcode()),
+                        () -> assertEquals(goods.getPrice(), existingGoods.getPrice()));
             }
         }
     }
@@ -171,8 +171,8 @@ public class GoodsRepositoryImplMockTest {
             Connection mockedConnection = mock(Connection.class);
             SQLException exception = new SQLException(EXCEPTION_CAUSE);
             doThrow(exception)
-                .when(mockedConnection)
-                .prepareStatement(Mockito.anyString());
+                    .when(mockedConnection)
+                    .prepareStatement(Mockito.anyString());
             when(mockedConnectionFactory.getConnection()).thenReturn(mockedConnection);
             return mockedConnectionFactory;
         }

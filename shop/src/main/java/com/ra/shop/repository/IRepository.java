@@ -40,7 +40,7 @@ public interface IRepository<T> {
      * Method will delete entity from the database.
      *
      * @param entityId of entity that will be deleted.
-     * @return Boolean true if entity deleted, false if not.
+     * @return boolean true if entity deleted, false if not.
      */
     boolean delete(long entityId) throws RepositoryException;
 

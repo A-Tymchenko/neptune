@@ -15,13 +15,8 @@ public class Order implements Serializable {
     private Integer deliveryCost;
     private Boolean executed;
 
-    public Order() {
-        super();
-    }
-
     public Order(Integer number, Double price, Boolean deliveryIncluded,
                  Integer deliveryCost, Boolean executed) {
-        super();
         this.number = number;
         this.price = price;
         this.deliveryIncluded = deliveryIncluded;

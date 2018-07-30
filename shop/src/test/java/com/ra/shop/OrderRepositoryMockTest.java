@@ -170,24 +170,13 @@ public class OrderRepositoryMockTest {
     }
 
     @Test
-    void getAllOrdersAndReturnListOfORders() throws SQLException, RepositoryException {
+    void getAllOrdersAndReturnListOfOrders() throws SQLException, RepositoryException {
         when(connection.prepareStatement("SELECT * FROM ORDERS")).thenReturn(statement);
         when(statement.executeQuery()).thenReturn(resultSet);
         when(resultSet.next()).thenReturn(Boolean.TRUE, Boolean.TRUE, Boolean.TRUE, Boolean.FALSE);
         List<Order> actual = mockOrderRepository.getAll();
         assertFalse(actual.isEmpty());
         assertEquals(3, actual.size());
-    }
-
-    @Test
-    void whenGetAllOrdersThenReturnEmptyList() throws SQLException, RepositoryException {
-        when(connection.prepareStatement("SELECT * FROM ORDERS")).thenReturn(statement);
-        when(statement.executeQuery()).thenReturn(resultSet);
-        when(resultSet.next()).thenReturn(Boolean.FALSE);
-        List<Order> actual = mockOrderRepository.getAll();
-        assertTrue(actual.isEmpty());
-        assertEquals(0, actual.size());
-        assertEquals(Collections.emptyList(), actual);
     }
 
     @Test
