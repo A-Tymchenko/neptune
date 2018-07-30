@@ -1,19 +1,13 @@
 package com.ra.airport;
 
-
 import java.io.FileReader;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
-import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import com.ra.airport.configuration.PlaneConfiguration;
+import com.ra.airport.config.AirPortConfiguration;
 import com.ra.airport.dao.AirPortDao;
 import com.ra.airport.dao.exception.AirPortDaoException;
 import com.ra.airport.entity.Plane;
@@ -31,12 +25,12 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(SpringExtension.class)
-@ContextConfiguration(classes = {PlaneConfiguration.class})
+@ContextConfiguration(classes = {AirPortConfiguration.class})
 @SqlGroup({
-                @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = "classpath:sql/create_table_skripts.sql"),
-                @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = "classpath:sql/tables_backup(data).sql"),
-                @Sql(executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD, scripts = "classpath:sql/remove_table_skripts.sql")
-        })
+        @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = "classpath:sql/create_table_skripts.sql"),
+        @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = "classpath:sql/tables_backup(data).sql"),
+        @Sql(executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD, scripts = "classpath:sql/remove_table_skripts.sql")
+})
 
 
 public class PlaneDaoTest {
@@ -44,7 +38,7 @@ public class PlaneDaoTest {
     private static final String OWNER = "MAU";
     private static final String MODEL = "Boeing";
     private static final String TYPE = "LargeCarrier";
-    private static final Integer PLATE_NUMBER = 132498789;
+    private static final Integer PLATE_NUMBER = 13249;
 
     @Autowired
     private AirPortDao<Plane> planeDao;
@@ -52,7 +46,7 @@ public class PlaneDaoTest {
 
     @BeforeEach
     public void beforeTest() throws IOException {
-       createPlane();
+        createPlane();
     }
 
     @AfterEach
@@ -88,9 +82,9 @@ public class PlaneDaoTest {
     public void whenUpdateThenUpdatedPlaneShouldBeReturned() throws AirPortDaoException {
         Optional<Plane> optionalPlane = planeDao.getById(1);
         assertNotEquals(Optional.empty(), optionalPlane);
-                Plane plane = optionalPlane.get();
-                Plane expectedPlane = changePlane(plane);
-                Plane updatedPlane = planeDao.update(plane);
+        Plane plane = optionalPlane.get();
+        Plane expectedPlane = changePlane(plane);
+        Plane updatedPlane = planeDao.update(plane);
     }
 
     @Test

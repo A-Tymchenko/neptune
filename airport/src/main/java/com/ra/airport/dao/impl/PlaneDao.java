@@ -3,7 +3,6 @@ package com.ra.airport.dao.impl;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -42,10 +41,10 @@ public class PlaneDao implements AirPortDao<Plane> {
 
     @Override
     public Plane create(final Plane plane) throws AirPortDaoException {
-        final KeyHolder keyHolder=new GeneratedKeyHolder();
+        final KeyHolder keyHolder = new GeneratedKeyHolder();
         try {
-            jdbcTemplate.update(connection->createPreparedStatement(plane,connection,INSERT_PLANE_SQL),keyHolder);
-            plane.setPlaneId((Integer)keyHolder.getKey());
+            jdbcTemplate.update(connection -> createPreparedStatement(plane, connection, INSERT_PLANE_SQL), keyHolder);
+            plane.setPlaneId((Integer) (keyHolder.getKey()));
             return plane;
         } catch (EmptyResultDataAccessException | BadSqlGrammarException e) {
             LOGGER.error(ExceptionMessage.FAILED_TO_CREATE_NEW_PLANE.toString(), e);
@@ -63,7 +62,7 @@ public class PlaneDao implements AirPortDao<Plane> {
             });
             return plane;
 
-        }catch (EmptyResultDataAccessException | BadSqlGrammarException e) {
+        } catch (EmptyResultDataAccessException | BadSqlGrammarException e) {
             final String errorMessage = ExceptionMessage.FAILED_TO_UPDATE_PLANE_WITH_ID.get() + plane.getPlaneId();
             LOGGER.error(errorMessage, e);
             throw new AirPortDaoException(errorMessage, e);
@@ -74,8 +73,8 @@ public class PlaneDao implements AirPortDao<Plane> {
     public boolean delete(final Plane plane) throws AirPortDaoException {
 
         try {
-            final int numOfDeletedRow=jdbcTemplate.update("DELETE FROM plane WHERE planeId = ?",plane.getPlaneId());
-            return numOfDeletedRow>0;
+            final int numOfDeletedRow = jdbcTemplate.update("DELETE FROM plane WHERE planeId = ?", plane.getPlaneId());
+            return numOfDeletedRow > 0;
         } catch (EmptyResultDataAccessException | BadSqlGrammarException e)  {
             final String errorMessage = ExceptionMessage.FAILED_TO_DELETE_PLANE_WITH_ID.get() + plane.getPlaneId();
             LOGGER.error(errorMessage, e);
@@ -88,9 +87,9 @@ public class PlaneDao implements AirPortDao<Plane> {
     public List<Plane> getAll() throws AirPortDaoException {
 
         try {
-            final BeanPropertyRowMapper<Plane> rowMapper=BeanPropertyRowMapper.newInstance(Plane.class);
-            return jdbcTemplate.query("SELECT * FROM plane",rowMapper);
-            } catch (EmptyResultDataAccessException | BadSqlGrammarException e) {
+            final BeanPropertyRowMapper<Plane> rowMapper = BeanPropertyRowMapper.newInstance(Plane.class);
+            return jdbcTemplate.query("SELECT * FROM plane", rowMapper);
+        } catch (EmptyResultDataAccessException | BadSqlGrammarException e) {
             final String message = ExceptionMessage.FAILED_TO_GET_ALL_PLANES.get();
             LOGGER.error(message, e);
             throw new AirPortDaoException(message, e);
@@ -104,29 +103,25 @@ public class PlaneDao implements AirPortDao<Plane> {
             throw new AirPortDaoException(ExceptionMessage.PLANE_ID_CANNOT_BE_NULL.get());
         }
         try {
-            final BeanPropertyRowMapper<Plane> rowMapper=BeanPropertyRowMapper.newInstance(Plane.class);
-            final Object[] queryParams={planeId};
-            final Plane plane=jdbcTemplate.queryForObject("SELECT * FROM plane WHERE planeId = ?",queryParams,rowMapper);
+            final BeanPropertyRowMapper<Plane> rowMapper = BeanPropertyRowMapper.newInstance(Plane.class);
+            final Object[] queryParams = {planeId};
+            final Plane plane = jdbcTemplate.queryForObject("SELECT * FROM plane WHERE planeId = ?", queryParams, rowMapper);
             return Optional.ofNullable(plane);
-            }catch (EmptyResultDataAccessException | BadSqlGrammarException e) {
+        } catch (EmptyResultDataAccessException | BadSqlGrammarException e) {
             final String errorMessage = ExceptionMessage.FAILED_TO_GET_PLANE_WITH_ID.get() + planeId;
             LOGGER.error(errorMessage, e);
             throw new AirPortDaoException(errorMessage, e);
         }
-
     }
 
-
-    private PreparedStatement createPreparedStatement(final Plane plane, final Connection connection,final String sql)
+    private PreparedStatement createPreparedStatement(final Plane plane, final Connection connection, final String sql)
             throws SQLException {
-        final PreparedStatement preparedStatement=connection.prepareStatement(sql);
+        final PreparedStatement preparedStatement = connection.prepareStatement(sql);
         preparedStatement.setString(StatementParameter.PLANE_OWNER.get(), plane.getOwner());
         preparedStatement.setString(StatementParameter.PLANE_MODEL.get(), plane.getModel());
         preparedStatement.setString(StatementParameter.PLANE_TYPE.get(), plane.getType());
         preparedStatement.setInt(StatementParameter.PLANE_PLATE_NUMBER.get(), plane.getPlateNumber());
         return preparedStatement;
-        }
-
-
+    }
 }
 

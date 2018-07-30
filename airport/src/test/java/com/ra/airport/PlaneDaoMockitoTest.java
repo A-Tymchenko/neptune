@@ -66,7 +66,7 @@ public class PlaneDaoMockitoTest {
 
     }
 
-  
+
 
     @Test
     public void whenCreateThenCorrectSQLShouldBeExecutedAndCorrectEntityShouldBeReturned() throws AirPortDaoException {
@@ -74,9 +74,9 @@ public class PlaneDaoMockitoTest {
         doAnswer(invocation -> {
             ((PreparedStatementCreator) invocation.getArguments()[0]).createPreparedStatement(mockConnection);
             return null; }).when(mockJdbcTemplate).update(any(PreparedStatementCreator.class), any(KeyHolder.class));
-                Plane flightWithoutId = plane;
-                flightWithoutId.setPlaneId(null);
-                Plane result = planeDao.create(flightWithoutId);
+        Plane flightWithoutId = plane;
+        flightWithoutId.setPlaneId(null);
+        Plane result = planeDao.create(flightWithoutId);
 
         assertEquals(plane, result);
     }
@@ -155,7 +155,7 @@ public class PlaneDaoMockitoTest {
     public void whenDeleteThrownEmptyResultDataAccessExceptionThenDAOExceptionShouldBeThrownToo() {
         Throwable exception = assertThrows(AirPortDaoException.class, () -> {
             when(mockJdbcTemplate.update(DELETE_PLANE_BY_ID_SQL,1))
-                                        .thenThrow(EmptyResultDataAccessException.class);
+                    .thenThrow(EmptyResultDataAccessException.class);
             planeDao.delete(plane);
         });
 

@@ -5,7 +5,7 @@
 
 <!--
 
-    Checkstyle configuration that checks the Google coding conventions from:
+    Checkstyle config that checks the Google coding conventions from:
 
     -  Google Java Style
        https://google-styleguide.googlecode.com/svn-history/r130/trunk/javaguide.html
@@ -403,7 +403,7 @@
 
         <!--
         Description:    Checks that the groups of import declarations appear in the order specified by the user.
-                        If there is an import but its group is not specified in the configuration such an import
+                        If there is an import but its group is not specified in the config such an import
                         should be placed at the end of the import list.
         Example:        Check Doc for example.
         Error messages: More then one. Check Doc.

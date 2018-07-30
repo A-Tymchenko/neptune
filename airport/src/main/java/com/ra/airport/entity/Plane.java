@@ -15,7 +15,7 @@ public class Plane implements Serializable {
     public Plane() {
     }
 
-    public Plane(final int planeId, final String owner, final String model, final String type, final int plateNumber) {
+    public Plane(final Integer planeId, final String owner, final String model, final String type, final int plateNumber) {
         this.planeId = planeId;
         this.owner = owner;
         this.model = model;

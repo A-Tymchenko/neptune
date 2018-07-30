@@ -12,7 +12,7 @@ INSERT INTO flight (name,carrier,duration,meal_on, fare,departure_date,arrival_d
 'Kyiv-Rome', 'Wizz Air', '02:00:00', true, 100, '2018-06-17 13:15:00', '2018-06-17 15:16:00');
 
 --PLANE
-INSERT INTO plane (owner,model,type, plateNumber) VALUES ('MAU', 'Boeing', 'LargeCarrier', 132498789);
+INSERT INTO plane (owner,model,type, plateNumber) VALUES ('MAU', 'Boeing', 'LargeCarrier', 13249);
 
 --TICKET
 INSERT INTO PUBLIC.TICKET (TICKET_NUMBER, PASSENGER_NAME, DOCUMENT, SELLING_DATE)
