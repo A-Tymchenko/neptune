@@ -49,17 +49,6 @@ public class PlaneDaoTest {
         createPlane();
     }
 
-    @AfterEach
-    public void afterTest() throws SQLException, IOException {
-        deleteTable();
-    }
-
-
-    private void deleteTable() throws SQLException, IOException {
-        Connection connection = ConnectionFactory.getInstance().getConnection();
-        RunScript.execute(connection, new FileReader("src/test/resources/sql/remove_table_skripts.sql"));
-    }
-
     private void createPlane()  {
         plane = new Plane();
         plane.setOwner(OWNER);

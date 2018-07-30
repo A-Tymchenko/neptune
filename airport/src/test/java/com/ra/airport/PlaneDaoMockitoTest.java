@@ -35,7 +35,6 @@ public class PlaneDaoMockitoTest {
             + "(owner, model, type, platenumber) "
             + " VALUES(?,?,?,?)";
     private static final String UPDATE_PLANE_SQL = "UPDATE plane ";
-
     private static final String SELECT_PLANE_BY_ID_SQL = "SELECT * FROM plane WHERE planeId = ?";
     private static final String DELETE_PLANE_BY_ID_SQL = "DELETE FROM plane WHERE planeId = ?";
     private static final String SELECT_LAST_GENERATED_ID_SQL = "SELECT SCOPE_IDENTITY()";
@@ -55,26 +54,20 @@ public class PlaneDaoMockitoTest {
         mockJdbcTemplate = mock(JdbcTemplate.class);
         planeDao = new PlaneDao(mockJdbcTemplate);
         mockConnection=mock(Connection.class);
-
         when(mockConnection.prepareStatement(INSERT_PLANE_SQL)).thenReturn(mockPreparedStatement);
         when(mockConnection.prepareStatement(UPDATE_PLANE_SQL)).thenReturn(mockPreparedStatement);
         when(mockJdbcTemplate.queryForObject(SELECT_LAST_GENERATED_ID_SQL, Integer.class)).thenReturn(1);
         when(mockJdbcTemplate.queryForObject(eq(SELECT_PLANE_BY_ID_SQL), any(Object[].class), any(RowMapper.class))).thenReturn(plane);
-
     }
-
-
 
     @Test
     public void whenCreateThenCorrectSQLShouldBeExecutedAndCorrectEntityShouldBeReturned() throws AirPortDaoException {
-
         doAnswer(invocation -> {
             ((PreparedStatementCreator) invocation.getArguments()[0]).createPreparedStatement(mockConnection);
             return null; }).when(mockJdbcTemplate).update(any(PreparedStatementCreator.class), any(KeyHolder.class));
         Plane flightWithoutId = plane;
         flightWithoutId.setPlaneId(null);
         Plane result = planeDao.create(flightWithoutId);
-
         assertEquals(plane, result);
     }
 
@@ -85,7 +78,6 @@ public class PlaneDaoMockitoTest {
             return null;
         }).when(mockJdbcTemplate).update(any(PreparedStatementCreator.class), any(KeyHolder.class));
         Plane result = planeDao.update(plane);
-
         assertEquals(plane, result);
     }
 
@@ -100,7 +92,6 @@ public class PlaneDaoMockitoTest {
     public void whenDeleteStatementExecuteReturnOThenFalseShouldBeReturned() throws  AirPortDaoException {
         when(mockJdbcTemplate.update(DELETE_PLANE_BY_ID_SQL,1)).thenReturn(0);
         boolean result = planeDao.delete(plane);
-
         assertEquals(false, result);
     }
 
@@ -108,7 +99,6 @@ public class PlaneDaoMockitoTest {
     public void whenGetAllThenCorrectSQLShouldBeExecutedAndCorrectListReturned() throws AirPortDaoException {
         when(mockJdbcTemplate.query(eq(SELECT_ALL_PLANES_BY_ID_SQL), any(RowMapper.class))).thenReturn(new ArrayList<>());
         List<Plane> planes = planeDao.getAll();
-
         assertTrue(planes.isEmpty());
     }
 
@@ -124,7 +114,6 @@ public class PlaneDaoMockitoTest {
         Throwable exception =  assertThrows(AirPortDaoException.class,() -> {
             planeDao.getById(null);
         });
-
         assertEquals(PLANE_ID_CANNOT_BE_NULL.get(), exception.getMessage());
     }
 
@@ -134,7 +123,6 @@ public class PlaneDaoMockitoTest {
             when(mockJdbcTemplate.update(any(PreparedStatementCreator.class), any(KeyHolder.class))).thenThrow(EmptyResultDataAccessException.class);
             planeDao.create(plane);
         });
-
         assertEquals(exception.getMessage(), FAILED_TO_CREATE_NEW_PLANE.get());
     }
 
@@ -144,7 +132,6 @@ public class PlaneDaoMockitoTest {
             when(mockJdbcTemplate.update(any(PreparedStatementCreator.class))).thenThrow(EmptyResultDataAccessException.class);
             planeDao.update(plane);
         });
-
         assertEquals(exception.getMessage(), FAILED_TO_UPDATE_PLANE_WITH_ID.get()+1);
     }
 
@@ -155,7 +142,6 @@ public class PlaneDaoMockitoTest {
                     .thenThrow(EmptyResultDataAccessException.class);
             planeDao.delete(plane);
         });
-
         assertEquals(exception.getMessage(), FAILED_TO_DELETE_PLANE_WITH_ID.get()+1);
     }
 
@@ -171,12 +157,11 @@ public class PlaneDaoMockitoTest {
 
     @Test
     public void whenGetByIdThrownSQlExceptionThenDAOExceptionShouldBeThrownToo() {
-        when(mockJdbcTemplate.queryForObject(eq(SELECT_PLANE_BY_ID_SQL), any(), any(RowMapper.class)))
+        when(mockJdbcTemplate.queryForObject(eq(SELECT_PLANE_BY_ID_SQL), any(RowMapper.class), eq(1)))
                 .thenThrow(EmptyResultDataAccessException.class);
         Throwable exception = assertThrows(AirPortDaoException.class, () -> {
             planeDao.getById(Integer.valueOf(1));
         });
-
         assertEquals(exception.getMessage(), FAILED_TO_GET_PLANE_WITH_ID.get()+1);
     }
 }
