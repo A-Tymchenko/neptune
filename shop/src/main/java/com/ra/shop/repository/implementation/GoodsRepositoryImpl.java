@@ -64,11 +64,7 @@ public class GoodsRepositoryImpl implements IRepository<Goods> {
      * @return Optional entity.
      */
     @Override
-    public Optional get(final Long entityId) throws RepositoryException {
-        if (entityId == null) {
-            LOGGER.error(ExceptionMessage.THE_GOODS_CANNOT_BE_NULL.getMessage());
-            throw new RepositoryException(ExceptionMessage.THE_GOODS_CANNOT_BE_NULL.getMessage());
-        }
+    public Optional get(final long entityId) throws RepositoryException {
         try (Connection connection = connFactory.getConnection()) {
             final PreparedStatement statement =
                     connection.prepareStatement("SELECT * FROM GOODS WHERE ID = ?");
@@ -112,7 +108,7 @@ public class GoodsRepositoryImpl implements IRepository<Goods> {
      * @return true else false.
      */
     @Override
-    public boolean delete(final Long entityId) throws RepositoryException {
+    public boolean delete(final long entityId) throws RepositoryException {
         try (Connection connection = connFactory.getConnection()) {
             final PreparedStatement statement =
                     connection.prepareStatement("DELETE FROM GOODS WHERE ID = ?");

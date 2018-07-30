@@ -166,18 +166,8 @@ public class GoodsRepositoryImplTest {
             }
 
             @Test
-            void deletingResultWithNullGoods() {
-                assertThrows(NullPointerException.class, () -> dao.delete(null));
-            }
-
-            @Test
             void updatingResultWithNullGoods() {
                 assertThrows(NullPointerException.class, () -> dao.update(existingGoodsNullId));
-            }
-
-            @Test
-            void getingResultWithNullId() {
-                assertThrows(RepositoryException.class, () -> dao.get(null));
             }
         }
 

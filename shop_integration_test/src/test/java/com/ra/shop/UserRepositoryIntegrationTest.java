@@ -48,7 +48,7 @@ public class UserRepositoryIntegrationTest {
     @Test
     void whenCreateUserThenReturnCreatedUser() throws RepositoryException {
         User user = new User("3809978957860", "Pasha", "Vakula",
-            "Poland", "vakula_2123@gmail.com");
+                "Poland", "vakula_2123@gmail.com");
         User created = repository.create(user);
         assertNotNull(created);
         assertEquals(user, created);
@@ -76,7 +76,7 @@ public class UserRepositoryIntegrationTest {
     @Test
     void whenGetUserThenReturnOptionalOfUser() throws RepositoryException {
         User user = new User("3809934252275", "Pasha", "Volum",
-            "Moscow", "pasha_213@gmail.com");
+                "Moscow", "pasha_213@gmail.com");
         User created = repository.create(user);
         System.out.println(created.getId());
         Optional<User> optional = repository.get(created.getId());
@@ -94,15 +94,6 @@ public class UserRepositoryIntegrationTest {
     }
 
     @Test
-    void whenGetUserWithNullIdThenThrowNullPointerException() {
-        Throwable nullPointerException = assertThrows(NullPointerException.class, () -> {
-            repository.get(null);
-        });
-        assertNotNull(nullPointerException);
-        assertEquals(NullPointerException.class, nullPointerException.getClass());
-    }
-
-    @Test
     void whenDropOrdersTableAndGetOrderThenThrowRepositoryException() {
         Throwable repositoryException = assertThrows(RepositoryException.class, () -> {
             dropTable(connection);
@@ -115,7 +106,7 @@ public class UserRepositoryIntegrationTest {
     @Test
     void whenUpdateUserThenReturnUpdatedUser() throws RepositoryException {
         User user = new User("3806642341542", "Murchik", "Babulin",
-            "USA", "murchik_21@gmail.com");
+                "USA", "murchik_21@gmail.com");
         repository.create(user);
         user.setName("Gugulya");
         user.setSecondName("Zahrema");
@@ -151,7 +142,7 @@ public class UserRepositoryIntegrationTest {
     @Test
     void whenDeleteUserAndOperationIsSuccessfulThenReturnTrue() throws RepositoryException {
         User user = new User("3806754352134", "Taras", "Mazur",
-            "Ukraine", "mazur_123@gmail.com");
+                "Ukraine", "mazur_123@gmail.com");
         repository.create(user);
         Boolean isDeleted = repository.delete(user.getId());
         assertTrue(isDeleted);
@@ -163,15 +154,6 @@ public class UserRepositoryIntegrationTest {
         Boolean isDeleted = repository.delete(getRandomId());
         assertFalse(isDeleted);
         assertEquals(Optional.empty(), repository.get(getRandomId()));
-    }
-
-    @Test
-    void whenDeleteUserWithNullIdThenThrowNullPointerException() {
-        Throwable nullPointer = assertThrows(NullPointerException.class, () -> {
-            repository.delete(null);
-        });
-        assertNotNull(nullPointer);
-        assertEquals(NullPointerException.class, nullPointer.getClass());
     }
 
     @Test
@@ -220,16 +202,16 @@ public class UserRepositoryIntegrationTest {
 
     private User[] getUsers() {
         return new User[]{
-            new User("3806734536743", "Adolf", "Hitlerl",
-                "German", "adolfyk_1945@gmail.com"),
-            new User("3809942434543", "Joseph", "Stalin",
-                "Soviet Union", "joseph_1941@gmail.com"),
-            new User("3809923153421", "Taras", "Bulba",
-                "Ukraine", "bulba_100500@gmail.com"),
-            new User("3809765435266", "Taras ", "Shevchenko",
-                "Ukraine", "taras_13@gmail.com"),
-            new User("3806675474848", "Vladimir", "Lenin",
-                "Soviet Union", "vladimir_1939@gmail.com")
+                new User("3806734536743", "Adolf", "Hitlerl",
+                        "German", "adolfyk_1945@gmail.com"),
+                new User("3809942434543", "Joseph", "Stalin",
+                        "Soviet Union", "joseph_1941@gmail.com"),
+                new User("3809923153421", "Taras", "Bulba",
+                        "Ukraine", "bulba_100500@gmail.com"),
+                new User("3809765435266", "Taras ", "Shevchenko",
+                        "Ukraine", "taras_13@gmail.com"),
+                new User("3806675474848", "Vladimir", "Lenin",
+                        "Soviet Union", "vladimir_1939@gmail.com")
         };
     }
 

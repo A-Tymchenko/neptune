@@ -39,8 +39,8 @@ public class WarehouseRepositoryImpl implements IRepository<Warehouse> {
     public Warehouse create(Warehouse warehouse) throws RepositoryException {
         try (Connection connection = connectionFactory.getConnection()) {
             final PreparedStatement insertStatement = connection.prepareStatement("INSERT INTO warehouse "
-                + "(name, price, amount) "
-                + " VALUES(?,?,?)");
+                    + "(name, price, amount) "
+                    + " VALUES(?,?,?)");
             final PreparedStatement getLastId = connection.prepareStatement("SELECT LAST_INSERT_ID()");
             fillInStatement(warehouse, insertStatement);
             insertStatement.executeUpdate();
@@ -66,8 +66,8 @@ public class WarehouseRepositoryImpl implements IRepository<Warehouse> {
     public Warehouse update(final Warehouse warehouse) throws RepositoryException {
         try (Connection connection = connectionFactory.getConnection()) {
             final PreparedStatement preparedStatement = connection.prepareStatement("UPDATE warehouse "
-                + "SET name = ?, price = ?, amount = ? "
-                + "WHERE id = ?");
+                    + "SET name = ?, price = ?, amount = ? "
+                    + "WHERE id = ?");
             fillInStatement(warehouse, preparedStatement);
             preparedStatement.setLong(ID_NUMBER, warehouse.getIdNumber());
             preparedStatement.executeUpdate();
@@ -86,7 +86,7 @@ public class WarehouseRepositoryImpl implements IRepository<Warehouse> {
      * @return count of deleted rows
      */
     @Override
-    public boolean delete(final Long entityId) throws RepositoryException {
+    public boolean delete(final long entityId) throws RepositoryException {
         boolean result;
         try (Connection connection = connectionFactory.getConnection()) {
             final PreparedStatement preparedStatement = connection.prepareStatement("DELETE FROM warehouse WHERE id = ?");
@@ -106,7 +106,7 @@ public class WarehouseRepositoryImpl implements IRepository<Warehouse> {
      * @return Optional of warehouse or empty optional
      */
     @Override
-    public Optional<Warehouse> get(final Long idNumber) throws RepositoryException {
+    public Optional<Warehouse> get(final long idNumber) throws RepositoryException {
         Optional<Warehouse> warehouse = Optional.empty();
         try (Connection connection = connectionFactory.getConnection()) {
             final PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM warehouse WHERE id = ?");

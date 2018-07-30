@@ -85,7 +85,6 @@ public class OrderRepositoryImpl implements IRepository<Order> {
 
     @Override
     public Order create(final Order entity) throws RepositoryException {
-        Objects.requireNonNull(entity);
         try (Connection connection = connectionFactory.getConnection();
              PreparedStatement statement = connection.prepareStatement(
                      "INSERT INTO ORDERS (NUMBER, PRICE, DELIVERY_INCLUDED, DELIVERY_COST, EXECUTED) "
@@ -105,7 +104,7 @@ public class OrderRepositoryImpl implements IRepository<Order> {
     }
 
     @Override
-    public Optional<Order> get(final Long entityId) throws RepositoryException {
+    public Optional<Order> get(final long entityId) throws RepositoryException {
         Objects.requireNonNull(entityId);
         try (Connection connection = connectionFactory.getConnection();
              PreparedStatement statement = connection.prepareStatement("SELECT * FROM ORDERS WHERE ORDER_ID = ?")) {
@@ -124,7 +123,6 @@ public class OrderRepositoryImpl implements IRepository<Order> {
 
     @Override
     public Order update(final Order newEntity) throws RepositoryException {
-        Objects.requireNonNull(newEntity);
         try (Connection connection = connectionFactory.getConnection();
              PreparedStatement statement = connection.prepareStatement(
                      "UPDATE ORDERS SET NUMBER = ?, PRICE = ?, DELIVERY_INCLUDED = ?, "
@@ -139,7 +137,7 @@ public class OrderRepositoryImpl implements IRepository<Order> {
     }
 
     @Override
-    public boolean delete(final Long entityId) throws RepositoryException {
+    public boolean delete(final long entityId) throws RepositoryException {
         Objects.requireNonNull(entityId);
         try (Connection connection = connectionFactory.getConnection();
              PreparedStatement statement = connection.prepareStatement("DELETE FROM ORDERS WHERE ORDER_ID = ?")) {
