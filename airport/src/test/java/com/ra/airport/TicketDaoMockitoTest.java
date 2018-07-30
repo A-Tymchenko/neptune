@@ -2,6 +2,7 @@ package com.ra.airport;
 
 import com.ra.airport.dao.exception.AirPortDaoException;
 import com.ra.airport.dao.impl.TicketDao;
+import com.ra.airport.entity.Flight;
 import com.ra.airport.entity.Ticket;
 import com.ra.airport.factory.ConnectionFactory;
 import com.ra.airport.helper.DataCreationHelper;
@@ -23,9 +24,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static com.ra.airport.dao.exception.ExceptionMessage.*;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -218,5 +217,17 @@ public class TicketDaoMockitoTest {
 //
 //        assertEquals(exception.getMessage(), FAILED_TO_GET_TICKET_WITH_ID.get() + 1);
 //    }
+
+    @Test
+    void whenGeneratedIdRSReturnNullThenNextIdentifierIsNull() throws Exception {
+        Ticket ticket =  mock(Ticket.class);
+        when(ticket.getTicketId()).thenReturn(null);
+        when(mockConnection.prepareStatement(INSERT_TICKET_SQL)).thenReturn(mockStatement);
+        when(mockConnection.prepareStatement(SELECT_LAST_GENERATED_ID_SQL)).thenReturn(mockStatement);
+        when(mockResultSet.next()).thenReturn(false);
+        Ticket result = ticketDao.create(ticket);
+
+        assertNull(result.getTicketId());
+    }
 
 }
