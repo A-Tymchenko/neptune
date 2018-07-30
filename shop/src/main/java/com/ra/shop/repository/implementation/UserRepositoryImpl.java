@@ -171,8 +171,6 @@ public class UserRepositoryImpl implements IRepository<User> {
         final User user = new User(phoneNumber, name, secondName, country, emailAddress);
         user.setId(userId);
         return user;
-
     }
-
 
 }

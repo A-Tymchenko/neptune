@@ -164,7 +164,7 @@ public class GoodsRepositoryMockTest {
         when(mockedConnection.prepareStatement("SELECT * FROM GOODS WHERE ID = ?")).thenReturn(mockedStatement);
         when(mockedStatement.executeQuery()).thenReturn(mockedResultSet);
         when(mockedResultSet.next()).thenReturn(true);
-        Goods goods = (Goods) dao.get(existingGoods.getId()).get();
+        Goods goods = dao.get(existingGoods.getId()).get();
         assertAll("goods",
             () -> assertEquals(goods.getId(), existingGoods.getId()),
             () -> assertEquals(goods.getName(), existingGoods.getName()),

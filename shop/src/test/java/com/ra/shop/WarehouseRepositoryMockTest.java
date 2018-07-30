@@ -113,13 +113,35 @@ public class WarehouseRepositoryMockTest {
     }
 
     /**
-     * testing get method to return null.
+     * testing delete method to return false.
+     *
+     * @throws SQLException exception
+     */
+    @Test
+    void whenDeleteMethodCalledAndEntityExistsThenReturnFalse() throws SQLException, RepositoryException {
+        when(mockStatement.executeUpdate()).thenReturn(0);
+        boolean result = warehouseRepositoryImpl.delete(warehouse.getIdNumber());
+
+        assertFalse(result);
+    }
+
+    /**
+     * testing get method to return warehouse.
      */
     @Test
     void whenGetByIdCalledThenCorrectEntityReturn() throws SQLException, RepositoryException {
         when(mockResultSet.next()).thenReturn(true).thenReturn(false);
 
         assertTrue(warehouseRepositoryImpl.get(1L).isPresent());
+    }
+
+    /**
+     * testing get method to return null.
+     */
+    @Test
+    void whenGetWithFalseNextThenReturnNotPresent() throws RepositoryException, SQLException {
+               when(mockResultSet.next()).thenReturn(false);
+        assertFalse(warehouseRepositoryImpl.get(Long.valueOf(1L)).isPresent());
     }
 
     /**
