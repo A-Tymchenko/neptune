@@ -4,15 +4,11 @@ import com.ra.shop.config.ConnectionFactory;
 import com.ra.shop.exceptions.RepositoryException;
 import com.ra.shop.repository.implementation.WarehouseRepositoryImpl;
 import com.ra.shop.model.Warehouse;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.mockito.Mockito;
 
 import java.io.IOException;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.List;
 
 import static com.ra.shop.enums.ExceptionMessage.*;
@@ -24,15 +20,15 @@ import static org.mockito.Mockito.when;
 
 public class WarehouseRepositoryImplMockTest {
 
-    public static final String UPDATE_WAREHOUSE = "UPDATE warehouse SET name = ?, price = ?, amount = ? WHERE id = ?";
-    public static final String SELECT_WAREHOUSE_BY_ID = "SELECT * FROM warehouse WHERE id = ?";
-    public static final String DELETE_WAREHOUSE_BY_ID = "DELETE FROM warehouse WHERE id = ?";
-    public static final String GET_ID = "SELECT SCOPE_IDENTITY()";
-    public static final String SELECT_ALL_WAREHOUSES = "SELECT * FROM warehouse";
+    private static final String UPDATE_WAREHOUSE = "UPDATE warehouse SET name = ?, price = ?, amount = ? WHERE id = ?";
+    private static final String SELECT_WAREHOUSE_BY_ID = "SELECT * FROM warehouse WHERE id = ?";
+    private static final String DELETE_WAREHOUSE_BY_ID = "DELETE FROM warehouse WHERE id = ?";
+    private static final String GET_ID = "SELECT SCOPE_IDENTITY()";
+    private static final String SELECT_ALL_WAREHOUSES = "SELECT * FROM warehouse";
     private static final String INSERT_WAREHOUSE = "INSERT INTO warehouse "
-            + "(name, price, amount) "
-            + " VALUES(?,?,?)";
-    public static ConnectionFactory mockConnectionFactory;
+        + "(name, price, amount) "
+        + " VALUES(?,?,?)";
+    private static ConnectionFactory mockConnectionFactory;
     private Connection mockConnection;
     private PreparedStatement mockStatement;
     private ResultSet mockResultSet;
@@ -40,7 +36,7 @@ public class WarehouseRepositoryImplMockTest {
     private Warehouse warehouse;
 
     @BeforeEach
-    public void init() throws SQLException, IOException {
+    void init() throws SQLException, IOException {
         mockConnection = mock(Connection.class);
         mockStatement = mock(PreparedStatement.class);
         mockResultSet = mock(ResultSet.class);
@@ -52,7 +48,7 @@ public class WarehouseRepositoryImplMockTest {
         createMockByIdMethod();
     }
 
-    private void createMockByIdMethod() throws SQLException {
+    void createMockByIdMethod() throws SQLException {
         when(mockConnection.prepareStatement(anyString())).thenReturn(mockStatement);
         when(mockResultSet.next()).thenReturn(true);
         when(mockStatement.executeQuery()).thenReturn(mockResultSet);
@@ -69,7 +65,7 @@ public class WarehouseRepositoryImplMockTest {
      * @throws SQLException exception, RepositoryException exception
      */
     @Test
-    public void whenCreateMethodCalledThenCorrectEntityReturns() throws SQLException, RepositoryException {
+    void whenCreateMethodCalledThenCorrectEntityReturns() throws SQLException, RepositoryException {
         when(mockConnection.prepareStatement(INSERT_WAREHOUSE)).thenReturn(mockStatement);
         when(mockConnection.prepareStatement(GET_ID)).thenReturn(mockStatement);
         Warehouse result = warehouseRepositoryImpl.create(warehouse);
@@ -83,7 +79,7 @@ public class WarehouseRepositoryImplMockTest {
      * @throws SQLException exception
      */
     @Test
-    public void whenUpdateMethodCalledThenCorrectEntityReturns() throws SQLException, RepositoryException {
+    void whenUpdateMethodCalledThenCorrectEntityReturns() throws SQLException, RepositoryException {
         when(mockConnection.prepareStatement(UPDATE_WAREHOUSE)).thenReturn(mockStatement);
         Warehouse result = warehouseRepositoryImpl.update(warehouse);
 
@@ -96,7 +92,7 @@ public class WarehouseRepositoryImplMockTest {
      * @throws SQLException exception
      */
     @Test
-    public void whenDeleteMethodCalledAndEntityExistsThenReturnTrue() throws SQLException, RepositoryException {
+    void whenDeleteMethodCalledAndEntityExistsThenReturnTrue() throws SQLException, RepositoryException {
         when(mockConnection.prepareStatement(DELETE_WAREHOUSE_BY_ID)).thenReturn(mockStatement);
         when(mockStatement.executeUpdate()).thenReturn(1);
         boolean result = warehouseRepositoryImpl.delete(warehouse.getIdNumber());
@@ -110,7 +106,7 @@ public class WarehouseRepositoryImplMockTest {
      * @throws SQLException exception
      */
     @Test
-    public void whenDeleteMethodCalledAndEntityNotFoundThenReturnFalse() throws SQLException, RepositoryException {
+    void whenDeleteMethodCalledAndEntityNotFoundThenReturnFalse() throws SQLException, RepositoryException {
         when(mockConnection.prepareStatement(anyString())).thenReturn(mockStatement);
         when(mockStatement.executeUpdate()).thenReturn(-1);
         boolean result = warehouseRepositoryImpl.delete(warehouse.getIdNumber());
@@ -124,7 +120,7 @@ public class WarehouseRepositoryImplMockTest {
      * @throws SQLException exception
      */
     @Test
-    public void whenGetAllMethodCalledThenCorrectListReturns() throws SQLException, RepositoryException {
+    void whenGetAllMethodCalledThenCorrectListReturns() throws SQLException, RepositoryException {
         when(mockConnection.prepareStatement(SELECT_ALL_WAREHOUSES)).thenReturn(mockStatement);
         when(mockResultSet.next()).thenReturn(true, false);
         List<Warehouse> warehouses = warehouseRepositoryImpl.getAll();
@@ -136,7 +132,7 @@ public class WarehouseRepositoryImplMockTest {
      * testing create method to throw FAILED_TO_CREATE_NEW_SHOP Exception.
      */
     @Test
-    public void whenCreateMethodCalledThrowsSQLExceptionThenDaoExceptionMustBeThrown() {
+    void whenCreateMethodCalledThrowsSQLExceptionThenDaoExceptionMustBeThrown() {
         Throwable exception = assertThrows(RepositoryException.class, () -> {
             when(mockConnection.prepareStatement(INSERT_WAREHOUSE)).thenThrow(new SQLException());
             warehouseRepositoryImpl.create(warehouse);
@@ -149,7 +145,7 @@ public class WarehouseRepositoryImplMockTest {
      * testing create method to throw THE_SHOP_CANNOT_BE_NULL Exception.
      */
     @Test
-    public void whenCreateMethodCalledWithIdNullThenDaoExceptionMustBeThrown() {
+    void whenCreateMethodCalledWithIdNullThenDaoExceptionMustBeThrown() {
         Throwable exception = assertThrows(RepositoryException.class, () -> {
             when(mockConnection.prepareStatement(anyString())).thenReturn(mockStatement);
             when(mockResultSet.next()).thenReturn(false);
@@ -163,7 +159,7 @@ public class WarehouseRepositoryImplMockTest {
      * testing update method to throw FAILED_TO_UPDATE_SHOP Exception.
      */
     @Test
-    public void whenUpdateMethodCalledThrowsSQLExceptionThenDaoExceptionMustBeThrown() {
+    void whenUpdateMethodCalledThrowsSQLExceptionThenDaoExceptionMustBeThrown() {
         Throwable exception = assertThrows(RepositoryException.class, () -> {
             when(mockConnection.prepareStatement(UPDATE_WAREHOUSE)).thenThrow(new SQLException());
             warehouseRepositoryImpl.update(warehouse);
@@ -176,7 +172,7 @@ public class WarehouseRepositoryImplMockTest {
      * testing delete method to throw FAILED_TO_DELETE_SHOP Exception.
      */
     @Test
-    public void whenDeleteMethodCalledThrowsSQLExceptionThenDaoExceptionMustBeThrown() {
+    void whenDeleteMethodCalledThrowsSQLExceptionThenDaoExceptionMustBeThrown() {
         Throwable exception = assertThrows(RepositoryException.class, () -> {
             when(mockConnection.prepareStatement(DELETE_WAREHOUSE_BY_ID)).thenThrow(new SQLException());
             warehouseRepositoryImpl.delete(warehouse.getIdNumber());
@@ -189,7 +185,7 @@ public class WarehouseRepositoryImplMockTest {
      * testing getAll method to throw FAILED_TO_GET_ALL_SHOP Exception.
      */
     @Test
-    public void whenGetAllMethodCalledThrowsSQLExceptionThenDaoExceptionMustBeThrown() {
+    void whenGetAllMethodCalledThrowsSQLExceptionThenDaoExceptionMustBeThrown() {
         Throwable exception = assertThrows(RepositoryException.class, () -> {
             when(mockConnection.prepareStatement(SELECT_ALL_WAREHOUSES)).thenThrow(new SQLException());
             warehouseRepositoryImpl.getAll();
@@ -202,7 +198,7 @@ public class WarehouseRepositoryImplMockTest {
      * testing get method to throw FAILED_TO_GET_SHOP_BY_ID Exception.
      */
     @Test
-    public void whenGetByIdThrowsSQLExceptionThenDaoExceptionMustBeThrown() {
+    void whenGetByIdThrowsSQLExceptionThenDaoExceptionMustBeThrown() {
         Throwable exception = assertThrows(RepositoryException.class, () -> {
             when(mockConnection.prepareStatement(SELECT_WAREHOUSE_BY_ID)).thenThrow(new SQLException());
             warehouseRepositoryImpl.get(1L);
@@ -215,7 +211,7 @@ public class WarehouseRepositoryImplMockTest {
      * testing get method to return null.
      */
     @Test
-    public void whenGetByIdCalledWithIdNullThenNullIsReturned() throws SQLException, RepositoryException {
+    void whenGetByIdCalledWithIdNullThenNullIsReturned() throws SQLException, RepositoryException {
         when(mockConnection.prepareStatement(anyString())).thenReturn(mockStatement);
         when(mockResultSet.next()).thenReturn(false);
 
@@ -226,7 +222,7 @@ public class WarehouseRepositoryImplMockTest {
      * testing get method to throw RepositoryException.
      */
     @Test
-    public void whenGetWarehouseByIdThenReturnSqlException() throws SQLException {
+    void whenGetWarehouseByIdThenReturnSqlException() throws SQLException {
         when(mockConnectionFactory.getConnection()).thenReturn(mockConnection);
         when(mockConnection.prepareStatement(anyString())).thenThrow(SQLException.class);
         Throwable thrown = assertThrows(RepositoryException.class, () -> warehouseRepositoryImpl.get(1L));
@@ -237,7 +233,7 @@ public class WarehouseRepositoryImplMockTest {
      * testing getAll method to throw RepositoryException.
      */
     @Test
-    public void whenGetAllWarehousesThenReturnSqlException() throws SQLException {
+    void whenGetAllWarehousesThenReturnSqlException() throws SQLException {
         when(mockConnectionFactory.getConnection()).thenReturn(mockConnection);
         when(mockConnection.prepareStatement(any(String.class))).thenThrow(SQLException.class);
         Throwable thrown = assertThrows(RepositoryException.class, () -> warehouseRepositoryImpl.getAll());
@@ -248,7 +244,7 @@ public class WarehouseRepositoryImplMockTest {
      * testing create method to throw RepositoryException.
      */
     @Test
-    public void whenAddWarehouseThenReturnSqlException() throws SQLException {
+    void whenAddWarehouseThenReturnSqlException() throws SQLException {
         when(mockConnectionFactory.getConnection()).thenReturn(mockConnection);
         when(mockConnection.prepareStatement(any(String.class))).thenThrow(SQLException.class);
         Throwable thrown = assertThrows(RepositoryException.class, () -> warehouseRepositoryImpl.create(warehouse));

@@ -8,11 +8,7 @@ import org.junit.jupiter.api.*;
 import org.mockito.Mockito;
 
 import java.io.IOException;
-import java.sql.Connection;
-
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -30,14 +26,14 @@ public class GoodsRepositoryImplMockTest {
     private ResultSet mockedResultSetForKey;
 
     @BeforeEach
-    public void createSchema() {
+    void createSchema() {
         mockedConnectionFactory = mock(ConnectionFactory.class);
         dao = new GoodsRepositoryImpl(mockedConnectionFactory);
         existingGoods.setId(1l);
     }
 
     @Nested
-    public class ConnectionSuccess {
+    class ConnectionSuccess {
 
         @BeforeEach
         public void setUp() throws Exception {
@@ -54,10 +50,10 @@ public class GoodsRepositoryImplMockTest {
          * Represents the scenario when DAO operations are being performed on a existing connection.
          */
         @Nested
-        public class mockedGoodsDaoTests {
+        class mockedGoodsDaoTests {
 
             @Test
-            public void whenReadAllGoodThenResultIsTrue() throws Exception {
+            void whenReadAllGoodThenResultIsTrue() throws Exception {
                 boolean result = false;
                 when(mockedConnectionFactory.getConnection().prepareStatement("SELECT * FROM GOODS")).thenReturn(mockedStatement);
                 when(mockedStatement.executeQuery()).thenReturn(mockedResultSet);
@@ -67,68 +63,74 @@ public class GoodsRepositoryImplMockTest {
             }
 
             @Test
-            public void whenDeletionGoodsThenReturnTrue() throws RepositoryException, SQLException {
+            void whenDeletionGoodsThenReturnTrue() throws RepositoryException, SQLException {
                 when(mockedConnection.prepareStatement("DELETE FROM GOODS WHERE ID = ?")).thenReturn(mockedStatement);
                 when(mockedStatement.executeUpdate()).thenReturn(1);
                 assertTrue(dao.delete(existingGoods.getId()));
             }
 
             @Test
-            public void whenDeletionGoodsThenReturnFalse() throws RepositoryException, SQLException {
+            void whenDeletionGoodsThenReturnFalse() throws RepositoryException, SQLException {
                 when(mockedConnection.prepareStatement("DELETE FROM GOODS WHERE ID = ?")).thenReturn(mockedStatement);
                 when(mockedStatement.executeUpdate()).thenReturn(-1);
                 assertFalse(dao.delete(existingGoods.getId()));
             }
 
             @Test
-            public void whenUpdationGoodsThenReturnEqualsGoods() throws SQLException, RepositoryException {
+            void whenUpdationGoodsThenReturnEqualsGoods() throws SQLException, RepositoryException {
                 when(mockedConnection.prepareStatement("UPDATE GOODS SET NAME = ?, BARCODE = ?, PRICE = ? WHERE ID = ?"))
-                        .thenReturn(mockedStatement);
+                    .thenReturn(mockedStatement);
                 Goods goods = dao.update(existingGoods);
                 assertAll("goods",
-                        () -> assertEquals(goods.getId(), existingGoods.getId()),
-                        () -> assertEquals(goods.getName(), existingGoods.getName()),
-                        () -> assertEquals(goods.getBarcode(), existingGoods.getBarcode()),
-                        () -> assertEquals(goods.getPrice(), existingGoods.getPrice()));
+                    () -> assertEquals(goods.getId(), existingGoods.getId()),
+                    () -> assertEquals(goods.getName(), existingGoods.getName()),
+                    () -> assertEquals(goods.getBarcode(), existingGoods.getBarcode()),
+                    () -> assertEquals(goods.getPrice(), existingGoods.getPrice()));
             }
 
             @Test
-            public void whenCreatedGoodsWithFalseNextIdThenReturnEqualsGoods() throws SQLException, RepositoryException {
+            void whenCreatedGoodsWithFalseNextIdThenReturnEqualsGoods() throws SQLException, RepositoryException {
                 when(mockedConnection.prepareStatement("INSERT INTO GOODS (NAME, BARCODE, PRICE) VALUES (?,?,?)"))
-                        .thenReturn(mockedStatement);
+                    .thenReturn(mockedStatement);
                 when(mockedStatement.executeUpdate()).thenReturn(1);
                 when(mockedConnection.prepareStatement("SELECT LAST_INSERT_ID()"))
-                        .thenReturn(mockedStatementKey);
+                    .thenReturn(mockedStatementKey);
                 when(mockedStatementKey.executeQuery()).thenReturn(mockedResultSetForKey);
                 when(mockedResultSetForKey.next()).thenReturn(false);
                 Goods goods = dao.create(existingGoods);
                 assertAll("goods",
-                        () -> assertEquals(goods.getId(), existingGoods.getId()),
-                        () -> assertEquals(goods.getName(), existingGoods.getName()),
-                        () -> assertEquals(goods.getBarcode(), existingGoods.getBarcode()),
-                        () -> assertEquals(goods.getPrice(), existingGoods.getPrice()));
+                    () -> assertEquals(goods.getId(), existingGoods.getId()),
+                    () -> assertEquals(goods.getName(), existingGoods.getName()),
+                    () -> assertEquals(goods.getBarcode(), existingGoods.getBarcode()),
+                    () -> assertEquals(goods.getPrice(), existingGoods.getPrice()));
             }
 
             @Test
-            public void whenCreatedGoodsWithTrueNextIdThenReturnNotEqualsGoods() throws SQLException, RepositoryException {
+            void whenCreatedGoodsWithTrueNextIdThenReturnNotEqualsGoods() throws SQLException, RepositoryException {
                 when(mockedConnection.prepareStatement("INSERT INTO GOODS (NAME, BARCODE, PRICE) VALUES (?,?,?)"))
-                        .thenReturn(mockedStatement);
+                    .thenReturn(mockedStatement);
                 when(mockedConnection.prepareStatement("SELECT LAST_INSERT_ID()"))
-                        .thenReturn(mockedStatementKey);
+                    .thenReturn(mockedStatementKey);
                 when(mockedStatementKey.executeQuery()).thenReturn(mockedResultSetForKey);
                 when(mockedResultSetForKey.next()).thenReturn(true);
                 when(mockedResultSetForKey.getLong(1)).thenReturn(2l);
                 Goods goods = dao.create(existingGoods);
                 assertEquals(existingGoods.getId(), 2l, 0.0002);
                 assertAll("goods",
-                        () -> assertFalse(goods.getId().equals(existingGoods.getId())),
-                        () -> assertEquals(goods.getName(), existingGoods.getName()),
-                        () -> assertEquals(goods.getBarcode(), existingGoods.getBarcode()),
-                        () -> assertEquals(goods.getPrice(), existingGoods.getPrice()));
+                    () -> assertFalse(goods.getId().equals(existingGoods.getId())),
+                    () -> assertEquals(goods.getName(), existingGoods.getName()),
+                    () -> assertEquals(goods.getBarcode(), existingGoods.getBarcode()),
+                    () -> assertEquals(goods.getPrice(), existingGoods.getPrice()));
             }
 
             @Test
-            public void whenGetGoodsWithFalseNextGoodsThenReturnNotPresentGoods() throws RepositoryException, SQLException {
+            void getingResultWithNullId() {
+                assertThrows(RepositoryException.class, () -> dao.get(null));
+            }
+
+
+            @Test
+            void whenGetGoodsWithFalseNextGoodsThenReturnNotPresentGoods() throws RepositoryException, SQLException {
                 when(mockedConnection.prepareStatement("SELECT * FROM GOODS WHERE ID = ?")).thenReturn(mockedStatement);
                 when(mockedStatement.executeQuery()).thenReturn(mockedResultSet);
                 when(mockedResultSet.next()).thenReturn(false);
@@ -136,17 +138,17 @@ public class GoodsRepositoryImplMockTest {
             }
 
             @Test
-            public void whenGetGoodsWithTrueNextGoodsThenReturnEqualsGoods() throws
-                    SQLException, RepositoryException {
+            void whenGetGoodsWithTrueNextGoodsThenReturnEqualsGoods() throws
+                SQLException, RepositoryException {
                 when(mockedConnection.prepareStatement("SELECT * FROM GOODS WHERE ID = ?")).thenReturn(mockedStatement);
                 when(mockedStatement.executeQuery()).thenReturn(mockedResultSet);
                 when(mockedResultSet.next()).thenReturn(true);
                 Goods goods = (Goods) dao.get(existingGoods.getId()).get();
                 assertAll("goods",
-                        () -> assertEquals(goods.getId(), existingGoods.getId()),
-                        () -> assertEquals(goods.getName(), existingGoods.getName()),
-                        () -> assertEquals(goods.getBarcode(), existingGoods.getBarcode()),
-                        () -> assertEquals(goods.getPrice(), existingGoods.getPrice()));
+                    () -> assertEquals(goods.getId(), existingGoods.getId()),
+                    () -> assertEquals(goods.getName(), existingGoods.getName()),
+                    () -> assertEquals(goods.getBarcode(), existingGoods.getBarcode()),
+                    () -> assertEquals(goods.getPrice(), existingGoods.getPrice()));
             }
         }
     }
@@ -156,7 +158,7 @@ public class GoodsRepositoryImplMockTest {
      * DB service unavailable.
      */
     @Nested
-    public class ConnectivityIssue {
+    class ConnectivityIssue {
 
         private static final String EXCEPTION_CAUSE = "Connection not available";
 
@@ -166,7 +168,7 @@ public class GoodsRepositoryImplMockTest {
          * @throws SQLException if any error occurs.
          */
         @BeforeEach
-        public void setUp() throws SQLException, IOException {
+        void setUp() throws SQLException, IOException {
             dao = new GoodsRepositoryImpl(mockedConnectionFactory());
         }
 
@@ -175,8 +177,8 @@ public class GoodsRepositoryImplMockTest {
             Connection mockedConnection = mock(Connection.class);
             SQLException exception = new SQLException(EXCEPTION_CAUSE);
             doThrow(exception)
-                    .when(mockedConnection)
-                    .prepareStatement(Mockito.anyString());
+                .when(mockedConnection)
+                .prepareStatement(Mockito.anyString());
             when(mockedConnectionFactory.getConnection()).thenReturn(mockedConnection);
             return mockedConnectionFactory;
         }
@@ -189,14 +191,14 @@ public class GoodsRepositoryImplMockTest {
         }
 
         @Test
-        public void deletingAGoodsFailsWithExceptionAsFeedbackToTheClient() {
+        void deletingAGoodsFailsWithExceptionAsFeedbackToTheClient() {
             assertThrows(Exception.class, () -> {
                 dao.delete(existingGoods.getId());
             });
         }
 
         @Test
-        public void updatingAGoodsFailsWithFeedbackToTheClient() {
+        void updatingAGoodsFailsWithFeedbackToTheClient() {
             Goods goods = new Goods("Lark", 740617153127l, 34.7f);
             goods.setId(existingGoods.getId());
             assertThrows(Exception.class, () -> {
@@ -205,14 +207,14 @@ public class GoodsRepositoryImplMockTest {
         }
 
         @Test
-        public void retrievingAGoodByIdFailsWithExceptionAsFeedbackToClient() {
+        void retrievingAGoodByIdFailsWithExceptionAsFeedbackToClient() {
             assertThrows(Exception.class, () -> {
                 dao.get(existingGoods.getId());
             });
         }
 
         @Test
-        public void retrievingAllGoodsFailsWithExceptionAsFeedbackToClient() {
+        void retrievingAllGoodsFailsWithExceptionAsFeedbackToClient() {
             assertThrows(Exception.class, () -> {
                 dao.getAll();
             });

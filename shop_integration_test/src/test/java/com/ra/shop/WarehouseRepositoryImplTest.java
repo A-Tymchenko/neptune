@@ -5,16 +5,11 @@ import com.ra.shop.exceptions.RepositoryException;
 import com.ra.shop.model.Warehouse;
 import com.ra.shop.repository.implementation.WarehouseRepositoryImpl;
 import org.h2.tools.RunScript;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 
-import java.io.FileReader;
-import java.io.IOException;
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
+import java.io.*;
+import java.sql.*;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -27,13 +22,13 @@ public class WarehouseRepositoryImplTest {
     private Warehouse warehouse;
 
     @BeforeEach
-    public void beforeTest() throws IOException, SQLException {
+    void beforeTest() throws IOException, SQLException {
         createDataBaseTable();
         createWarehouse();
     }
 
     @AfterEach
-    public void afterTest() throws IOException, SQLException {
+    void afterTest() throws IOException, SQLException {
         deleteDataBaseTable();
     }
 
@@ -43,7 +38,7 @@ public class WarehouseRepositoryImplTest {
      * @throws RepositoryException exception
      */
     @Test
-    public void whenCreateTableThenNewWarehouseMustReturn() throws RepositoryException {
+    void whenCreateTableThenNewWarehouseMustReturn() throws RepositoryException {
         Warehouse createdWarehouse = IRepository.create(warehouse);
         assertNotNull(createdWarehouse);
         Long warehouseId = createdWarehouse.getIdNumber();
@@ -59,7 +54,7 @@ public class WarehouseRepositoryImplTest {
      * @throws RepositoryException exception
      */
     @Test
-    public void whenUpdateThenUpdatedWarehouseReturns() throws RepositoryException {
+    void whenUpdateThenUpdatedWarehouseReturns() throws RepositoryException {
         Warehouse createdWarehouse = IRepository.create(warehouse);
         Warehouse expectedWarehouse = changeWarehouse(createdWarehouse);
 
@@ -73,7 +68,7 @@ public class WarehouseRepositoryImplTest {
      * @throws RepositoryException exception
      */
     @Test
-    public void whenDeleteFalseThenReturnFalse() throws RepositoryException {
+    void whenDeleteFalseThenReturnFalse() throws RepositoryException {
         Warehouse createdWarehouse = IRepository.create(warehouse);
         IRepository.delete(createdWarehouse.getIdNumber());
         boolean result = IRepository.delete(createdWarehouse.getIdNumber());
@@ -87,7 +82,7 @@ public class WarehouseRepositoryImplTest {
      * @throws RepositoryException exception
      */
     @Test
-    public void whenDeleteCorrectlyThenDeleteAndReturnTrue() throws RepositoryException {
+    void whenDeleteCorrectlyThenDeleteAndReturnTrue() throws RepositoryException {
         Warehouse createdWarehouse = IRepository.create(warehouse);
         boolean result = IRepository.delete(createdWarehouse.getIdNumber());
 
@@ -100,7 +95,7 @@ public class WarehouseRepositoryImplTest {
      * @throws RepositoryException exception
      */
     @Test
-    public void whenGetAllThenWarehousesMustReturn() throws RepositoryException {
+    void whenGetAllThenWarehousesMustReturn() throws RepositoryException {
         List<Warehouse> expectedList = new ArrayList<>();
         Warehouse e1 = IRepository.create(warehouse);
         Warehouse e2 = IRepository.create(warehouse);

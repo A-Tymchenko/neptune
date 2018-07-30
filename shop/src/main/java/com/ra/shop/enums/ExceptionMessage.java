@@ -38,7 +38,7 @@ public enum ExceptionMessage {
 
     /**
      * simple exception message.
-     * *
+     *
      * @return String of the message
      */
     public String getMessage() {
