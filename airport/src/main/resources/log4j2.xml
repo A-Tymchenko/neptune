@@ -47,7 +47,7 @@
             <AppenderRef ref="error_logs"/>
         </Logger>
 
-        <AsyncRoot level="DEBUG">
+        <AsyncRoot level="INFO">
             <AppenderRef ref="stdout"/>
         </AsyncRoot>
     </Loggers>
