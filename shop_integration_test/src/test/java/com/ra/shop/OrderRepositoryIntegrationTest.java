@@ -55,9 +55,10 @@ public class OrderRepositoryIntegrationTest {
 
     @Test
     void whenOrderCreationFailsThenThrowRepositoryException() {
+        Order order = new Order(404, 40d, false, 0, true);
         Throwable repositoryException = assertThrows(RepositoryException.class, () -> {
             dropTable(connection);
-            repository.create(new Order());
+            repository.create(order);
         });
         assertNotNull(repositoryException);
         assertEquals(RepositoryException.class, repositoryException.getClass());
@@ -110,9 +111,10 @@ public class OrderRepositoryIntegrationTest {
 
     @Test
     void whenDropOrdersTableAndUpdateNotExistingOrderThenThrowRepositoryException() {
+        Order order = new Order(404, 40d, false, 0, true);
         Throwable repositoryException = assertThrows(RepositoryException.class, () -> {
             dropTable(connection);
-            repository.update(new Order());
+            repository.update(order);
         });
         assertNotNull(repositoryException);
         assertEquals(RepositoryException.class, repositoryException.getClass());
