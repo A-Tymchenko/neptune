@@ -1,31 +1,30 @@
 package com.ra.advertisement;
 
 import com.ra.advertisement.config.AdvertisementConfiguration;
-import com.ra.advertisement.dao.AdvertisementDao;
+import com.ra.advertisement.dao.DeviceAdvertisementDaoImpl;
 import com.ra.advertisement.entity.Device;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
-import org.springframework.core.io.ClassPathResource;
-import org.springframework.jdbc.datasource.init.DatabasePopulatorUtils;
-import org.springframework.jdbc.datasource.init.ResourceDatabasePopulator;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.jdbc.Sql;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import javax.sql.DataSource;
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
+@ExtendWith(SpringExtension.class)
+@ContextConfiguration(classes = {AdvertisementConfiguration.class})
+@Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = "/advertisement_db.sql")
 class DeviceAdvertisementDaoImplTest {
-    private AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(AdvertisementConfiguration.class);
-    private AdvertisementDao<Device> deviceDao = (AdvertisementDao<Device>) context.getBean("deviceDao");
+
+    @Autowired
+    private DeviceAdvertisementDaoImpl deviceDao;
+
     private static final Device DEVICE = new Device("Nokia", "25-10", "Mobile Phone");
     private static final Device DEVICE_UPDATE = new Device(1L, "Nokia Update", "25-10 Update",
             "Mobile Phone Update");
-
-    @BeforeEach
-    public void setUp() {
-        ResourceDatabasePopulator tables = new ResourceDatabasePopulator();
-        tables.addScript(new ClassPathResource("/advertisement_db.sql"));
-        DatabasePopulatorUtils.execute(tables, (DataSource) context.getBean("simpleDataSource"));
-    }
 
     /**
      * testing successful result of create method which save info regarding Device into DB
@@ -33,7 +32,7 @@ class DeviceAdvertisementDaoImplTest {
     @Test
     void insertValidDataIntoDbAndGetItsFromThereWithGeneratedIddReturnTrue() {
         deviceDao.create(DEVICE);
-        Assertions.assertTrue(DEVICE.getDevId() != null);
+        assertTrue(DEVICE.getDevId() != null);
     }
 
     /**
@@ -43,11 +42,11 @@ class DeviceAdvertisementDaoImplTest {
     void getObjectByIdExecutedReturnTrue() {
         Device deviceCreated = deviceDao.create(DEVICE);
         Device actual = deviceDao.getById(deviceCreated.getDevId());
-        Assertions.assertAll("actual",
-                () -> Assertions.assertEquals(deviceCreated.getDevId(), actual.getDevId()),
-                () -> Assertions.assertEquals(deviceCreated.getName(), actual.getName()),
-                () -> Assertions.assertEquals(deviceCreated.getModel(), actual.getModel()),
-                () -> Assertions.assertEquals(deviceCreated.getDeviceType(), actual.getDeviceType())
+        assertAll("actual",
+                () -> assertEquals(deviceCreated.getDevId(), actual.getDevId()),
+                () -> assertEquals(deviceCreated.getName(), actual.getName()),
+                () -> assertEquals(deviceCreated.getModel(), actual.getModel()),
+                () -> assertEquals(deviceCreated.getDeviceType(), actual.getDeviceType())
         );
     }
 
@@ -58,7 +57,7 @@ class DeviceAdvertisementDaoImplTest {
     void deleteValidDataExecutedReturnTrue() {
         Device deviceCreated = deviceDao.create(DEVICE);
         Integer actual = deviceDao.delete(deviceCreated);
-        Assertions.assertEquals(Integer.valueOf(1), actual);
+        assertEquals(Integer.valueOf(1), actual);
     }
 
     /**
@@ -68,7 +67,7 @@ class DeviceAdvertisementDaoImplTest {
     void getAllObjectExecutedAndListIsNotEmptyReturnTrue() {
         deviceDao.create(DEVICE);
         boolean actual = deviceDao.getAll().isEmpty();
-        Assertions.assertEquals(Boolean.valueOf(false), actual);
+        assertEquals(Boolean.valueOf(false), actual);
     }
 
     /**
@@ -79,11 +78,11 @@ class DeviceAdvertisementDaoImplTest {
         deviceDao.create(DEVICE);
         Device deviceUpdated = deviceDao.update(DEVICE_UPDATE);
         Device actual = deviceDao.getById(deviceUpdated.getDevId());
-        Assertions.assertAll("actual",
-                () -> Assertions.assertEquals(deviceUpdated.getDevId(), actual.getDevId()),
-                () -> Assertions.assertEquals(deviceUpdated.getName(), actual.getName()),
-                () -> Assertions.assertEquals(deviceUpdated.getModel(), actual.getModel()),
-                () -> Assertions.assertEquals(deviceUpdated.getDeviceType(), actual.getDeviceType())
+        assertAll("actual",
+                () -> assertEquals(deviceUpdated.getDevId(), actual.getDevId()),
+                () -> assertEquals(deviceUpdated.getName(), actual.getName()),
+                () -> assertEquals(deviceUpdated.getModel(), actual.getModel()),
+                () -> assertEquals(deviceUpdated.getDeviceType(), actual.getDeviceType())
         );
     }
 }

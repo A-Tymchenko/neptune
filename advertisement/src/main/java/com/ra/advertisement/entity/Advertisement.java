@@ -1,8 +1,5 @@
 package com.ra.advertisement.entity;
 
-import org.springframework.stereotype.Component;
-
-@Component
 public class Advertisement {
     private Long adId;
     private String title;

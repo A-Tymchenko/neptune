@@ -1,33 +1,31 @@
 package com.ra.advertisement;
 
 import com.ra.advertisement.config.AdvertisementConfiguration;
-import com.ra.advertisement.dao.AdvertisementDao;
 import com.ra.advertisement.dao.ProviderAdvertisementDaoImpl;
 import com.ra.advertisement.entity.Provider;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
-import org.springframework.core.io.ClassPathResource;
-import org.springframework.jdbc.datasource.init.DatabasePopulatorUtils;
-import org.springframework.jdbc.datasource.init.ResourceDatabasePopulator;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.jdbc.Sql;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import javax.sql.DataSource;
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
+@ExtendWith(SpringExtension.class)
+@ContextConfiguration(classes = {AdvertisementConfiguration.class})
+@Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = "/advertisement_db.sql")
 class ProviderAdvertisementDaoImplTest {
-    private AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(AdvertisementConfiguration.class);
-    private AdvertisementDao<Provider> providerDao = (ProviderAdvertisementDaoImpl) context.getBean("providerDao");
+
+    @Autowired
+    private ProviderAdvertisementDaoImpl providerDao;
+
     private static final Provider PROVIDER = new Provider("Coca Cola", "Lviv",
             "22-45-18", "Ukraine");
     private static final Provider PROVIDER_UPDATE = new Provider(1L, "Coca Cola Update",
             "LvivUpdate", "22-45-18Update", "UkraineUpdate");
-
-    @BeforeEach
-    public void setUp() {
-        ResourceDatabasePopulator tables = new ResourceDatabasePopulator();
-        tables.addScript(new ClassPathResource("/advertisement_db.sql"));
-        DatabasePopulatorUtils.execute(tables, (DataSource) context.getBean("simpleDataSource"));
-    }
 
     /**
      * testing successful result of create method which save info regarding Provider into DB
@@ -35,7 +33,7 @@ class ProviderAdvertisementDaoImplTest {
     @Test
     void insertValidDataIntoDbAndGetItsFromThereWithGeneratedIddReturnTrue() {
         providerDao.create(PROVIDER);
-        Assertions.assertTrue(PROVIDER.getProvId() != null);
+        assertTrue(PROVIDER.getProvId() != null);
     }
 
     /**
@@ -45,12 +43,12 @@ class ProviderAdvertisementDaoImplTest {
     void getObjectByIdExecutedReturnTrue() {
         Provider providerCreated = providerDao.create(PROVIDER);
         Provider actual = providerDao.getById(providerCreated.getProvId());
-        Assertions.assertAll("actual",
-                () -> Assertions.assertEquals(providerCreated.getProvId(), actual.getProvId()),
-                () -> Assertions.assertEquals(providerCreated.getName(), actual.getName()),
-                () -> Assertions.assertEquals(providerCreated.getAddress(), actual.getAddress()),
-                () -> Assertions.assertEquals(providerCreated.getCountry(), actual.getCountry()),
-                () -> Assertions.assertEquals(providerCreated.getTelephone(), actual.getTelephone())
+        assertAll("actual",
+                () -> assertEquals(providerCreated.getProvId(), actual.getProvId()),
+                () -> assertEquals(providerCreated.getName(), actual.getName()),
+                () -> assertEquals(providerCreated.getAddress(), actual.getAddress()),
+                () -> assertEquals(providerCreated.getCountry(), actual.getCountry()),
+                () -> assertEquals(providerCreated.getTelephone(), actual.getTelephone())
         );
     }
 
@@ -61,7 +59,7 @@ class ProviderAdvertisementDaoImplTest {
     void deleteValidDataExecutedReturnTrue() {
         Provider providerCreated = providerDao.create(PROVIDER);
         Integer actual = providerDao.delete(providerCreated);
-        Assertions.assertEquals(Integer.valueOf(1), actual);
+        assertEquals(Integer.valueOf(1), actual);
     }
 
     /**
@@ -71,7 +69,7 @@ class ProviderAdvertisementDaoImplTest {
     void getAllObjectExecutedAndListIsNotEmptyReturnTrue() {
         providerDao.create(PROVIDER);
         boolean actual = providerDao.getAll().isEmpty();
-        Assertions.assertEquals(Boolean.valueOf(false), actual);
+        assertEquals(Boolean.valueOf(false), actual);
     }
 
     /**
@@ -82,12 +80,12 @@ class ProviderAdvertisementDaoImplTest {
         providerDao.create(PROVIDER);
         Provider providerUpdated = providerDao.update(PROVIDER_UPDATE);
         Provider actual = providerDao.getById(providerUpdated.getProvId());
-        Assertions.assertAll("actual",
-                () -> Assertions.assertEquals(providerUpdated.getProvId(), actual.getProvId()),
-                () -> Assertions.assertEquals(providerUpdated.getName(), actual.getName()),
-                () -> Assertions.assertEquals(providerUpdated.getAddress(), actual.getAddress()),
-                () -> Assertions.assertEquals(providerUpdated.getCountry(), actual.getCountry()),
-                () -> Assertions.assertEquals(providerUpdated.getTelephone(), actual.getTelephone())
+        assertAll("actual",
+                () -> assertEquals(providerUpdated.getProvId(), actual.getProvId()),
+                () -> assertEquals(providerUpdated.getName(), actual.getName()),
+                () -> assertEquals(providerUpdated.getAddress(), actual.getAddress()),
+                () -> assertEquals(providerUpdated.getCountry(), actual.getCountry()),
+                () -> assertEquals(providerUpdated.getTelephone(), actual.getTelephone())
         );
     }
 }

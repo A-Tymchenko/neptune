@@ -1,27 +1,28 @@
 package com.ra.advertisement.dao;
 
-import com.ra.advertisement.config.AdvertisementConfiguration;
 import com.ra.advertisement.entity.Device;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.core.PreparedStatementSetter;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
-import org.springframework.test.context.ContextConfiguration;
 
 import java.sql.PreparedStatement;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
-@ContextConfiguration(classes = {AdvertisementConfiguration.class})
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
 public class DeviceMockTest {
     private static JdbcTemplate mockjdbcTemplate;
     private static DeviceAdvertisementDaoImpl deviceDao;
@@ -34,14 +35,14 @@ public class DeviceMockTest {
 
     @BeforeAll
     public static void init() {
-        mockjdbcTemplate = Mockito.mock(JdbcTemplate.class);
+        mockjdbcTemplate = mock(JdbcTemplate.class);
         deviceDao = new DeviceAdvertisementDaoImpl(mockjdbcTemplate);
     }
 
     @BeforeEach
     public void reInitAdvertisementDao() {
-        mockkeyHolder = Mockito.mock(KeyHolder.class);
-        mockStatement = Mockito.mock(PreparedStatement.class);
+        mockkeyHolder = mock(KeyHolder.class);
+        mockStatement = mock(PreparedStatement.class);
         device = new Device(1L, "Nokia", "25-10", "Mobile Phone");
         deviceNoId = new Device("Nokia", "25-10", "Mobile Phone");
         deviceUpdated = new Device(1L, "Nokia Update", "25-10 Update",
@@ -53,15 +54,15 @@ public class DeviceMockTest {
      */
     @Test
     public void addDevicetExecuteSuccessfuldReturnTrue() {
-        Mockito.when(mockjdbcTemplate.update(Mockito.any(PreparedStatementCreator.class), Mockito.any(KeyHolder.class))).thenReturn(1);
-        Mockito.when(mockkeyHolder.getKey()).thenReturn(1L);
+        when(mockjdbcTemplate.update(any(PreparedStatementCreator.class), any(KeyHolder.class))).thenReturn(1);
+        when(mockkeyHolder.getKey()).thenReturn(1L);
         Device deviceCreated = deviceDao.create(deviceNoId);
         deviceNoId.setDevId((Long) mockkeyHolder.getKey());
-        Assertions.assertAll("deviceCreated",
-                () -> Assertions.assertEquals(deviceCreated.getDevId(), device.getDevId()),
-                () -> Assertions.assertEquals(deviceCreated.getName(), device.getName()),
-                () -> Assertions.assertEquals(deviceCreated.getModel(), device.getModel()),
-                () -> Assertions.assertEquals(deviceCreated.getDeviceType(), device.getDeviceType()));
+        assertAll("deviceCreated",
+                () -> assertEquals(deviceCreated.getDevId(), device.getDevId()),
+                () -> assertEquals(deviceCreated.getName(), device.getName()),
+                () -> assertEquals(deviceCreated.getModel(), device.getModel()),
+                () -> assertEquals(deviceCreated.getDeviceType(), device.getDeviceType()));
     }
 
     /**
@@ -69,10 +70,10 @@ public class DeviceMockTest {
      */
     @Test
     public void addDeviceAndDontGetGeneratedIdReturnTrue() {
-        Mockito.when(mockjdbcTemplate.update(Mockito.any(PreparedStatementCreator.class), Mockito.any(KeyHolder.class))).thenReturn(1);
-        Mockito.when(mockkeyHolder.getKey()).thenReturn(null);
+        when(mockjdbcTemplate.update(any(PreparedStatementCreator.class), any(KeyHolder.class))).thenReturn(1);
+        when(mockkeyHolder.getKey()).thenReturn(null);
         deviceDao.create(deviceNoId);
-        Assertions.assertTrue(mockkeyHolder.getKey()==null);
+        assertTrue(mockkeyHolder.getKey()==null);
     }
 
     /**
@@ -81,9 +82,9 @@ public class DeviceMockTest {
     @Test
     public void deleteDeviceSuccessfulReturnTrue() {
         final String DELETE_DEVICE = "DELETE FROM DEVICES WHERE DEV_ID=?";
-        Mockito.when(mockjdbcTemplate.update(DELETE_DEVICE, device.getDevId())).thenReturn(1);
+        when(mockjdbcTemplate.update(DELETE_DEVICE, device.getDevId())).thenReturn(1);
         Integer result = deviceDao.delete(device);
-        Assertions.assertTrue(result == 1);
+        assertTrue(result == 1);
     }
 
     /**
@@ -93,18 +94,18 @@ public class DeviceMockTest {
     public void updateDeviceSuccessfulReturnTrue() {
         int resultFromDB = 0;
         final String UPDATE_DEVICE = "update DEVICES set NAME = ?, MODEL= ?, DEVICE_TYPE = ? where DEV_ID = ?";
-        Mockito.when(mockjdbcTemplate.update(Mockito.eq(UPDATE_DEVICE), Mockito.any(PreparedStatement.class))).thenReturn(resultFromDB=1);
-        Mockito.doAnswer(invocation -> {
+        when(mockjdbcTemplate.update(eq(UPDATE_DEVICE), any(PreparedStatement.class))).thenReturn(resultFromDB=1);
+        doAnswer(invocation -> {
             ((PreparedStatementSetter) invocation.getArguments()[1]).setValues(mockStatement);
             return null;
-        }).when(mockjdbcTemplate).update(Mockito.eq(UPDATE_DEVICE), Mockito.any(PreparedStatementSetter.class));
+        }).when(mockjdbcTemplate).update(eq(UPDATE_DEVICE), any(PreparedStatementSetter.class));
         Device updated = deviceDao.update(deviceUpdated);
-        Assertions.assertEquals(1, resultFromDB);
-        Assertions.assertAll("updeted",
-                () -> Assertions.assertEquals(updated.getDevId(), deviceUpdated.getDevId()),
-                () -> Assertions.assertEquals(updated.getName(), deviceUpdated.getName()),
-                () -> Assertions.assertEquals(updated.getModel(), deviceUpdated.getModel()),
-                () -> Assertions.assertEquals(updated.getDeviceType(), deviceUpdated.getDeviceType()));
+        assertEquals(1, resultFromDB);
+        assertAll("updeted",
+                () -> assertEquals(updated.getDevId(), deviceUpdated.getDevId()),
+                () -> assertEquals(updated.getName(), deviceUpdated.getName()),
+                () -> assertEquals(updated.getModel(), deviceUpdated.getModel()),
+                () -> assertEquals(updated.getDeviceType(), deviceUpdated.getDeviceType()));
     }
 
     /**
@@ -114,9 +115,9 @@ public class DeviceMockTest {
     public void getAllDevicesExecutedReturnTrue() {
         final String GET_ALL_DEVICES = "SELECT * FROM DEVICES";
         List listFromQueryForList = createListOfMap();
-        Mockito.when(mockjdbcTemplate.queryForList(Mockito.eq(GET_ALL_DEVICES))).thenReturn(listFromQueryForList);
+        when(mockjdbcTemplate.queryForList(eq(GET_ALL_DEVICES))).thenReturn(listFromQueryForList);
         List<Device> result = deviceDao.getAll();
-        Assertions.assertTrue(!result.isEmpty());
+        assertTrue(!result.isEmpty());
     }
 
     /**
@@ -124,14 +125,14 @@ public class DeviceMockTest {
      */
     @Test
     public void deviceGetByIdReturnDeviceReturnTrue() {
-        Mockito.when(mockjdbcTemplate.queryForObject(Mockito.eq(GET_DEVICE_BY_ID), Mockito.any(RowMapper.class), Mockito.any(Long.class)))
+        when(mockjdbcTemplate.queryForObject(eq(GET_DEVICE_BY_ID), any(RowMapper.class), any(Long.class)))
                 .thenReturn(device);
         Device result = deviceDao.getById(device.getDevId());
-        Assertions.assertAll("result",
-                () -> Assertions.assertEquals(result.getDevId(), device.getDevId()),
-                () -> Assertions.assertEquals(result.getName(), device.getName()),
-                () -> Assertions.assertEquals(result.getModel(), device.getModel()),
-                () -> Assertions.assertEquals(result.getDeviceType(), device.getDeviceType()));
+        assertAll("result",
+                () -> assertEquals(result.getDevId(), device.getDevId()),
+                () -> assertEquals(result.getName(), device.getName()),
+                () -> assertEquals(result.getModel(), device.getModel()),
+                () -> assertEquals(result.getDeviceType(), device.getDeviceType()));
     }
 
     /**
@@ -142,12 +143,12 @@ public class DeviceMockTest {
         List<Map<String, Object>> listToMapFrom = createListOfMap();
         List<Device> result = deviceDao.mapListFromQueryForList(listToMapFrom);
         Device deviceResult = result.get(0);
-        Assertions.assertTrue(!result.isEmpty());
-        Assertions.assertAll("deviceResult",
-                () -> Assertions.assertEquals(deviceResult.getDevId(), device.getDevId()),
-                () -> Assertions.assertEquals(deviceResult.getName(), device.getName()),
-                () -> Assertions.assertEquals(deviceResult.getModel(), device.getModel()),
-                () -> Assertions.assertEquals(deviceResult.getDeviceType(), device.getDeviceType()));
+        assertTrue(!result.isEmpty());
+        assertAll("deviceResult",
+                () -> assertEquals(deviceResult.getDevId(), device.getDevId()),
+                () -> assertEquals(deviceResult.getName(), device.getName()),
+                () -> assertEquals(deviceResult.getModel(), device.getModel()),
+                () -> assertEquals(deviceResult.getDeviceType(), device.getDeviceType()));
     }
 
     /**

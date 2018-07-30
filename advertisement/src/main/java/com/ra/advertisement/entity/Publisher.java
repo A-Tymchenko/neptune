@@ -1,8 +1,5 @@
 package com.ra.advertisement.entity;
 
-import org.springframework.stereotype.Component;
-
-@Component
 public class Publisher {
     private Long pubId;
     private String name;
