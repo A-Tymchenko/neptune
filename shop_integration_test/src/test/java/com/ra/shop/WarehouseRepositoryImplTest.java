@@ -18,18 +18,26 @@ public class WarehouseRepositoryImplTest {
     private static final String CREATE_TABLE_WAREHOUSE = "src/test/resources/create_table.sql";
     private static final String DROP_TABLE_WAREHOUSE = "src/test/resources/drop_table.sql";
 
-    private WarehouseRepositoryImpl IRepository;
-    private Warehouse warehouse;
+    private static Warehouse warehouse;
+    private static WarehouseRepositoryImpl IRepository;
+
+    @BeforeAll
+    static void init() throws IOException {
+        ConnectionFactory factory = ConnectionFactory.getInstance();
+        IRepository = new WarehouseRepositoryImpl(factory);
+        warehouse = new Warehouse("Lol", 1.1, 2);
+    }
 
     @BeforeEach
     void beforeTest() throws IOException, SQLException {
-        createDataBaseTable();
-        createWarehouse();
+        Connection connection = ConnectionFactory.getInstance().getConnection();
+        RunScript.execute(connection, new FileReader(CREATE_TABLE_WAREHOUSE));
     }
 
     @AfterEach
     void afterTest() throws IOException, SQLException {
-        deleteDataBaseTable();
+        Connection connection = ConnectionFactory.getInstance().getConnection();
+        RunScript.execute(connection, new FileReader(DROP_TABLE_WAREHOUSE));
     }
 
     /**
@@ -55,10 +63,10 @@ public class WarehouseRepositoryImplTest {
      */
     @Test
     void whenUpdateThenUpdatedWarehouseReturns() throws RepositoryException {
-        Warehouse createdWarehouse = IRepository.create(warehouse);
-        Warehouse expectedWarehouse = changeWarehouse(createdWarehouse);
+        Warehouse expectedWarehouse = IRepository.create(warehouse);
+        expectedWarehouse.setName("AloGarage");
 
-        Warehouse updatedWarehouse = IRepository.update(createdWarehouse);
+        Warehouse updatedWarehouse = IRepository.update(expectedWarehouse);
         assertEquals(expectedWarehouse, updatedWarehouse);
     }
 
@@ -83,8 +91,8 @@ public class WarehouseRepositoryImplTest {
      */
     @Test
     void whenDeleteCorrectlyThenDeleteAndReturnTrue() throws RepositoryException {
-        Warehouse createdWarehouse = IRepository.create(warehouse);
-        boolean result = IRepository.delete(createdWarehouse.getIdNumber());
+        Warehouse createdWarehouse1 = IRepository.create(warehouse);
+        boolean result = IRepository.delete(createdWarehouse1.getIdNumber());
 
         assertTrue(result);
     }
@@ -97,15 +105,10 @@ public class WarehouseRepositoryImplTest {
     @Test
     void whenGetAllThenWarehousesMustReturn() throws RepositoryException {
         List<Warehouse> expectedList = new ArrayList<>();
-        Warehouse e1 = IRepository.create(warehouse);
-        Warehouse e2 = IRepository.create(warehouse);
-        Warehouse e3 = IRepository.create(warehouse);
-        expectedList.add(e1);
-        expectedList.add(e2);
-        expectedList.add(e3);
-
+        expectedList.add(IRepository.create(new Warehouse("loha", 1.1, 1)));
+        expectedList.add(IRepository.create(new Warehouse("gosha", 1.1, 1)));
+        expectedList.add(IRepository.create(new Warehouse("moisha", 1.1, 1)));
         List<Warehouse> warehouses = IRepository.getAll();
-
         assertEquals(expectedList, warehouses);
     }
 
@@ -114,22 +117,5 @@ public class WarehouseRepositoryImplTest {
         warehouse.setPrice(2.2);
         warehouse.setAmount(2);
         return warehouse;
-    }
-
-
-    private void deleteDataBaseTable() throws IOException, SQLException {
-        Connection connection = ConnectionFactory.getInstance().getConnection();
-        RunScript.execute(connection, new FileReader(DROP_TABLE_WAREHOUSE));
-    }
-
-    private void createWarehouse() throws IOException {
-        IRepository = new WarehouseRepositoryImpl(ConnectionFactory.getInstance());
-        warehouse = new Warehouse("Lola", Double.MIN_VALUE, 2);
-        warehouse.setIdNumber(1L);
-    }
-
-    private void createDataBaseTable() throws IOException, SQLException {
-        Connection connection = ConnectionFactory.getInstance().getConnection();
-        RunScript.execute(connection, new FileReader(CREATE_TABLE_WAREHOUSE));
     }
 }
