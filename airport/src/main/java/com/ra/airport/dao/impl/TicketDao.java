@@ -58,8 +58,7 @@ public class TicketDao  implements AirPortDao<Ticket> {
             final GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
             namedParameterJdbcTemplate.update(INSERT_SQL,
                     new BeanPropertySqlParameterSource(ticket), keyHolder, new String[] {"ID"});
-            int num = keyHolder.getKey().intValue();
-            ticket.setTicketId(num);
+            ticket.setTicketId(keyHolder.getKey().intValue());
         } catch (DataAccessException e) {
             LOGGER.error(ExceptionMessage.FAILED_TO_CREATE_NEW_TICKET.toString(), e);
             throw new AirPortDaoException(ExceptionMessage.FAILED_TO_CREATE_NEW_TICKET.get(), e);
