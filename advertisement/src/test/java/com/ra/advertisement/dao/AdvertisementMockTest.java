@@ -1,144 +1,135 @@
 package com.ra.advertisement.dao;
 
-import com.ra.advertisement.connection.ConnectionFactory;
-import com.ra.advertisement.dao.exceptions.DaoException;
 import com.ra.advertisement.entity.Advertisement;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.jdbc.core.*;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 
-import java.sql.Connection;
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Matchers.anyString;
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 public class AdvertisementMockTest {
-      private static final String CREATE_ADVERTISEMENT = "INSERT INTO ADVERTISEMENT (TITLE, CONTEXT, IMAGE_URL, LANGUAGE) "
-            + "VALUES(?,?,?,?)";
-    private static final String GET_ADVER_BY_ID = "SELECT * FROM ADVERTISEMENT WHERE AD_ID=?";
-    private static final String GET_ALL_ADVERTS = "SELECT * FROM ADVERTISEMENT";
-    private static final String UPDATE_ADVERT = "update ADVERTISEMENT set TITLE = ?, CONTEXT= ?, IMAGE_URL = ?,"
-            + " LANGUAGE = ? where AD_ID = ?";
-    private static final String DELETE_ADVERT = "DELETE FROM ADVERTISEMENT WHERE AD_ID=?";
-    private static ConnectionFactory connectionFactory;
-    private static AdvertisementDao<Advertisement> advertDao;
-    private Connection mockConnection;
-    private PreparedStatement mockStatement;
-    private ResultSet mockResultSet;
-    private ResultSet mockResultSetForKey;
+    private static JdbcTemplate mockjdbcTemplate;
+    private static AdvertisementAdvertisementDaoImpl advertisementDao;
+    private static final String GET_ADVERT_BY_ID = "SELECT * FROM ADVERTISEMENT WHERE AD_ID=?";
     private Advertisement advertisement;
     private Advertisement advertisementNoId;
+    private Advertisement advertisementUpdated;
+    private KeyHolder mockkeyHolder = new GeneratedKeyHolder();
+    private PreparedStatement mockStatement;
 
     @BeforeAll
     public static void init() {
-        connectionFactory = mock(ConnectionFactory.class);
-        advertDao = new AdvertisementAdvertisementDaoImpl(connectionFactory);
+        mockjdbcTemplate = mock(JdbcTemplate.class);
+        advertisementDao = new AdvertisementAdvertisementDaoImpl(mockjdbcTemplate);
     }
 
     @BeforeEach
-    public void reInitAdvertisementDao() throws SQLException {
-        mockConnection = mock(Connection.class);
+    public void reInitAdvertisementDao() {
+        mockkeyHolder = mock(KeyHolder.class);
         mockStatement = mock(PreparedStatement.class);
-        mockResultSet = mock(ResultSet.class);
-        mockResultSetForKey = mock(ResultSet.class);
         advertisement = new Advertisement(1L, "Welcome advert", "Welcome to Ukraine",
                 "url", "Ukrainian");
         advertisementNoId = new Advertisement("Welcome advert", "Welcome to Ukraine",
                 "url", "Ukrainian");
-        when(connectionFactory.getConnection()).thenReturn(mockConnection);
-        createMocksFromGetByIdMethod();
+        advertisementUpdated = new Advertisement(1l, "Update", "Update",
+                "url", "Ukrainian");
     }
 
     /**
      * Testing method addAdvertisement when result true.
-     *
-     * @throws SQLException exception.
      */
     @Test
-    public void addAdvertisementExecuteSuccessfuldReturnTrue() throws SQLException, DaoException {
-        when(mockConnection.prepareStatement(CREATE_ADVERTISEMENT)).thenReturn(mockStatement);
-        when(mockStatement.getGeneratedKeys()).thenReturn(mockResultSetForKey);
-        Advertisement result = advertDao.create(advertisement);
-        assertAll("result",
-                () -> assertEquals(result.getAdId(), advertisement.getAdId()),
-                () -> assertEquals(result.getTitle(), advertisement.getTitle()),
-                () -> assertEquals(result.getContext(), advertisement.getContext()),
-                () -> assertEquals(result.getImageUrl(), advertisement.getImageUrl()),
-                () -> assertEquals(result.getLanguage(), advertisement.getLanguage()));
+    public void addAdvertisementExecuteSuccessfuldReturnTrue() {
+        when(mockjdbcTemplate.update(any(PreparedStatementCreator.class), any(KeyHolder.class))).thenReturn(1);
+        when(mockkeyHolder.getKey()).thenReturn(1L);
+        Advertisement advertisementCreated = advertisementDao.create(advertisementNoId);
+        advertisementCreated.setAdId((Long) (mockkeyHolder.getKey()));
+        assertAll("advertisementCreated",
+                () -> assertEquals(advertisementCreated.getAdId(), advertisement.getAdId()),
+                () -> assertEquals(advertisementCreated.getTitle(), advertisement.getTitle()),
+                () -> assertEquals(advertisementCreated.getContext(), advertisement.getContext()),
+                () -> assertEquals(advertisementCreated.getImageUrl(), advertisement.getImageUrl()),
+                () -> assertEquals(advertisementCreated.getLanguage(), advertisement.getLanguage()));
     }
 
     /**
      * Testing method addAdvertisement when we don't get id of created entity.
-     *
-     * @throws SQLException exception.
      */
     @Test
-    public void addAdvertisementAndDontGetGeneratedIdReturnTrue() throws SQLException, DaoException {
-        when(mockConnection.prepareStatement(CREATE_ADVERTISEMENT)).thenReturn(mockStatement);
-        when(mockStatement.getGeneratedKeys()).thenReturn(mockResultSetForKey);
-        when(mockResultSetForKey.next()).thenReturn(false);
-        Advertisement result = advertDao.create(advertisementNoId);
-        Assertions.assertTrue(result.getAdId() == null);
-    }
-
-    /**
-     * Testing method addAdvertisement when we get id of created entity.
-     *
-     * @throws SQLException exception.
-     */
-    @Test
-    public void addAdvertisementAndGetGeneratedIdReturnTrue() throws SQLException, DaoException {
-        when(mockConnection.prepareStatement(CREATE_ADVERTISEMENT)).thenReturn(mockStatement);
-        when(mockStatement.getGeneratedKeys()).thenReturn(mockResultSetForKey);
-        when(mockResultSetForKey.next()).thenReturn(true);
-        Advertisement result = advertDao.create(advertisementNoId);
-        Assertions.assertTrue(result.getAdId() == advertisement.getAdId());
+    public void addAdvertisementAndDontGetGeneratedIdReturnTrue() {
+        when(mockjdbcTemplate.update(any(PreparedStatementCreator.class), any(KeyHolder.class))).thenReturn(1);
+        when(mockkeyHolder.getKey()).thenReturn(null);
+        advertisementDao.create(advertisementNoId);
+        assertTrue(mockkeyHolder.getKey() == null);
     }
 
     /**
      * Testing method deleteAdvertisement when result true.
-     *
-     * @throws SQLException
      */
     @Test
-    public void deleteAdvertisementSuccessfulReturnTrue() throws SQLException, DaoException {
-        when(mockConnection.prepareStatement(DELETE_ADVERT)).thenReturn(mockStatement);
-        when(mockStatement.executeUpdate()).thenReturn(1);
-        Integer result = advertDao.delete(advertisement);
-        Assertions.assertTrue(result == 1);
-    }
-
-    /**
-     * Testing method deleteAdvertisement failed return true.
-     *
-     * @throws SQLException
-     */
-    @Test
-    public void testDeleteAdvertisementFailedReturnTrue() throws SQLException, DaoException {
-        when(mockConnection.prepareStatement(DELETE_ADVERT)).thenReturn(mockStatement);
-        when(mockStatement.executeUpdate()).thenReturn(1);
-        Advertisement advertisementNull = null;
-        Integer result = advertDao.delete(advertisementNull);
-        Assertions.assertTrue(result == 0);
+    public void deleteAdvertisementSuccessfulReturnTrue() {
+        final String DELETE_ADVERT = "DELETE FROM ADVERTISEMENT WHERE AD_ID=?";
+        when(mockjdbcTemplate.update(DELETE_ADVERT, advertisement.getAdId())).thenReturn(1);
+        Integer result = advertisementDao.delete(advertisement);
+        assertTrue(result == 1);
     }
 
     /**
      * Testing method updateAdvertisement when result true.
-     *
-     * @throws SQLException
      */
     @Test
-    public void updateAdvertisementSuccessfulReturnTrue() throws SQLException, DaoException {
-        when(mockConnection.prepareStatement(UPDATE_ADVERT)).thenReturn(mockStatement);
-        Advertisement result = advertDao.update(advertisement);
+    public void updateAdvertisementSuccessfulReturnTrue() {
+        int resultFromDB = 0;
+        final String UPDATE_ADVERT = "update ADVERTISEMENT set TITLE = ?, CONTEXT= ?, IMAGE_URL = ?,"
+                + " LANGUAGE = ? where AD_ID = ?";
+        when(mockjdbcTemplate.update(eq(UPDATE_ADVERT), any(PreparedStatement.class))).thenReturn(resultFromDB = 1);
+        doAnswer(invocation -> {
+            ((PreparedStatementSetter) invocation.getArguments()[1]).setValues(mockStatement);
+            return null;
+        }).when(mockjdbcTemplate).update(eq(UPDATE_ADVERT), any(PreparedStatementSetter.class));
+        Advertisement updated = advertisementDao.update(advertisementUpdated);
+        assertEquals(1, resultFromDB);
+        assertAll("updated",
+                () -> assertEquals(updated.getAdId(), advertisementUpdated.getAdId()),
+                () -> assertEquals(updated.getTitle(), advertisementUpdated.getTitle()),
+                () -> assertEquals(updated.getContext(), advertisementUpdated.getContext()),
+                () -> assertEquals(updated.getImageUrl(), advertisementUpdated.getImageUrl()),
+                () -> assertEquals(updated.getLanguage(), advertisementUpdated.getLanguage()));
+    }
+
+    /**
+     * Testing method getAllAdvertisement when result true.
+     */
+    @Test
+    public void getAllAdvertisementExecutedReturnTrue() {
+        final String GET_ALL_ADVERTS = "SELECT * FROM ADVERTISEMENT";
+        List listFromQueryForList = createListOfMap();
+        when(mockjdbcTemplate.queryForList(eq(GET_ALL_ADVERTS))).thenReturn(listFromQueryForList);
+        List<Advertisement> result = advertisementDao.getAll();
+        assertTrue(!result.isEmpty());
+    }
+
+    /**
+     * Testing method getAdvertisementById when Advertisement was provided result true.
+     */
+    @Test
+    public void advertisementGetByIdReturnAdvertisementReturnTrue() {
+        when(mockjdbcTemplate.queryForObject(eq(GET_ADVERT_BY_ID), any(RowMapper.class), any(Long.class)))
+                .thenReturn(advertisement);
+        Advertisement result = advertisementDao.getById(advertisement.getAdId());
         assertAll("result",
                 () -> assertEquals(result.getAdId(), advertisement.getAdId()),
                 () -> assertEquals(result.getTitle(), advertisement.getTitle()),
@@ -148,131 +139,36 @@ public class AdvertisementMockTest {
     }
 
     /**
-     * Testing method getAllAdvertisement when result true.
-     *
-     * @throws SQLException
+     * Testing method mapListFromQueryForList.
      */
     @Test
-    public void getAllAdvertisementExecutedReturnTrue() throws SQLException, DaoException {
-        boolean result = false;
-        when(mockConnection.prepareStatement(anyString())).thenReturn(mockStatement);
-        when(mockStatement.executeQuery()).thenReturn(mockResultSet);
-        when(mockResultSet.next()).thenReturn(result = true).thenReturn(false);
-        List<Advertisement> listAdvertisement = advertDao.getAll();
-        Assertions.assertTrue(result == true);
+    public void mapListFromQueryForListReturnTrue() {
+        List<Map<String, Object>> listToMapFrom = createListOfMap();
+        List<Advertisement> result = advertisementDao.mapListFromQueryForList(listToMapFrom);
+        Advertisement advertisementresult = result.get(0);
+        assertTrue(!result.isEmpty());
+        assertAll("advertisementresult",
+                () -> assertEquals(advertisementresult.getAdId(), advertisement.getAdId()),
+                () -> assertEquals(advertisementresult.getTitle(), advertisement.getTitle()),
+                () -> assertEquals(advertisementresult.getContext(), advertisement.getContext()),
+                () -> assertEquals(advertisementresult.getImageUrl(), advertisement.getImageUrl()),
+                () -> assertEquals(advertisementresult.getLanguage(), advertisement.getLanguage()));
     }
 
     /**
-     * Testing method getAdvertisementById when Optional.empty result true.
+     * this method create List of MapStringObject
      *
-     * @throws SQLException
-     * @throws DaoException
+     * @return list
      */
-    @Test
-    public void advertisementGetByIdReturnEmptyResultSetThenEmptyOptionalShouldBeReturned() throws
-            DaoException, SQLException {
-        when(mockConnection.prepareStatement(GET_ADVER_BY_ID)).thenReturn(mockStatement);
-        when(mockStatement.executeQuery()).thenReturn(mockResultSet);
-        when(mockResultSet.next()).thenReturn(false);
-        Optional<Advertisement> advertisementOptional = advertDao.getById(advertisement.getAdId());
-        assertEquals(Optional.empty(), advertisementOptional);
-    }
-
-    /**
-     * Testing method getAdvertisementById when Optional is not empty result true.
-     *
-     * @throws SQLException
-     * @throws DaoException
-     */
-    @Test
-    public void advertisementGetByIdReturnNotEmptyResultSetThenAdvertisementOptionalShouldBeReturned() throws
-            DaoException, SQLException {
-        when(mockConnection.prepareStatement(GET_ADVER_BY_ID)).thenReturn(mockStatement);
-        when(mockStatement.executeQuery()).thenReturn(mockResultSet);
-        when(mockResultSet.next()).thenReturn(true, false);
-        Optional<Advertisement> advertisementOptional = advertDao.getById(advertisement.getAdId());
-        Advertisement advertisementFromOptional = advertisementOptional.get();
-        assertAll("advertisementFromOptional",
-                () -> assertEquals(advertisementFromOptional.getAdId(), advertisement.getAdId()),
-                () -> assertEquals(advertisementFromOptional.getTitle(), advertisement.getTitle()),
-                () -> assertEquals(advertisementFromOptional.getContext(), advertisement.getContext()),
-                () -> assertEquals(advertisementFromOptional.getImageUrl(), advertisement.getImageUrl()),
-                () -> assertEquals(advertisementFromOptional.getLanguage(), advertisement.getLanguage()));
-    }
-
-    /**
-     * Testing method deleteAdvertisement catch SQLException throw DaoException.
-     *
-     * @throws SQLException
-     */
-    @Test
-    public void deleteAdvertThrowDaoException() throws SQLException {
-        when(mockConnection.prepareStatement(DELETE_ADVERT)).thenThrow(new SQLException());
-        assertThrows(DaoException.class, () -> {
-            advertDao.delete(advertisement);
-        });
-    }
-
-    /**
-     * Testing method addAdvertisement catch SQLException throw DaoException.
-     *
-     * @throws SQLException
-     */
-    @Test
-    public void addAdvertisementThrowDaoException() throws SQLException {
-        when(mockConnection.prepareStatement(CREATE_ADVERTISEMENT)).thenThrow(new SQLException());
-        assertThrows(DaoException.class, () -> {
-            advertDao.create(advertisement);
-        });
-    }
-
-    /**
-     * Testing method UpdateAdvertisement catch SQLException throw DaoException.
-     *
-     * @throws SQLException
-     */
-    @Test
-    public void updateAdvertisementThrowDaoException() throws SQLException {
-        when(mockConnection.prepareStatement(UPDATE_ADVERT)).thenThrow(new SQLException());
-        assertThrows(DaoException.class, () -> {
-            advertDao.update(advertisement);
-        });
-    }
-
-    /**
-     * Testing method getAllAdverts catch SQLException throw DaoException.
-     *
-     * @throws SQLException
-     */
-    @Test
-    public void getAllAdvertsThrowDaoException() throws SQLException {
-        when(mockConnection.prepareStatement(GET_ALL_ADVERTS)).thenThrow(new SQLException());
-        assertThrows(DaoException.class, () -> {
-            advertDao.getAll();
-        });
-    }
-
-    /**
-     * Testing method getAdvertisementById catch SQLException throw DaoException.
-     *
-     * @throws SQLException
-     */
-    @Test
-    public void getByIdAdvertisementThrowDaoException() throws SQLException {
-        when(mockConnection.prepareStatement(GET_ADVER_BY_ID)).thenThrow(new SQLException());
-        assertThrows(DaoException.class, () -> {
-            advertDao.getById(advertisement.getAdId());
-        });
-    }
-
-    private void createMocksFromGetByIdMethod() throws SQLException {
-        when(mockConnection.prepareStatement(GET_ADVER_BY_ID)).thenReturn(mockStatement);
-        when(mockResultSet.next()).thenReturn(true);
-        when(mockStatement.executeQuery()).thenReturn(mockResultSet);
-        when(mockResultSet.getLong("AD_ID")).thenReturn(advertisement.getAdId());
-        when(mockResultSet.getString("TITLE")).thenReturn(advertisement.getTitle());
-        when(mockResultSet.getString("CONTEXT")).thenReturn(advertisement.getContext());
-        when(mockResultSet.getString("IMAGE_URL")).thenReturn(advertisement.getImageUrl());
-        when(mockResultSet.getString("LANGUAGE")).thenReturn(advertisement.getLanguage());
+    private List createListOfMap() {
+        List<Map<String, Object>> listToMapFrom = new ArrayList<>();
+        Map<String, Object> advId = new HashMap<>();
+        advId.put("AD_ID", advertisement.getAdId());
+        advId.put("TITLE", advertisement.getTitle());
+        advId.put("LANGUAGE", advertisement.getLanguage());
+        advId.put("CONTEXT", advertisement.getContext());
+        advId.put("IMAGE_URL", advertisement.getImageUrl());
+        listToMapFrom.add(advId);
+        return listToMapFrom;
     }
 }
