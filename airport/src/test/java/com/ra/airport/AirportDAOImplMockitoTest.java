@@ -52,7 +52,7 @@ class AirportDAOImplMockitoTest {
     }
 
     @Test
-    void whenCreateAirportThenReturnAirportWitsIdTrue() throws AirPortDaoException {
+    public void whenCreateAirportThenReturnAirportWitsIdTrue() throws AirPortDaoException {
         Mockito.doAnswer(invocation -> {
             ((PreparedStatementCreator)invocation.getArguments()[0]).createPreparedStatement(connection);
             return null;
@@ -62,7 +62,7 @@ class AirportDAOImplMockitoTest {
     }
 
     @Test
-    void whenCreateAirportThenThrowExseption() {
+    public void whenCreateAirportThenThrowExseption() {
         Mockito.when(jdbcTemplate.update(Mockito.any(PreparedStatementCreator.class), Mockito.any(KeyHolder.class))).thenThrow(BadSqlGrammarException.class);
         Throwable thrown = assertThrows(AirPortDaoException.class, () -> {
             airportDAO.create(airport);
@@ -71,7 +71,7 @@ class AirportDAOImplMockitoTest {
     }
 
     @Test
-    void whenUpdateAirportThenReturnAirport() throws AirPortDaoException {
+    public void whenUpdateAirportThenReturnAirport() throws AirPortDaoException {
         Mockito.doAnswer(invocation -> {
             ((PreparedStatementSetter)invocation.getArguments()[1]).setValues(statement);
             return null;
@@ -81,7 +81,7 @@ class AirportDAOImplMockitoTest {
     }
 
     @Test
-    void whenUpdateAirportThenThrowExseption() {
+    public void whenUpdateAirportThenThrowExseption() {
         Mockito.doThrow(BadSqlGrammarException.class).when(jdbcTemplate).update(Mockito.eq(UPDATE_QUERY),
                 Mockito.any(PreparedStatementSetter.class));
         Throwable thrown = assertThrows(AirPortDaoException.class, () -> {
@@ -91,13 +91,13 @@ class AirportDAOImplMockitoTest {
     }
 
     @Test
-    void whenDeleteAirportThenReturnTrue() throws AirPortDaoException {
+    public void whenDeleteAirportThenReturnTrue() throws AirPortDaoException {
         boolean createdAirport = airportDAO.delete(airport);
         assertEquals(createdAirport, true);
     }
 
     @Test
-    void whenDeleteAirportThenReturnFalse() throws AirPortDaoException {
+    public void whenDeleteAirportThenReturnFalse() throws AirPortDaoException {
         Mockito.doAnswer(invocation -> {
             ((PreparedStatementSetter)invocation.getArguments()[1]).setValues(statement);
             return null;
@@ -107,7 +107,7 @@ class AirportDAOImplMockitoTest {
     }
 
     @Test
-    void whenDeleteAirportThenThrowExseption() {
+    public void whenDeleteAirportThenThrowExseption() {
         Mockito.doThrow(BadSqlGrammarException.class).when(jdbcTemplate).update(Mockito.eq(DELETE_QUERY), Mockito.any(PreparedStatementSetter.class));
         Throwable thrown = assertThrows(AirPortDaoException.class, () -> {
             airportDAO.delete(airport);
@@ -116,13 +116,13 @@ class AirportDAOImplMockitoTest {
     }
 
     @Test
-    void whenGetByIdAirportThenReturnAirport() throws AirPortDaoException {
+    public void whenGetByIdAirportThenReturnAirport() throws AirPortDaoException {
         Airport findAirport = airportDAO.getById(1).get();
         assertEquals(findAirport, airport);
     }
 
     @Test
-    void whenGetByIdAirportThenThrowExseption() {
+    public void whenGetByIdAirportThenThrowExseption() {
         Mockito.doThrow(BadSqlGrammarException.class).when(jdbcTemplate).queryForObject(Mockito.eq(SELECT_BY_ID_QUERY),
                 Mockito.any(BeanPropertyRowMapper.class), Mockito.eq(1));
         Throwable thrown = assertThrows(AirPortDaoException.class, () -> {
@@ -132,7 +132,7 @@ class AirportDAOImplMockitoTest {
     }
 
     @Test
-    void whenGetAllThenReturnList() throws AirPortDaoException {
+    public void whenGetAllThenReturnList() throws AirPortDaoException {
         List<Airport> list = new ArrayList<>() {
             @Override
             public int size() {
@@ -144,7 +144,7 @@ class AirportDAOImplMockitoTest {
         assertEquals(list.size(), 3);
     }
     @Test
-    void whenGetAllThenThrowExseption() {
+    public void whenGetAllThenThrowExseption() {
         Mockito.when(jdbcTemplate.query(Mockito.eq(SELECT_ALL_QUERY), Mockito.any(BeanPropertyRowMapper.class))).thenThrow(BadSqlGrammarException.class);
         Throwable thrown = assertThrows(AirPortDaoException.class, () -> {
             airportDAO.getAll();
@@ -153,7 +153,7 @@ class AirportDAOImplMockitoTest {
     }
 
     @Test
-    void throwNewAirPortDaoException() {
+    public void throwNewAirPortDaoException() {
         Throwable thrown = assertThrows(AirPortDaoException.class, () -> {
             throw new AirPortDaoException("test Exception");
         });

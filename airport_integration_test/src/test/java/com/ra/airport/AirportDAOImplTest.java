@@ -34,7 +34,7 @@ class AirportDAOImplTest {
     Airport airport;
 
     @BeforeEach
-    public void initH2() {
+    public void init() {
         airport = new Airport(1,"Kenedy", 12345, "international", "New York", 10);
     }
 
