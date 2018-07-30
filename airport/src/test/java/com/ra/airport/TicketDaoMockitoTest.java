@@ -4,7 +4,7 @@ import com.ra.airport.dao.exception.AirPortDaoException;
 import com.ra.airport.dao.impl.TicketDao;
 import com.ra.airport.entity.Ticket;
 import com.ra.airport.factory.ConnectionFactory;
-import com.ra.airport.helper.DataCreationHelper;
+import com.ra.airport.config.DataCreationHelper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

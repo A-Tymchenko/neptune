@@ -74,6 +74,8 @@ public class PlaneDaoTest {
         Plane plane = optionalPlane.get();
         Plane expectedPlane = changePlane(plane);
         Plane updatedPlane = planeDao.update(plane);
+
+        assertEquals(expectedPlane, updatedPlane);
     }
 
     @Test

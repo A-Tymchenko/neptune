@@ -1,12 +1,9 @@
-package com.ra.airport.helper;
-
-import com.ra.airport.entity.Flight;
-import com.ra.airport.entity.Plane;
-import com.ra.airport.entity.Ticket;
+package com.ra.airport.config;
 
 import java.sql.Timestamp;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
+
+import com.ra.airport.entity.Plane;
+import com.ra.airport.entity.Ticket;
 
 public abstract class DataCreationHelper {
 

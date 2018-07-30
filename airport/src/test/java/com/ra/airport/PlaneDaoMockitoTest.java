@@ -1,14 +1,13 @@
 package com.ra.airport;
 
 import com.ra.airport.dao.exception.AirPortDaoException;
-import com.ra.airport.helper.DataCreationHelper;
+import com.ra.airport.config.DataCreationHelper;
 import com.ra.airport.dao.impl.PlaneDao;
 import com.ra.airport.entity.Plane;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.PreparedStatementCreator;
-import org.springframework.jdbc.core.PreparedStatementSetter;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.support.KeyHolder;
