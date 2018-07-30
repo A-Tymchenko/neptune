@@ -13,12 +13,11 @@ import java.util.List;
 
 import static com.ra.shop.enums.ExceptionMessage.*;
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-public class WarehouseRepositoryImplMockTest {
+public class WarehouseRepositoryMockTest {
 
     private static final String UPDATE_WAREHOUSE = "UPDATE warehouse SET name = ?, price = ?, amount = ? WHERE id = ?";
     private static final String SELECT_WAREHOUSE_BY_ID = "SELECT * FROM warehouse WHERE id = ?";

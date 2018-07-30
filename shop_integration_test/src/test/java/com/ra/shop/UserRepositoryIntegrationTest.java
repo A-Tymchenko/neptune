@@ -1,3 +1,4 @@
+
 package com.ra.shop;
 
 import com.ra.shop.config.ConnectionFactory;
@@ -55,19 +56,12 @@ public class UserRepositoryIntegrationTest {
     }
 
     @Test
-    void whenCreateNullUserThenThrowNullPointerException() {
-        Throwable nullPointerException = assertThrows(NullPointerException.class, () -> {
-            repository.create(null);
-        });
-        assertNotNull(nullPointerException);
-        assertEquals(NullPointerException.class, nullPointerException.getClass());
-    }
-
-    @Test
     void whenUserCreationFailsThenThrowRepositoryException() {
+        User user = new User("3809973748860", "Pagur", "Kula",
+            "USA", "KULA_3@gmail.com");
         Throwable repositoryException = assertThrows(RepositoryException.class, () -> {
             dropTable(connection);
-            repository.create(new User());
+            repository.create(user);
         });
         assertNotNull(repositoryException);
         assertEquals(RepositoryException.class, repositoryException.getClass());
@@ -78,7 +72,6 @@ public class UserRepositoryIntegrationTest {
         User user = new User("3809934252275", "Pasha", "Volum",
             "Moscow", "pasha_213@gmail.com");
         User created = repository.create(user);
-        System.out.println(created.getId());
         Optional<User> optional = repository.get(created.getId());
         assertNotNull(optional);
         assertTrue(optional.isPresent());
@@ -94,7 +87,7 @@ public class UserRepositoryIntegrationTest {
     }
 
     @Test
-    void whenDropOrdersTableAndGetOrderThenThrowRepositoryException() {
+    void whenDropUsersTableAndGetUserThenThrowRepositoryException() {
         Throwable repositoryException = assertThrows(RepositoryException.class, () -> {
             dropTable(connection);
             repository.get(getRandomId());
@@ -108,9 +101,7 @@ public class UserRepositoryIntegrationTest {
         User user = new User("3806642341542", "Murchik", "Babulin",
             "USA", "murchik_21@gmail.com");
         repository.create(user);
-        user.setName("Gugulya");
-        user.setSecondName("Zahrema");
-        user.setCountry("Turkey");
+        setValuesForUserUpdate(user);
         User updated = repository.update(user);
         assertNotNull(updated);
         assertAll(() -> {
@@ -121,19 +112,12 @@ public class UserRepositoryIntegrationTest {
     }
 
     @Test
-    void whenUpdateNullUserThenThrowNullPointerException() {
-        Throwable nullPointer = assertThrows(NullPointerException.class, () -> {
-            repository.update(null);
-        });
-        assertNotNull(nullPointer);
-        assertEquals(NullPointerException.class, nullPointer.getClass());
-    }
-
-    @Test
     void whenDropUsersTableAndUpdateNotExistingUserThenThrowRepositoryException() {
+        User user = new User("3806642341542", "Urchik", "Bulin",
+            "Moscow", "urchik_431254@gmail.com");
         Throwable repositoryException = assertThrows(RepositoryException.class, () -> {
             dropTable(connection);
-            repository.update(new User());
+            repository.update(user);
         });
         assertNotNull(repositoryException);
         assertEquals(RepositoryException.class, repositoryException.getClass());
@@ -144,16 +128,9 @@ public class UserRepositoryIntegrationTest {
         User user = new User("3806754352134", "Taras", "Mazur",
             "Ukraine", "mazur_123@gmail.com");
         repository.create(user);
-        Boolean isDeleted = repository.delete(user.getId());
+        boolean isDeleted = repository.delete(user.getId());
         assertTrue(isDeleted);
         assertEquals(Optional.empty(), repository.get(user.getId()));
-    }
-
-    @Test
-    void whenDeleteNonExistingUserAndOperationIsFailedThenReturnFalse() throws RepositoryException {
-        Boolean isDeleted = repository.delete(getRandomId());
-        assertFalse(isDeleted);
-        assertEquals(Optional.empty(), repository.get(getRandomId()));
     }
 
     @Test
@@ -175,13 +152,6 @@ public class UserRepositoryIntegrationTest {
         List<User> actual = repository.getAll();
         assertNotNull(actual);
         assertArrayEquals(expected.toArray(), actual.toArray());
-    }
-
-    @Test
-    void whenNoUsersWereCreatedThenReturnCollectionsEmptyList() throws RepositoryException {
-        List<User> users = repository.getAll();
-        assertTrue(users.isEmpty());
-        assertEquals(Collections.emptyList(), users);
     }
 
     @Test
@@ -223,4 +193,9 @@ public class UserRepositoryIntegrationTest {
         return 654L;
     }
 
+    private void setValuesForUserUpdate(User user) {
+        user.setName("Gugulya");
+        user.setSecondName("Zahrema");
+        user.setCountry("Turkey");
+    }
 }
