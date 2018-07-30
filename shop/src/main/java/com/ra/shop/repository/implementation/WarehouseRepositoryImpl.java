@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -36,19 +37,18 @@ public class WarehouseRepositoryImpl implements IRepository<Warehouse> {
      * @return new Warehouse
      */
     @Override
-    public Warehouse create(Warehouse warehouse) throws RepositoryException {
-        try (Connection connection = connectionFactory.getConnection()) {
-            final PreparedStatement insertStatement = connection.prepareStatement("INSERT INTO warehouse "
-                    + "(name, price, amount) "
-                    + " VALUES(?,?,?)");
-            final PreparedStatement getLastId = connection.prepareStatement("SELECT LAST_INSERT_ID()");
+    public Warehouse create(final Warehouse warehouse) throws RepositoryException {
+        try (Connection connection = connectionFactory.getConnection();
+             PreparedStatement insertStatement = connection.prepareStatement("INSERT INTO warehouse "
+                             + "(name, price, amount) "
+                             + " VALUES(?,?,?)",
+                     Statement.RETURN_GENERATED_KEYS)) {
             fillInStatement(warehouse, insertStatement);
             insertStatement.executeUpdate();
-            final ResultSet lastIdResultSet = getLastId.executeQuery();
-            if (!lastIdResultSet.next()) {
-                throw new RepositoryException(ExceptionMessage.THE_WAREHOUSE_CANNOT_BE_NULL.getMessage());
+            final ResultSet primaryKeys = insertStatement.getGeneratedKeys();
+            if (primaryKeys.next()) {
+                warehouse.setIdNumber(primaryKeys.getLong(1));
             }
-            warehouse = get(lastIdResultSet.getLong(1)).get();
         } catch (SQLException e) {
             LOGGER.error(ExceptionMessage.FAILED_TO_CREATE_NEW_WAREHOUSE.getMessage(), e);
             throw new RepositoryException(ExceptionMessage.FAILED_TO_CREATE_NEW_WAREHOUSE.getMessage());
@@ -64,14 +64,13 @@ public class WarehouseRepositoryImpl implements IRepository<Warehouse> {
      */
     @Override
     public Warehouse update(final Warehouse warehouse) throws RepositoryException {
-        try (Connection connection = connectionFactory.getConnection()) {
-            final PreparedStatement preparedStatement = connection.prepareStatement("UPDATE warehouse "
-                    + "SET name = ?, price = ?, amount = ? "
-                    + "WHERE id = ?");
+        try (Connection connection = connectionFactory.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement("UPDATE warehouse "
+                + "SET name = ?, price = ?, amount = ? "
+                + "WHERE id = ?")) {
             fillInStatement(warehouse, preparedStatement);
             preparedStatement.setLong(ID_NUMBER, warehouse.getIdNumber());
             preparedStatement.executeUpdate();
-            get(warehouse.getIdNumber());
         } catch (SQLException e) {
             LOGGER.error(ExceptionMessage.FAILED_TO_UPDATE_WAREHOUSE.getMessage(), e);
             throw new RepositoryException(ExceptionMessage.FAILED_TO_UPDATE_WAREHOUSE.getMessage(), e);
@@ -112,10 +111,9 @@ public class WarehouseRepositoryImpl implements IRepository<Warehouse> {
             final PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM warehouse WHERE id = ?");
             preparedStatement.setLong(1, idNumber);
             final ResultSet resultSet = preparedStatement.executeQuery();
-            if (!resultSet.next()) {
-                return warehouse;
+            if (resultSet.next()) {
+                warehouse = Optional.of(getWarehouseFromResultSet(resultSet));
             }
-            warehouse = Optional.of(getWarehouseFromResultSet(resultSet));
             return warehouse;
         } catch (SQLException e) {
             LOGGER.error(ExceptionMessage.FAILED_TO_GET_WAREHOUSE_BY_ID.getMessage(), e);

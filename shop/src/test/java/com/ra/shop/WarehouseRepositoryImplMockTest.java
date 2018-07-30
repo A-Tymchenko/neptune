@@ -23,7 +23,6 @@ public class WarehouseRepositoryImplMockTest {
     private static final String UPDATE_WAREHOUSE = "UPDATE warehouse SET name = ?, price = ?, amount = ? WHERE id = ?";
     private static final String SELECT_WAREHOUSE_BY_ID = "SELECT * FROM warehouse WHERE id = ?";
     private static final String DELETE_WAREHOUSE_BY_ID = "DELETE FROM warehouse WHERE id = ?";
-    private static final String GET_ID = "SELECT SCOPE_IDENTITY()";
     private static final String SELECT_ALL_WAREHOUSES = "SELECT * FROM warehouse";
     private static final String INSERT_WAREHOUSE = "INSERT INTO warehouse "
         + "(name, price, amount) "
@@ -44,7 +43,7 @@ public class WarehouseRepositoryImplMockTest {
         warehouseRepositoryImpl = Mockito.spy(new WarehouseRepositoryImpl(mockConnectionFactory));
         Mockito.doReturn(mockConnection).when(mockConnectionFactory).getConnection();
         warehouse = new Warehouse("Lola", Double.MIN_VALUE, 2);
-        warehouse.setIdNumber(1L);
+        warehouse.setIdNumber(2L);
         createMockByIdMethod();
     }
 
@@ -66,8 +65,24 @@ public class WarehouseRepositoryImplMockTest {
      */
     @Test
     void whenCreateMethodCalledThenCorrectEntityReturns() throws SQLException, RepositoryException {
-        when(mockConnection.prepareStatement(INSERT_WAREHOUSE)).thenReturn(mockStatement);
-        when(mockConnection.prepareStatement(GET_ID)).thenReturn(mockStatement);
+        when(mockConnection.prepareStatement(INSERT_WAREHOUSE, Statement.RETURN_GENERATED_KEYS)).thenReturn(mockStatement);
+        when(mockStatement.getGeneratedKeys()).thenReturn(mockResultSet);
+        when(mockResultSet.next()).thenReturn(true).thenReturn(false);
+        Warehouse result = warehouseRepositoryImpl.create(warehouse);
+
+        assertEquals(warehouse, result);
+    }
+
+    /**
+     * testing create method to return the warehouse.
+     *
+     * @throws SQLException exception, RepositoryException exception
+     */
+    @Test
+    void whenCreateMethodCalledFirstIdThenCorrectEntityReturns() throws SQLException, RepositoryException {
+        when(mockConnection.prepareStatement(INSERT_WAREHOUSE, Statement.RETURN_GENERATED_KEYS)).thenReturn(mockStatement);
+        when(mockStatement.getGeneratedKeys()).thenReturn(mockResultSet);
+        when(mockResultSet.next()).thenReturn(false);
         Warehouse result = warehouseRepositoryImpl.create(warehouse);
 
         assertEquals(warehouse, result);
@@ -80,7 +95,6 @@ public class WarehouseRepositoryImplMockTest {
      */
     @Test
     void whenUpdateMethodCalledThenCorrectEntityReturns() throws SQLException, RepositoryException {
-        when(mockConnection.prepareStatement(UPDATE_WAREHOUSE)).thenReturn(mockStatement);
         Warehouse result = warehouseRepositoryImpl.update(warehouse);
 
         assertEquals(result, warehouse);
@@ -93,7 +107,6 @@ public class WarehouseRepositoryImplMockTest {
      */
     @Test
     void whenDeleteMethodCalledAndEntityExistsThenReturnTrue() throws SQLException, RepositoryException {
-        when(mockConnection.prepareStatement(DELETE_WAREHOUSE_BY_ID)).thenReturn(mockStatement);
         when(mockStatement.executeUpdate()).thenReturn(1);
         boolean result = warehouseRepositoryImpl.delete(warehouse.getIdNumber());
 
@@ -101,17 +114,13 @@ public class WarehouseRepositoryImplMockTest {
     }
 
     /**
-     * testing delete method to return false.
-     *
-     * @throws SQLException exception
+     * testing get method to return null.
      */
     @Test
-    void whenDeleteMethodCalledAndEntityNotFoundThenReturnFalse() throws SQLException, RepositoryException {
-        when(mockConnection.prepareStatement(anyString())).thenReturn(mockStatement);
-        when(mockStatement.executeUpdate()).thenReturn(-1);
-        boolean result = warehouseRepositoryImpl.delete(warehouse.getIdNumber());
+    void whenGetByIdCalledThenCorrectEntityReturn() throws SQLException, RepositoryException {
+        when(mockResultSet.next()).thenReturn(true).thenReturn(false);
 
-        assertFalse(result);
+        assertTrue(warehouseRepositoryImpl.get(1L).isPresent());
     }
 
     /**
@@ -121,7 +130,6 @@ public class WarehouseRepositoryImplMockTest {
      */
     @Test
     void whenGetAllMethodCalledThenCorrectListReturns() throws SQLException, RepositoryException {
-        when(mockConnection.prepareStatement(SELECT_ALL_WAREHOUSES)).thenReturn(mockStatement);
         when(mockResultSet.next()).thenReturn(true, false);
         List<Warehouse> warehouses = warehouseRepositoryImpl.getAll();
 
@@ -134,25 +142,11 @@ public class WarehouseRepositoryImplMockTest {
     @Test
     void whenCreateMethodCalledThrowsSQLExceptionThenDaoExceptionMustBeThrown() {
         Throwable exception = assertThrows(RepositoryException.class, () -> {
-            when(mockConnection.prepareStatement(INSERT_WAREHOUSE)).thenThrow(new SQLException());
+            when(mockConnection.prepareStatement(INSERT_WAREHOUSE, Statement.RETURN_GENERATED_KEYS)).thenThrow(new SQLException());
             warehouseRepositoryImpl.create(warehouse);
         });
 
         assertEquals(exception.getMessage(), FAILED_TO_CREATE_NEW_WAREHOUSE.getMessage());
-    }
-
-    /**
-     * testing create method to throw THE_SHOP_CANNOT_BE_NULL Exception.
-     */
-    @Test
-    void whenCreateMethodCalledWithIdNullThenDaoExceptionMustBeThrown() {
-        Throwable exception = assertThrows(RepositoryException.class, () -> {
-            when(mockConnection.prepareStatement(anyString())).thenReturn(mockStatement);
-            when(mockResultSet.next()).thenReturn(false);
-            warehouseRepositoryImpl.create(warehouse);
-        });
-
-        assertEquals(exception.getMessage(), THE_WAREHOUSE_CANNOT_BE_NULL.getMessage());
     }
 
     /**
@@ -205,49 +199,5 @@ public class WarehouseRepositoryImplMockTest {
         });
 
         assertEquals(exception.getMessage(), FAILED_TO_GET_WAREHOUSE_BY_ID.getMessage() + " 1");
-    }
-
-    /**
-     * testing get method to return null.
-     */
-    @Test
-    void whenGetByIdCalledWithIdNullThenNullIsReturned() throws SQLException, RepositoryException {
-        when(mockConnection.prepareStatement(anyString())).thenReturn(mockStatement);
-        when(mockResultSet.next()).thenReturn(false);
-
-        assertFalse(warehouseRepositoryImpl.get(1L).isPresent());
-    }
-
-    /**
-     * testing get method to throw RepositoryException.
-     */
-    @Test
-    void whenGetWarehouseByIdThenReturnSqlException() throws SQLException {
-        when(mockConnectionFactory.getConnection()).thenReturn(mockConnection);
-        when(mockConnection.prepareStatement(anyString())).thenThrow(SQLException.class);
-        Throwable thrown = assertThrows(RepositoryException.class, () -> warehouseRepositoryImpl.get(1L));
-        assertNotNull(thrown.getMessage());
-    }
-
-    /**
-     * testing getAll method to throw RepositoryException.
-     */
-    @Test
-    void whenGetAllWarehousesThenReturnSqlException() throws SQLException {
-        when(mockConnectionFactory.getConnection()).thenReturn(mockConnection);
-        when(mockConnection.prepareStatement(any(String.class))).thenThrow(SQLException.class);
-        Throwable thrown = assertThrows(RepositoryException.class, () -> warehouseRepositoryImpl.getAll());
-        assertNotNull(thrown.getMessage());
-    }
-
-    /**
-     * testing create method to throw RepositoryException.
-     */
-    @Test
-    void whenAddWarehouseThenReturnSqlException() throws SQLException {
-        when(mockConnectionFactory.getConnection()).thenReturn(mockConnection);
-        when(mockConnection.prepareStatement(any(String.class))).thenThrow(SQLException.class);
-        Throwable thrown = assertThrows(RepositoryException.class, () -> warehouseRepositoryImpl.create(warehouse));
-        assertNotNull(thrown.getMessage());
     }
 }
