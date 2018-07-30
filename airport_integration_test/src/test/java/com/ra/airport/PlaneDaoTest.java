@@ -1,6 +1,5 @@
 package com.ra.airport;
 
-
 import java.io.FileReader;
 import java.io.IOException;
 import java.sql.Connection;
@@ -13,7 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import com.ra.airport.configuration.PlaneConfiguration;
+import com.ra.airport.config.AirPortConfiguration;
 import com.ra.airport.dao.AirPortDao;
 import com.ra.airport.dao.exception.AirPortDaoException;
 import com.ra.airport.entity.Plane;
@@ -31,7 +30,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(SpringExtension.class)
-@ContextConfiguration(classes = {PlaneConfiguration.class})
+@ContextConfiguration(classes = {AirPortConfiguration.class})
 @SqlGroup({
                 @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = "classpath:sql/create_table_skripts.sql"),
                 @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = "classpath:sql/tables_backup(data).sql"),
@@ -105,7 +104,7 @@ public class PlaneDaoTest {
     @Test
     public void whenGetAllThenPlanesFromDBShouldBeReturned() throws AirPortDaoException {
         List<Plane> planes = planeDao.getAll();
-        assertTrue(planes.size() == 2);
+        assertTrue(planes.size() == 1);
     }
 
     private Plane changePlane(Plane plane) {
