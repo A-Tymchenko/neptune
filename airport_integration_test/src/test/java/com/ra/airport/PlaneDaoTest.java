@@ -98,7 +98,7 @@ public class PlaneDaoTest {
     @Test
     public void whenGetAllThenPlanesFromDBShouldBeReturned() throws AirPortDaoException {
         List<Plane> planes = planeDao.getAll();
-        assertTrue(planes.size() == 2);
+        assertTrue(planes.size() == 1);
     }
 
     private Plane changePlane(Plane plane) {
