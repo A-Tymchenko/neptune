@@ -1,16 +1,11 @@
 package com.ra.airport.helper;
 
-import com.ra.airport.entity.Flight;
+import java.sql.Timestamp;
+
 import com.ra.airport.entity.Plane;
 import com.ra.airport.entity.Ticket;
 
-import java.sql.Timestamp;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-
 public abstract class DataCreationHelper {
-
-    private static final String SPACE = " ";
 
     public static Ticket createTicket() {
         Ticket ticket = new Ticket();
@@ -22,13 +17,4 @@ public abstract class DataCreationHelper {
         return ticket;
     }
 
-    public static Plane createPlane() {
-        Plane plane = new Plane();
-        plane.setIdentifier(1);
-        plane.setPlateNumber(2);
-        plane.setModel(SPACE);
-        plane.setType(SPACE);
-        plane.setOwner(SPACE);
-        return plane;
-    }
 }

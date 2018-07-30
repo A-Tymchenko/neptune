@@ -14,7 +14,7 @@ import org.springframework.core.env.Environment;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 /**
- * Spring configuration class for working with DB through {@link com.ra.airport.dao.impl.FlightDao} class.
+ * * Spring configuration class for working with DB through {@link com.ra.airport.dao.impl.FlightDao} class.
  */
 @PropertySource("classpath:config.properties")
 @ComponentScan("com.ra.airport.dao.impl")
@@ -53,5 +53,7 @@ public class AirPortConfiguration {
     @Bean
     public JdbcTemplate jdbcTemplate() {
         return new JdbcTemplate(dataSource());
+
     }
 }
+
