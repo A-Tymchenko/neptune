@@ -68,7 +68,6 @@ public class OrderRepositoryIntegrationTest {
     void whenGetOrderThenReturnOptionalOfOrder() throws RepositoryException {
         Order order = new Order(20, 200d, true, 50, true);
         Order created = repository.create(order);
-        System.out.println(created.getId());
         Optional<Order> optional = repository.get(created.getId());
         assertNotNull(optional);
         assertTrue(optional.isPresent());
@@ -97,9 +96,7 @@ public class OrderRepositoryIntegrationTest {
     void whenUpdateOrderThenReturnUpdatedOrder() throws RepositoryException {
         Order order = new Order(30, 30d, false, 0, true);
         repository.create(order);
-        order.setPrice(150d);
-        order.setDeliveryIncluded(true);
-        order.setDeliveryCost(70);
+        setValuesForOrderUpdate(order);
         Order updated = repository.update(order);
         assertNotNull(updated);
         assertAll(() -> {
@@ -184,4 +181,9 @@ public class OrderRepositoryIntegrationTest {
         return 123L;
     }
 
+    private void setValuesForOrderUpdate(Order order) {
+        order.setPrice(150d);
+        order.setDeliveryIncluded(true);
+        order.setDeliveryCost(70);
+    }
 }
