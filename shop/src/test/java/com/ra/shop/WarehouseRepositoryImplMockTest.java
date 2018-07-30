@@ -10,6 +10,7 @@ import org.mockito.Mockito;
 import java.io.IOException;
 import java.sql.*;
 import java.util.List;
+import java.util.Optional;
 
 import static com.ra.shop.enums.ExceptionMessage.*;
 import static org.junit.jupiter.api.Assertions.*;
@@ -114,13 +115,36 @@ public class WarehouseRepositoryImplMockTest {
     }
 
     /**
-     * testing get method to return null.
+     * testing delete method to return false.
+     *
+     * @throws SQLException exception
+     */
+    @Test
+    void whenDeleteMethodCalledAndEntityDoesNotExistsThenReturnFalse() throws SQLException, RepositoryException {
+        when(mockStatement.executeUpdate()).thenReturn(-1);
+        boolean result = warehouseRepositoryImpl.delete(warehouse.getIdNumber());
+
+        assertFalse(result);
+    }
+
+    /**
+     * testing get method to return object.
      */
     @Test
     void whenGetByIdCalledThenCorrectEntityReturn() throws SQLException, RepositoryException {
         when(mockResultSet.next()).thenReturn(true).thenReturn(false);
 
         assertTrue(warehouseRepositoryImpl.get(1L).isPresent());
+    }
+
+    /**
+     * testing get method to return null.
+     */
+    @Test
+    void whenGetByIdCalledThenReturnOptionalEmpty() throws SQLException, RepositoryException {
+        when(mockResultSet.next()).thenReturn(false);
+
+        assertEquals(Optional.empty(), warehouseRepositoryImpl.get(1L));
     }
 
     /**
