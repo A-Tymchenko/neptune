@@ -37,7 +37,6 @@ import static org.junit.jupiter.api.Assertions.*;
 @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = "classpath:sql/tables_backup(data).sql")
 @Sql(executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD, scripts = "classpath:sql/remove_table_skripts.sql")
 class TicketDaoTest {
-    private static URL urlToTicketScript;
 
     @Autowired
     NamedParameterJdbcTemplate namedParameterJdbcTemplate;
@@ -58,7 +57,6 @@ class TicketDaoTest {
     @Test
     public void whenCreateThenNewTicketWithIdShouldBeReturned() throws AirPortDaoException {
         Ticket createdTicket = ticketDao.create(ticket);
-        Ticket createdTicket2 = ticketDao.create(ticket);
         assertNotNull(createdTicket);
         Integer idTicket = createdTicket.getTicketId();
         assertNotNull(idTicket);
