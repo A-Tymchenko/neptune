@@ -1,7 +1,6 @@
 package com.ra.airport;
 
 import com.ra.airport.dao.exception.AirPortDaoException;
-import com.ra.airport.config.DataCreationHelper;
 import com.ra.airport.dao.impl.PlaneDao;
 import com.ra.airport.entity.Plane;
 import org.junit.jupiter.api.BeforeEach;
@@ -44,11 +43,12 @@ public class PlaneDaoMockitoTest {
     private JdbcTemplate mockJdbcTemplate;
     private PreparedStatement mockPreparedStatement;
     private Connection mockConnection;
+    private static final String SPACE = " ";
 
 
     @BeforeEach
     public void init() throws SQLException  {
-        plane = DataCreationHelper.createPlane();
+        plane=createPlane();
         mockPreparedStatement = mock(PreparedStatement.class);
         mockJdbcTemplate = mock(JdbcTemplate.class);
         planeDao = new PlaneDao(mockJdbcTemplate);
@@ -59,14 +59,24 @@ public class PlaneDaoMockitoTest {
         when(mockJdbcTemplate.queryForObject(eq(SELECT_PLANE_BY_ID_SQL), any(Object[].class), any(RowMapper.class))).thenReturn(plane);
     }
 
+    private Plane createPlane() {
+        Plane plane = new Plane();
+        plane.setPlaneId(1);
+        plane.setPlateNumber(2);
+        plane.setModel(SPACE);
+        plane.setType(SPACE);
+        plane.setOwner(SPACE);
+        return plane;
+    }
+
     @Test
     public void whenCreateThenCorrectSQLShouldBeExecutedAndCorrectEntityShouldBeReturned() throws AirPortDaoException {
         doAnswer(invocation -> {
             ((PreparedStatementCreator) invocation.getArguments()[0]).createPreparedStatement(mockConnection);
             return null; }).when(mockJdbcTemplate).update(any(PreparedStatementCreator.class), any(KeyHolder.class));
-        Plane flightWithoutId = plane;
-        flightWithoutId.setPlaneId(null);
-        Plane result = planeDao.create(flightWithoutId);
+        Plane planeWithoutId = plane;
+        planeWithoutId.setPlaneId(null);
+        Plane result = planeDao.create(planeWithoutId);
         assertEquals(plane, result);
     }
 
