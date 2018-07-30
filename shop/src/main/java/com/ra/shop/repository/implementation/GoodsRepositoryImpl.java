@@ -112,7 +112,7 @@ public class GoodsRepositoryImpl implements IRepository<Goods> {
      * @return true else false.
      */
     @Override
-    public Boolean delete(final Long entityId) throws RepositoryException {
+    public boolean delete(final Long entityId) throws RepositoryException {
         try (Connection connection = connFactory.getConnection()) {
             final PreparedStatement statement =
                     connection.prepareStatement("DELETE FROM GOODS WHERE ID = ?");

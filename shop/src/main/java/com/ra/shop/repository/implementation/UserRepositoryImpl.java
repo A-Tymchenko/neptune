@@ -120,7 +120,7 @@ public class UserRepositoryImpl implements IRepository<User> {
     }
 
     @Override
-    public Boolean delete(final Long entityId) throws RepositoryException {
+    public boolean delete(final Long entityId) throws RepositoryException {
         try (Connection connection = connectionFactory.getConnection()) {
             final PreparedStatement statement = connection.prepareStatement("DELETE FROM USERS WHERE USER_ID = ?");
             statement.setLong(1, entityId);

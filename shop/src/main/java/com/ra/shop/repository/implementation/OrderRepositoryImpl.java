@@ -6,7 +6,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -77,14 +76,11 @@ public class OrderRepositoryImpl implements IRepository<Order> {
                 final Order order = fillEntityWithValues(resultSet);
                 all.add(order);
             }
-            if (all.size() > 0) {
-                return all;
-            }
+            return all;
         } catch (SQLException e) {
             LOGGER.error(e.getMessage(), e);
             throw new RepositoryException(ExceptionMessage.FAILED_TO_GET_ALL_ORDER.getMessage(), e);
         }
-        return Collections.emptyList();
     }
 
     @Override
@@ -111,13 +107,12 @@ public class OrderRepositoryImpl implements IRepository<Order> {
     @Override
     public Optional<Order> get(final Long entityId) throws RepositoryException {
         Objects.requireNonNull(entityId);
-        Order found;
         try (Connection connection = connectionFactory.getConnection();
              PreparedStatement statement = connection.prepareStatement("SELECT * FROM ORDERS WHERE ORDER_ID = ?")) {
             statement.setLong(1, entityId);
             final ResultSet res = statement.executeQuery();
             if (res.next()) {
-                found = fillEntityWithValues(res);
+                Order found = fillEntityWithValues(res);
                 return Optional.of(found);
             }
         } catch (SQLException e) {
@@ -144,20 +139,16 @@ public class OrderRepositoryImpl implements IRepository<Order> {
     }
 
     @Override
-    public Boolean delete(final Long entityId) throws RepositoryException {
+    public boolean delete(final Long entityId) throws RepositoryException {
         Objects.requireNonNull(entityId);
         try (Connection connection = connectionFactory.getConnection();
              PreparedStatement statement = connection.prepareStatement("DELETE FROM ORDERS WHERE ORDER_ID = ?")) {
             statement.setLong(1, entityId);
-            final int deleted = statement.executeUpdate();
-            if (deleted > 0) {
-                return Boolean.TRUE;
-            }
+            return statement.executeUpdate() > 0;
         } catch (SQLException e) {
             LOGGER.error(e.getMessage(), e);
             throw new RepositoryException(ExceptionMessage.FAILED_TO_DELETE_ORDER.getMessage(), e);
         }
-        return Boolean.FALSE;
     }
 
     /**
@@ -168,17 +159,12 @@ public class OrderRepositoryImpl implements IRepository<Order> {
      * @throws SQLException if any error occurs.
      */
     private void setStatementValuesForUpdate(final PreparedStatement statement, final Order newEntity) throws SQLException {
-        final int number = 1;
-        final int price = 2;
-        final int deliveryIncluded = 3;
-        final int deliveryCost = 4;
-        final int isExecuted = 5;
         final int orderId = 6;
-        statement.setInt(number, newEntity.getNumber());
-        statement.setDouble(price, newEntity.getPrice());
-        statement.setBoolean(deliveryIncluded, newEntity.getDeliveryIncluded());
-        statement.setInt(deliveryCost, newEntity.getDeliveryCost());
-        statement.setBoolean(isExecuted, newEntity.getExecuted());
+        statement.setInt(NUMBER, newEntity.getNumber());
+        statement.setDouble(PRICE, newEntity.getPrice());
+        statement.setBoolean(DELIVERY_INCLUDED, newEntity.getDeliveryIncluded());
+        statement.setInt(DELIVERY_COST, newEntity.getDeliveryCost());
+        statement.setBoolean(EXECUTED, newEntity.getExecuted());
         statement.setLong(orderId, newEntity.getId());
     }
 

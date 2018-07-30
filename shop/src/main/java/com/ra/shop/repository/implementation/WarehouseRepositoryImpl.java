@@ -86,7 +86,7 @@ public class WarehouseRepositoryImpl implements IRepository<Warehouse> {
      * @return count of deleted rows
      */
     @Override
-    public Boolean delete(final Long entityId) throws RepositoryException {
+    public boolean delete(final Long entityId) throws RepositoryException {
         boolean result;
         try (Connection connection = connectionFactory.getConnection()) {
             final PreparedStatement preparedStatement = connection.prepareStatement("DELETE FROM warehouse WHERE id = ?");
