@@ -49,18 +49,6 @@ public class OrderRepositoryMockTest {
     }
 
     @Test
-    void whenCreateOrderThenReturnOrderWithoutSettedId() throws SQLException, RepositoryException {
-        Order order = new Order(10, 100D, false, 0, true);
-        when(connection.prepareStatement("INSERT INTO ORDERS (NUMBER, PRICE, DELIVERY_INCLUDED, DELIVERY_COST, EXECUTED) "
-                + "VALUES(?, ?, ?, ?, ?)",
-            Statement.RETURN_GENERATED_KEYS)).thenReturn(statement);
-        when(statement.getGeneratedKeys()).thenReturn(resultSet);
-        when(resultSet.next()).thenReturn(Boolean.FALSE);
-        Order created = mockOrderRepository.create(order);
-        assertNull(created.getId());
-    }
-
-    @Test
     void whenCreateOrderThenThrowRepositoryException() throws RepositoryException, SQLException {
         Order order = new Order(10, 100D, false, 0, true);
         when(connection.prepareStatement("INSERT INTO ORDERS (NUMBER, PRICE, DELIVERY_INCLUDED, DELIVERY_COST, EXECUTED) "
@@ -148,16 +136,6 @@ public class OrderRepositoryMockTest {
     }
 
     @Test
-    void whenDeleteOrderThenReturnFalse() throws SQLException, RepositoryException {
-        Order order = new Order(10, 100D, false, 0, true);
-        order.setId(23L);
-        when(connection.prepareStatement("DELETE FROM ORDERS WHERE ORDER_ID = ?")).thenReturn(statement);
-        when(statement.executeUpdate()).thenReturn(0);
-        Boolean isDeleted = mockOrderRepository.delete(order.getId());
-        assertFalse(isDeleted);
-    }
-
-    @Test
     void whenDeleteOrderThenThrowRepositoryException() throws SQLException {
         Order order = new Order(10, 100D, false, 0, true);
         order.setId(23L);
@@ -170,24 +148,13 @@ public class OrderRepositoryMockTest {
     }
 
     @Test
-    void getAllOrdersAndReturnListOfORders() throws SQLException, RepositoryException {
+    void getAllOrdersAndReturnListOfOrders() throws SQLException, RepositoryException {
         when(connection.prepareStatement("SELECT * FROM ORDERS")).thenReturn(statement);
         when(statement.executeQuery()).thenReturn(resultSet);
         when(resultSet.next()).thenReturn(Boolean.TRUE, Boolean.TRUE, Boolean.TRUE, Boolean.FALSE);
         List<Order> actual = mockOrderRepository.getAll();
         assertFalse(actual.isEmpty());
         assertEquals(3, actual.size());
-    }
-
-    @Test
-    void whenGetAllOrdersThenReturnEmptyList() throws SQLException, RepositoryException {
-        when(connection.prepareStatement("SELECT * FROM ORDERS")).thenReturn(statement);
-        when(statement.executeQuery()).thenReturn(resultSet);
-        when(resultSet.next()).thenReturn(Boolean.FALSE);
-        List<Order> actual = mockOrderRepository.getAll();
-        assertTrue(actual.isEmpty());
-        assertEquals(0, actual.size());
-        assertEquals(Collections.emptyList(), actual);
     }
 
     @Test
