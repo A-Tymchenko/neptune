@@ -1,5 +1,6 @@
 package com.ra.airport.dao.impl;
 
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -17,6 +18,8 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.BadSqlGrammarException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
 @Repository
@@ -38,11 +41,12 @@ public class PlaneDao implements AirPortDao<Plane> {
         this.jdbcTemplate = jdbcTemplate; }
 
     @Override
-    public Plane create(Plane plane) throws AirPortDaoException {
+    public Plane create(final Plane plane) throws AirPortDaoException {
+        final KeyHolder keyHolder=new GeneratedKeyHolder();
         try {
-            jdbcTemplate.update(INSERT_PLANE_SQL,statement->fillPreparedStatement(plane,statement));
-            final Integer planeId=jdbcTemplate.queryForObject("SELECT SCOPE_IDENTITY()", Integer.class);
-            return getById(planeId).orElse(plane);
+            jdbcTemplate.update(connection->createPreparedStatement(plane,connection,INSERT_PLANE_SQL),keyHolder);
+            plane.setPlaneId((Integer)keyHolder.getKey());
+            return plane;
         } catch (EmptyResultDataAccessException | BadSqlGrammarException e) {
             LOGGER.error(ExceptionMessage.FAILED_TO_CREATE_NEW_PLANE.toString(), e);
             throw new AirPortDaoException(ExceptionMessage.FAILED_TO_CREATE_NEW_PLANE.get(), e);
@@ -50,23 +54,27 @@ public class PlaneDao implements AirPortDao<Plane> {
     }
 
     @Override
-    public Plane update(Plane plane) throws AirPortDaoException {
+    public Plane update(final Plane plane) throws AirPortDaoException {
         try {
-            jdbcTemplate.update(UPDATE_PLANE_SQL, ps -> fillPreparedStatement(plane, ps));
-            return getById(plane.getPlaneId()).orElse(plane);
-        } catch (EmptyResultDataAccessException | BadSqlGrammarException e)  {
+            jdbcTemplate.update(connection -> {
+                final PreparedStatement preparedStatement = createPreparedStatement(plane, connection, UPDATE_PLANE_SQL);
+                preparedStatement.setInt(StatementParameter.PLANE_ID.get(), plane.getPlaneId());
+                return preparedStatement;
+            });
+            return plane;
+
+        }catch (EmptyResultDataAccessException | BadSqlGrammarException e) {
             final String errorMessage = ExceptionMessage.FAILED_TO_UPDATE_PLANE_WITH_ID.get() + plane.getPlaneId();
             LOGGER.error(errorMessage, e);
             throw new AirPortDaoException(errorMessage, e);
         }
-
     }
 
     @Override
     public boolean delete(final Plane plane) throws AirPortDaoException {
 
         try {
-            final int numOfDeletedRow=jdbcTemplate.update("DELETE FROM plane WHERE planeId=?",plane.getPlaneId());
+            final int numOfDeletedRow=jdbcTemplate.update("DELETE FROM plane WHERE planeId = ?",plane.getPlaneId());
             return numOfDeletedRow>0;
         } catch (EmptyResultDataAccessException | BadSqlGrammarException e)  {
             final String errorMessage = ExceptionMessage.FAILED_TO_DELETE_PLANE_WITH_ID.get() + plane.getPlaneId();
@@ -81,7 +89,7 @@ public class PlaneDao implements AirPortDao<Plane> {
 
         try {
             final BeanPropertyRowMapper<Plane> rowMapper=BeanPropertyRowMapper.newInstance(Plane.class);
-            return jdbcTemplate.query("SELECT*FROM plane",rowMapper);
+            return jdbcTemplate.query("SELECT * FROM plane",rowMapper);
             } catch (EmptyResultDataAccessException | BadSqlGrammarException e) {
             final String message = ExceptionMessage.FAILED_TO_GET_ALL_PLANES.get();
             LOGGER.error(message, e);
@@ -98,7 +106,7 @@ public class PlaneDao implements AirPortDao<Plane> {
         try {
             final BeanPropertyRowMapper<Plane> rowMapper=BeanPropertyRowMapper.newInstance(Plane.class);
             final Object[] queryParams={planeId};
-            final Plane plane=jdbcTemplate.queryForObject("SELECT * FROM plane WHERE planeId=?",queryParams,rowMapper);
+            final Plane plane=jdbcTemplate.queryForObject("SELECT * FROM plane WHERE planeId = ?",queryParams,rowMapper);
             return Optional.ofNullable(plane);
             }catch (EmptyResultDataAccessException | BadSqlGrammarException e) {
             final String errorMessage = ExceptionMessage.FAILED_TO_GET_PLANE_WITH_ID.get() + planeId;
@@ -109,13 +117,16 @@ public class PlaneDao implements AirPortDao<Plane> {
     }
 
 
-    private void fillPreparedStatement(final Plane plane, final PreparedStatement preparedStatement) throws SQLException {
+    private PreparedStatement createPreparedStatement(final Plane plane, final Connection connection,final String sql)
+            throws SQLException {
+        final PreparedStatement preparedStatement=connection.prepareStatement(sql);
         preparedStatement.setString(StatementParameter.PLANE_OWNER.get(), plane.getOwner());
         preparedStatement.setString(StatementParameter.PLANE_MODEL.get(), plane.getModel());
         preparedStatement.setString(StatementParameter.PLANE_TYPE.get(), plane.getType());
         preparedStatement.setInt(StatementParameter.PLANE_PLATE_NUMBER.get(), plane.getPlateNumber());
-        if (plane.getPlaneId() != null) {
-            preparedStatement.setInt(StatementParameter.PLANE_ID.get(), plane.getPlaneId());
+        return preparedStatement;
         }
-    }
+
+
 }
+
