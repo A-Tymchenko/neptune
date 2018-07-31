@@ -12,8 +12,7 @@ import com.ra.airport.entity.Airport;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.EmptyResultDataAccessException;
-import org.springframework.jdbc.BadSqlGrammarException;
+import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -45,7 +44,7 @@ public class AirportDAOImpl implements AirPortDao<Airport> {
             }, keyHolder);
             airport.setApId((Integer) keyHolder.getKey());
             return airport;
-        } catch (EmptyResultDataAccessException | BadSqlGrammarException e) {
+        } catch (DataAccessException e) {
             final String errorMessage = ExceptionMessage.FAILED_TO_CREATE_NEW_AIRPORT.get() + airport.getApId();
             LOGGER.error(errorMessage, e);
             throw new AirPortDaoException(errorMessage, e);
@@ -63,7 +62,7 @@ public class AirportDAOImpl implements AirPortDao<Airport> {
                 statement.setInt(StatementParameter.AIRPORT_ID.get(), airport.getApId());
             });
             return airport;
-        } catch (EmptyResultDataAccessException | BadSqlGrammarException e) {
+        } catch (DataAccessException e) {
             final String errorMessage = ExceptionMessage.FAILED_TO_UPDATE_AIRPORT_WITH_ID.get() + airport.getApId();
             LOGGER.error(errorMessage, e);
             throw new AirPortDaoException(errorMessage, e);
@@ -77,7 +76,7 @@ public class AirportDAOImpl implements AirPortDao<Airport> {
             final String query = "DELETE FROM Airport "
                     + "WHERE apid = ?";
             return jdbcTemplate.update(query, statement -> statement.setInt(1, airport.getApId())) > 0;
-        } catch (EmptyResultDataAccessException | BadSqlGrammarException e) {
+        } catch (DataAccessException e) {
             final String errorMessage = ExceptionMessage.FAILED_TO_DELETE_AIRPORT_WITH_ID.get() + airport.getApId();
             LOGGER.error(errorMessage, e);
             throw new AirPortDaoException(errorMessage, e);
@@ -90,7 +89,7 @@ public class AirportDAOImpl implements AirPortDao<Airport> {
             final String query = "Select * From Airport Where apid = ?";
             final BeanPropertyRowMapper<Airport> rowMapper = BeanPropertyRowMapper.newInstance(Airport.class);
             return Optional.ofNullable(jdbcTemplate.queryForObject(query, rowMapper, airportId));
-        } catch (EmptyResultDataAccessException | BadSqlGrammarException e) {
+        } catch (DataAccessException e) {
             final String errorMessage = ExceptionMessage.FAILED_TO_GET_AIRPORT_WITH_ID.get() + airportId;
             LOGGER.error(errorMessage, e);
             throw new AirPortDaoException(errorMessage, e);
@@ -102,7 +101,7 @@ public class AirportDAOImpl implements AirPortDao<Airport> {
         try {
             final String query = "Select * From Airport";
             return jdbcTemplate.query(query, BeanPropertyRowMapper.newInstance(Airport.class));
-        } catch (EmptyResultDataAccessException | BadSqlGrammarException e) {
+        } catch (DataAccessException e) {
             final String errorMessage = ExceptionMessage.FAILED_TO_GET_ALL_AIRPORTS.get();
             LOGGER.error(errorMessage, e);
             throw new AirPortDaoException(errorMessage, e);

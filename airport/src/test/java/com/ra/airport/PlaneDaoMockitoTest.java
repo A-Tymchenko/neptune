@@ -155,7 +155,7 @@ public class PlaneDaoMockitoTest {
     }
 
     @Test
-    public void whenGetAllThrownAccessExceptionThenDAOExceptionShouldBeThrownToo() {
+    public void whenGetAllThrownEmptyResultDataAccessExceptionThenDAOExceptionShouldBeThrownToo() {
         Throwable exception = assertThrows(AirPortDaoException.class, () -> {
             when(mockJdbcTemplate.query(eq(SELECT_ALL_PLANES_BY_ID_SQL), any(RowMapper.class)))
                     .thenThrow(EmptyResultDataAccessException.class);
@@ -165,7 +165,7 @@ public class PlaneDaoMockitoTest {
     }
 
     @Test
-    public void whenGetByIdThrownSQlExceptionThenDAOExceptionShouldBeThrownToo() {
+    public void whenGetByIdThrownEmptyResultDataAccessExceptionThenDAOExceptionShouldBeThrownToo() {
         when(mockJdbcTemplate.queryForObject(eq(SELECT_PLANE_BY_ID_SQL), any(RowMapper.class), eq(1)))
                 .thenThrow(EmptyResultDataAccessException.class);
         Throwable exception = assertThrows(AirPortDaoException.class, () -> {
