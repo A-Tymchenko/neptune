@@ -17,7 +17,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
  * Spring configuration class for working with DB through {@link com.ra.airport.dao.impl.FlightDao} class.
  */
 @PropertySource("classpath:config.properties")
-@ComponentScan("com.ra.airport.dao.impl")
+@ComponentScan("com.ra.airport")
 @Configuration
 public class AirPortConfiguration {
 

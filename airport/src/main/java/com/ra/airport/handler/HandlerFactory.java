@@ -6,17 +6,16 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.ra.airport.handler.modelhendler.AirportHandler;
+
 public class HandlerFactory {
 
     private static Map<String, InternalHandler> handlers = new HashMap<>();
 
-    /**
-     * Init path.
-     * For Exelple, add your path to static
-     * static {
-     *         handlers.put("/autosalon", new AutosalonHandler());
-     *     }
-     */
+    static {
+        handlers.put("/airport", new AirportHandler());
+    }
+
     /**
      * Init get request to EntityHandler.
      * @Throw IOException
