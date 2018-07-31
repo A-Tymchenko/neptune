@@ -26,7 +26,7 @@ public class AirPortConfiguration {
     private transient Environment environment;
 
     /**
-     * Return {@link DataSource} bean.
+     * Register {@link DataSource} bean.
      * @return data source bean
      */
     @Bean
