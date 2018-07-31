@@ -1,12 +1,14 @@
 package com.ra.airport;
 
-import com.ra.airport.configuration.AirPortConfiguration;
+import java.io.IOException;
+import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.util.List;
+import java.util.Optional;
+import com.ra.airport.config.AirPortConfiguration;
 import com.ra.airport.dao.exception.AirPortDaoException;
 import com.ra.airport.dao.impl.TicketDao;
 import com.ra.airport.entity.Ticket;
-import com.ra.airport.factory.ConnectionFactory;
-import org.h2.tools.RunScript;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -15,17 +17,6 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-
-import java.io.FileReader;
-import java.io.IOException;
-import java.net.URL;
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
