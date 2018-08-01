@@ -1,4 +1,4 @@
-package com.ra.airport.handler;
+package com.ra.airport.controller;
 
 import java.io.IOException;
 import javax.servlet.annotation.WebServlet;
@@ -6,8 +6,10 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.ra.airport.controller.handler.factory.HandlerFactory;
+
 @WebServlet(urlPatterns = "/")
-public class InternalServlet extends HttpServlet {
+public class DispatcherServlet extends HttpServlet {
 
     private static HandlerFactory handlerFactory;
 

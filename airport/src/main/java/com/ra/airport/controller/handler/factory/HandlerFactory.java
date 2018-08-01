@@ -1,4 +1,4 @@
-package com.ra.airport.handler;
+package com.ra.airport.controller.handler.factory;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -6,7 +6,8 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.ra.airport.handler.modelhendler.AirportHandler;
+import com.ra.airport.controller.InternalHandler;
+import com.ra.airport.controller.handler.AirportHandler;
 
 public class HandlerFactory {
 

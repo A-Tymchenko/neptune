@@ -1,4 +1,4 @@
-package com.ra.airport.handler;
+package com.ra.airport.controller;
 
 import java.io.IOException;
 import javax.servlet.http.HttpServletRequest;
