@@ -23,6 +23,7 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public class TicketDao implements AirPortDao<Ticket> {
+
     private static final Logger LOGGER = LogManager.getLogger(TicketDao.class);
 
     private final transient NamedParameterJdbcTemplate jdbcTemplate;
@@ -35,15 +36,13 @@ public class TicketDao implements AirPortDao<Ticket> {
     private static final String INSERT_SQL = "INSERT INTO TICKET "
             + "(TICKET_NUMBER, PASSENGER_NAME, DOCUMENT, SELLING_DATE) "
             + "VALUES (:ticketNumber, :passengerName, :document, :sellingDate)";
+
     private static final String UPDATE_SQL = "UPDATE TICKET "
             + "SET TICKET_NUMBER = :ticketNumber, "
             + "PASSENGER_NAME = :passengerName, "
             + "DOCUMENT = :document, "
             + "SELLING_DATE = :sellingDate "
             + "WHERE TICKET_ID = :ticketId";
-    private static final String DELETE_SQL = "DELETE FROM TICKET WHERE TICKET_ID = :ticketId";
-    private static final String SELECT_BY_ID_SQL = "SELECT * FROM TICKET WHERE TICKET_ID = :ticketId";
-    private static final String SELECT_ALL_SQL = "SELECT * FROM TICKET";
 
     /**
      * Create {@link Ticket} entity in DB and return it.
@@ -99,7 +98,7 @@ public class TicketDao implements AirPortDao<Ticket> {
     @Override
     public boolean delete(final Ticket ticket) throws AirPortDaoException {
         try {
-            return jdbcTemplate.update(DELETE_SQL,
+            return jdbcTemplate.update("DELETE FROM TICKET WHERE TICKET_ID = :ticketId",
                                        new MapSqlParameterSource("ticketId", ticket.getTicketId())) > 0;
         } catch (DataAccessException e) {
             final String errorMessage = ExceptionMessage.FAILED_TO_DELETE_TICKET_WITH_ID.get() + ticket.getTicketId();
@@ -118,7 +117,7 @@ public class TicketDao implements AirPortDao<Ticket> {
     public Optional<Ticket> getById(final Integer idTicket) throws AirPortDaoException {
         try {
             final BeanPropertyRowMapper<Ticket> rowMapper = BeanPropertyRowMapper.newInstance(Ticket.class);
-            return Optional.ofNullable(jdbcTemplate.queryForObject(SELECT_BY_ID_SQL,
+            return Optional.ofNullable(jdbcTemplate.queryForObject("SELECT * FROM TICKET WHERE TICKET_ID = :ticketId",
                                                                    new MapSqlParameterSource("ticketId", idTicket), rowMapper));
         } catch (DataAccessException e) {
             final String errorMessage = ExceptionMessage.FAILED_TO_GET_TICKET_WITH_ID.get() + idTicket;
@@ -138,7 +137,7 @@ public class TicketDao implements AirPortDao<Ticket> {
     public List<Ticket> getAll() throws AirPortDaoException {
         try {
             final BeanPropertyRowMapper<Ticket> rowMapper = BeanPropertyRowMapper.newInstance(Ticket.class);
-            return jdbcTemplate.query(SELECT_ALL_SQL, rowMapper);
+            return jdbcTemplate.query("SELECT * FROM TICKET", rowMapper);
         } catch (DataAccessException e) {
             final String message = ExceptionMessage.FAILED_TO_GET_ALL_TICKETS.get();
             LOGGER.error(message, e);
