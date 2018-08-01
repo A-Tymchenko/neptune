@@ -1,71 +1,53 @@
 package com.ra.airport;
 
-import com.ra.airport.dao.AirPortDao;
+import java.io.IOException;
+import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.util.List;
+import java.util.Optional;
+import com.ra.airport.config.AirPortConfiguration;
 import com.ra.airport.dao.exception.AirPortDaoException;
 import com.ra.airport.dao.impl.TicketDao;
 import com.ra.airport.entity.Ticket;
-import com.ra.airport.factory.ConnectionFactory;
-import org.h2.tools.RunScript;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
-import java.io.FileReader;
-import java.io.IOException;
-import java.net.URL;
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.List;
-
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.jdbc.Sql;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Tests for {@link TicketDao} class
  */
+@ExtendWith(SpringExtension.class)
+@ContextConfiguration(classes = {AirPortConfiguration.class})
+@Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = "classpath:sql/create_table_skripts.sql")
+@Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = "classpath:sql/tables_backup(data).sql")
+@Sql(executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD, scripts = "classpath:sql/remove_table_skripts.sql")
 class TicketDaoTest {
-    private static URL urlToTicketScript;
 
-    private AirPortDao<Ticket> airPortDao;
+    @Autowired
+    NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
-    private Ticket ticket;
+    @Autowired
+    TicketDao ticketDao;
+    Ticket ticket;
 
     @BeforeEach
     public void beforeTest() throws SQLException, IOException {
-        createDataBaseTable();
-        createTicket();
-    }
-
-    @AfterEach
-    public void afterTest() throws SQLException, IOException {
-        deleteTable();
-    }
-
-    private void createDataBaseTable() throws SQLException, IOException {
-        Connection connection = ConnectionFactory.getInstance().getConnection();
-        urlToTicketScript = ClassLoader.getSystemResource("./sql/create_table_skripts.sql");
-        RunScript.execute(connection, new FileReader(urlToTicketScript.getPath()));
-    }
-
-    private void deleteTable() throws SQLException, IOException {
-        Connection connection = ConnectionFactory.getInstance().getConnection();
-        urlToTicketScript = ClassLoader.getSystemResource("./sql/remove_table_skripts.sql");
-        RunScript.execute(connection, new FileReader(urlToTicketScript.getPath()));
-    }
-
-    private void createTicket() throws IOException {
-        airPortDao = new TicketDao(ConnectionFactory.getInstance());
         ticket = new Ticket();
-        ticket.setTicketNumber("AA111-BB111");
-        ticket.setPassengerName("John Dow");
-        ticket.setDocument("QQ12345678QQ");
-        ticket.setSellingDate(Timestamp.valueOf("2018-07-24 08:00:00"));
+        ticket.setTicketNumber("A123-456F");
+        ticket.setPassengerName("Petro Velykyi");
+        ticket.setDocument("AA192939");
+        ticket.setSellingDate(Timestamp.valueOf("2018-06-21 21:05:00"));
     }
 
     @Test
     public void whenCreateThenNewTicketWithIdShouldBeReturned() throws AirPortDaoException {
-        Ticket createdTicket = airPortDao.create(ticket);
+        Ticket createdTicket = ticketDao.create(ticket);
         assertNotNull(createdTicket);
         Integer idTicket = createdTicket.getTicketId();
         assertNotNull(idTicket);
@@ -75,27 +57,35 @@ class TicketDaoTest {
 
     @Test
     public void whenUpdateThenUpdatedTicketShouldBeReturned() throws AirPortDaoException {
-        Ticket createdTicket = airPortDao.create(ticket);
+        Ticket createdTicket = ticketDao.create(ticket);
         Ticket expectedTicket = changeTicket(createdTicket);
-        Ticket updatedTicket = airPortDao.update(createdTicket);
+        Ticket updatedTicket = ticketDao.update(createdTicket);
         assertEquals(expectedTicket, updatedTicket);
     }
 
     @Test
     public void whenDeleteThenDeleteTicketAndReturnTrue() throws AirPortDaoException {
-        Ticket createdTicket = airPortDao.create(ticket);
-        boolean result = airPortDao.delete(createdTicket);
+        Ticket createdTicket = ticketDao.create(ticket);
+        boolean result = ticketDao.delete(createdTicket);
         assertTrue(result);
     }
 
     @Test
+    public void whenGetTicketByIdThenReturnTicket() throws AirPortDaoException {
+        Optional<Ticket> ticket = ticketDao.getById(1);
+        assertEquals(ticket.get().getTicketNumber(), this.ticket.getTicketNumber());
+    }
+
+    @Test
+    public void whenGetNotExistingTicketByIdThenThrowAirPortDaoException() throws AirPortDaoException {
+        Throwable thrown = assertThrows(AirPortDaoException.class, () -> ticketDao.getById(5));
+        assertNotNull(thrown.getMessage());
+    }
+
+    @Test
     public void whenGetAllThenTicketsFromDBShouldBeReturned() throws AirPortDaoException {
-        List<Ticket> expectedResult = new ArrayList<>();
-        expectedResult.add(airPortDao.create(ticket));
-        expectedResult.add(airPortDao.create(ticket));
-        expectedResult.add(airPortDao.create(ticket));
-        List<Ticket> tickets = airPortDao.getAll();
-        assertEquals(expectedResult.size(), tickets.size());
+        List<Ticket> tickets = ticketDao.getAll();
+        assertEquals(tickets.size(), 3);
     }
 
     private Ticket changeTicket(Ticket ticket) {
