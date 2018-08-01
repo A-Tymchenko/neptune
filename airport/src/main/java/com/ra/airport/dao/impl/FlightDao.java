@@ -113,10 +113,7 @@ public class FlightDao implements AirPortDao<Flight> {
      * @return {@link Flight}
      */
     @Override
-    public Optional<Flight> getById(final Integer flightId) throws AirPortDaoException {
-        if (flightId == null) {
-            throw new AirPortDaoException(ExceptionMessage.FLIGHT_ID_CANNOT_BE_NULL.get());
-        }
+    public Optional<Flight> getById(final int flightId) throws AirPortDaoException {
         try {
             final BeanPropertyRowMapper<Flight> rowMapper = BeanPropertyRowMapper.newInstance(Flight.class);
             final Flight flight = jdbcTemplate.queryForObject("SELECT * FROM flight WHERE flId = ?", rowMapper, flightId);

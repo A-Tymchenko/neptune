@@ -91,10 +91,7 @@ public class PlaneDao implements AirPortDao<Plane> {
     }
 
     @Override
-    public Optional<Plane> getById(final Integer planeId) throws AirPortDaoException {
-        if (planeId == null) {
-            throw new AirPortDaoException(ExceptionMessage.PLANE_ID_CANNOT_BE_NULL.get());
-        }
+    public Optional<Plane> getById(final int planeId) throws AirPortDaoException {
         try {
             final BeanPropertyRowMapper<Plane> rowMapper = BeanPropertyRowMapper.newInstance(Plane.class);
             final Plane plane = jdbcTemplate.queryForObject("SELECT * FROM plane WHERE planeId = ?", rowMapper, planeId);

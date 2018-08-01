@@ -84,7 +84,7 @@ public class AirportDAOImpl implements AirPortDao<Airport> {
     }
 
     @Override
-    public Optional<Airport> getById(final Integer airportId) throws AirPortDaoException {
+    public Optional<Airport> getById(final int airportId) throws AirPortDaoException {
         try {
             final String query = "Select * From Airport Where apid = ?";
             final BeanPropertyRowMapper<Airport> rowMapper = BeanPropertyRowMapper.newInstance(Airport.class);

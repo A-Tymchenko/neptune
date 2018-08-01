@@ -119,14 +119,6 @@ public class PlaneDaoMockitoTest {
     }
 
     @Test
-    public void whenGetByIdNullPassedThenDAOExceptionShouldBeThrown() {
-        Throwable exception =  assertThrows(AirPortDaoException.class,() -> {
-            planeDao.getById(null);
-        });
-        assertEquals(PLANE_ID_CANNOT_BE_NULL.get(), exception.getMessage());
-    }
-
-    @Test
     public void whenCreateThrownEmptyResultDataAccessExceptionThenDAOExceptionShouldBeThrownToo() {
         Throwable exception = assertThrows(AirPortDaoException.class, () -> {
             when(mockJdbcTemplate.update(any(PreparedStatementCreator.class), any(KeyHolder.class))).thenThrow(EmptyResultDataAccessException.class);
