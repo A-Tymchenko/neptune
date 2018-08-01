@@ -12,9 +12,10 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 
 /**
- * Spring configuration class for working with DB through {@link com.ra.airport.dao.impl.FlightDao} class.
+ * Spring configuration class for DAO layer.
  */
 @PropertySource("classpath:config.properties")
 @ComponentScan("com.ra.airport")
@@ -25,7 +26,7 @@ public class AirPortConfiguration {
     private transient Environment environment;
 
     /**
-     * Return {@link DataSource} bean.
+     * Register {@link DataSource} bean.
      * @return data source bean
      */
     @Bean
@@ -34,7 +35,7 @@ public class AirPortConfiguration {
     }
 
     /**
-     * Return {@link HikariConfig} bean. Set main properties to it.
+     * Register {@link HikariConfig} bean. Set main properties to it.
      * @return return config for {@link DataSource} bean
      */
     @Bean
@@ -47,11 +48,21 @@ public class AirPortConfiguration {
     }
 
     /**
-     * Return {@link JdbcTemplate} bean.
+     * Register {@link JdbcTemplate} bean.
      * @return template
      */
     @Bean
     public JdbcTemplate jdbcTemplate() {
         return new JdbcTemplate(dataSource());
+    }
+
+    /**
+     * Register NamedParameterJdbcTemplate bean.
+     *
+     * @return NamedParameterJdbcTemplate.
+     */
+    @Bean
+    public NamedParameterJdbcTemplate namedParameterJdbcTemplate() {
+        return new NamedParameterJdbcTemplate(dataSource());
     }
 }

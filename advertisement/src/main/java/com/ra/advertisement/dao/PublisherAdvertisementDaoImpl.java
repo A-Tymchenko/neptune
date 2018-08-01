@@ -1,175 +1,136 @@
 package com.ra.advertisement.dao;
 
-import java.sql.Connection;
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
+import java.util.Map;
+import java.util.stream.Collectors;
 
-import com.ra.advertisement.connection.ConnectionFactory;
-import com.ra.advertisement.dao.exceptions.AdvertisementEnum;
-import com.ra.advertisement.dao.exceptions.DaoException;
 import com.ra.advertisement.entity.Publisher;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.BeanPropertyRowMapper;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
+import org.springframework.stereotype.Component;
 
+@Component("publisherDao")
 public final class PublisherAdvertisementDaoImpl implements AdvertisementDao<Publisher> {
-    private final transient ConnectionFactory connectionFactory;
+    private final transient JdbcTemplate jdbcTemplate;
+    private final transient KeyHolder keyHolder = new GeneratedKeyHolder();
+    private static final String GET_PUB_BY_ID = "SELECT * FROM PUBLISHER WHERE PUB_ID=?";
     private static final Integer NAME = 1;
     private static final Integer ADDRESS = 2;
     private static final Integer TELEPHONE = 3;
     private static final Integer COUNTRY = 4;
     private static final Integer PUB_ID = 5;
-    private static final Logger LOGGER = LogManager.getLogger(PublisherAdvertisementDaoImpl.class);
 
-    public PublisherAdvertisementDaoImpl(final ConnectionFactory connectionFactory) {
-        this.connectionFactory = connectionFactory;
+    @Autowired
+    public PublisherAdvertisementDaoImpl(final JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
     }
 
     /**
      * Method adds new Publisher to the Data Base.
      *
      * @param publisher Publisher to save
-     * @return entity Publisher with generated id;
+     * @returnto new Publisher
      */
     @Override
-    public Publisher create(final Publisher publisher) throws DaoException {
-        try (Connection connection = connectionFactory.getConnection()) {
-            final PreparedStatement pstm = connection.prepareStatement("INSERT INTO PUBLISHER (NAME, ADDRESS, "
-                    + "TELEPHONE, COUNTRY) VALUES(?,?,?,?)");
-            setStatementValues(pstm, publisher);
-            pstm.executeUpdate();
-            final ResultSet resultSetWithKey = pstm.getGeneratedKeys();
-            if (resultSetWithKey.next()) {
-                return getById(resultSetWithKey.getLong(1)).get();
-            }
-            return publisher;
-        } catch (SQLException ex) {
-            final String message = "Trouble in the create method {}";
-            LOGGER.error(message, AdvertisementEnum.PUBLISHER.getMessage(), ex);
-            throw new DaoException(String.format(message, AdvertisementEnum.PUBLISHER.getMessage()), ex);
-        }
+    public Publisher create(final Publisher publisher) {
+        final String createPublisher = "INSERT INTO PUBLISHER (NAME, ADDRESS, TELEPHONE, COUNTRY) VALUES(?,?,?,?)";
+        jdbcTemplate.update(
+                connection -> {
+                    final PreparedStatement preparedStatement = connection.prepareStatement(createPublisher);
+                    preparedStatementForCreateOrUpdate(preparedStatement, publisher);
+                    return preparedStatement;
+                }, keyHolder);
+        final Long publisherKey = (Long) keyHolder.getKey();
+        publisher.setPubId(publisherKey);
+        return publisher;
     }
 
     /**
      * Method returns Publisher from Data Base by id.
      *
      * @param pubId Publisher's id
-     * @return object Publisher in Optional
+     * @return object Publisher
      */
     @Override
-    public Optional<Publisher> getById(final Long pubId) throws DaoException {
-        try (Connection connection = connectionFactory.getConnection()) {
-            final PreparedStatement pstm = connection.prepareStatement("SELECT * FROM PUBLISHER WHERE PUB_ID=?");
-            pstm.setLong(1, pubId);
-            final ResultSet resultSet = pstm.executeQuery();
-            if (resultSet.next()) {
-                return Optional.of(getPublisherFromResultSet(resultSet));
-            }
-        } catch (SQLException ex) {
-            final String message = "Trouble in the getById method {}";
-            LOGGER.error(message, AdvertisementEnum.PUBLISHER.getMessage(), ex);
-            throw new DaoException(String.format(message, AdvertisementEnum.PUBLISHER.getMessage()), ex);
-        }
-        return Optional.empty();
+    public Publisher getById(final Long pubId) {
+        return jdbcTemplate.queryForObject(GET_PUB_BY_ID, BeanPropertyRowMapper.newInstance(Publisher.class), pubId);
     }
 
     /**
      * Method deletes the object from Data Base by its id.
      *
-     * @param publisher Publisher
+     * @param publisher Publisher we want delete
      * @return count of deleted rows
      */
     @Override
-    public Integer delete(final Publisher publisher) throws DaoException {
-        if (publisher != null) {
-            try (Connection connection = connectionFactory.getConnection()) {
-                final PreparedStatement pstm = connection.prepareStatement("DELETE FROM PUBLISHER WHERE PUB_ID=?");
-                pstm.setLong(1, publisher.getPubId());
-                return pstm.executeUpdate();
-            } catch (SQLException ex) {
-                final String message = "Trouble in the delete method {}";
-                LOGGER.error(message, AdvertisementEnum.PUBLISHER.getMessage(), ex);
-                throw new DaoException(String.format(message, AdvertisementEnum.PUBLISHER.getMessage()), ex);
-            }
-        } else {
-            return 0;
-        }
+    public Integer delete(final Publisher publisher) {
+        final String deletePublisher = "DELETE FROM PUBLISHER WHERE PUB_ID=?";
+        return jdbcTemplate.update(deletePublisher, publisher.getPubId());
     }
 
     /**
      * Update publisher to Data Base.
      *
-     * @param publisher to save.
-     * @return new Publisher updated.
+     * @param publisher publisher to update
+     * @return new Publisher
      */
     @Override
-    public Publisher update(final Publisher publisher) throws DaoException {
-        try (Connection connection = connectionFactory.getConnection()) {
-            final PreparedStatement pstm = connection.prepareStatement("update PUBLISHER set NAME = ?, ADDRESS= ?, "
-                    + "TELEPHONE = ?, COUNTRY = ? where PUB_ID = ?");
-            setStatementValues(pstm, publisher);
-            pstm.setLong(PUB_ID, publisher.getPubId());
-            pstm.executeUpdate();
-            return getById(publisher.getPubId()).get();
-        } catch (SQLException ex) {
-            final String message = "Trouble in the update method {}";
-            LOGGER.error(message, AdvertisementEnum.PUBLISHER.getMessage(), ex);
-            throw new DaoException(String.format(message, AdvertisementEnum.PUBLISHER.getMessage()), ex);
-        }
+    public Publisher update(final Publisher publisher) {
+        final String updatePublisher = "update PUBLISHER set NAME = ?, ADDRESS= ?, TELEPHONE = ?"
+                + ", COUNTRY = ? where PUB_ID = ?";
+        jdbcTemplate.update(updatePublisher, ps -> {
+            preparedStatementForCreateOrUpdate(ps, publisher);
+            ps.setLong(PUB_ID, publisher.getPubId());
+        });
+        return publisher;
     }
 
     /**
      * Method gets all publishers from Data Base.
      *
-     * @return list of publishers or empty otherwise
+     * @return list of all publishers or empty otherwise
      */
     @Override
-    public List<Publisher> getAll() throws DaoException {
-        try (Connection connection = connectionFactory.getConnection()) {
-            final List<Publisher> publishersList = new ArrayList<>();
-            final PreparedStatement pstm = connection.prepareStatement("SELECT * FROM PUBLISHER");
-            final ResultSet resultSet = pstm.executeQuery();
-            while (resultSet.next()) {
-                final Publisher publisher = getPublisherFromResultSet(resultSet);
-                publishersList.add(publisher);
-            }
-            return publishersList;
-        } catch (SQLException ex) {
-            final String message = "Trouble in the getAll method {}";
-            LOGGER.error(message, AdvertisementEnum.PUBLISHER.getMessage(), ex);
-            throw new DaoException(String.format(message, AdvertisementEnum.PUBLISHER.getMessage()), ex);
-        }
+    public List<Publisher> getAll() {
+        final String getAllPublishers = "SELECT * FROM PUBLISHER";
+        final List<Map<String, Object>> rows = jdbcTemplate.queryForList(getAllPublishers);
+        return mapListFromQueryForList(rows);
     }
 
     /**
-     * Method extracts a publisher from resultSet.
+     * We use this method for fill up preparedStatement.
      *
-     * @param resultSet resultSet received from a Data Base
-     * @return publisher with the filled fields
+     * @param preparedStatement preparedStatement to fill up
+     * @param publisher         publisher where we get fields from
+     * @throws SQLException Sqlexception
      */
-    private Publisher getPublisherFromResultSet(final ResultSet resultSet) throws SQLException {
-        final Publisher publisher = new Publisher();
-        publisher.setPubId(resultSet.getLong("PUB_ID"));
-        publisher.setName(resultSet.getString("NAME"));
-        publisher.setAddress(resultSet.getString("ADDRESS"));
-        publisher.setTelephone(resultSet.getString("TELEPHONE"));
-        publisher.setCountry(resultSet.getString("COUNTRY"));
-        return publisher;
+    private void preparedStatementForCreateOrUpdate(final PreparedStatement preparedStatement,
+                                                   final Publisher publisher) throws SQLException {
+        preparedStatement.setString(NAME, publisher.getName());
+        preparedStatement.setString(ADDRESS, publisher.getAddress());
+        preparedStatement.setString(TELEPHONE, publisher.getTelephone());
+        preparedStatement.setString(COUNTRY, publisher.getCountry());
     }
 
     /**
-     * Method sets Statement values.
-     *
-     * @param pstm      to save
-     * @param publisher to save
+     * this method map listOfCollections from query to list.
+     * @param rows rows
+     * @return list
      */
-    private void setStatementValues(final PreparedStatement pstm, final Publisher publisher) throws SQLException {
-        pstm.setString(NAME, publisher.getName());
-        pstm.setString(ADDRESS, publisher.getAddress());
-        pstm.setString(TELEPHONE, publisher.getTelephone());
-        pstm.setString(COUNTRY, publisher.getCountry());
+    public List<Publisher> mapListFromQueryForList(final List<Map<String, Object>> rows) {
+        return rows.stream().map(row -> {
+            final Publisher publisher = new Publisher();
+            publisher.setPubId((Long) row.get("PUB_ID"));
+            publisher.setName((String) row.get("NAME"));
+            publisher.setAddress((String) row.get("ADDRESS"));
+            publisher.setTelephone((String) row.get("TELEPHONE"));
+            publisher.setCountry((String) row.get("COUNTRY"));
+            return publisher;
+        }).collect(Collectors.toList());
     }
 }

@@ -16,8 +16,7 @@ import com.ra.airport.entity.Flight;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.EmptyResultDataAccessException;
-import org.springframework.jdbc.BadSqlGrammarException;
+import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -60,7 +59,7 @@ public class FlightDao implements AirPortDao<Flight> {
             jdbcTemplate.update(connection -> createPreparedStatement(flight, connection, INSERT_FLIGHT_SQL), keyHolder);
             flight.setFlId((Integer) keyHolder.getKey());
             return flight;
-        } catch (EmptyResultDataAccessException | BadSqlGrammarException e) {
+        } catch (DataAccessException e) {
             LOGGER.error(ExceptionMessage.FAILED_TO_CREATE_NEW_FLIGHT.toString(), e);
             throw new AirPortDaoException(ExceptionMessage.FAILED_TO_CREATE_NEW_FLIGHT.get(), e);
         }
@@ -81,7 +80,7 @@ public class FlightDao implements AirPortDao<Flight> {
                 return preparedStatement;
             });
             return flight;
-        } catch (EmptyResultDataAccessException | BadSqlGrammarException e) {
+        } catch (DataAccessException e) {
             final String errorMessage = ExceptionMessage.FAILED_TO_UPDATE_FLIGHT_WITH_ID.get() + flight.getFlId();
             LOGGER.error(errorMessage, e);
             throw new AirPortDaoException(errorMessage, e);
@@ -100,7 +99,7 @@ public class FlightDao implements AirPortDao<Flight> {
         try {
             final int deletedRowCount = jdbcTemplate.update("DELETE FROM flight WHERE flId = ?", flight.getFlId());
             return deletedRowCount > 0;
-        } catch (EmptyResultDataAccessException | BadSqlGrammarException e) {
+        } catch (DataAccessException e) {
             final String errorMessage = ExceptionMessage.FAILED_TO_DELETE_FLIGHT_WITH_ID.get() + flight.getFlId();
             LOGGER.error(errorMessage, e);
             throw new AirPortDaoException(errorMessage, e);
@@ -114,15 +113,12 @@ public class FlightDao implements AirPortDao<Flight> {
      * @return {@link Flight}
      */
     @Override
-    public Optional<Flight> getById(final Integer flightId) throws AirPortDaoException {
-        if (flightId == null) {
-            throw new AirPortDaoException(ExceptionMessage.FLIGHT_ID_CANNOT_BE_NULL.get());
-        }
+    public Optional<Flight> getById(final int flightId) throws AirPortDaoException {
         try {
             final BeanPropertyRowMapper<Flight> rowMapper = BeanPropertyRowMapper.newInstance(Flight.class);
             final Flight flight = jdbcTemplate.queryForObject("SELECT * FROM flight WHERE flId = ?", rowMapper, flightId);
             return Optional.ofNullable(flight);
-        } catch (EmptyResultDataAccessException | BadSqlGrammarException e) {
+        } catch (DataAccessException e) {
             final String errorMessage = ExceptionMessage.FAILED_TO_GET_FLIGHT_WITH_ID.get() + flightId;
             LOGGER.error(errorMessage, e);
             throw new AirPortDaoException(errorMessage, e);
@@ -141,7 +137,7 @@ public class FlightDao implements AirPortDao<Flight> {
         try {
             final BeanPropertyRowMapper<Flight> rowMapper = BeanPropertyRowMapper.newInstance(Flight.class);
             return jdbcTemplate.query("SELECT * FROM flight", rowMapper);
-        } catch (EmptyResultDataAccessException | BadSqlGrammarException e) {
+        } catch (DataAccessException e) {
             final String message = ExceptionMessage.FAILED_TO_GET_ALL_FLIGHTS.get();
             LOGGER.error(message, e);
             throw new AirPortDaoException(message, e);

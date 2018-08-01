@@ -216,12 +216,13 @@ dependencies {
 
 }
 
+
 repositories {
     mavenCentral()
 }
 
-project("study"){
-    dependencies{
+project("study") {
+    dependencies {
         compile spring.context
     }
 }
@@ -231,6 +232,9 @@ project("advertisement") {
         compile group: 'org.apache.logging.log4j', name: 'log4j-core', version: '2.10.0'
         compile group: 'org.apache.logging.log4j', name: 'log4j-api', version: '2.10.0'
         compile group: 'com.lmax', name: 'disruptor', version: '3.4.1'
+        compile spring.context
+        compile spring.jdbc
+        compile spring.test
     }
 }
 
@@ -247,9 +251,10 @@ project("airport") {
         compile group: 'org.apache.logging.log4j', name: 'log4j-core', version: '2.11.0'
         compile group: 'com.lmax', name: 'disruptor', version: '3.4.2'
         compile group: 'com.zaxxer', name: 'HikariCP', version: '3.2.0'
-        compile group: 'javax.servlet', name: 'javax.servlet-api', version: '4.0.1'
+        compile spring.context
+        compile spring.jdbc
+        compile spring.test
     }
-    apply plugin: 'war'
 }
 
 project("airport_integration_test") {
@@ -258,4 +263,17 @@ project("airport_integration_test") {
     }
 }
 
-        
+project("shop") {
+    dependencies {
+        compileClasspath db.h2
+        compile group: 'org.apache.logging.log4j', name: 'log4j-api', version: '2.11.0'
+        compile group: 'org.apache.logging.log4j', name: 'log4j-core', version: '2.11.0'
+        compile group: 'com.lmax', name: 'disruptor', version: '3.4.2'
+    }
+}
+
+project("shop_integration_test") {
+    dependencies {
+        compile project(':shop')
+    }
+}

@@ -43,7 +43,7 @@ public interface AirPortDao<T> {
      * @return T entity
      * @throws AirPortDaoException exception for DAO layer
      */
-    Optional<T> getById(Integer entityId) throws AirPortDaoException;
+    Optional<T> getById(int entityId) throws AirPortDaoException;
 
     /**
      * Return all entities from DB by T type.
