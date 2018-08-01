@@ -7,14 +7,12 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.ra.airport.servlet.InternalHandler;
-import com.ra.airport.servlet.handler.AirportHandler;
 
 public class HandlerFactory {
 
     private static Map<String, InternalHandler> handlers = new HashMap<>();
 
     static {
-        handlers.put("/airport", new AirportHandler());
     }
 
     /**
