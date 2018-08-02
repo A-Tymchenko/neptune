@@ -6,7 +6,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import com.ra.shop.enums.ExceptionMessage;
 import com.ra.shop.exceptions.RepositoryException;
@@ -113,7 +115,7 @@ public class WarehouseRepositoryImpl implements IRepository<Warehouse> {
     /**
      * Method returns warehouse from a Data Base by id.
      *
-     * @param idNumber Warehouse id
+     * @param entityId Warehouse id
      * @return Optional of warehouse or empty optional
      */
     @Override
@@ -139,18 +141,15 @@ public class WarehouseRepositoryImpl implements IRepository<Warehouse> {
      */
     @Override
     public List<Warehouse> getAll() throws RepositoryException {
-        final List<Warehouse> warehouses = new ArrayList<>();
-        try (Connection connection = connectionFactory.getConnection()) {
-            final PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM warehouse");
-            final ResultSet resultSet = preparedStatement.executeQuery();
-            while (resultSet.next()) {
-                warehouses.add(getWarehouseFromResultSet(resultSet));
-            }
-        } catch (SQLException e) {
+        final List<Map<String, Object>> rows;
+        try {
+            rows = jdbcTemplate.queryForList("SELECT * FROM warehouse");
+        } catch (DataAccessException e) {
             LOGGER.error(ExceptionMessage.FAILED_TO_GET_ALL_WAREHOUSE.getMessage(), e);
             throw new RepositoryException(ExceptionMessage.FAILED_TO_GET_ALL_WAREHOUSE.getMessage());
         }
-        return warehouses;
+        LOGGER.info("Got List of warehouses");
+        return getWarehouseFromListOfMap(rows);
     }
 
     /**
@@ -168,15 +167,17 @@ public class WarehouseRepositoryImpl implements IRepository<Warehouse> {
     /**
      * Method retrieves a warehouse from the preparedStatement.
      *
-     * @param resultSet received from a Data Base
+     * @param list received from a Data Base
      * @return warehouse with filled fields
      */
-    private Warehouse getWarehouseFromResultSet(final ResultSet resultSet) throws SQLException {
-        final Warehouse warehouse = new Warehouse();
-        warehouse.setIdNumber(resultSet.getLong("id"));
-        warehouse.setName(resultSet.getString("name"));
-        warehouse.setPrice(resultSet.getDouble("price"));
-        warehouse.setAmount(resultSet.getInt("amount"));
-        return warehouse;
+    private List<Warehouse> getWarehouseFromListOfMap(final List<Map<String, Object>> list) {
+        return list.stream().map((Map<String, Object> map) -> {
+            final Warehouse warehouse = new Warehouse();
+            warehouse.setIdNumber((Long)map.get("id"));
+            warehouse.setName((String) map.get("name"));
+            warehouse.setPrice((Double) map.get("price"));
+            warehouse.setAmount((Integer) map.get("amount"));
+            return warehouse;
+        } ).collect(Collectors.toList());
     }
 }
