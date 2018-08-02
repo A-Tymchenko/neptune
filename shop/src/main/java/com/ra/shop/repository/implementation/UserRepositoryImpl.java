@@ -61,9 +61,9 @@ public class UserRepositoryImpl implements IRepository<User> {
     public User create(final User entity) throws RepositoryException {
         try (Connection connection = connectionFactory.getConnection();
              PreparedStatement statement = connection.prepareStatement(
-                 "INSERT INTO USERS (PHONE_NUMBER, NAME, SECOND_NAME, COUNTRY, EMAIL_ADDRESS) "
-                     + "VALUES(?, ?, ?, ?, ?)",
-                 Statement.RETURN_GENERATED_KEYS)) {
+                     "INSERT INTO USERS (PHONE_NUMBER, NAME, SECOND_NAME, COUNTRY, EMAIL_ADDRESS) "
+                             + "VALUES(?, ?, ?, ?, ?)",
+                     Statement.RETURN_GENERATED_KEYS)) {
             setStatementValuesForCreation(statement, entity);
             statement.executeUpdate();
             final ResultSet primaryKeys = statement.getGeneratedKeys();
@@ -77,29 +77,34 @@ public class UserRepositoryImpl implements IRepository<User> {
         return entity;
     }
 
+//    @Override
+//    public Optional<User> get(final long entityId) throws RepositoryException {
+//        Objects.requireNonNull(entityId);
+//        try (Connection connection = connectionFactory.getConnection();
+//             PreparedStatement statement = connection.prepareStatement("SELECT * FROM USERS WHERE USER_ID = ?")) {
+//            statement.setLong(1, entityId);
+//            final ResultSet res = statement.executeQuery();
+//            if (res.next()) {
+//                final User found = fillEntityWithValues(res);
+//                return Optional.of(found);
+//            }
+//        } catch (SQLException e) {
+//            LOGGER.error(e.getMessage(), e);
+//            throw new RepositoryException(ExceptionMessage.FAILED_TO_GET_USER_BY_ID.getMessage() + " " + entityId, e);
+//        }
+//        return Optional.empty();
+//    }
+
     @Override
-    public Optional<User> get(final long entityId) throws RepositoryException {
-        Objects.requireNonNull(entityId);
-        try (Connection connection = connectionFactory.getConnection();
-             PreparedStatement statement = connection.prepareStatement("SELECT * FROM USERS WHERE USER_ID = ?")) {
-            statement.setLong(1, entityId);
-            final ResultSet res = statement.executeQuery();
-            if (res.next()) {
-                final User found = fillEntityWithValues(res);
-                return Optional.of(found);
-            }
-        } catch (SQLException e) {
-            LOGGER.error(e.getMessage(), e);
-            throw new RepositoryException(ExceptionMessage.FAILED_TO_GET_USER_BY_ID.getMessage() + " " + entityId, e);
-        }
-        return Optional.empty();
+    public User get(final long entityId) throws RepositoryException {
+        return null;
     }
 
     @Override
     public User update(final User newEntity) throws RepositoryException {
         try (Connection connection = connectionFactory.getConnection();
              PreparedStatement statement = connection.prepareStatement(
-                 "UPDATE USERS SET PHONE_NUMBER= ?,NAME = ?,SECOND_NAME= ?,COUNTRY= ?,EMAIL_ADDRESS= ? WHERE USER_ID= ?")) {
+                     "UPDATE USERS SET PHONE_NUMBER= ?,NAME = ?,SECOND_NAME= ?,COUNTRY= ?,EMAIL_ADDRESS= ? WHERE USER_ID= ?")) {
             setStatementValuesForUpdate(statement, newEntity);
             statement.executeUpdate();
         } catch (SQLException e) {

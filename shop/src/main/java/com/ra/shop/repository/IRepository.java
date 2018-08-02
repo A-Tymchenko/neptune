@@ -26,7 +26,7 @@ public interface IRepository<T> {
      * @param entityId - id of searched entity.
      * @return Optional wrapper for chosen entity.
      */
-    Optional<T> get(long entityId) throws RepositoryException;
+    T get(long entityId) throws RepositoryException;
 
     /**
      * Method updates existed entity due to it`s new params and send updated entity to database.

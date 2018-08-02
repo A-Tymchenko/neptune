@@ -13,6 +13,7 @@ import com.ra.shop.config.ConnectionFactory;
 import com.ra.shop.enums.ExceptionMessage;
 import com.ra.shop.exceptions.RepositoryException;
 import com.ra.shop.model.Order;
+import com.ra.shop.model.User;
 import com.ra.shop.repository.IRepository;
 import org.apache.log4j.Logger;
 
@@ -86,9 +87,9 @@ public class OrderRepositoryImpl implements IRepository<Order> {
     public Order create(final Order entity) throws RepositoryException {
         try (Connection connection = connectionFactory.getConnection();
              PreparedStatement statement = connection.prepareStatement(
-                 "INSERT INTO ORDERS (NUMBER, PRICE, DELIVERY_INCLUDED, DELIVERY_COST, EXECUTED) "
-                     + "VALUES(?, ?, ?, ?, ?)",
-                 Statement.RETURN_GENERATED_KEYS)) {
+                     "INSERT INTO ORDERS (NUMBER, PRICE, DELIVERY_INCLUDED, DELIVERY_COST, EXECUTED) "
+                             + "VALUES(?, ?, ?, ?, ?)",
+                     Statement.RETURN_GENERATED_KEYS)) {
             setStatementValuesForCreation(statement, entity);
             statement.executeUpdate();
             final ResultSet primaryKeys = statement.getGeneratedKeys();
@@ -102,29 +103,34 @@ public class OrderRepositoryImpl implements IRepository<Order> {
         return entity;
     }
 
+    //    @Override
+//    public Optional<Order> get(final long entityId) throws RepositoryException {
+//        try (Connection connection = connectionFactory.getConnection();
+//             PreparedStatement statement = connection.prepareStatement("SELECT * FROM ORDERS WHERE ORDER_ID = ?")) {
+//            statement.setLong(1, entityId);
+//            final ResultSet res = statement.executeQuery();
+//            if (res.next()) {
+//                final Order found = fillEntityWithValues(res);
+//                return Optional.of(found);
+//            }
+//        } catch (SQLException e) {
+//            LOGGER.error(e.getMessage(), e);
+//            throw new RepositoryException(ExceptionMessage.FAILED_TO_GET_ORDER_BY_ID.getMessage() + " " + entityId, e);
+//        }
+//        return Optional.empty();
+//    }
+
     @Override
-    public Optional<Order> get(final long entityId) throws RepositoryException {
-        try (Connection connection = connectionFactory.getConnection();
-             PreparedStatement statement = connection.prepareStatement("SELECT * FROM ORDERS WHERE ORDER_ID = ?")) {
-            statement.setLong(1, entityId);
-            final ResultSet res = statement.executeQuery();
-            if (res.next()) {
-                final Order found = fillEntityWithValues(res);
-                return Optional.of(found);
-            }
-        } catch (SQLException e) {
-            LOGGER.error(e.getMessage(), e);
-            throw new RepositoryException(ExceptionMessage.FAILED_TO_GET_ORDER_BY_ID.getMessage() + " " + entityId, e);
-        }
-        return Optional.empty();
+    public Order get(final long entityId) throws RepositoryException {
+        return null;
     }
 
     @Override
     public Order update(final Order newEntity) throws RepositoryException {
         try (Connection connection = connectionFactory.getConnection();
              PreparedStatement statement = connection.prepareStatement(
-                 "UPDATE ORDERS SET NUMBER = ?, PRICE = ?, DELIVERY_INCLUDED = ?, "
-                     + "DELIVERY_COST = ?, EXECUTED = ? WHERE ORDER_ID = ?")) {
+                     "UPDATE ORDERS SET NUMBER = ?, PRICE = ?, DELIVERY_INCLUDED = ?, "
+                             + "DELIVERY_COST = ?, EXECUTED = ? WHERE ORDER_ID = ?")) {
             setStatementValuesForUpdate(statement, newEntity);
             statement.executeUpdate();
         } catch (SQLException e) {

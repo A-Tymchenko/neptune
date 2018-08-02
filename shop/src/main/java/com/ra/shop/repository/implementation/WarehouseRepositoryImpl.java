@@ -12,6 +12,7 @@ import java.util.Optional;
 import com.ra.shop.config.ConnectionFactory;
 import com.ra.shop.enums.ExceptionMessage;
 import com.ra.shop.exceptions.RepositoryException;
+import com.ra.shop.model.User;
 import com.ra.shop.model.Warehouse;
 import com.ra.shop.repository.IRepository;
 import org.apache.log4j.Logger;
@@ -104,21 +105,26 @@ public class WarehouseRepositoryImpl implements IRepository<Warehouse> {
      * @param idNumber Warehouse id
      * @return Optional of warehouse or empty optional
      */
+//    @Override
+//    public Optional<Warehouse> get(final long idNumber) throws RepositoryException {
+//        Optional<Warehouse> warehouse = Optional.empty();
+//        try (Connection connection = connectionFactory.getConnection()) {
+//            final PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM warehouse WHERE id = ?");
+//            preparedStatement.setLong(1, idNumber);
+//            final ResultSet resultSet = preparedStatement.executeQuery();
+//            if (resultSet.next()) {
+//                warehouse = Optional.of(getWarehouseFromResultSet(resultSet));
+//            }
+//            return warehouse;
+//        } catch (SQLException e) {
+//            LOGGER.error(ExceptionMessage.FAILED_TO_GET_WAREHOUSE_BY_ID.getMessage(), e);
+//            throw new RepositoryException(ExceptionMessage.FAILED_TO_GET_WAREHOUSE_BY_ID.getMessage() + " " + idNumber);
+//        }
+//    }
+
     @Override
-    public Optional<Warehouse> get(final long idNumber) throws RepositoryException {
-        Optional<Warehouse> warehouse = Optional.empty();
-        try (Connection connection = connectionFactory.getConnection()) {
-            final PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM warehouse WHERE id = ?");
-            preparedStatement.setLong(1, idNumber);
-            final ResultSet resultSet = preparedStatement.executeQuery();
-            if (resultSet.next()) {
-                warehouse = Optional.of(getWarehouseFromResultSet(resultSet));
-            }
-            return warehouse;
-        } catch (SQLException e) {
-            LOGGER.error(ExceptionMessage.FAILED_TO_GET_WAREHOUSE_BY_ID.getMessage(), e);
-            throw new RepositoryException(ExceptionMessage.FAILED_TO_GET_WAREHOUSE_BY_ID.getMessage() + " " + idNumber);
-        }
+    public Warehouse get(final long entityId) throws RepositoryException {
+        return null;
     }
 
     /**
