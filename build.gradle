@@ -245,6 +245,9 @@ project("advertisement_integration_test") {
 }
 
 project("airport") {
+    
+    apply plugin: 'war'
+
     dependencies {
         compileClasspath db.h2
         compile group: 'org.apache.logging.log4j', name: 'log4j-api', version: '2.11.0'
