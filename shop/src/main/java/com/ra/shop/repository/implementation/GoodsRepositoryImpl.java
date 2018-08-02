@@ -10,7 +10,8 @@ import com.ra.shop.enums.ExceptionMessage;
 import com.ra.shop.exceptions.RepositoryException;
 import com.ra.shop.model.Goods;
 import com.ra.shop.repository.IRepository;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
@@ -25,7 +26,7 @@ import org.springframework.stereotype.Component;
 @Component("goodsDAO")
 public final class GoodsRepositoryImpl implements IRepository<Goods> {
 
-    private static final Logger LOGGER = Logger.getLogger(GoodsRepositoryImpl.class);
+    private static final Logger LOGGER = LogManager.getLogger(GoodsRepositoryImpl.class);
     private final transient KeyHolder generatedKeys = new GeneratedKeyHolder();
     private static final Integer FIRST_SQL_INDEX = 1;
     private static final Integer SECOND_SQL_INDEX = 2;

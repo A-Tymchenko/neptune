@@ -13,9 +13,9 @@ import com.ra.shop.config.ConnectionFactory;
 import com.ra.shop.enums.ExceptionMessage;
 import com.ra.shop.exceptions.RepositoryException;
 import com.ra.shop.model.Order;
-import com.ra.shop.model.User;
 import com.ra.shop.repository.IRepository;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * Implementation of IRepository interface.
@@ -25,7 +25,7 @@ public class OrderRepositoryImpl implements IRepository<Order> {
     /**
      * Logger.
      */
-    private static final Logger LOGGER = Logger.getLogger(OrderRepositoryImpl.class);
+    private static final Logger LOGGER = LogManager.getLogger(OrderRepositoryImpl.class);
 
     /**
      * Constant represents order number.

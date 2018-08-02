@@ -15,14 +15,15 @@ import com.ra.shop.enums.ExceptionMessage;
 import com.ra.shop.exceptions.RepositoryException;
 import com.ra.shop.model.User;
 import com.ra.shop.repository.IRepository;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * Implementation of IRepository interface.
  */
 public class UserRepositoryImpl implements IRepository<User> {
 
-    private static final Logger LOGGER = Logger.getLogger(UserRepositoryImpl.class);
+    private static final Logger LOGGER = LogManager.getLogger(UserRepositoryImpl.class);
     private static final int PHONE_NUMBER = 1;
     private static final int NAME = 2;
     private static final int SECOND_NAME = 3;

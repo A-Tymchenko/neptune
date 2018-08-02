@@ -12,10 +12,10 @@ import java.util.Optional;
 import com.ra.shop.config.ConnectionFactory;
 import com.ra.shop.enums.ExceptionMessage;
 import com.ra.shop.exceptions.RepositoryException;
-import com.ra.shop.model.User;
 import com.ra.shop.model.Warehouse;
 import com.ra.shop.repository.IRepository;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class WarehouseRepositoryImpl implements IRepository<Warehouse> {
     private static final int NAME = 1;
@@ -23,7 +23,7 @@ public class WarehouseRepositoryImpl implements IRepository<Warehouse> {
     private static final int AMOUNT = 3;
     private static final int ID_NUMBER = 4;
 
-    private static final Logger LOGGER = Logger.getLogger(WarehouseRepositoryImpl.class);
+    private static final Logger LOGGER = LogManager.getLogger(WarehouseRepositoryImpl.class);
 
     private static ConnectionFactory connectionFactory;
 
