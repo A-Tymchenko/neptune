@@ -18,7 +18,7 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
  * Spring configuration class for DAO layer.
  */
 @PropertySource("classpath:config.properties")
-@ComponentScan("com.ra.airport.dao.impl")
+@ComponentScan("com.ra.airport")
 @Configuration
 public class AirPortConfiguration {
 
