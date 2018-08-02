@@ -1,9 +1,9 @@
-package com.ra.airport.dao;
+package com.ra.airport.repository;
 
 import java.util.List;
 import java.util.Optional;
 
-import com.ra.airport.dao.exception.AirPortDaoException;
+import com.ra.airport.repository.exception.AirPortDaoException;
 
 /**
  * Interface provide methods for the CRUD operations.

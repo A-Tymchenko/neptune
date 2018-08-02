@@ -1,7 +1,7 @@
 package com.ra.airport;
 
-import com.ra.airport.dao.exception.AirPortDaoException;
-import com.ra.airport.dao.impl.FlightDao;
+import com.ra.airport.repository.exception.AirPortDaoException;
+import com.ra.airport.repository.impl.FlightDao;
 import com.ra.airport.entity.Flight;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -18,7 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static com.ra.airport.dao.exception.ExceptionMessage.*;
+import static com.ra.airport.repository.exception.ExceptionMessage.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.doAnswer;

@@ -1,4 +1,4 @@
-package com.ra.airport.dao.exception;
+package com.ra.airport.repository.exception;
 
 /**
  * Exception class for DAO layer.

@@ -1,7 +1,7 @@
 package com.ra.airport;
 
-import com.ra.airport.dao.exception.AirPortDaoException;
-import com.ra.airport.dao.impl.AirportDAOImpl;
+import com.ra.airport.repository.exception.AirPortDaoException;
+import com.ra.airport.repository.impl.AirportDAOImpl;
 import com.ra.airport.entity.Airport;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

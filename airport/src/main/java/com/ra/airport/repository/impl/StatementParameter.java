@@ -1,4 +1,4 @@
-package com.ra.airport.dao.impl;
+package com.ra.airport.repository.impl;
 
 public enum StatementParameter {
 

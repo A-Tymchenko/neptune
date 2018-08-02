@@ -1,12 +1,12 @@
-package com.ra.airport.dao.impl;
+package com.ra.airport.repository.impl;
 
 import java.util.List;
 import java.util.Optional;
 
-import com.ra.airport.dao.AirPortDao;
-import com.ra.airport.dao.exception.AirPortDaoException;
-import com.ra.airport.dao.exception.ExceptionMessage;
 import com.ra.airport.entity.Ticket;
+import com.ra.airport.repository.AirPortDao;
+import com.ra.airport.repository.exception.AirPortDaoException;
+import com.ra.airport.repository.exception.ExceptionMessage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
