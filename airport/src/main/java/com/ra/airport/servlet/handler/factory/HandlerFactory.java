@@ -12,9 +12,6 @@ public class HandlerFactory {
 
     private static Map<String, ServletHandler> handlers = new HashMap<>();
 
-    static {
-    }
-
     /**
      * Init get request to EntityHandler.
      * @Throw IOException

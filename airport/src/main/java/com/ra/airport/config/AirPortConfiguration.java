@@ -40,6 +40,11 @@ public class AirPortConfiguration {
      */
     @Bean
     public HikariConfig dataSourceConfig() {
+        try {
+            Class.forName("org.h2.Driver");
+        } catch (ClassNotFoundException e) {
+            e.getMessage();
+        }
         final HikariConfig config = new HikariConfig();
         config.setJdbcUrl(environment.getProperty("jdbc.url"));
         config.setUsername(environment.getProperty("jdbc.user"));
