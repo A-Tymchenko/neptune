@@ -5,12 +5,11 @@ import java.util.HashMap;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import com.ra.airport.servlet.InternalHandler;
+import com.ra.airport.servlet.handler.ServletHandler;
 
 public class HandlerFactory {
 
-    private static Map<String, InternalHandler> handlers = new HashMap<>();
+    private static Map<String, ServletHandler> handlers = new HashMap<>();
 
     static {
     }
@@ -22,7 +21,7 @@ public class HandlerFactory {
     public void handleGetRequest(final String path, final HttpServletRequest request,
                                  final HttpServletResponse response) throws IOException {
         if (handlers.containsKey(path)) {
-            final InternalHandler handler = handlers.get(path);
+            final ServletHandler handler = handlers.get(path);
             handler.get(request, response);
         }
     }
@@ -33,7 +32,7 @@ public class HandlerFactory {
     public void handlePostRequest(final String path, final HttpServletRequest request,
                                   final HttpServletResponse response) throws IOException {
         if (handlers.containsKey(path)) {
-            final InternalHandler handler = handlers.get(path);
+            final ServletHandler handler = handlers.get(path);
             handler.post(request, response);
         }
     }
