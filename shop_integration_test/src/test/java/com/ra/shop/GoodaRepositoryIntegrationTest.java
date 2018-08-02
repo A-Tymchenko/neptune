@@ -25,7 +25,7 @@ import static org.junit.jupiter.api.Assumptions.assumeTrue;
 @ContextConfiguration(classes = {AppConfiguration.class})
 @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = "/create_table.sql")
 @Sql(executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD, scripts = "/drop_table.sql")
-class GoodaRepositoryImplTestSpring {
+class GoodaRepositoryIntegrationTest {
 
     @Autowired
     GoodsRepositoryImpl dao;
