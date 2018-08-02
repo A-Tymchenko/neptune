@@ -6,27 +6,26 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
-import com.ra.airport.config.AirPortConfiguration;
 import com.ra.airport.repository.impl.FlightDao;
 import com.ra.airport.servlet.handler.factory.HandlerFactory;
 import org.springframework.context.ApplicationContext;
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 @WebServlet(urlPatterns = "/")
 public class DispatcherServlet extends HttpServlet {
 
     private static HandlerFactory handlerFactory;
-    private transient ApplicationContext context;
 
     @Override
     public void init() {
         handlerFactory = new HandlerFactory();
-        context = new AnnotationConfigApplicationContext(AirPortConfiguration.class);
     }
 
     @Override
     protected void doGet(final HttpServletRequest req, final HttpServletResponse resp) throws IOException {
+        final HttpSession session = req.getSession();
+        final ApplicationContext context = (ApplicationContext) session.getServletContext().getAttribute("applicationContext");
         final FlightDao flightDao = (FlightDao) context.getBean("flightDao");
         final PrintWriter out = resp.getWriter();
         out.println(context);
