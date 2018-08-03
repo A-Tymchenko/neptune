@@ -39,7 +39,7 @@ public class DispatcherServlet extends HttpServlet {
     private void initDataBase(ApplicationContext context) {
         try {
             Connection connection = context.getBean(DataSource.class).getConnection();
-            RunScript.execute(connection, new FileReader("src/resources/sql/create_table_scripts.sql"));
+            RunScript.execute(connection, new FileReader("src/resources/sql/create_table_skripts.sql"));
             RunScript.execute(connection, new FileReader("src/resources/sql/tables_backup(data).sql"));
         } catch (SQLException | FileNotFoundException e) {
            //todo log exception
