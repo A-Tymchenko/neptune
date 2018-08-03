@@ -1,6 +1,5 @@
 package com.ra.shop.config;
 
-import com.ra.shop.repository.impl.OrderRepositoryImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -9,12 +8,13 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
+import org.springframework.jdbc.datasource.SimpleDriverDataSource;
 
 import javax.sql.DataSource;
 
+@Configuration
 @PropertySource(value = "classpath:cfg.properties")
 @ComponentScan("com.ra.shop.repository.impl")
-@Configuration
 public class AppConfiguration {
 
     @Autowired
@@ -27,11 +27,10 @@ public class AppConfiguration {
 
     @Bean
     public DataSource buildDataSource() {
-        final DriverManagerDataSource dataSource = new DriverManagerDataSource();
-        dataSource.setUrl(environment.getProperty("URL"));
-        dataSource.setUsername(environment.getProperty("USERNAME"));
-        dataSource.setPassword(environment.getProperty("PASSWORD"));
-        return dataSource;
+        return new DriverManagerDataSource(
+                environment.getProperty("URL"),
+                environment.getProperty("USERNAME"),
+                environment.getProperty("PASSWORD"));
     }
 
 }

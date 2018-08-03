@@ -6,6 +6,7 @@ import com.ra.shop.repository.IRepository;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
+import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -28,23 +29,22 @@ public class OrderRepositoryImpl implements IRepository<Order> {
     private JdbcTemplate jdbcTemplate;
 
     @Autowired
-    public OrderRepositoryImpl(final DataSource dataSource) {
-        this.jdbcTemplate = new JdbcTemplate(dataSource);
+    public OrderRepositoryImpl(final JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
     }
 
     @Override
     public Order create(Order entity) throws RepositoryException {
         Objects.requireNonNull(entity);
-        final KeyHolder keyHolder = new GeneratedKeyHolder();
         try {
-             jdbcTemplate.update(connection -> {
+            final KeyHolder keyHolder = new GeneratedKeyHolder();
+            jdbcTemplate.update(connection -> {
                 final PreparedStatement statement = connection.prepareStatement(
                         "INSERT INTO ORDERS (NUMBER, PRICE, DELIVERY_INCLUDED, DELIVERY_COST, EXECUTED) "
-                                + "VALUES (?, ?, ?, ?, ?)",
-                        new String[] {"ORDER_ID"});
+                                + "VALUES (?, ?, ?, ?, ?)");
                 fillEntityWithParameters(statement, entity);
                 return statement;
-                }, keyHolder);
+            }, keyHolder);
             entity.setId(keyHolder.getKey().longValue());
             return entity;
         } catch (DataAccessException e) {
@@ -57,10 +57,11 @@ public class OrderRepositoryImpl implements IRepository<Order> {
     @Override
     public Optional<Order> get(final long entityId) throws RepositoryException {
         try {
+            BeanPropertyRowMapper<Order> mapper = BeanPropertyRowMapper.newInstance(Order.class);
             Order found = jdbcTemplate.queryForObject(
                     "SELECT * FROM ORDERS WHERE ORDER_ID = ?",
-                    new Object[] {entityId},
-                    new OrderMapper());
+                    mapper,
+                    entityId);
             return Optional.of(found);
         } catch (DataAccessException e) {
             final String message = String.format("Order{id:%d} NOT FOUND!", entityId);
@@ -75,9 +76,11 @@ public class OrderRepositoryImpl implements IRepository<Order> {
         try {
             jdbcTemplate.update(
                     "UPDATE ORDERS SET NUMBER = ?, PRICE = ?, DELIVERY_INCLUDED = ?, "
-                            + "DELIVERY_COST = ?, EXECUTED = ? WHERE ORDER_ID = ?",
-                    newEntity.getNumber(), newEntity.getPrice(), newEntity.getDeliveryIncluded(),
-                    newEntity.getDeliveryCost(), newEntity.getExecuted(), newEntity.getId());
+                            + "DELIVERY_COST = ?, EXECUTED = ? WHERE ORDER_ID = ?", statement -> {
+                        fillEntityWithParameters(statement, newEntity);
+                        final int orderId = 6;
+                        statement.setLong(orderId, newEntity.getId());
+                    });
             return newEntity;
         } catch (DataAccessException e) {
             final String message = String.format("Order{id:%d} NOT UPDATED!", newEntity.getId());
@@ -101,30 +104,12 @@ public class OrderRepositoryImpl implements IRepository<Order> {
     @Override
     public List<Order> getAll() throws RepositoryException {
         try {
-            final List<Order> orders = jdbcTemplate.query("SELECT * FROM ORDERS", new OrderMapper());
-            return orders;
+            BeanPropertyRowMapper<Order> mapper = BeanPropertyRowMapper.newInstance(Order.class);
+            return jdbcTemplate.query("SELECT * FROM ORDERS", mapper);
         } catch (DataAccessException e) {
             final String message = "No orders found in database!";
             LOGGER.error(message, e);
             throw new RepositoryException(message, e);
-        }
-    }
-
-    /**
-     * Helper class that performs row mapping for an order entity using method mapRow().
-     */
-    private static final class OrderMapper implements RowMapper<Order> {
-        @Override
-        public Order mapRow(final ResultSet resultSet, final int rowNum) throws SQLException {
-            final Long orderId = resultSet.getLong("ORDER_ID");
-            final Integer number = resultSet.getInt("NUMBER");
-            final Double price = resultSet.getDouble("PRICE");
-            final Boolean deliveryIncluded = resultSet.getBoolean("DELIVERY_INCLUDED");
-            final Integer deliveryCost = resultSet.getInt("DELIVERY_COST");
-            final Boolean isExecuted = resultSet.getBoolean("EXECUTED");
-            final Order order = new Order(number, price, deliveryIncluded, deliveryCost, isExecuted);
-            order.setId(orderId);
-            return order;
         }
     }
 
@@ -147,7 +132,6 @@ public class OrderRepositoryImpl implements IRepository<Order> {
         statement.setInt(deliveryCost, order.getDeliveryCost());
         statement.setBoolean(executed, order.getExecuted());
     }
-
 }
 
 
