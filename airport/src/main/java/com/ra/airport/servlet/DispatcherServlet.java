@@ -14,11 +14,13 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.sql.DataSource;
 
+import com.ra.airport.config.AirPortConfiguration;
 import com.ra.airport.repository.exception.AirPortDaoException;
 import com.ra.airport.repository.impl.FlightDao;
 import com.ra.airport.servlet.handler.factory.HandlerFactory;
 import org.h2.tools.RunScript;
 import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 @WebServlet(urlPatterns = "/")
@@ -28,8 +30,9 @@ public class DispatcherServlet extends HttpServlet {
 
     @Override
     public void init(ServletConfig config) {
-        handlerFactory = new HandlerFactory();
-        ApplicationContext context = (ApplicationContext) config.getServletContext().getAttribute("applicationContext");
+        final AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(AirPortConfiguration.class);
+        handlerFactory = context.getBean(HandlerFactory.class);
+
         initDataBase(context);
     }
 

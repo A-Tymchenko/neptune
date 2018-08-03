@@ -4,6 +4,7 @@ import com.ra.airport.entity.Flight;
 import com.ra.airport.repository.exception.AirPortDaoException;
 import com.ra.airport.repository.impl.FlightDao;
 import org.springframework.context.ApplicationContext;
+import org.springframework.stereotype.Component;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -16,6 +17,8 @@ import java.util.List;
  * Author: anbo
  * Date: 02.08.2018
  */
+
+@Component
 public class GetAllFlightsHandler implements ServletHandler {
 
     @Override
