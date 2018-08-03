@@ -139,12 +139,12 @@ public class WarehouseRepositoryMockTest {
     /**
      * testing get method to return null.
      */
-    @Test
-    void whenGetByIdCalledThenReturnOptionalEmpty() throws SQLException, RepositoryException {
-        when(mockResultSet.next()).thenReturn(false);
-
-        assertEquals(Optional.empty(), warehouseRepositoryImpl.get(1L));
-    }
+//    @Test
+//    void whenGetByIdCalledThenReturnOptionalEmpty() throws SQLException, RepositoryException {
+//        when(mockResultSet.next()).thenReturn(false);
+//
+//        assertEquals(Optional.empty(), warehouseRepositoryImpl.get(1L));
+//    }
 
     /**
      * testing getAll method to return empty List.
@@ -214,13 +214,13 @@ public class WarehouseRepositoryMockTest {
     /**
      * testing get method to throw FAILED_TO_GET_SHOP_BY_ID Exception.
      */
-    @Test
-    void whenGetByIdThrowsSQLExceptionThenDaoExceptionMustBeThrown() {
-        Throwable exception = assertThrows(RepositoryException.class, () -> {
-            when(mockConnection.prepareStatement(SELECT_WAREHOUSE_BY_ID)).thenThrow(new SQLException());
-            warehouseRepositoryImpl.get(1L);
-        });
-
-        assertEquals(exception.getMessage(), FAILED_TO_GET_WAREHOUSE_BY_ID.getMessage() + " 1");
-    }
+//    @Test
+//    void whenGetByIdThrowsSQLExceptionThenDaoExceptionMustBeThrown() {
+//        Throwable exception = assertThrows(RepositoryException.class, () -> {
+//            when(mockConnection.prepareStatement(SELECT_WAREHOUSE_BY_ID)).thenThrow(new SQLException());
+//            warehouseRepositoryImpl.get(1L);
+//        });
+//
+//        assertEquals(exception.getMessage(), FAILED_TO_GET_WAREHOUSE_BY_ID.getMessage() + " 1");
+//    }
 }

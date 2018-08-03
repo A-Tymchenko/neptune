@@ -10,7 +10,7 @@ import java.util.Objects;
 public class Goods implements Serializable {
 
     private static final long serialVersionUID = 1L;
-    private long idNumber;
+    private Long idNumber;
     private String name;
     private long barcode;
     private double price;
@@ -24,11 +24,11 @@ public class Goods implements Serializable {
         this.price = price;
     }
 
-    public long getId() {
+    public Long getId() {
         return idNumber;
     }
 
-    public void setId(final long idNumber) {
+    public void setId(final Long idNumber) {
         this.idNumber = idNumber;
     }
 

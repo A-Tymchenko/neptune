@@ -10,10 +10,10 @@ public enum ExceptionMessage {
     THE_WAREHOUSE_CANNOT_BE_NULL("Warehouse cannot be null"),
 
     FAILED_TO_CREATE_NEW_GOODS("Failed to create new goods"),
-    FAILED_TO_UPDATE_GOODS("Failed to update shop"),
-    FAILED_TO_DELETE_GOODS("Failed to delete shop"),
-    FAILED_TO_GET_GOODS_BY_ID("Failed to get the shop by id"),
-    FAILED_TO_GET_ALL_GOODS("Failed to get all shop"),
+    FAILED_TO_UPDATE_GOODS("Failed to update goods"),
+    FAILED_TO_DELETE_GOODS("Failed to delete goods"),
+    FAILED_TO_GET_GOODS_BY_ID("Failed to get the goods by id"),
+    FAILED_TO_GET_ALL_GOODS("Failed to get all goods"),
     THE_GOODS_CANNOT_BE_NULL("Goods cannot be null"),
 
     FAILED_TO_CREATE_NEW_ORDER("Failed to create new order"),

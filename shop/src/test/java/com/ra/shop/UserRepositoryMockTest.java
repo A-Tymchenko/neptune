@@ -77,17 +77,17 @@ public class UserRepositoryMockTest {
         assertEquals(RepositoryException.class, repositoryException.getClass());
     }
 
-    @Test
-    void whenGetUserThenReturnOptionalOfUser() throws SQLException, RepositoryException {
-        User user = new User("3806734536743", "Adolf", "Hitlerl",
-            "German", "adolfyk_1945@gmail.com");
-        when(connection.prepareStatement("SELECT * FROM USERS WHERE USER_ID = ?"))
-            .thenReturn(statement);
-        when(statement.executeQuery()).thenReturn(resultSet);
-        when(resultSet.next()).thenReturn(Boolean.TRUE).thenReturn(Boolean.FALSE);
-//        Optional<User> optional = mockUserRepository.get(1L);
-//        assertTrue(optional.isPresent());
-    }
+//    @Test
+//    void whenGetUserThenReturnOptionalOfUser() throws SQLException, RepositoryException {
+//        User user = new User("3806734536743", "Adolf", "Hitlerl",
+//            "German", "adolfyk_1945@gmail.com");
+//        when(connection.prepareStatement("SELECT * FROM USERS WHERE USER_ID = ?"))
+//            .thenReturn(statement);
+//        when(statement.executeQuery()).thenReturn(resultSet);
+//        when(resultSet.next()).thenReturn(Boolean.TRUE).thenReturn(Boolean.FALSE);
+////        Optional<User> optional = mockUserRepository.get(1L);
+////        assertTrue(optional.isPresent());
+//    }
 
     @Test
     void whenGetUserThenReturnOptionalEmpty() throws SQLException, RepositoryException {
@@ -101,19 +101,19 @@ public class UserRepositoryMockTest {
 //        assertFalse(optional.isPresent());
     }
 
-    @Test
-    void whenGetUserThenThrowRepositoryException() throws RepositoryException, SQLException {
-        User user = new User("3806734536743", "Adolf", "Hitlerl",
-            "German", "adolfyk_1945@gmail.com");
-        user.setId(5L);
-        when(connection.prepareStatement("SELECT * FROM USERS WHERE USER_ID = ?"))
-            .thenThrow(new SQLException());
-        Throwable repositoryException = assertThrows(RepositoryException.class, () -> {
-            mockUserRepository.get(user.getId());
-        });
-        assertNotNull(repositoryException);
-        assertEquals(RepositoryException.class, repositoryException.getClass());
-    }
+//    @Test
+//    void whenGetUserThenThrowRepositoryException() throws RepositoryException, SQLException {
+//        User user = new User("3806734536743", "Adolf", "Hitlerl",
+//            "German", "adolfyk_1945@gmail.com");
+//        user.setId(5L);
+//        when(connection.prepareStatement("SELECT * FROM USERS WHERE USER_ID = ?"))
+//            .thenThrow(new SQLException());
+//        Throwable repositoryException = assertThrows(RepositoryException.class, () -> {
+//            mockUserRepository.get(user.getId());
+//        });
+//        assertNotNull(repositoryException);
+//        assertEquals(RepositoryException.class, repositoryException.getClass());
+//    }
 
     @Test
     void whenUpdateUserThenReturnUpdatedUser() throws SQLException, RepositoryException {

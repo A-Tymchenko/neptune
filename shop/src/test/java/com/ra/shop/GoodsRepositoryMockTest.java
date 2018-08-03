@@ -4,12 +4,9 @@ import com.ra.shop.exceptions.RepositoryException;
 import com.ra.shop.repository.implementation.GoodsRepositoryImpl;
 import com.ra.shop.model.Goods;
 import org.junit.jupiter.api.*;
-import org.mockito.Mockito;
+import org.mockito.stubbing.Answer;
 import org.springframework.dao.EmptyResultDataAccessException;
-import org.springframework.jdbc.core.BeanPropertyRowMapper;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.PreparedStatementCreator;
-import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.core.*;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 
@@ -20,6 +17,8 @@ import java.util.List;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.*;
 
 public class GoodsRepositoryMockTest {
@@ -33,81 +32,77 @@ public class GoodsRepositoryMockTest {
     private PreparedStatement mockedStatementKey;
     private ResultSet mockedResultSet;
     private ResultSet mockedResultSetForKey;
-    private SQLException exception;
-    private KeyHolder mockedkeyHolder = new GeneratedKeyHolder();
+    //  private SQLException exception;
+    private KeyHolder mockedgeneratedKeys = new GeneratedKeyHolder();
+   // private KeyHolder mockedkeyHolder = new GeneratedKeyHolder();
+    //private KeyHolder mockedkeyHolder;
     private BeanPropertyRowMapper mockedBeanPropertyRowMapper;
-    private static final String EXCEPTION_CAUSE = "Connection not available-----";
+    // private static final String EXCEPTION_CAUSE = "Connection not available-----";
+    private static final Long DEFAULT_ID =1l;
+    private static final Long GENERATION_ID =2l;
 
     @BeforeAll
     static void createSchema() {
         mockedjdbcTemplate = mock(JdbcTemplate.class);
         //mockedConnectionFactory = mock(ConnectionFactory.class);
         dao = new GoodsRepositoryImpl(mockedjdbcTemplate);
-        existingGoods.setId(1l);
+        existingGoods.setId(DEFAULT_ID);
     }
 
     @BeforeEach
     public void setUp() throws Exception {
-        mockedkeyHolder = mock(KeyHolder.class);
-        mockedBeanPropertyRowMapper=mock(BeanPropertyRowMapper.class);
+        mockedgeneratedKeys = mock(KeyHolder.class);
+        mockedBeanPropertyRowMapper = mock(BeanPropertyRowMapper.class);
         mockedConnection = mock(Connection.class);
         mockedStatement = mock(PreparedStatement.class);
         // mockedStatementKey = mock(PreparedStatement.class);
         mockedResultSet = mock(ResultSet.class);
         mockedResultSetForKey = mock(ResultSet.class);
-        exception = new SQLException(EXCEPTION_CAUSE);
+        when(mockedConnection.prepareStatement("INSERT INTO GOODS (NAME, BARCODE, PRICE) VALUES (?,?,?)"))
+                .thenReturn(mockedStatement);
+//        when(mockConnection.prepareStatement(UPDATE_FLIGHT_SQL)).thenReturn(mockPreparedStatement);
+//        when(mockJdbcTemplate.queryForObject(SELECT_LAST_GENERATED_ID_SQL, Integer.class)).thenReturn(1);
+//        when(mockJdbcTemplate.queryForObject(eq(SELECT_FLIGHT_BY_ID_SQL), any(Object[].class), any(RowMapper.class))).thenReturn(flight);
+//
+
+        //  exception = new SQLException(EXCEPTION_CAUSE);
         // when(mockedConnectionFactory.getConnection()).thenReturn(mockedConnection);
-        createMocksFromGetMethod();
+        //createMocksFromGetMethod();
     }
 
     @Test
-    void whenReadAllGoodThenResultIsTrue() throws Exception {
-        final String GET_ALL_DEVICES = "SELECT * FROM GOODS";
-        List listFromQueryForList = createListOfMap();
-        when(mockedjdbcTemplate.queryForList(eq(GET_ALL_DEVICES))).thenReturn(listFromQueryForList);
-        List<Goods> goods = dao.getAll();
-        assertFalse(goods.isEmpty());
-
-//        boolean result = false;
-//        when(mockedConnectionFactory.getConnection().prepareStatement("SELECT * FROM GOODS")).thenReturn(mockedStatement);
-//        when(mockedStatement.executeQuery()).thenReturn(mockedResultSet);
-//        when(mockedResultSet.next()).thenReturn(result = true).thenReturn(false);
-//        List<Goods> goods = dao.getAll();
-//        assertTrue(result == true);
-    }
-
-//    @Test
-//    void whenDeletionGoodsThenReturnTrue() throws RepositoryException, SQLException {
-//        when(mockedjdbcTemplate.update("DELETE FROM GOODS WHERE ID = ?", existingGoods.getId())).thenReturn(1);
-//        //when(mockedStatement.executeUpdate()).thenReturn(1);
-//        assertTrue(dao.delete(existingGoods.getId()));
-//    }
-
-
-    @Test
-    void getAllGoodsFailsWithExceptionAsFeedbackToClient() throws SQLException {
-//        doThrow(exception).when(mockedjdbcTemplate);
-//        assertThrows(Exception.class, () -> {
-//            dao.getAll();
-//        });
-        assertThrows(RepositoryException.class, () -> {
-            when(mockedjdbcTemplate.queryForList("SELECT * FROM GOODS"))
-                    .thenThrow(EmptyResultDataAccessException.class);
-            dao.getAll();
-        });
-    }
-//    @Test
-//    void whenDeletionGoodsThenReturnFalse() throws RepositoryException, SQLException {
-//        when(mockedConnection.prepareStatement("DELETE FROM GOODS WHERE ID = ?")).thenReturn(mockedStatement);
-//        when(mockedStatement.executeUpdate()).thenReturn(-1);
-//        assertFalse(dao.delete(existingGoods.getId()));
-//    }
+    void whenCreatedGoodsWithFalseNextIdThenReturnEqualsGoods() throws RepositoryException {
+        //KeyHolder mockedgeneratedKeys = new GeneratedKeyHolder();
+//        when(mockedjdbcTemplate.update(eq("INSERT INTO GOODS (NAME, BARCODE, PRICE) VALUES (?,?,?)"),
+//                eq(mockedgeneratedKeys)))
+//                .thenReturn(1);
+        doAnswer(invocation -> {
+            ((PreparedStatementCreator) invocation.getArguments()[0]).createPreparedStatement(mockedConnection);
+            return null;
+        }).when(mockedjdbcTemplate).update(any(PreparedStatementCreator.class), any(KeyHolder.class));
+//        when(mockedjdbcTemplate.update(any(PreparedStatementCreator.class),
+//                any(KeyHolder.class)))
+//                .thenReturn(1);
+        when(mockedgeneratedKeys.getKey()).thenReturn(2L);
+//        doReturn(GENERATION_ID)
+//                .when(mockedgeneratedKeys).getKey();
+        //Device deviceCreated = deviceDao.create(deviceNoId);
+        //System.out.println(existingGoods);
+        Goods goods = dao.create(existingGoods);
+        //deviceNoId.setDevId((Long) mockkeyHolder.getKey());
+       // System.out.println(mockedgeneratedKeys.getKey());
+       // System.out.println(goods);
+        existingGoods.setId( (Long) mockedgeneratedKeys.getKey());
+        // System.out.println(goods);
+                assertTrue(goods.equals(existingGoods));
+//        assertAll("goods",
+//                () -> assertEquals(goods.getId(), existingGoods.getId()),
+//                () -> assertEquals(goods.getName(), existingGoods.getName()),
+//                () -> assertEquals(goods.getBarcode(), existingGoods.getBarcode()),
+//                () -> assertEquals(goods.getPrice(), existingGoods.getPrice()));
 
 
 
-//    @Test
-//    @Test
-//    void whenCreatedGoodsWithFalseNextIdThenReturnEqualsGoods() throws SQLException, RepositoryException {
 //        when(mockedConnection.prepareStatement("INSERT INTO GOODS (NAME, BARCODE, PRICE) VALUES (?,?,?)"))
 //                .thenReturn(mockedStatement);
 //        when(mockedStatement.executeUpdate()).thenReturn(1);
@@ -121,7 +116,42 @@ public class GoodsRepositoryMockTest {
 //                () -> assertEquals(goods.getName(), existingGoods.getName()),
 //                () -> assertEquals(goods.getBarcode(), existingGoods.getBarcode()),
 //                () -> assertEquals(goods.getPrice(), existingGoods.getPrice()));
-//    }
+//        assertThrows(RepositoryException.class, () -> {
+//            when(mockedjdbcTemplate.update(any(PreparedStatementCreator.class),
+//                    any(KeyHolder.class)))
+//                    .thenThrow(EmptyResultDataAccessException.class);
+//            dao.create(existingGoods);
+//        });
+    }
+
+    @Test
+    void whenReadAllGoodThenResultIsTrue() throws Exception {
+        when(mockedjdbcTemplate.queryForList(eq("SELECT * FROM GOODS"))).thenReturn(createListOfMap());
+        assertFalse(dao.getAll().isEmpty());
+    }
+
+    @Test
+    void whenDeletionGoodsThenReturnTrue() throws RepositoryException {
+        when(mockedjdbcTemplate.update(eq("DELETE FROM GOODS WHERE ID = ?"), eq(existingGoods.getId()))).thenReturn(1);
+        assertTrue(dao.delete(existingGoods.getId()));
+    }
+
+    @Test
+    void whenDeletionGoodsThenReturnFalse() throws RepositoryException {
+        when(mockedjdbcTemplate.update(eq("DELETE FROM GOODS WHERE ID = ?"),
+                eq(existingGoods.getId()))).thenReturn(-1);
+        assertFalse(dao.delete(existingGoods.getId()));
+    }
+
+    @Test
+    void getAllGoodsFailsWithExceptionAsFeedbackToClient() {
+        assertThrows(RepositoryException.class, () -> {
+            when(mockedjdbcTemplate.queryForList(eq("SELECT * FROM GOODS")))
+                    .thenThrow(EmptyResultDataAccessException.class);
+            dao.getAll();
+        });
+    }
+
 
     //    }
 //    @Test
@@ -145,81 +175,97 @@ public class GoodsRepositoryMockTest {
     //        });
 
     //            dao.update(goods);
+
     @Test
-    void whenGetGoodsWithFalseNextGoodsThenReturnNotPresentGoods() throws RepositoryException, SQLException {
-        when(mockedConnection.prepareStatement("SELECT * FROM GOODS WHERE ID = ?")).thenReturn(mockedStatement);
-        when(mockedStatement.executeQuery()).thenReturn(mockedResultSet);
-        when(mockedResultSet.next()).thenReturn(false);
-        //  assertFalse(dao.get(Long.valueOf(1L)).isPresent());
+    void whenGetGoodsWithTrueNextGoodsThenReturnEqualsGoods() throws RepositoryException {
+        when(mockedjdbcTemplate.queryForObject(eq("SELECT * FROM GOODS WHERE ID = ?"),
+                any(RowMapper.class),
+                eq(existingGoods.getId()))).thenReturn(existingGoods);
+        assertTrue(dao.get(existingGoods.getId()).equals(existingGoods));
     }
 
     //    }
-    @Test
-    void whenGetGoodsWithTrueNextGoodsThenReturnEqualsGoods() throws
-            SQLException, RepositoryException {
-        when(mockedConnection.prepareStatement("SELECT * FROM GOODS WHERE ID = ?")).thenReturn(mockedStatement);
-        when(mockedStatement.executeQuery()).thenReturn(mockedResultSet);
-        when(mockedResultSet.next()).thenReturn(true);
-        // Goods goods = dao.get(existingGoods.getId()).get();
-        // assertAll("goods",
-        //  () -> assertEquals(goods.getId(), existingGoods.getId()),
-        //   () -> assertEquals(goods.getName(), existingGoods.getName()),
-        //   () -> assertEquals(goods.getBarcode(), existingGoods.getBarcode()),
-        //   () -> assertEquals(goods.getPrice(), existingGoods.getPrice()));
-    }
+//    @Test
+//    void whenGetGoodsWithTrueNextGoodsThenReturnEqualsGoods1() throws
+//            SQLException, RepositoryException {
+//        when(mockedjdbcTemplate.queryForObject(eq("SELECT * FROM GOODS WHERE ID = ?"),
+//                mockedBeanPropertyRowMapper.newInstance(Goods.class),eq(existingGoods.getId()))).thenReturn(existingGoods);
+//        when(mockedStatement.executeQuery()).thenReturn(mockedResultSet);
+//        when(mockedResultSet.next()).thenReturn(true);
+//        // Goods goods = dao.get(existingGoods.getId()).get();
+//        // assertAll("goods",
+//        //  () -> assertEquals(goods.getId(), existingGoods.getId()),
+//        //   () -> assertEquals(goods.getName(), existingGoods.getName()),
+//        //   () -> assertEquals(goods.getBarcode(), existingGoods.getBarcode()),
+//        //   () -> assertEquals(goods.getPrice(), existingGoods.getPrice()));
+//    }
 
     //        });
-//    @Test
-//    void getAGoodByIdFailsWithExceptionAsFeedbackToClient() {
-////        //doThrow(exception).when(mockedjdbcTemplate);
-////        // exceptions();
-//////        doThrow(exception)
-//////                .when(mockedjdbcTemplate)
-//////                .update(Mockito.anyString(), anyObject());
-//        Throwable exeption = assertThrows(RepositoryException.class, () -> {
-//            when(mockedjdbcTemplate
-//                    .queryForObject("SELECT * FROM GOODS WHERE ID = ?", mockedBeanPropertyRowMapper.newInstance(Goods.class),existingGoods.getId()))
-//                    .thenThrow(EmptyResultDataAccessException.class);
-//            dao.get(existingGoods.getId());
-//        });
-////        assertThrows(RepositoryException.class, () -> {
-////            dao.get(existingGoods.getId());
-////        });
-//   }
 
-        @Test
+
+    @Test
+    void getAGoodByIdFailsWithExceptionAsFeedbackToClient() {
+        assertThrows(RepositoryException.class, () -> {
+            when(mockedjdbcTemplate.queryForObject(eq("SELECT * FROM GOODS WHERE ID = ?"),
+                    any(RowMapper.class), any(Long.class)))
+                    .thenThrow(EmptyResultDataAccessException.class);
+            dao.get(existingGoods.getId());
+        });
+    }
+
+    @Test
     void deletingAGoodsFailsWithExceptionAsFeedbackToTheClient() {
-//        doThrow(exception).when(mockedjdbcTemplate)
-//                .update("DELETE FROM GOODS WHERE ID = ?", existingGoods.getId());
-//        assertThrows(Exception.class, () -> {
-//            dao.delete(existingGoods.getId());
-//        });
-            assertThrows(RepositoryException.class, () -> {
-            when(mockedjdbcTemplate.update("DELETE FROM GOODS WHERE ID = ?", existingGoods.getId()))
+        assertThrows(RepositoryException.class, () -> {
+            when(mockedjdbcTemplate.update(eq("DELETE FROM GOODS WHERE ID = ?"),
+                    eq(existingGoods.getId())))
                     .thenThrow(EmptyResultDataAccessException.class);
             dao.delete(existingGoods.getId());
         });
-
     }
+
     @Test
-    void whenUpdationGoodsThenReturnEqualsGoods() throws SQLException, RepositoryException {
-        int flagUpdateDB = 0;
-        when(mockedjdbcTemplate.update(eq("UPDATE GOODS SET NAME = ?, BARCODE = ?, PRICE = ? WHERE ID = ?"), any(PreparedStatement.class)))
-                .thenReturn(flagUpdateDB = 1);
-        Goods goods = dao.update(existingGoods);
-        assertEquals(1, flagUpdateDB);
-        assertAll("goods",
-                () -> assertEquals(goods.getId(), existingGoods.getId()),
-                () -> assertEquals(goods.getName(), existingGoods.getName()),
-                () -> assertEquals(goods.getBarcode(), existingGoods.getBarcode()),
-                () -> assertEquals(goods.getPrice(), existingGoods.getPrice()));
+    void updatingAGoodsFailsWithFeedbackToTheClient() {
+        assertThrows(RepositoryException.class, () -> {
+            when(mockedjdbcTemplate.update(eq("UPDATE GOODS SET NAME = ?, BARCODE = ?, PRICE = ? WHERE ID = ?"),
+                    any(PreparedStatementSetter.class)))
+                    .thenThrow(EmptyResultDataAccessException.class);
+            dao.update(existingGoods);
+        });
     }
-    //            dao.create(new Goods("Kent", 4820092770232l, 36.7f));
 
-    private void exceptions() {
-        //  doThrow(exception).when(mockedjdbcTemplate.update(any(PreparedStatement.class),anyLong()));
+    @Test
+    public void createAGoodsFailsWithExceptionAsFeedbackToClient() throws SQLException {
+
+        assertThrows(RepositoryException.class, () -> {
+            when(mockedjdbcTemplate.update(any(PreparedStatementCreator.class),
+                    any(KeyHolder.class)))
+                    .thenThrow(EmptyResultDataAccessException.class);
+            dao.create(existingGoods);
+        });
     }
-    //        assertThrows(Exception.class, () -> {
+
+    @Test
+    void whenUpdationGoodsThenReturnEqualsGoods() throws RepositoryException {
+        doAnswer(invocation -> {
+            ((PreparedStatementSetter) invocation.getArguments()[1])
+                    .setValues(mockedStatement);
+            return null;
+        }).when(mockedjdbcTemplate)
+                .update(eq("UPDATE GOODS SET NAME = ?, BARCODE = ?, PRICE = ? WHERE ID = ?"),
+                        any(PreparedStatementSetter.class));
+        Goods goods = dao.update(existingGoods);
+        assertTrue(goods.equals(existingGoods));
+    }
+
+//    private void createMocksFromGetMethod() throws SQLException {
+//        when(mockedConnection.prepareStatement(eq("SELECT * FROM GOODS WHERE ID = ?"))).thenReturn(mockedStatement);
+//        when(mockedResultSet.next()).thenReturn(true);
+//        when(mockedStatement.executeQuery()).thenReturn(mockedResultSet);
+//        when(mockedResultSet.getLong("ID")).thenReturn(existingGoods.getId());
+//        when(mockedResultSet.getString("NAME")).thenReturn(existingGoods.getName());
+//        when(mockedResultSet.getLong("BARCODE")).thenReturn(existingGoods.getBarcode());
+//        when(mockedResultSet.getDouble("PRICE")).thenReturn(existingGoods.getPrice());
+//    }
 
     private List createListOfMap() {
         List<Map<String, Object>> listToMapFrom = new ArrayList<>();
@@ -231,25 +277,5 @@ public class GoodsRepositoryMockTest {
         listToMapFrom.add(goods);
         return listToMapFrom;
     }
-
-    //        doThrow(exception).when(mockedjdbcTemplate);
-    //    public void createAGoodsFailsWithExceptionAsFeedbackToClient() throws SQLException {
-
-    private void createMocksFromGetMethod() throws SQLException {
-        when(mockedConnection.prepareStatement("SELECT * FROM GOODS WHERE ID = ?")).thenReturn(mockedStatement);
-        when(mockedResultSet.next()).thenReturn(true);
-        when(mockedStatement.executeQuery()).thenReturn(mockedResultSet);
-        when(mockedResultSet.getLong("ID")).thenReturn(existingGoods.getId());
-        when(mockedResultSet.getString("NAME")).thenReturn(existingGoods.getName());
-        when(mockedResultSet.getLong("BARCODE")).thenReturn(existingGoods.getBarcode());
-        when(mockedResultSet.getDouble("PRICE")).thenReturn(existingGoods.getPrice());
-    }
-
-    //    @Test
-    //    void updatingAGoodsFailsWithFeedbackToTheClient() throws SQLException {
-    //        doThrow(exception).when(mockedjdbcTemplate);
-    //        Goods goods = new Goods("Lark", 740617153127l, 34.7f);
-    //        goods.setId(existingGoods.getId());
-    //        assertThrows(Exception.class, () -> {
 }
 

@@ -74,16 +74,16 @@ public class OrderRepositoryMockTest {
         assertEquals(RepositoryException.class, repositoryException.getClass());
     }
 
-    @Test
-    void whenGetOrderThenReturnOptionalOfOrder() throws SQLException, RepositoryException {
-        Order order = new Order(10, 100D, false, 0, true);
-        when(connection.prepareStatement("SELECT * FROM ORDERS WHERE ORDER_ID = ?"))
-            .thenReturn(statement);
-        when(statement.executeQuery()).thenReturn(resultSet);
-        when(resultSet.next()).thenReturn(Boolean.TRUE).thenReturn(Boolean.FALSE);
-//        Optional<Order> optional = mockOrderRepository.get(1L);
-//        assertTrue(optional.isPresent());
-    }
+//    @Test
+//    void whenGetOrderThenReturnOptionalOfOrder() throws SQLException, RepositoryException {
+//        Order order = new Order(10, 100D, false, 0, true);
+//        when(connection.prepareStatement("SELECT * FROM ORDERS WHERE ORDER_ID = ?"))
+//            .thenReturn(statement);
+//        when(statement.executeQuery()).thenReturn(resultSet);
+//        when(resultSet.next()).thenReturn(Boolean.TRUE).thenReturn(Boolean.FALSE);
+////        Optional<Order> optional = mockOrderRepository.get(1L);
+////        assertTrue(optional.isPresent());
+//    }
 
     @Test
     void whenGetOrderThenReturnOptionalEmpty() throws SQLException, RepositoryException {
@@ -96,18 +96,18 @@ public class OrderRepositoryMockTest {
 //        assertFalse(optional.isPresent());
     }
 
-    @Test
-    void whenGetOrderThenThrowRepositoryException() throws RepositoryException, SQLException {
-        Order order = new Order(10, 100D, false, 0, true);
-        order.setId(5L);
-        when(connection.prepareStatement("SELECT * FROM ORDERS WHERE ORDER_ID = ?"))
-            .thenThrow(new SQLException());
-        Throwable repositoryException = assertThrows(RepositoryException.class, () -> {
-            mockOrderRepository.get(order.getId());
-        });
-        assertNotNull(repositoryException);
-        assertEquals(RepositoryException.class, repositoryException.getClass());
-    }
+//    @Test
+//    void whenGetOrderThenThrowRepositoryException() throws RepositoryException, SQLException {
+//        Order order = new Order(10, 100D, false, 0, true);
+//        order.setId(5L);
+//        when(connection.prepareStatement("SELECT * FROM ORDERS WHERE ORDER_ID = ?"))
+//            .thenThrow(new SQLException());
+//        Throwable repositoryException = assertThrows(RepositoryException.class, () -> {
+//            mockOrderRepository.get(order.getId());
+//        });
+//        assertNotNull(repositoryException);
+//        assertEquals(RepositoryException.class, repositoryException.getClass());
+//    }
 
     @Test
     void whenUpdateOrderThenReturnUpdatedOrder() throws SQLException, RepositoryException {

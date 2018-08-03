@@ -25,7 +25,7 @@ import static org.junit.jupiter.api.Assumptions.assumeTrue;
 @ContextConfiguration(classes = {AppConfiguration.class})
 @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = "/create_table.sql")
 @Sql(executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD, scripts = "/drop_table.sql")
-class GoodaRepositoryIntegrationTest {
+class GoodsRepositoryIntegrationTest {
 
     @Autowired
     GoodsRepositoryImpl dao;
@@ -47,7 +47,7 @@ class GoodaRepositoryIntegrationTest {
         assumeTrue(goods.size() == 1);
 
         final Goods nonExistingGoods = new Goods("Parlament", 7622210722416l, 2.6F);
-        nonExistingGoods.setId(0);
+        nonExistingGoods.setId(0l);
         Goods result = dao.create(nonExistingGoods);
         assertTrue(result.equals(dao.get(result.getId())));
 
