@@ -1,13 +1,9 @@
 package com.ra.shop.repository.implementation;
 
-import java.sql.Connection;
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import com.ra.shop.enums.ExceptionMessage;
@@ -18,12 +14,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
-import org.springframework.dao.DataRetrievalFailureException;
-import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.PreparedStatementCreator;
-import org.springframework.jdbc.core.PreparedStatementSetter;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Component;
@@ -54,15 +46,15 @@ public class WarehouseRepositoryImpl implements IRepository<Warehouse> {
     @Override
     public Warehouse create(final Warehouse warehouse) throws RepositoryException {
         final String insertQuery = "INSERT INTO warehouse (name, price, amount) VALUES(?,?,?)";
-        jdbcTemplate.update(connection -> {
-            final PreparedStatement insertStatement = connection.prepareStatement(insertQuery);
-            WarehouseRepositoryImpl.this.fillInStatement(warehouse, insertStatement);
-            return insertStatement;
-        }, keyHolder);
         final Long warehouseId;
         try {
+            jdbcTemplate.update(connection -> {
+                final PreparedStatement insertStatement = connection.prepareStatement(insertQuery);
+                fillInStatement(warehouse, insertStatement);
+                return insertStatement;
+            }, keyHolder);
             warehouseId = (Long) keyHolder.getKey();
-        } catch (InvalidDataAccessApiUsageException | DataRetrievalFailureException e) {
+        } catch (DataAccessException e) {
             LOGGER.error(ExceptionMessage.FAILED_TO_CREATE_NEW_WAREHOUSE.getMessage(), e);
             throw new RepositoryException(ExceptionMessage.FAILED_TO_CREATE_NEW_WAREHOUSE.getMessage());
         }
@@ -119,13 +111,11 @@ public class WarehouseRepositoryImpl implements IRepository<Warehouse> {
      * @return Optional of warehouse or empty optional
      */
     @Override
-    public Optional<Warehouse> get(final long entityId) throws RepositoryException {
-        Optional<Warehouse> warehouse;
+    public Warehouse get(final long entityId) throws RepositoryException {
+        Warehouse warehouse;
         try {
-            warehouse = Optional.of(
-                    jdbcTemplate.queryForObject("SELECT * FROM warehouse WHERE id = ?",
-                    new Object[] { entityId },
-                    BeanPropertyRowMapper.newInstance(Warehouse.class)));
+            warehouse = jdbcTemplate.queryForObject("SELECT * FROM warehouse WHERE id = ?",
+                    new Object[] {entityId}, BeanPropertyRowMapper.newInstance(Warehouse.class));
         } catch (DataAccessException e) {
             LOGGER.error(ExceptionMessage.FAILED_TO_GET_WAREHOUSE_BY_ID.getMessage(), e);
             throw new RepositoryException(ExceptionMessage.FAILED_TO_GET_WAREHOUSE_BY_ID.getMessage() + " " + entityId);
@@ -170,14 +160,14 @@ public class WarehouseRepositoryImpl implements IRepository<Warehouse> {
      * @param list received from a Data Base
      * @return warehouse with filled fields
      */
-    private List<Warehouse> getWarehouseFromListOfMap(final List<Map<String, Object>> list) {
+    public List<Warehouse> getWarehouseFromListOfMap(final List<Map<String, Object>> list) {
         return list.stream().map((Map<String, Object> map) -> {
             final Warehouse warehouse = new Warehouse();
-            warehouse.setIdNumber((Long)map.get("id"));
+            warehouse.setIdNumber((Long) map.get("id"));
             warehouse.setName((String) map.get("name"));
             warehouse.setPrice((Double) map.get("price"));
             warehouse.setAmount((Integer) map.get("amount"));
             return warehouse;
-        } ).collect(Collectors.toList());
+        }).collect(Collectors.toList());
     }
 }
