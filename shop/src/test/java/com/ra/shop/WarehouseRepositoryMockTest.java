@@ -63,6 +63,11 @@ public class WarehouseRepositoryMockTest {
         );
     }
 
+    /**
+     * testing update method to return the warehouse.
+     *
+     * @throws RepositoryException exception
+     */
     @Test
     void whenUpdateMethodExecutedThenCorrectEntityReturns() throws RepositoryException {
         final String updateQuery = "UPDATE warehouse SET name = ?, price = ?, amount = ? WHERE id = ?";
@@ -81,6 +86,11 @@ public class WarehouseRepositoryMockTest {
         );
     }
 
+    /**
+     * testing delete method to return true.
+     *
+     * @throws RepositoryException exception
+     */
     @Test
     void whenDeleteCorrectlyExecutedThenReturnTrue() throws RepositoryException {
         warehouse.setIdNumber(1L);
@@ -90,6 +100,11 @@ public class WarehouseRepositoryMockTest {
         assertTrue(result);
     }
 
+    /**
+     * testing delete method to return false.
+     *
+     * @throws RepositoryException exception
+     */
     @Test
     void whenDeleteCorrectlyExecutedThenReturnFalse() throws RepositoryException {
         warehouse.setIdNumber(1L);
@@ -99,6 +114,11 @@ public class WarehouseRepositoryMockTest {
         assertFalse(result);
     }
 
+    /**
+     * testing getById method to return the warehouse.
+     *
+     * @throws RepositoryException exception
+     */
     @Test
     void whenGetByIdCorrectlyExecutedThenReturnWarehouse() throws RepositoryException {
         warehouse.setIdNumber(1L);
@@ -108,6 +128,11 @@ public class WarehouseRepositoryMockTest {
         assertEquals(warehouse, warehouseGet);
     }
 
+    /**
+     * testing getAll method to return the list of Warehouses.
+     *
+     * @throws RepositoryException exception
+     */
     @Test
     void whenGetAllCorrectlyThenReturnList() throws RepositoryException {
         List<Map<String, Object>> list = getListFromGetAllMethod();
