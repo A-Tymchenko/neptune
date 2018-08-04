@@ -1,6 +1,7 @@
 package com.ra.shop.config;
 
-import com.ra.shop.repository.impl.OrderRepositoryImpl;
+import com.zaxxer.hikari.HikariConfig;
+import com.zaxxer.hikari.HikariDataSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -8,14 +9,13 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.datasource.DriverManagerDataSource;
 
 import javax.sql.DataSource;
 
 @Configuration
-@ComponentScan("com.ra.shop")
 @PropertySource(value = "classpath:cfg.properties")
-public class AppConfiguration {
+@ComponentScan("com.ra.shop.repository.implementation")
+public class ShopConfiguration {
 
     @Autowired
     private transient Environment environment;
@@ -27,11 +27,11 @@ public class AppConfiguration {
 
     @Bean
     public DataSource buildDataSource() {
-        final DriverManagerDataSource dataSource = new DriverManagerDataSource();
-        dataSource.setUrl(environment.getProperty("URL"));
-        dataSource.setUsername(environment.getProperty("USERNAME"));
-        dataSource.setPassword(environment.getProperty("PASSWORD"));
-        return dataSource;
+        final HikariConfig config = new HikariConfig();
+        config.setJdbcUrl(environment.getProperty("URL"));
+        config.setUsername(environment.getProperty("USERNAME"));
+        config.setPassword(environment.getProperty("PASSWORD"));
+        return new HikariDataSource(config);
     }
 
 }

@@ -137,7 +137,7 @@ ext {
             usertype       : "org.jadira.usertype:usertype.core:$utVersion",
             artemis        : "org.apache.activemq:artemis-jms-server:2.1.0",
             javaEl         : "javax.el:javax.el-api:$javaElVersion",
-            glassfishEl    : "org.glassfish.web:el-impl:$glasshfishELVersion",
+            glassfishEl    : "org.glassfish.web:el-implementation:$glasshfishELVersion",
             jms            : "javax.jms:javax.jms-api:$jmsVersion",
             artemisClient  : "org.apache.activemq:artemis-jms-client:$artemisVersion",
             artemisServer  : "org.apache.activemq:artemis-jms-server:$artemisVersion",
@@ -268,7 +268,7 @@ project("shop") {
         compile group: 'org.hibernate', name: 'hibernate-validator', version: '6.0.11.Final'
         // https://mvnrepository.com/artifact/javax.validation/validation-api
         compile group: 'javax.validation', name: 'validation-api', version: '2.0.1.Final'
-
+        compile group: 'com.zaxxer', name: 'HikariCP', version: '3.2.0'
     }
 }
 

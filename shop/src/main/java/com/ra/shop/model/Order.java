@@ -8,12 +8,15 @@ import java.util.Objects;
  */
 public class Order implements Serializable {
 
-    private long id;
+    private Long id;
     private Integer number;
     private Double price;
     private Boolean deliveryIncluded;
     private Integer deliveryCost;
     private Boolean executed;
+
+    public Order() {
+    }
 
     public Order(Integer number, Double price, Boolean deliveryIncluded,
                  Integer deliveryCost, Boolean executed) {
@@ -24,11 +27,11 @@ public class Order implements Serializable {
         this.executed = executed;
     }
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

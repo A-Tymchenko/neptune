@@ -21,12 +21,12 @@ public interface IRepository<T> {
     T create(T entity) throws RepositoryException;
 
     /**
-     * Method returns Optional wrapper with an entity from database.
+     * Method returns an entity from database.
      *
      * @param entityId - id of searched entity.
-     * @return Optional wrapper for chosen entity.
+     * @return T. chosen entity.
      */
-    Optional<T> get(long entityId) throws RepositoryException;
+    T get(Long entityId) throws RepositoryException;
 
     /**
      * Method updates existed entity due to it`s new params and send updated entity to database.
@@ -42,7 +42,7 @@ public interface IRepository<T> {
      * @param entityId of entity that will be deleted.
      * @return Boolean true if entity deleted, false if not.
      */
-    boolean delete(long entityId) throws RepositoryException;
+    boolean delete(Long entityId) throws RepositoryException;
 
     /**
      * Method returns all entities.

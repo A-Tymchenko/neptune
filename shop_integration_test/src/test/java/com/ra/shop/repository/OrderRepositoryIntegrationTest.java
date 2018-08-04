@@ -1,9 +1,9 @@
 package com.ra.shop.repository;
 
-import com.ra.shop.config.AppConfiguration;
+import com.ra.shop.config.ShopConfiguration;
 import com.ra.shop.exceptions.RepositoryException;
 import com.ra.shop.model.Order;
-import com.ra.shop.repository.impl.OrderRepositoryImpl;
+import com.ra.shop.repository.implementation.OrderRepositoryImpl;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,15 +12,12 @@ import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.jdbc.SqlGroup;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(SpringExtension.class)
-@ContextConfiguration(classes = {AppConfiguration.class})
+@ContextConfiguration(classes = {ShopConfiguration.class})
 @SqlGroup(value = {
         @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = "classpath:create_table.sql"),
         @Sql(executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD, scripts = "classpath:drop_table.sql")
@@ -35,7 +32,7 @@ public class OrderRepositoryIntegrationTest {
         Order order = new Order(10, 90d, false, 0, false);
         Order created = repository.create(order);
         assertNotNull(created);
-        assertEquals(1, created.getId());
+        assertEquals(order, created);
     }
 
     @Test
@@ -52,8 +49,8 @@ public class OrderRepositoryIntegrationTest {
     void whenGetOrderThenReturnOptionalOfOrder() throws RepositoryException {
         Order order = new Order(10, 90d, false, 0, false);
         Order created = repository.create(order);
-        Optional<Order> optional = repository.get(created.getId());
-        assertTrue(optional.isPresent());
+        Order found = repository.get(created.getId());
+        assertNotNull(found);
         assertEquals(order, created);
     }
 
@@ -61,7 +58,7 @@ public class OrderRepositoryIntegrationTest {
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = "classpath:drop_table.sql")
     void whenGetOrderThenThrowRepositoryException() {
         Throwable repositoryException = assertThrows(RepositoryException.class, () -> {
-            repository.get(1);
+            repository.get(1L);
         });
         assertNotNull(repositoryException);
         assertEquals(RepositoryException.class, repositoryException.getClass());
@@ -105,7 +102,7 @@ public class OrderRepositoryIntegrationTest {
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = "classpath:drop_table.sql")
     void whenDeleteOrderThenThrowRepositoryException() {
         Throwable repositoryException = assertThrows(RepositoryException.class, () -> {
-            repository.delete(1);
+            repository.delete(1L);
         });
         assertNotNull(repositoryException);
         assertEquals(RepositoryException.class, repositoryException.getClass());
