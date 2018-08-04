@@ -2,7 +2,7 @@ package com.ra.airport.servlet;
 
 import com.ra.airport.config.AirPortConfiguration;
 import com.ra.airport.repository.exception.AirPortDaoException;
-import com.ra.airport.repository.impl.FlightDao;
+import com.ra.airport.servlet.handler.ServletHandler;
 import com.ra.airport.servlet.handler.factory.HandlerFactory;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -23,13 +23,22 @@ import java.io.InputStreamReader;
 import java.sql.Connection;
 import java.sql.SQLException;
 
+/**
+ * Main application servlet. Redirecting all users requests to particular {@link ServletHandler}
+ */
 @WebServlet(urlPatterns = "/")
 public class DispatcherServlet extends HttpServlet {
 
     private static HandlerFactory handlerFactory;
 
-    private static final Logger LOGGER = LogManager.getLogger(FlightDao.class);
+    private static final Logger LOGGER = LogManager.getLogger(DispatcherServlet.class);
 
+    /**
+     * Init servlet and {@link AnnotationConfigApplicationContext}.
+     * For {@link HandlerFactory} class initialization.
+     *
+     * @param config servlet config
+     */
     @Override
     public void init(ServletConfig config) {
         final AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(AirPortConfiguration.class);
@@ -37,6 +46,10 @@ public class DispatcherServlet extends HttpServlet {
         initDataBase(context);
     }
 
+    /**
+     * Create DB with all necessary data.
+     * @param context {@link ApplicationContext} instance
+     */
     private void initDataBase(ApplicationContext context) {
         try {
             Connection connection = context.getBean(DataSource.class).getConnection();
@@ -49,24 +62,42 @@ public class DispatcherServlet extends HttpServlet {
         }
     }
 
+    /**
+     * Process get request.
+     *
+     * @param req request
+     * @param resp response
+     */
     @Override
     protected void doGet(final HttpServletRequest req, final HttpServletResponse resp) {
         try {
             handlerFactory.handleGetRequest(this.getPath(req), req, resp);
         } catch (AirPortDaoException e) {
-
+            LOGGER.error("Error get request processing", e);
         }
     }
 
+    /**
+     * Process post request.
+     *
+     * @param req request
+     * @param resp response
+     */
     @Override
     protected void doPost(final HttpServletRequest req, final HttpServletResponse resp) {
         try {
             handlerFactory.handlePostRequest(this.getPath(req), req, resp);
         } catch (AirPortDaoException e) {
-
+            LOGGER.error("Error post request processing",e);
         }
     }
 
+    /**
+     * Return path to servlet.
+     *
+     * @param req request
+     * @return path to servlet
+     */
     private String getPath(final HttpServletRequest req) {
         return req.getServletPath();
     }
