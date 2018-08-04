@@ -1,18 +1,17 @@
 package com.ra.airport.servlet.handler;
 
+import java.util.List;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import com.ra.airport.entity.Flight;
 import com.ra.airport.repository.exception.AirPortDaoException;
 import com.ra.airport.service.FlightService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.util.List;
-
 /**
- * Author: anbo
- * Date: 02.08.2018
+ * Process /flights user request.
  */
 @Component
 public class GetAllFlightsHandler implements ServletHandler {
@@ -26,7 +25,7 @@ public class GetAllFlightsHandler implements ServletHandler {
 
     @Override
     public void post(HttpServletRequest request, HttpServletResponse response) throws AirPortDaoException {
-       get(request,response);
+       get(request, response);
     }
 
     @Override

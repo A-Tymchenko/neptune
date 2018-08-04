@@ -1,5 +1,16 @@
 package com.ra.airport.servlet;
 
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.sql.Connection;
+import java.sql.SQLException;
+import javax.servlet.ServletConfig;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.sql.DataSource;
+
 import com.ra.airport.config.AirPortConfiguration;
 import com.ra.airport.repository.exception.AirPortDaoException;
 import com.ra.airport.servlet.handler.ServletHandler;
@@ -11,17 +22,6 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
-
-import javax.servlet.ServletConfig;
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.sql.DataSource;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.sql.Connection;
-import java.sql.SQLException;
 
 /**
  * Main application servlet. Redirecting all users requests to particular {@link ServletHandler}
@@ -88,7 +88,7 @@ public class DispatcherServlet extends HttpServlet {
         try {
             handlerFactory.handlePostRequest(this.getPath(req), req, resp);
         } catch (AirPortDaoException e) {
-            LOGGER.error("Error post request processing",e);
+            LOGGER.error("Error post request processing", e);
         }
     }
 

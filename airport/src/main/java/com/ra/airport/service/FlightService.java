@@ -1,16 +1,16 @@
 package com.ra.airport.service;
 
+import java.util.List;
+import java.util.Optional;
+
 import com.ra.airport.repository.exception.AirPortDaoException;
 import com.ra.airport.repository.impl.FlightDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Optional;
-
 /**
- * Author: anbo
- * Date: 04.08.2018
+ * Provides methods for CRUD operations with {@link com.ra.airport.entity.Flight} entity.
+ * Using {@link com.ra.airport.repository.AirPortDao}.
  */
 @Service
 public class FlightService implements AirPortService {

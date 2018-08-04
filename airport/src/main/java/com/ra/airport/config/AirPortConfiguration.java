@@ -1,5 +1,7 @@
 package com.ra.airport.config;
 
+import java.util.HashMap;
+import java.util.Map;
 import javax.sql.DataSource;
 
 import com.ra.airport.servlet.handler.GetAllFlightsHandler;
@@ -7,7 +9,6 @@ import com.ra.airport.servlet.handler.ServletHandler;
 import com.ra.airport.servlet.handler.factory.HandlerFactory;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -16,8 +17,6 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
-
-import java.util.*;
 
 /**
  * Spring configuration class for DAO layer.
@@ -75,6 +74,12 @@ public class AirPortConfiguration {
         return new NamedParameterJdbcTemplate(dataSource());
     }
 
+    /**
+     * Register handlers map.
+     * Using by {@link HandlerFactory}.
+     *
+     * @return NamedParameterJdbcTemplate.
+     */
     @Bean
     public Map<String, ServletHandler> handlers() {
         Map<String, ServletHandler> handlers = new HashMap<>();
@@ -82,6 +87,10 @@ public class AirPortConfiguration {
         return handlers;
     }
 
+    /**
+     * Register {@link HandlerFactory} bean.
+     * @return handlerFactory.
+     */
     @Bean
     public HandlerFactory handlerFactory() {
         return new HandlerFactory(handlers());

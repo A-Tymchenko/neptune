@@ -1,15 +1,15 @@
 package com.ra.airport.service;
 
-import com.ra.airport.repository.exception.AirPortDaoException;
-
 import java.util.List;
 import java.util.Optional;
 
+import com.ra.airport.repository.exception.AirPortDaoException;
+
 /**
  * Service provides methods for Airport CRUD operations.
- * Using {@link com.ra.airport.repository.AirPortDao} class.
+ * Using {@link com.ra.airport.repository.AirPortDao}.
  */
-public interface AirPortService <T> {
+public interface AirPortService<T> {
 
     /**
      * Create entity in DB and return it.
