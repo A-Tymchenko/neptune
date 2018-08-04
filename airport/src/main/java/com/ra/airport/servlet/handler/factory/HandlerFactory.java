@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.annotation.PostConstruct;
 
 import com.ra.airport.repository.exception.AirPortDaoException;
 import com.ra.airport.servlet.handler.GetAllFlightsHandler;
@@ -16,13 +15,13 @@ import org.springframework.stereotype.Component;
 @Component
 public class HandlerFactory {
 
-    @Autowired
     private GetAllFlightsHandler getAllFlightsHandler;
 
     private static Map<String, ServletHandler> handlers = new HashMap<>();
 
-    @PostConstruct
-    public void init() {
+    @Autowired
+    public HandlerFactory(GetAllFlightsHandler getAllFlightsHandler) {
+        this.getAllFlightsHandler = getAllFlightsHandler;
         handlers.put("/flights", getAllFlightsHandler);
     }
 
