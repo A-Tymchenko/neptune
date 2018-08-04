@@ -11,11 +11,11 @@ public interface ServletHandler {
     /**
      * Called where request method is post.
      */
-    void post(HttpServletRequest request, HttpServletResponse response) throws IOException;
+    void post(HttpServletRequest request, HttpServletResponse response) throws AirPortDaoException;
 
     /**
      * Called where request method is get.
      */
-    void get(HttpServletRequest request, HttpServletResponse response) throws IOException, AirPortDaoException;
+    void get(HttpServletRequest request, HttpServletResponse response) throws AirPortDaoException;
 
 }
