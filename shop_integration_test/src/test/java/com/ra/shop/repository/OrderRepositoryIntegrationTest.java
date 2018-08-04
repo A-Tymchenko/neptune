@@ -1,8 +1,9 @@
-package com.ra.shop.repository.impl;
+package com.ra.shop.repository;
 
 import com.ra.shop.config.AppConfiguration;
 import com.ra.shop.exceptions.RepositoryException;
 import com.ra.shop.model.Order;
+import com.ra.shop.repository.impl.OrderRepositoryImpl;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -113,12 +114,10 @@ public class OrderRepositoryIntegrationTest {
     @Test
     void whenGetAllOrdersThenReturnListOfOrders() throws RepositoryException {
         Order[] orders = getOrders();
-        List<Order> expected = new ArrayList<>();
-        Collections.addAll(expected, orders);
         addAllOrdersToDB(orders);
         List<Order> actual = repository.getAll();
         assertFalse(actual.isEmpty());
-        assertArrayEquals(expected.toArray(), actual.toArray());
+        assertEquals(3, actual.size());
     }
 
     @Test

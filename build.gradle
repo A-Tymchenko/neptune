@@ -264,8 +264,11 @@ project("shop") {
         compile spring.test
         compile group: 'org.apache.logging.log4j', name: 'log4j-api', version: '2.11.0'
         compile group: 'org.apache.logging.log4j', name: 'log4j-core', version: '2.11.0'
-        // https://mvnrepository.com/artifact/org.junit.jupiter/junit-jupiter-api
-        testCompile group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: '5.2.0'
+        // https://mvnrepository.com/artifact/org.hibernate/hibernate-validator
+        compile group: 'org.hibernate', name: 'hibernate-validator', version: '6.0.11.Final'
+        // https://mvnrepository.com/artifact/javax.validation/validation-api
+        compile group: 'javax.validation', name: 'validation-api', version: '2.0.1.Final'
+
     }
 }
 

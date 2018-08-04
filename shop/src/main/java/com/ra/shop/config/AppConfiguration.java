@@ -12,9 +12,9 @@ import org.springframework.jdbc.datasource.DriverManagerDataSource;
 
 import javax.sql.DataSource;
 
-@PropertySource(value = "classpath:cfg.properties")
-@ComponentScan("com.ra.shop.repository.impl")
 @Configuration
+@ComponentScan("com.ra.shop")
+@PropertySource(value = "classpath:cfg.properties")
 public class AppConfiguration {
 
     @Autowired
