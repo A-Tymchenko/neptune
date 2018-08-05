@@ -17,7 +17,7 @@ import javax.sql.DataSource;
 @PropertySource(value = "classpath:db.properties")
 @ComponentScan("com.ra.shop.repository.implementation")
 @Configuration
-public class AppConfiguration {
+public class AppConfiguration1 {
 
     @Autowired
     private transient Environment environment;

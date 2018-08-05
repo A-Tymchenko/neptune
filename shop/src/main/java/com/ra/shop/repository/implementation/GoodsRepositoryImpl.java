@@ -3,8 +3,7 @@ package com.ra.shop.repository.implementation;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import com.ra.shop.enums.ExceptionMessage;
@@ -48,21 +47,12 @@ public final class GoodsRepositoryImpl implements IRepository<Goods> {
      */
     @Override
     public Goods create(final Goods entity) throws RepositoryException {
-        //LOGGER.warn(entity);
         try {
             jdbcTemplate.update(connection ->
                             createPreparedStatement(entity, connection,
                                     "INSERT INTO GOODS (NAME, BARCODE, PRICE) VALUES (?,?,?)")
-//                    connection -> {
-//                        final PreparedStatement preparedStatement =
-//                                connection.prepareStatement("INSERT INTO GOODS (NAME, BARCODE, PRICE) VALUES (?,?,?)");
-//                        setStatementGoodsInSQLIndexes(preparedStatement, entity);
-//                        return preparedStatement;
-//                    }
                     , generatedKeys);
-            final Long deviceKey = (Long) generatedKeys.getKey();
-            entity.setId(deviceKey);
-            LOGGER.warn(entity);
+            entity.setId((Long) generatedKeys.getKey());
             return entity;
         } catch (DataAccessException ex) {
             LOGGER.error(ExceptionMessage.FAILED_TO_CREATE_NEW_GOODS.getMessage(), ex);
@@ -74,7 +64,7 @@ public final class GoodsRepositoryImpl implements IRepository<Goods> {
      * Extracted goods in DataBase.
      *
      * @param entityId of entity that will be insert.
-     * @return Optional entity.
+     * @return entity.
      */
     @Override
     public Goods get(final long entityId) throws RepositoryException {
@@ -147,7 +137,8 @@ public final class GoodsRepositoryImpl implements IRepository<Goods> {
      * @param statement to DataBase.
      * @param entity    to DataBase.
      */
-    private void setStatementGoodsInSQLIndexes(final PreparedStatement statement, final Goods entity) throws SQLException {
+    private void setStatementGoodsInSQLIndexes(final PreparedStatement statement,
+                                               final Goods entity) throws SQLException {
         statement.setString(FIRST_SQL_INDEX, entity.getName());
         statement.setLong(SECOND_SQL_INDEX, entity.getBarcode());
         statement.setDouble(THIRD_SQL_INDEX, entity.getPrice());
@@ -161,23 +152,18 @@ public final class GoodsRepositoryImpl implements IRepository<Goods> {
      */
     private Goods getGoodsFromMap(final Map<String, Object> mapGoods) {
         final Goods goods = new Goods((String) mapGoods.get("NAME"),
-                (long) mapGoods.get("BARCODE"),
-                (double) mapGoods.get("PRICE"));
-        goods.setId((long) mapGoods.get("ID"));
+                (Long) mapGoods.get("BARCODE"),
+                (Double) mapGoods.get("PRICE"));
+        goods.setId((Long) mapGoods.get("ID"));
         return goods;
     }
+
     private PreparedStatement createPreparedStatement(final Goods goods, final Connection connection,
                                                       final String sql) throws SQLException {
         final PreparedStatement preparedStatement = connection.prepareStatement(sql);
-       // final LocalDateTime departureDate = flight.getDepartureDate();
         preparedStatement.setString(FIRST_SQL_INDEX, goods.getName());
         preparedStatement.setLong(SECOND_SQL_INDEX, goods.getBarcode());
-       preparedStatement.setDouble(THIRD_SQL_INDEX, goods.getPrice());
-       // preparedStatement.setBoolean(StatementParameter.FLIGHT_MEAL_ON.get(), flight.getMealOn());
-       // preparedStatement.setDouble(StatementParameter.FLIGHT_FARE.get(), flight.getFare());
-       // preparedStatement.setTimestamp(StatementParameter.FLIGHT_DEPARTURE_DATE.get(), Timestamp.valueOf(departureDate));
-       // preparedStatement.setTimestamp(StatementParameter.FLIGHT_ARRIVAL_DATE.get(), Timestamp.valueOf(flight.getArrivalDate()));
-
+        preparedStatement.setDouble(THIRD_SQL_INDEX, goods.getPrice());
         return preparedStatement;
     }
 }

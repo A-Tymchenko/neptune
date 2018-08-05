@@ -12,13 +12,13 @@ public class Goods implements Serializable {
     private static final long serialVersionUID = 1L;
     private Long idNumber;
     private String name;
-    private long barcode;
-    private double price;
+    private Long barcode;
+    private Double price;
 
     public Goods() {
     }
 
-    public Goods(final String name, final Long barcode, final double price) {
+    public Goods(final String name, final Long barcode, final Double price) {
         this.name = name;
         this.barcode = barcode;
         this.price = price;
@@ -44,7 +44,7 @@ public class Goods implements Serializable {
         return barcode;
     }
 
-    public void setBarcode(final long barcode) {
+    public void setBarcode(final Long barcode) {
         this.barcode = barcode;
     }
 
@@ -52,7 +52,7 @@ public class Goods implements Serializable {
         return price;
     }
 
-    public void setPrice(final double price) {
+    public void setPrice(final Double price) {
         this.price = price;
     }
 
