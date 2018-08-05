@@ -1,6 +1,5 @@
-package com.ra.advertisement.dao;
+package com.ra.airport.factory;
 
-import com.ra.advertisement.connection.ConnectionFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

@@ -50,7 +50,7 @@ public class FlightDao implements AirPortDao<Flight> {
      * @return {@link Flight} entity
      * @throws AirPortDaoException exception for DAO layer
      */
-    public Flight create(Flight flight) throws AirPortDaoException {
+    public Flight create(final Flight flight) throws AirPortDaoException {
         try (Connection connection = connectionFactory.getConnection()) {
             final PreparedStatement preparedStatement = connection.prepareStatement(INSERT_FLIGHT_SQL);
             fillPreparedStatement(flight, preparedStatement);
@@ -58,9 +58,9 @@ public class FlightDao implements AirPortDao<Flight> {
             final ResultSet generatedIdRS = connection.prepareStatement("SELECT SCOPE_IDENTITY()").executeQuery();
             Integer flightId = null;
             if (generatedIdRS.next()) {
-               flightId = generatedIdRS.getInt(1);
+                flightId = generatedIdRS.getInt(1);
             }
-            flight = getById(flightId).get();
+            flight.setIdentifier(flightId);
         } catch (SQLException e) {
             LOGGER.error(ExceptionMessage.FAILED_TO_CREATE_NEW_FLIGHT.toString(), e);
             throw new AirPortDaoException(ExceptionMessage.FAILED_TO_CREATE_NEW_FLIGHT.get(), e);
@@ -79,6 +79,7 @@ public class FlightDao implements AirPortDao<Flight> {
     public Flight update(Flight flight) throws AirPortDaoException {
         try (Connection connection = connectionFactory.getConnection()) {
             final PreparedStatement preparedStatement = connection.prepareStatement(UPDATE_FLIGHT_SQL);
+            preparedStatement.setInt(StatementParameter.FLIGHT_ID.get(), flight.getIdentifier());
             fillPreparedStatement(flight, preparedStatement);
             preparedStatement.executeUpdate();
             flight = getById(flight.getIdentifier()).get();
@@ -175,7 +176,7 @@ public class FlightDao implements AirPortDao<Flight> {
      * Fill {@link PreparedStatement} parameters.
      * Get them from {@link Flight} entity.
      *
-     * @param flight entity
+     * @param flight            entity
      * @param preparedStatement statement for filling
      * @throws SQLException exception for DAO layer
      */
@@ -187,8 +188,5 @@ public class FlightDao implements AirPortDao<Flight> {
         preparedStatement.setDouble(StatementParameter.FLIGHT_FARE.get(), flight.getFare());
         preparedStatement.setTimestamp(FLIGHT_DEPARTURE_DATE.get(), Timestamp.valueOf(flight.getDepartureDate()));
         preparedStatement.setTimestamp(StatementParameter.FLIGHT_ARRIVAL_DATE.get(), Timestamp.valueOf(flight.getArrivalDate()));
-        if (flight.getIdentifier() != null) {
-            preparedStatement.setInt(StatementParameter.FLIGHT_ID.get(), flight.getIdentifier());
-        }
     }
 }
