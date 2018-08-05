@@ -9,10 +9,7 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.*;
 import org.springframework.jdbc.support.KeyHolder;
 
-import java.sql.Connection;
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -37,13 +34,13 @@ public class OrderRepositoryMockTest {
     }
 
     @BeforeEach
-    void setup() throws SQLException {
+    void setup() {
         keyHolder = mock(KeyHolder.class);
         statement = mock(PreparedStatement.class);
     }
 
     @Test
-    void whenCreateOrderThenReturnCreatedOrder() throws RepositoryException, SQLException {
+    void whenCreateOrderThenReturnCreatedOrder() throws RepositoryException {
         Order order = new Order(10, 100d, false, 0, false);
         when(jdbcTemplate.update(any(PreparedStatementCreator.class), any(KeyHolder.class))).thenReturn(1);
         when(keyHolder.getKey()).thenReturn(1L);

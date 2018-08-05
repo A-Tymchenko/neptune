@@ -10,7 +10,7 @@ import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
-import org.springframework.stereotype.Repository;
+import org.springframework.stereotype.Component;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -19,23 +19,48 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-@Repository
+/**
+ * IRepository implementation using Spring jdbc.
+ */
+@Component
 public class OrderRepositoryImpl implements IRepository<Order> {
 
+    /**
+     * Logger.
+     */
     private static final Logger LOGGER = Logger.getLogger(OrderRepositoryImpl.class);
+
+    /**
+     * KeyHolder instance stores primary keys.
+     */
     private final transient KeyHolder keyHolder = new GeneratedKeyHolder();
 
+    /**
+     * JdbcTemplate instance.
+     */
     private JdbcTemplate jdbcTemplate;
 
+    /**
+     * Constructor accepts jdbcTemplate as a parameter.
+     *
+     * @param jdbcTemplate jdbcTemplate
+     */
     @Autowired
     public OrderRepositoryImpl(final JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
 
+    /**
+     * Method adds an entity to database.
+     *
+     * @param entity that will be created.
+     * @return Order persisted entity.
+     * @throws RepositoryException can be thrown if any error occurs.
+     */
     @Override
-    public Order create(Order entity) throws RepositoryException {
+    public Order create(final Order entity) throws RepositoryException {
         Objects.requireNonNull(entity);
-        Long orderId;
+        final Long orderId;
         try {
             jdbcTemplate.update(con -> {
                 final PreparedStatement statement = con.prepareStatement("INSERT INTO ORDERS (NUMBER, PRICE, DELIVERY_INCLUDED, DELIVERY_COST, EXECUTED) "
@@ -53,11 +78,18 @@ public class OrderRepositoryImpl implements IRepository<Order> {
         return entity;
     }
 
+    /**
+     * Method performs search in database and returns an entity with pointed id.
+     *
+     * @param entityId - id of searched entity.
+     * @return Order searched entity.
+     * @throws RepositoryException can be thrown if any error occurs.
+     */
     @Override
     public Order get(final Long entityId) throws RepositoryException {
-        Order found;
+        final Order found;
         try {
-            BeanPropertyRowMapper<Order> mapper = BeanPropertyRowMapper.newInstance(Order.class);
+            final BeanPropertyRowMapper<Order> mapper = BeanPropertyRowMapper.newInstance(Order.class);
             found = jdbcTemplate.queryForObject(
                     "SELECT * FROM ORDERS WHERE ORDER_ID = ?",
                     mapper,
@@ -70,6 +102,13 @@ public class OrderRepositoryImpl implements IRepository<Order> {
         return found;
     }
 
+    /**
+     * Method performs update operation.
+     *
+     * @param newEntity updated version of entity.
+     * @return Order updated version of entity.
+     * @throws RepositoryException can be thrown if any error occurs.
+     */
     @Override
     public Order update(final Order newEntity) throws RepositoryException {
         Objects.requireNonNull(newEntity);
@@ -89,6 +128,13 @@ public class OrderRepositoryImpl implements IRepository<Order> {
         }
     }
 
+    /**
+     * Method performs delete operation.
+     *
+     * @param entityId of entity that will be deleted.
+     * @return boolean true if entity removed successfully or false if not.
+     * @throws RepositoryException can be thrown if any error occurs.
+     */
     @Override
     public boolean delete(final Long entityId) throws RepositoryException {
         try {
@@ -103,9 +149,15 @@ public class OrderRepositoryImpl implements IRepository<Order> {
         }
     }
 
+    /**
+     * Method returns list of entities that stored in database.
+     *
+     * @return List<Order> list of existed orders.
+     * @throws RepositoryException can be thrown if any error occurs.
+     */
     @Override
     public List<Order> getAll() throws RepositoryException {
-        List<Map<String, Object>> map;
+        final List<Map<String, Object>> map;
         try {
             map = jdbcTemplate.queryForList("SELECT * FROM ORDERS");
             getListOfOrders(map);
@@ -117,10 +169,16 @@ public class OrderRepositoryImpl implements IRepository<Order> {
         return getListOfOrders(map);
     }
 
-    private List<Order> getListOfOrders(List<Map<String, Object>> map) {
-        List<Order> orders = new ArrayList<>();
+    /**
+     * Method iterate over the list of orders, set params into order instances and adds them to ArrayList and returns.
+     *
+     * @param map stores params for each entity.
+     * @return List<Order> list of orders.
+     */
+    private List<Order> getListOfOrders(final List<Map<String, Object>> map) {
+        final List<Order> orders = new ArrayList<>();
         for (Map<String, Object> row : map) {
-            Order order = new Order();
+            final Order order = new Order();
             order.setId((Long) row.get("ORDER_ID"));
             order.setNumber((Integer) row.get("NUMBER"));
             order.setPrice((Double) row.get("PRICE"));
