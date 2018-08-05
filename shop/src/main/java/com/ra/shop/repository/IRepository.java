@@ -1,7 +1,6 @@
 package com.ra.shop.repository;
 
 import java.util.List;
-import java.util.Optional;
 
 import com.ra.shop.exceptions.RepositoryException;
 

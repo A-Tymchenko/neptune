@@ -1,5 +1,7 @@
 package com.ra.shop.config;
 
+import javax.sql.DataSource;
+
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,14 +12,12 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 import org.springframework.jdbc.core.JdbcTemplate;
 
-import javax.sql.DataSource;
-
 /**
  * Configuration class contains jdbc template and data source config.
  */
 @Configuration
-@PropertySource(value = "classpath:cfg.properties")
 @ComponentScan("com.ra.shop.repository.implementation")
+@PropertySource("classpath:cfg.properties")
 public class ShopConfiguration {
 
     /**

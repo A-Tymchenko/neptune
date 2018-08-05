@@ -1,5 +1,12 @@
 package com.ra.shop.repository.implementation;
 
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+
 import com.ra.shop.exceptions.RepositoryException;
 import com.ra.shop.model.Order;
 import com.ra.shop.repository.IRepository;
@@ -11,13 +18,6 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Component;
-
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
 
 /**
  * IRepository implementation using Spring jdbc.
@@ -38,7 +38,7 @@ public class OrderRepositoryImpl implements IRepository<Order> {
     /**
      * JdbcTemplate instance.
      */
-    private JdbcTemplate jdbcTemplate;
+    private final transient JdbcTemplate jdbcTemplate;
 
     /**
      * Constructor accepts jdbcTemplate as a parameter.
@@ -63,7 +63,8 @@ public class OrderRepositoryImpl implements IRepository<Order> {
         final Long orderId;
         try {
             jdbcTemplate.update(con -> {
-                final PreparedStatement statement = con.prepareStatement("INSERT INTO ORDERS (NUMBER, PRICE, DELIVERY_INCLUDED, DELIVERY_COST, EXECUTED) "
+                final PreparedStatement statement = con.prepareStatement(
+                        "INSERT INTO ORDERS (NUMBER, PRICE, DELIVERY_INCLUDED, DELIVERY_COST, EXECUTED) "
                                 + "VALUES (?, ?, ?, ?, ?)");
                 fillEntityWithParameters(statement, entity);
                 return statement;
@@ -152,7 +153,7 @@ public class OrderRepositoryImpl implements IRepository<Order> {
     /**
      * Method returns list of entities that stored in database.
      *
-     * @return List<Order> list of existed orders.
+     * @return List list of existed orders.
      * @throws RepositoryException can be thrown if any error occurs.
      */
     @Override
@@ -173,12 +174,12 @@ public class OrderRepositoryImpl implements IRepository<Order> {
      * Method iterate over the list of orders, set params into order instances and adds them to ArrayList and returns.
      *
      * @param map stores params for each entity.
-     * @return List<Order> list of orders.
+     * @return List list of orders.
      */
-    private List<Order> getListOfOrders(final List<Map<String, Object>> map) {
+    public List<Order> getListOfOrders(final List<Map<String, Object>> map) {
         final List<Order> orders = new ArrayList<>();
-        for (Map<String, Object> row : map) {
-            final Order order = new Order();
+        final Order order = new Order();
+        for (final Map<String, Object> row : map) {
             order.setId((Long) row.get("ORDER_ID"));
             order.setNumber((Integer) row.get("NUMBER"));
             order.setPrice((Double) row.get("PRICE"));
