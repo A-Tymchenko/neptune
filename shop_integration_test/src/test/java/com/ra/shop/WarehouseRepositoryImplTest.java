@@ -1,43 +1,34 @@
 package com.ra.shop;
 
-import com.ra.shop.config.ConnectionFactory;
+import com.ra.shop.config.ShopConfiguration;
 import com.ra.shop.exceptions.RepositoryException;
 import com.ra.shop.model.Warehouse;
 import com.ra.shop.repository.implementation.WarehouseRepositoryImpl;
-import org.h2.tools.RunScript;
 import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.jdbc.Sql;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import java.io.*;
-import java.sql.*;
 import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@ExtendWith(SpringExtension.class)
+@ContextConfiguration(classes = ShopConfiguration.class)
+@Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = "/create_table.sql")
+@Sql(executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD, scripts = "/drop_table.sql")
 public class WarehouseRepositoryImplTest {
 
-    private static final String CREATE_TABLE_WAREHOUSE = "src/test/resources/create_table.sql";
-    private static final String DROP_TABLE_WAREHOUSE = "src/test/resources/drop_table.sql";
+    @Autowired
+    private WarehouseRepositoryImpl warehouseRepository;
 
     private static Warehouse warehouse;
-    private static WarehouseRepositoryImpl IRepository;
 
     @BeforeAll
-    static void init() throws IOException {
-        ConnectionFactory factory = ConnectionFactory.getInstance();
-        IRepository = new WarehouseRepositoryImpl(factory);
+    static void init() {
         warehouse = new Warehouse("Lol", 1.1, 2);
-    }
-
-    @BeforeEach
-    void beforeTest() throws IOException, SQLException {
-        Connection connection = ConnectionFactory.getInstance().getConnection();
-        RunScript.execute(connection, new FileReader(CREATE_TABLE_WAREHOUSE));
-    }
-
-    @AfterEach
-    void afterTest() throws IOException, SQLException {
-        Connection connection = ConnectionFactory.getInstance().getConnection();
-        RunScript.execute(connection, new FileReader(DROP_TABLE_WAREHOUSE));
     }
 
     /**
@@ -47,13 +38,9 @@ public class WarehouseRepositoryImplTest {
      */
     @Test
     void whenCreateTableThenNewWarehouseMustReturn() throws RepositoryException {
-        Warehouse createdWarehouse = IRepository.create(warehouse);
-        assertNotNull(createdWarehouse);
-        Long warehouseId = createdWarehouse.getIdNumber();
-        assertNotNull(warehouseId);
-        warehouse.setIdNumber(warehouseId);
+        warehouseRepository.create(warehouse);
 
-        assertEquals(warehouse, createdWarehouse);
+        assertEquals(1L, (long) warehouse.getIdNumber());
     }
 
     /**
@@ -63,10 +50,10 @@ public class WarehouseRepositoryImplTest {
      */
     @Test
     void whenUpdateThenUpdatedWarehouseReturns() throws RepositoryException {
-        Warehouse expectedWarehouse = IRepository.create(warehouse);
+        Warehouse expectedWarehouse = warehouseRepository.create(warehouse);
         expectedWarehouse.setName("AloGarage");
 
-        Warehouse updatedWarehouse = IRepository.update(expectedWarehouse);
+        Warehouse updatedWarehouse = warehouseRepository.update(expectedWarehouse);
         assertEquals(expectedWarehouse, updatedWarehouse);
     }
 
@@ -77,9 +64,9 @@ public class WarehouseRepositoryImplTest {
      */
     @Test
     void whenDeleteFalseThenReturnFalse() throws RepositoryException {
-        Warehouse createdWarehouse = IRepository.create(warehouse);
-        IRepository.delete(createdWarehouse.getIdNumber());
-        boolean result = IRepository.delete(createdWarehouse.getIdNumber());
+        Warehouse createdWarehouse = warehouseRepository.create(warehouse);
+        warehouseRepository.delete(createdWarehouse.getIdNumber());
+        boolean result = warehouseRepository.delete(createdWarehouse.getIdNumber());
 
         assertFalse(result);
     }
@@ -91,8 +78,8 @@ public class WarehouseRepositoryImplTest {
      */
     @Test
     void whenDeleteCorrectlyThenDeleteAndReturnTrue() throws RepositoryException {
-        Warehouse createdWarehouse1 = IRepository.create(warehouse);
-        boolean result = IRepository.delete(createdWarehouse1.getIdNumber());
+        Warehouse createdWarehouse1 = warehouseRepository.create(warehouse);
+        boolean result = warehouseRepository.delete(createdWarehouse1.getIdNumber());
 
         assertTrue(result);
     }
@@ -105,17 +92,10 @@ public class WarehouseRepositoryImplTest {
     @Test
     void whenGetAllThenWarehousesMustReturn() throws RepositoryException {
         List<Warehouse> expectedList = new ArrayList<>();
-        expectedList.add(IRepository.create(new Warehouse("loha", 1.1, 1)));
-        expectedList.add(IRepository.create(new Warehouse("gosha", 1.1, 1)));
-        expectedList.add(IRepository.create(new Warehouse("moisha", 1.1, 1)));
-        List<Warehouse> warehouses = IRepository.getAll();
+        expectedList.add(warehouseRepository.create(new Warehouse("loha", 1.1, 1)));
+        expectedList.add(warehouseRepository.create(new Warehouse("gosha", 1.1, 1)));
+        expectedList.add(warehouseRepository.create(new Warehouse("moisha", 1.1, 1)));
+        List<Warehouse> warehouses = warehouseRepository.getAll();
         assertEquals(expectedList, warehouses);
-    }
-
-    private Warehouse changeWarehouse(Warehouse warehouse) {
-        warehouse.setName("Aloha");
-        warehouse.setPrice(2.2);
-        warehouse.setAmount(2);
-        return warehouse;
     }
 }
