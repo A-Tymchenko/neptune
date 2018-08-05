@@ -3,9 +3,9 @@ package com.ra.airport.service;
 import java.util.List;
 import java.util.Optional;
 
+import com.ra.airport.entity.Flight;
 import com.ra.airport.repository.exception.AirPortDaoException;
 import com.ra.airport.repository.impl.FlightDao;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 /**
@@ -13,32 +13,27 @@ import org.springframework.stereotype.Service;
  * Using {@link com.ra.airport.repository.AirPortDao}.
  */
 @Service
-public class FlightService implements AirPortService {
+public class FlightService implements AirPortService<Flight> {
 
-    private FlightDao flightDao;
-
-    @Autowired
-    public FlightService(FlightDao flightDao) {
-        this.flightDao = flightDao;
-    }
+    private transient FlightDao flightDao;
 
     @Override
-    public Object create(Object entity) throws AirPortDaoException {
+    public Flight create(final Flight flight) throws AirPortDaoException {
         return null;
     }
 
     @Override
-    public Object update(Object entity) throws AirPortDaoException {
+    public Flight update(final Flight flight) throws AirPortDaoException {
         return null;
     }
 
     @Override
-    public boolean delete(Object entity) throws AirPortDaoException {
+    public boolean delete(final Flight flight) throws AirPortDaoException {
         return false;
     }
 
     @Override
-    public Optional getById(int entityId) throws AirPortDaoException {
+    public Optional<Flight> getById(final int flightId) throws AirPortDaoException {
         return Optional.empty();
     }
 

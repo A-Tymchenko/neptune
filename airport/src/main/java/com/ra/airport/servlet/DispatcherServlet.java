@@ -40,7 +40,7 @@ public class DispatcherServlet extends HttpServlet {
      * @param config servlet config
      */
     @Override
-    public void init(ServletConfig config) {
+    public void init(final ServletConfig config) {
         final AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(AirPortConfiguration.class);
         handlerFactory = context.getBean(HandlerFactory.class);
         initDataBase(context);
@@ -50,11 +50,11 @@ public class DispatcherServlet extends HttpServlet {
      * Create DB with all necessary data.
      * @param context {@link ApplicationContext} instance
      */
-    private void initDataBase(ApplicationContext context) {
+    private void initDataBase(final ApplicationContext context) {
         try {
-            Connection connection = context.getBean(DataSource.class).getConnection();
-            Resource metaDataResource = new ClassPathResource("sql/create_table_skripts.sql");
-            Resource dataResource = new ClassPathResource("sql/tables_backup(data).sql");
+            final Connection connection = context.getBean(DataSource.class).getConnection();
+            final Resource metaDataResource = new ClassPathResource("sql/create_table_skripts.sql");
+            final Resource dataResource = new ClassPathResource("sql/tables_backup(data).sql");
             RunScript.execute(connection, new InputStreamReader(metaDataResource.getInputStream()));
             RunScript.execute(connection, new InputStreamReader(dataResource.getInputStream()));
         } catch (SQLException | IOException e) {

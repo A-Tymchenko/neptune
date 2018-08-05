@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 import javax.sql.DataSource;
 
-import com.ra.airport.servlet.handler.GetAllFlightsHandler;
+import com.ra.airport.servlet.handler.GetFlightsHandler;
 import com.ra.airport.servlet.handler.ServletHandler;
 import com.ra.airport.servlet.handler.factory.HandlerFactory;
 import com.zaxxer.hikari.HikariConfig;
@@ -30,7 +30,7 @@ public class AirPortConfiguration {
     private transient Environment environment;
 
     @Autowired
-    private transient GetAllFlightsHandler getAllFlightsHandler;
+    private transient GetFlightsHandler getFlightsHandler;
 
     /**
      * Register {@link DataSource} bean.
@@ -82,8 +82,8 @@ public class AirPortConfiguration {
      */
     @Bean
     public Map<String, ServletHandler> handlers() {
-        Map<String, ServletHandler> handlers = new HashMap<>();
-        handlers.put("/flights", getAllFlightsHandler);
+        final Map<String, ServletHandler> handlers = new HashMap<>();
+        handlers.put("/flights", getFlightsHandler);
         return handlers;
     }
 

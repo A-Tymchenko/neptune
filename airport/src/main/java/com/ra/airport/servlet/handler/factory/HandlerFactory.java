@@ -9,9 +9,9 @@ import com.ra.airport.servlet.handler.ServletHandler;
 
 public class HandlerFactory {
 
-    private Map<String, ServletHandler> handlers;
+    private final transient Map<String, ServletHandler> handlers;
 
-    public HandlerFactory(Map<String, ServletHandler> handlers) {
+    public HandlerFactory(final Map<String, ServletHandler> handlers) {
         this.handlers = handlers;
     }
 
