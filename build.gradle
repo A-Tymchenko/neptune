@@ -137,7 +137,7 @@ ext {
             usertype       : "org.jadira.usertype:usertype.core:$utVersion",
             artemis        : "org.apache.activemq:artemis-jms-server:2.1.0",
             javaEl         : "javax.el:javax.el-api:$javaElVersion",
-            glassfishEl    : "org.glassfish.web:el-implementation:$glasshfishELVersion",
+            glassfishEl    : "org.glassfish.web:el-impl:$glasshfishELVersion",
             jms            : "javax.jms:javax.jms-api:$jmsVersion",
             artemisClient  : "org.apache.activemq:artemis-jms-client:$artemisVersion",
             artemisServer  : "org.apache.activemq:artemis-jms-server:$artemisVersion",

@@ -29,12 +29,14 @@ import org.springframework.stereotype.Component;
 public final class GoodsRepositoryImpl implements IRepository<Goods> {
 
     private static final Logger LOGGER = LogManager.getLogger(GoodsRepositoryImpl.class);
+
     private final transient KeyHolder generatedKeys = new GeneratedKeyHolder();
+    private final transient JdbcTemplate jdbcTemplate;
+
     private static final Integer FIRST_SQL_INDEX = 1;
     private static final Integer SECOND_SQL_INDEX = 2;
     private static final Integer THIRD_SQL_INDEX = 3;
     private static final Integer FOURTH_SQL_INDEX = 4;
-    private final transient JdbcTemplate jdbcTemplate;
 
     @Autowired
     public GoodsRepositoryImpl(final JdbcTemplate jdbcTemplate) {

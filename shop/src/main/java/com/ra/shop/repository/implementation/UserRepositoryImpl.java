@@ -7,10 +7,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
+import com.ra.shop.enums.ExceptionMessage;
 import com.ra.shop.exceptions.RepositoryException;
 import com.ra.shop.model.User;
 import com.ra.shop.repository.IRepository;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
@@ -28,7 +30,7 @@ public class UserRepositoryImpl implements IRepository<User> {
     /**
      * Logger.
      */
-    private static final Logger LOGGER = Logger.getLogger(UserRepositoryImpl.class);
+    private static final Logger LOGGER = LogManager.getLogger(UserRepositoryImpl.class);
 
     /**
      * KeyHolder instance stores primary keys.
@@ -71,9 +73,8 @@ public class UserRepositoryImpl implements IRepository<User> {
             }, keyHolder);
             userId = (Long) keyHolder.getKey();
         } catch (DataAccessException e) {
-            final String message = String.format("User{id:%d} NOT CREATED!", entity.getId());
-            LOGGER.error(message, e);
-            throw new RepositoryException(message, e);
+            LOGGER.error(ExceptionMessage.FAILED_TO_CREATE_NEW_USER.getMessage(), e);
+            throw new RepositoryException(ExceptionMessage.FAILED_TO_CREATE_NEW_USER.getMessage(), e);
         }
         entity.setId(userId);
         return entity;
@@ -96,9 +97,8 @@ public class UserRepositoryImpl implements IRepository<User> {
                     mapper,
                     entityId);
         } catch (DataAccessException e) {
-            final String message = String.format("User{id:%d} NOT FOUND!", entityId);
-            LOGGER.error(message, e);
-            throw new RepositoryException(message, e);
+            LOGGER.error(ExceptionMessage.FAILED_TO_GET_USER_BY_ID.getMessage(), e);
+            throw new RepositoryException(ExceptionMessage.FAILED_TO_GET_USER_BY_ID.getMessage(), e);
         }
         return found;
     }
@@ -123,9 +123,8 @@ public class UserRepositoryImpl implements IRepository<User> {
                     });
             return newEntity;
         } catch (DataAccessException e) {
-            final String message = String.format("User{id:%d} NOT UPDATED!", newEntity.getId());
-            LOGGER.error(message, e);
-            throw new RepositoryException(message, e);
+            LOGGER.error(ExceptionMessage.FAILED_TO_UPDATE_USER.getMessage(), e);
+            throw new RepositoryException(ExceptionMessage.FAILED_TO_UPDATE_USER.getMessage(), e);
         }
     }
 
@@ -144,9 +143,8 @@ public class UserRepositoryImpl implements IRepository<User> {
                     entityId);
             return deletedRowsNumber > 0;
         } catch (DataAccessException e) {
-            final String message = String.format("User{id:%d} NOT DELETED!", entityId);
-            LOGGER.error(message, e);
-            throw new RepositoryException(message, e);
+            LOGGER.error(ExceptionMessage.FAILED_TO_DELETE_USER.getMessage(), e);
+            throw new RepositoryException(ExceptionMessage.FAILED_TO_DELETE_USER.getMessage(), e);
         }
     }
 
@@ -163,9 +161,8 @@ public class UserRepositoryImpl implements IRepository<User> {
             map = jdbcTemplate.queryForList("SELECT * FROM USERS");
             getListOfUsers(map);
         } catch (DataAccessException e) {
-            final String message = "No users found in database!";
-            LOGGER.error(message, e);
-            throw new RepositoryException(message, e);
+            LOGGER.error(ExceptionMessage.FAILED_TO_GET_ALL_USER.getMessage(), e);
+            throw new RepositoryException(ExceptionMessage.FAILED_TO_GET_ALL_USER.getMessage(), e);
         }
         return getListOfUsers(map);
     }
@@ -195,7 +192,7 @@ public class UserRepositoryImpl implements IRepository<User> {
      * Method fills user entity with parameters using preparedStatement.
      *
      * @param statement PreparedStatement.
-     * @param user     user entity that will be created.
+     * @param user      user entity that will be created.
      * @throws SQLException if any error occurs.
      */
     private void fillEntityWithParameters(final PreparedStatement statement, final User user) throws SQLException {
