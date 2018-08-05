@@ -40,7 +40,7 @@ public class Goods implements Serializable {
         this.name = name;
     }
 
-    public long getBarcode() {
+    public Long getBarcode() {
         return barcode;
     }
 
@@ -48,7 +48,7 @@ public class Goods implements Serializable {
         this.barcode = barcode;
     }
 
-    public double getPrice() {
+    public Double getPrice() {
         return price;
     }
 
