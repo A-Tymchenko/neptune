@@ -6,6 +6,7 @@ import java.util.Optional;
 import com.ra.airport.entity.Flight;
 import com.ra.airport.repository.exception.AirPortDaoException;
 import com.ra.airport.repository.impl.FlightDao;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 /**
@@ -15,7 +16,12 @@ import org.springframework.stereotype.Service;
 @Service
 public class FlightService implements AirPortService<Flight> {
 
-    private transient FlightDao flightDao;
+    private final transient FlightDao flightDao;
+
+    @Autowired
+    public FlightService(final FlightDao flightDao) {
+        this.flightDao = flightDao;
+    }
 
     @Override
     public Flight create(final Flight flight) throws AirPortDaoException {
