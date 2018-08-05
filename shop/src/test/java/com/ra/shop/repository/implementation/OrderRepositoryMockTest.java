@@ -61,7 +61,7 @@ public class OrderRepositoryMockTest {
         }).when(jdbcTemplate).update(any(PreparedStatementCreator.class), any(KeyHolder.class));
         when(keyHolder.getKey()).thenReturn(1L);
         Order created = repository.create(order);
-        order.setId(1L);
+        order.setId((long) keyHolder.getKey());
         assertNotNull(created);
     }
 

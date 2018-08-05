@@ -1,173 +1,132 @@
 package com.ra.advertisement.dao;
 
-import java.sql.Connection;
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
+import java.util.Map;
+import java.util.stream.Collectors;
 
-import com.ra.advertisement.connection.ConnectionFactory;
-import com.ra.advertisement.dao.exceptions.AdvertisementEnum;
-import com.ra.advertisement.dao.exceptions.DaoException;
 import com.ra.advertisement.entity.Device;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.BeanPropertyRowMapper;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
+import org.springframework.stereotype.Component;
 
+@Component("deviceDao")
 public final class DeviceAdvertisementDaoImpl implements AdvertisementDao<Device> {
-
-    private final transient ConnectionFactory connectionFactory;
+    private final transient JdbcTemplate jdbcTemplate;
+    private final transient KeyHolder keyHolder = new GeneratedKeyHolder();
+    private static final String GET_DEVICE_BY_ID = "SELECT * FROM DEVICES WHERE DEV_ID=?";
     private static final Integer NAME = 1;
     private static final Integer MODEL = 2;
     private static final Integer DEVICE_TYPE = 3;
     private static final Integer DEV_ID = 4;
-    private static final Logger LOGGER = LogManager.getLogger(DeviceAdvertisementDaoImpl.class);
 
-    public DeviceAdvertisementDaoImpl(final ConnectionFactory connFactory) {
-        this.connectionFactory = connFactory;
+    @Autowired
+    public DeviceAdvertisementDaoImpl(final JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
     }
 
     /**
      * Method adds new Device to the Data Base.
      *
      * @param device Device to save
-     * @return entity Device with generated id
+     * @returnto new Device
      */
     @Override
-    public Device create(final Device device) throws DaoException {
-        try (Connection connection = connectionFactory.getConnection()) {
-            final PreparedStatement pstm = connection.prepareStatement("INSERT INTO DEVICES (NAME, MODEL, "
-                    + "DEVICE_TYPE) VALUES(?,?,?)");
-            setStatementValues(pstm, device);
-            pstm.executeUpdate();
-            final ResultSet resultSetWithKey = pstm.getGeneratedKeys();
-            if (resultSetWithKey.next()) {
-                return getById(resultSetWithKey.getLong(1)).get();
-            }
-            return device;
-        } catch (SQLException ex) {
-            final String message = "Trouble in the create method {}";
-            LOGGER.error(message, AdvertisementEnum.DEVICES.getMessage(), ex);
-            throw new DaoException(String.format(message, AdvertisementEnum.DEVICES.getMessage()), ex);
-        }
+    public Device create(final Device device) {
+        final String createDevice = "INSERT INTO DEVICES (NAME, MODEL, DEVICE_TYPE) VALUES(?,?,?)";
+        jdbcTemplate.update(
+                connection -> {
+                    final PreparedStatement preparedStatement = connection.prepareStatement(createDevice);
+                    preparedStatementForCreateOrUpdate(preparedStatement, device);
+                    return preparedStatement;
+                }, keyHolder);
+        final Long deviceKey = (Long) keyHolder.getKey();
+        device.setDevId(deviceKey);
+        return device;
     }
 
     /**
      * Method returns Device from Data Base by id.
      *
      * @param devId Device's id
-     * @return object Device in Optional
+     * @return object Device
      */
     @Override
-    public Optional<Device> getById(final Long devId) throws DaoException {
-        try (Connection connection = connectionFactory.getConnection()) {
-            final PreparedStatement pstm = connection.prepareStatement("SELECT * FROM DEVICES WHERE DEV_ID=?");
-            pstm.setLong(1, devId);
-            final ResultSet resultSet = pstm.executeQuery();
-            if (resultSet.next()) {
-                return Optional.of(getDeviceFromResultSet(resultSet));
-            }
-        } catch (SQLException ex) {
-            final String message = "Trouble in the getById method {}";
-            LOGGER.error(message, AdvertisementEnum.DEVICES.getMessage(), ex);
-            throw new DaoException(String.format(message, AdvertisementEnum.DEVICES.getMessage()), ex);
-        }
-        return Optional.empty();
+    public Device getById(final Long devId) {
+        return jdbcTemplate.queryForObject(GET_DEVICE_BY_ID, BeanPropertyRowMapper.newInstance(Device.class), devId);
     }
 
     /**
      * Method deletes the object from Data Base by its id.
      *
-     * @param device Device
+     * @param device Device we want delete
      * @return count of deleted rows
      */
     @Override
-    public Integer delete(final Device device) throws DaoException {
-        if (device != null) {
-            try (Connection connection = connectionFactory.getConnection()) {
-                final PreparedStatement pstm = connection.prepareStatement("DELETE FROM DEVICES WHERE DEV_ID=?");
-                pstm.setLong(1, device.getDevId());
-                return pstm.executeUpdate();
-            } catch (SQLException ex) {
-                final String message = "Trouble in the delete method {}";
-                LOGGER.error(message, AdvertisementEnum.DEVICES.getMessage(), ex);
-                throw new DaoException(String.format(message, AdvertisementEnum.DEVICES.getMessage()), ex);
-            }
-        } else {
-            return 0;
-        }
+    public Integer delete(final Device device) {
+        final String deleteDevice = "DELETE FROM DEVICES WHERE DEV_ID=?";
+        return jdbcTemplate.update(deleteDevice, device.getDevId());
     }
 
     /**
-     * Update Device to Data Base.
+     * Update device to Data Base.
      *
-     * @param device to save
-     * @return new entity Device updated
+     * @param device device to update
+     * @return new Device
      */
     @Override
-    public Device update(final Device device) throws DaoException {
-        try (Connection connection = connectionFactory.getConnection()) {
-            final PreparedStatement pstm = connection.prepareStatement("update DEVICES set NAME = ?, MODEL= ?, "
-                    + "DEVICE_TYPE = ? where DEV_ID = ?");
-            setStatementValues(pstm, device);
-            pstm.setLong(DEV_ID, device.getDevId());
-            pstm.executeUpdate();
-            return getById(device.getDevId()).get();
-        } catch (SQLException ex) {
-            final String message = "Trouble in the update method {}";
-            LOGGER.error(message, AdvertisementEnum.DEVICES.getMessage(), ex);
-            throw new DaoException(String.format(message, AdvertisementEnum.DEVICES.getMessage()), ex);
-        }
+    public Device update(final Device device) {
+        final String updateDevice = "update DEVICES set NAME = ?, MODEL= ?, DEVICE_TYPE = ? where DEV_ID = ?";
+        jdbcTemplate.update(updateDevice, ps -> {
+            preparedStatementForCreateOrUpdate(ps, device);
+            ps.setLong(DEV_ID, device.getDevId());
+        });
+        return device;
     }
 
     /**
      * Method gets all devices from Data Base.
      *
-     * @return list of devices or empty otherwise
+     * @return list of all devices or empty otherwise
      */
     @Override
-    public List<Device> getAll() throws DaoException {
-        try (Connection connection = connectionFactory.getConnection()) {
-            final List<Device> deviceList = new ArrayList<>();
-            final PreparedStatement pstm = connection.prepareStatement("SELECT * FROM DEVICES");
-            final ResultSet resultSet = pstm.executeQuery();
-            while (resultSet.next()) {
-                final Device device = getDeviceFromResultSet(resultSet);
-                deviceList.add(device);
-            }
-            return deviceList;
-        } catch (SQLException ex) {
-            final String message = "Trouble in the getAll method {}";
-            LOGGER.error(message, AdvertisementEnum.DEVICES.getMessage(), ex);
-            throw new DaoException(String.format(message, AdvertisementEnum.DEVICES.getMessage()), ex);
-        }
+    public List<Device> getAll() {
+        final String getAllDevices = "SELECT * FROM DEVICES";
+        final List<Map<String, Object>> rows = jdbcTemplate.queryForList(getAllDevices);
+        return mapListFromQueryForList(rows);
     }
 
     /**
-     * Method extracts a device from resultSet.
+     * We use this method for fill up preparedStatement.
      *
-     * @param resultSet resultSet recieved from a Data Base
-     * @return new Device with the filled fields
+     * @param preparedStatement preparedStatement to fill up
+     * @param device            device where we get fields from
+     * @throws SQLException Sqlexception
      */
-    private Device getDeviceFromResultSet(final ResultSet resultSet) throws SQLException {
-        final Device device = new Device();
-        device.setDevId(resultSet.getLong("DEV_ID"));
-        device.setName(resultSet.getString("NAME"));
-        device.setModel(resultSet.getString("MODEL"));
-        device.setDeviceType(resultSet.getString("DEVICE_TYPE"));
-        return device;
+    private void preparedStatementForCreateOrUpdate(final PreparedStatement preparedStatement,
+                                                   final Device device) throws SQLException {
+        preparedStatement.setString(NAME, device.getName());
+        preparedStatement.setString(MODEL, device.getModel());
+        preparedStatement.setString(DEVICE_TYPE, device.getDeviceType());
     }
 
     /**
-     * Method sets Statement values for create method.
-     *
-     * @param pstm   to save
-     * @param device to save
+     * this method map listOfCollections from query to list.
+     * @param rows rows
+     * @return list
      */
-    private void setStatementValues(final PreparedStatement pstm, final Device device) throws SQLException {
-        pstm.setString(NAME, device.getName());
-        pstm.setString(MODEL, device.getModel());
-        pstm.setString(DEVICE_TYPE, device.getDeviceType());
+    public List<Device> mapListFromQueryForList(final List<Map<String, Object>> rows) {
+        return rows.stream().map(row -> {
+            final Device device = new Device();
+            device.setDevId((Long) row.get("DEV_ID"));
+            device.setName((String) row.get("NAME"));
+            device.setModel((String) row.get("MODEL"));
+            device.setDeviceType((String) row.get("DEVICE_TYPE"));
+            return device;
+        }).collect(Collectors.toList());
     }
 }

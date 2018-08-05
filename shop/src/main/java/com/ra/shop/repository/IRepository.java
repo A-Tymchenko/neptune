@@ -23,7 +23,7 @@ public interface IRepository<T> {
      * Method returns an entity from database.
      *
      * @param entityId - id of searched entity.
-     * @return T. chosen entity.
+     * @return T chosen entity.
      */
     T get(Long entityId) throws RepositoryException;
 
@@ -31,7 +31,7 @@ public interface IRepository<T> {
      * Method updates existed entity due to it`s new params and send updated entity to database.
      *
      * @param newEntity updated version of entity.
-     * @return T. Returns an updated entity.
+     * @return T Returns an updated entity.
      */
     T update(T newEntity) throws RepositoryException;
 

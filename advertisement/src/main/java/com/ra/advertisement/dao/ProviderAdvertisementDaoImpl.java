@@ -1,176 +1,136 @@
 package com.ra.advertisement.dao;
 
-import java.sql.Connection;
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
+import java.util.Map;
+import java.util.stream.Collectors;
 
-import com.ra.advertisement.connection.ConnectionFactory;
-import com.ra.advertisement.dao.exceptions.AdvertisementEnum;
-import com.ra.advertisement.dao.exceptions.DaoException;
 import com.ra.advertisement.entity.Provider;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.BeanPropertyRowMapper;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
+import org.springframework.stereotype.Component;
 
+@Component("providerDao")
 public final class ProviderAdvertisementDaoImpl implements AdvertisementDao<Provider> {
-    private final transient ConnectionFactory connectionFactory;
+    private final transient JdbcTemplate jdbcTemplate;
+    private final transient KeyHolder keyHolder = new GeneratedKeyHolder();
+    private static final String GET_PROV_BY_ID = "SELECT * FROM PROVIDER WHERE PROV_ID=?";
     private static final Integer NAME = 1;
     private static final Integer ADDRESS = 2;
     private static final Integer TELEPHONE = 3;
     private static final Integer COUNTRY = 4;
     private static final Integer PROV_ID = 5;
-    private static final Logger LOGGER = LogManager.getLogger(ProviderAdvertisementDaoImpl.class);
 
-    public ProviderAdvertisementDaoImpl(final ConnectionFactory connectionFactory) {
-        this.connectionFactory = connectionFactory;
+    @Autowired
+    public ProviderAdvertisementDaoImpl(final JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
     }
 
     /**
      * Method adds new Provider to the Data Base.
      *
      * @param provider Provider to save
-     * @return entity Provider with generated key
+     * @returnto new Provider
      */
     @Override
-    public Provider create(final Provider provider) throws DaoException {
-        try (Connection connection = connectionFactory.getConnection()) {
-            final PreparedStatement pstm = connection.prepareStatement("INSERT INTO PROVIDER (NAME, ADDRESS, "
-                    + "TELEPHONE, COUNTRY) VALUES(?,?,?,?)");
-            setStatementValues(pstm, provider);
-            pstm.executeUpdate();
-            final ResultSet resultSetWithKey = pstm.getGeneratedKeys();
-            if (resultSetWithKey.next()) {
-                return getById(resultSetWithKey.getLong(1)).get();
-            }
-            return provider;
-        } catch (SQLException ex) {
-            final String message = "Trouble in the create method {}";
-            LOGGER.error(message, AdvertisementEnum.PROVIDER.getMessage(), ex);
-            throw new DaoException(String.format(message, AdvertisementEnum.PROVIDER.getMessage()), ex);
-        }
+    public Provider create(final Provider provider) {
+        final String createProvider = "INSERT INTO PROVIDER (NAME, ADDRESS, TELEPHONE, COUNTRY) VALUES(?,?,?,?)";
+        jdbcTemplate.update(
+                connection -> {
+                    final PreparedStatement preparedStatement = connection.prepareStatement(createProvider);
+                    preparedStatementForCreateOrUpdate(preparedStatement, provider);
+                    return preparedStatement;
+                }, keyHolder);
+        final Long providerKey = (Long) keyHolder.getKey();
+        provider.setProvId(providerKey);
+        return provider;
     }
 
     /**
      * Method returns Provider from Data Base by id.
      *
      * @param provId Provider's id
-     * @return object Provider in Optional
+     * @return object Provider
      */
     @Override
-    public Optional<Provider> getById(final Long provId) throws DaoException {
-        try (Connection connection = connectionFactory.getConnection()) {
-            final PreparedStatement pstm = connection.prepareStatement("SELECT * FROM PROVIDER WHERE PROV_ID=?");
-            pstm.setLong(1, provId);
-            final ResultSet resultSet = pstm.executeQuery();
-            if (resultSet.next()) {
-                return Optional.of(getProviderFomResultSet(resultSet));
-            }
-        } catch (SQLException ex) {
-            final String message = "Trouble in the getById method {}";
-            LOGGER.error(message, AdvertisementEnum.PROVIDER.getMessage(), ex);
-            throw new DaoException(String.format(message, AdvertisementEnum.PROVIDER.getMessage()), ex);
-        }
-        return Optional.empty();
+    public Provider getById(final Long provId) {
+        return jdbcTemplate.queryForObject(GET_PROV_BY_ID, BeanPropertyRowMapper.newInstance(Provider.class), provId);
     }
 
     /**
      * Method deletes the object from Data Base by its id.
      *
-     * @param provider Provider
+     * @param provider Provider we want delete
      * @return count of deleted rows
      */
     @Override
-    public Integer delete(final Provider provider) throws DaoException {
-        if (provider != null) {
-            try (Connection connection = connectionFactory.getConnection()) {
-                final PreparedStatement pstm = connection.prepareStatement("DELETE FROM PROVIDER WHERE PROV_ID=?");
-                pstm.setLong(1, provider.getProvId());
-                return pstm.executeUpdate();
-            } catch (SQLException ex) {
-                final String message = "Trouble in the delete method {}";
-                LOGGER.error(message, AdvertisementEnum.PROVIDER.getMessage(), ex);
-                throw new DaoException(String.format(message, AdvertisementEnum.PROVIDER.getMessage()), ex);
-            }
-        } else {
-            return 0;
-        }
+    public Integer delete(final Provider provider) {
+        final String deleteAdvert = "DELETE FROM PROVIDER WHERE PROV_ID=?";
+        return jdbcTemplate.update(deleteAdvert, provider.getProvId());
     }
 
     /**
      * Update provider to Data Base.
      *
-     * @param provider to save
-     * @return new entity Provider updated
+     * @param provider provider to update
+     * @return new Provider
      */
     @Override
-    public Provider update(final Provider provider) throws DaoException {
-        try (Connection connection = connectionFactory.getConnection()) {
-            final PreparedStatement pstm = connection.prepareStatement("update PROVIDER set NAME = ?, ADDRESS= ?, "
-                    + "TELEPHONE = ?, COUNTRY = ? where PROV_ID = ?");
-            setStatementValues(pstm, provider);
-            pstm.setLong(PROV_ID, provider.getProvId());
-            pstm.executeUpdate();
-            return getById(provider.getProvId()).get();
-        } catch (SQLException ex) {
-            final String message = "Trouble in the update method {}";
-            LOGGER.error(message, AdvertisementEnum.PROVIDER.getMessage(), ex);
-            throw new DaoException(String.format(message, AdvertisementEnum.PROVIDER.getMessage()), ex);
-        }
+    public Provider update(final Provider provider) {
+        final String updateProvider = "update PROVIDER set NAME = ?, ADDRESS= ?, TELEPHONE = ?,"
+                + " COUNTRY = ? where PROV_ID = ?";
+        jdbcTemplate.update(updateProvider, ps -> {
+            preparedStatementForCreateOrUpdate(ps, provider);
+            ps.setLong(PROV_ID, provider.getProvId());
+        });
+        return provider;
     }
 
     /**
      * Method gets all providers from Data Base.
      *
-     * @return list of providers or empty otherwise
+     * @return list of all providers or empty otherwise
      */
     @Override
-    public List<Provider> getAll() throws DaoException {
-        try (Connection connection = connectionFactory.getConnection()) {
-            final List<Provider> providerList = new ArrayList<>();
-            final PreparedStatement pstm = connection.prepareStatement("SELECT * FROM PROVIDER");
-            final ResultSet resultSet = pstm.executeQuery();
-            while (resultSet.next()) {
-                final Provider provider = getProviderFomResultSet(resultSet);
-                providerList.add(provider);
-            }
-            return providerList;
-        } catch (SQLException ex) {
-            final String message = "Trouble in the getAll method {}";
-            LOGGER.error(message, AdvertisementEnum.PROVIDER.getMessage(), ex);
-            throw new DaoException(String.format(message, AdvertisementEnum.PROVIDER.getMessage()), ex);
-        }
+    public List<Provider> getAll() {
+        final String getAllProviders = "SELECT * FROM PROVIDER";
+        final List<Map<String, Object>> rows = jdbcTemplate.queryForList(getAllProviders);
+        return mapListFromQueryForList(rows);
     }
 
     /**
-     * Method extracts a provider from resultSet.
+     * We use this method for fill up preparedStatement.
      *
-     * @param resultSet resultSet received from a Data Base
-     * @return new Provider with the filled fields
+     * @param preparedStatement preparedStatement to fill up
+     * @param provider          provider where we get fields from
+     * @throws SQLException Sqlexception
      */
-    private Provider getProviderFomResultSet(final ResultSet resultSet) throws SQLException {
-        final Provider provider = new Provider();
-        provider.setProvId(resultSet.getLong("PROV_ID"));
-        provider.setName(resultSet.getString("NAME"));
-        provider.setAddress(resultSet.getString("ADDRESS"));
-        provider.setTelephone(resultSet.getString("TELEPHONE"));
-        provider.setCountry(resultSet.getString("COUNTRY"));
-        return provider;
+    private void preparedStatementForCreateOrUpdate(final PreparedStatement preparedStatement,
+                                                   final Provider provider) throws SQLException {
+        preparedStatement.setString(NAME, provider.getName());
+        preparedStatement.setString(ADDRESS, provider.getAddress());
+        preparedStatement.setString(TELEPHONE, provider.getTelephone());
+        preparedStatement.setString(COUNTRY, provider.getCountry());
     }
 
     /**
-     * Method sets Statement values.
-     *
-     * @param pstm     to save
-     * @param provider to save
+     * this method map listOfCollections from query to list.
+     * @param rows rows
+     * @return list
      */
-    private void setStatementValues(final PreparedStatement pstm, final Provider provider) throws
-            SQLException {
-        pstm.setString(NAME, provider.getName());
-        pstm.setString(ADDRESS, provider.getAddress());
-        pstm.setString(TELEPHONE, provider.getTelephone());
-        pstm.setString(COUNTRY, provider.getCountry());
+    public List<Provider> mapListFromQueryForList(final List<Map<String, Object>> rows) {
+        return rows.stream().map(row -> {
+            final Provider provider = new Provider();
+            provider.setProvId((Long) row.get("PROV_ID"));
+            provider.setName((String) row.get("NAME"));
+            provider.setAddress((String) row.get("ADDRESS"));
+            provider.setTelephone((String) row.get("TELEPHONE"));
+            provider.setCountry((String) row.get("COUNTRY"));
+            return provider;
+        }).collect(Collectors.toList());
     }
 }
