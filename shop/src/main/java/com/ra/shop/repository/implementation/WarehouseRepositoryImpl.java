@@ -10,8 +10,8 @@ import com.ra.shop.enums.ExceptionMessage;
 import com.ra.shop.exceptions.RepositoryException;
 import com.ra.shop.model.Warehouse;
 import com.ra.shop.repository.IRepository;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
@@ -27,7 +27,7 @@ public class WarehouseRepositoryImpl implements IRepository<Warehouse> {
     private static final int AMOUNT = 3;
     private static final int ID_NUMBER = 4;
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(WarehouseRepositoryImpl.class);
+    private static final Logger LOGGER = LogManager.getLogger(WarehouseRepositoryImpl.class);
 
     private final transient JdbcTemplate jdbcTemplate;
     private final transient KeyHolder keyHolder = new GeneratedKeyHolder();
@@ -115,7 +115,7 @@ public class WarehouseRepositoryImpl implements IRepository<Warehouse> {
         Warehouse warehouse;
         try {
             warehouse = jdbcTemplate.queryForObject("SELECT * FROM warehouse WHERE id = ?",
-                    new Object[] {entityId}, BeanPropertyRowMapper.newInstance(Warehouse.class));
+                    new Object[]{entityId}, BeanPropertyRowMapper.newInstance(Warehouse.class));
         } catch (DataAccessException e) {
             LOGGER.error(ExceptionMessage.FAILED_TO_GET_WAREHOUSE_BY_ID.getMessage(), e);
             throw new RepositoryException(ExceptionMessage.FAILED_TO_GET_WAREHOUSE_BY_ID.getMessage() + " " + entityId);

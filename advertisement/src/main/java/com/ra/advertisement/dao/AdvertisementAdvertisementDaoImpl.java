@@ -124,7 +124,7 @@ public final class AdvertisementAdvertisementDaoImpl implements AdvertisementDao
      * @return list
      */
     public List<Advertisement> mapListFromQueryForList(final List<Map<String, Object>> rows) {
-        return rows.stream().map((Map<String, Object> row) -> {
+        return rows.stream().map(row -> {
             final Advertisement advertisement = new Advertisement();
             advertisement.setAdId((Long) row.get("AD_ID"));
             advertisement.setTitle((String) row.get("TITLE"));

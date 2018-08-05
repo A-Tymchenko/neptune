@@ -13,9 +13,12 @@ public class Goods implements Serializable {
     private Long idNumber;
     private String name;
     private Long barcode;
-    private float price;
+    private Double price;
 
-    public Goods(final String name, final Long barcode, final float price) {
+    public Goods() {
+    }
+
+    public Goods(final String name, final Long barcode, final Double price) {
         this.name = name;
         this.barcode = barcode;
         this.price = price;
@@ -37,7 +40,7 @@ public class Goods implements Serializable {
         this.name = name;
     }
 
-    public Long getBarcode() {
+    public long getBarcode() {
         return barcode;
     }
 
@@ -45,11 +48,11 @@ public class Goods implements Serializable {
         this.barcode = barcode;
     }
 
-    public float getPrice() {
+    public double getPrice() {
         return price;
     }
 
-    public void setPrice(final float price) {
+    public void setPrice(final Double price) {
         this.price = price;
     }
 
@@ -62,10 +65,10 @@ public class Goods implements Serializable {
             return false;
         }
         final Goods goods = (Goods) obj;
-        return Float.compare(goods.price, price) == 0
-            && Objects.equals(idNumber, goods.idNumber)
-            && Objects.equals(name, goods.name)
-            && Objects.equals(barcode, goods.barcode);
+        return Double.compare(goods.price, price) == 0
+                && Objects.equals(idNumber, goods.idNumber)
+                && Objects.equals(name, goods.name)
+                && Objects.equals(barcode, goods.barcode);
     }
 
     @Override
@@ -76,10 +79,10 @@ public class Goods implements Serializable {
     @Override
     public String toString() {
         return "Goods{"
-            + "id=" + idNumber
-            + ", name='" + name + '\''
-            + ", barcode=" + barcode
-            + ", price=" + price
-            + '}';
+                + "id=" + idNumber
+                + ", name='" + name + '\''
+                + ", barcode=" + barcode
+                + ", price=" + price
+                + '}';
     }
 }
