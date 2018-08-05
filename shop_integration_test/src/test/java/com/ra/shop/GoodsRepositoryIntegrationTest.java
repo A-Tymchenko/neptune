@@ -1,6 +1,6 @@
 package com.ra.shop;
 
-import com.ra.shop.config.AppConfiguration1;
+import com.ra.shop.config.ShopConfiguration;
 import com.ra.shop.exceptions.RepositoryException;
 import com.ra.shop.model.Goods;
 import com.ra.shop.repository.implementation.GoodsRepositoryImpl;
@@ -17,7 +17,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(SpringExtension.class)
-@ContextConfiguration(classes = {AppConfiguration1.class})
+@ContextConfiguration(classes = {ShopConfiguration.class})
 @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = "/create_table.sql")
 @Sql(executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD, scripts = "/drop_table.sql")
 class GoodsRepositoryIntegrationTest {

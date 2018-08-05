@@ -1,7 +1,6 @@
 package com.ra.shop.repository;
 
 import java.util.List;
-import java.util.Optional;
 
 import com.ra.shop.exceptions.RepositoryException;
 
@@ -24,7 +23,7 @@ public interface IRepository<T> {
      * Method returns Optional wrapper with an entity from database.
      *
      * @param entityId - id of searched entity.
-     * @return Optional wrapper for chosen entity.
+     * @return T entity.
      */
     T get(long entityId) throws RepositoryException;
 

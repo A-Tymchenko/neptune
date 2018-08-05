@@ -1,162 +1,148 @@
 package com.ra.shop;
 
-import com.ra.shop.config.ConnectionFactory;
 import com.ra.shop.exceptions.RepositoryException;
 import com.ra.shop.repository.implementation.WarehouseRepositoryImpl;
 import com.ra.shop.model.Warehouse;
 import org.junit.jupiter.api.*;
-import org.mockito.Mockito;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
+import org.springframework.dao.DataAccessException;
+import org.springframework.jdbc.BadSqlGrammarException;
+import org.springframework.jdbc.CannotGetJdbcConnectionException;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.PreparedStatementCreator;
+import org.springframework.jdbc.core.PreparedStatementSetter;
+import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 
-import java.io.IOException;
 import java.sql.*;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 import static com.ra.shop.enums.ExceptionMessage.*;
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 public class WarehouseRepositoryMockTest {
 
-    private static final String UPDATE_WAREHOUSE = "UPDATE warehouse SET name = ?, price = ?, amount = ? WHERE id = ?";
-    private static final String SELECT_WAREHOUSE_BY_ID = "SELECT * FROM warehouse WHERE id = ?";
-    private static final String DELETE_WAREHOUSE_BY_ID = "DELETE FROM warehouse WHERE id = ?";
-    private static final String SELECT_ALL_WAREHOUSES = "SELECT * FROM warehouse";
-    private static final String INSERT_WAREHOUSE = "INSERT INTO warehouse "
-        + "(name, price, amount) "
-        + " VALUES(?,?,?)";
-    private static ConnectionFactory mockConnectionFactory;
-    private Connection mockConnection;
+    private JdbcTemplate mockJdbcTemplate;
+    private WarehouseRepositoryImpl warehouseDao;
     private PreparedStatement mockStatement;
-    private ResultSet mockResultSet;
-    private WarehouseRepositoryImpl warehouseRepositoryImpl;
+    private KeyHolder mockKeyHolder;
     private Warehouse warehouse;
 
     @BeforeEach
-    void init() throws SQLException, IOException {
-        mockConnection = mock(Connection.class);
+    void init() {
+        mockJdbcTemplate = mock(JdbcTemplate.class);
+        warehouseDao = new WarehouseRepositoryImpl(mockJdbcTemplate);
         mockStatement = mock(PreparedStatement.class);
-        mockResultSet = mock(ResultSet.class);
-        mockConnectionFactory = Mockito.spy(ConnectionFactory.getInstance());
-        warehouseRepositoryImpl = Mockito.spy(new WarehouseRepositoryImpl(mockConnectionFactory));
-        Mockito.doReturn(mockConnection).when(mockConnectionFactory).getConnection();
-        warehouse = new Warehouse("Lola", Double.MIN_VALUE, 2);
-        warehouse.setIdNumber(2L);
-        createMockByIdMethod();
-    }
-
-    void createMockByIdMethod() throws SQLException {
-        when(mockConnection.prepareStatement(anyString())).thenReturn(mockStatement);
-        when(mockResultSet.next()).thenReturn(true);
-        when(mockStatement.executeQuery()).thenReturn(mockResultSet);
-        when(mockResultSet.getLong(1)).thenReturn(warehouse.getIdNumber());
-        when(mockResultSet.getLong("id")).thenReturn(warehouse.getIdNumber());
-        when(mockResultSet.getString("name")).thenReturn(warehouse.getName());
-        when(mockResultSet.getDouble("price")).thenReturn(warehouse.getPrice());
-        when(mockResultSet.getInt("amount")).thenReturn(warehouse.getAmount());
+        mockKeyHolder = mock(GeneratedKeyHolder.class);
+        warehouse = new Warehouse("Lola", Double.MIN_VALUE, Integer.MAX_VALUE);
     }
 
     /**
      * testing create method to return the warehouse.
      *
-     * @throws SQLException exception, RepositoryException exception
+     * @throws RepositoryException exception
      */
     @Test
-    void whenCreateMethodCalledThenCorrectEntityReturns() throws SQLException, RepositoryException {
-        when(mockConnection.prepareStatement(INSERT_WAREHOUSE, Statement.RETURN_GENERATED_KEYS)).thenReturn(mockStatement);
-        when(mockStatement.getGeneratedKeys()).thenReturn(mockResultSet);
-        when(mockResultSet.next()).thenReturn(true).thenReturn(false);
-        Warehouse result = warehouseRepositoryImpl.create(warehouse);
-
-        assertEquals(warehouse, result);
-    }
-
-    /**
-     * testing create method to return the warehouse.
-     *
-     * @throws SQLException exception, RepositoryException exception
-     */
-    @Test
-    void whenCreateMethodCalledFirstIdThenCorrectEntityReturns() throws SQLException, RepositoryException {
-        when(mockConnection.prepareStatement(INSERT_WAREHOUSE, Statement.RETURN_GENERATED_KEYS)).thenReturn(mockStatement);
-        when(mockStatement.getGeneratedKeys()).thenReturn(mockResultSet);
-        when(mockResultSet.next()).thenReturn(false);
-        Warehouse result = warehouseRepositoryImpl.create(warehouse);
-
-        assertEquals(warehouse, result);
+    void whenCreateMethodExecutedThenCorrectEntityReturns() throws RepositoryException {
+        when(mockJdbcTemplate.update(any(PreparedStatementCreator.class), any(KeyHolder.class))).thenReturn(1);
+        when(mockKeyHolder.getKey()).thenReturn(1L);
+        Warehouse warehouseCreated = warehouseDao.create(warehouse);
+        warehouse.setIdNumber((Long) mockKeyHolder.getKey());
+        assertAll(
+                () -> assertEquals(warehouseCreated.getIdNumber(), warehouse.getIdNumber()),
+                () -> assertEquals(warehouseCreated.getAmount(), warehouse.getAmount()),
+                () -> assertEquals(warehouseCreated.getName(), warehouse.getName()),
+                () -> assertEquals(warehouseCreated.getPrice(), warehouse.getPrice())
+        );
     }
 
     /**
      * testing update method to return the warehouse.
      *
-     * @throws SQLException exception
+     * @throws RepositoryException exception
      */
     @Test
-    void whenUpdateMethodCalledThenCorrectEntityReturns() throws SQLException, RepositoryException {
-        Warehouse result = warehouseRepositoryImpl.update(warehouse);
-
-        assertEquals(result, warehouse);
+    void whenUpdateMethodExecutedThenCorrectEntityReturns() throws RepositoryException {
+        final String updateQuery = "UPDATE warehouse SET name = ?, price = ?, amount = ? WHERE id = ?";
+        doAnswer(invocation -> {
+            ((PreparedStatementSetter) invocation.getArguments()[1]).setValues(mockStatement);
+            return null;
+        }).when(mockJdbcTemplate).update(eq(updateQuery), any(PreparedStatementSetter.class));
+        warehouse.setIdNumber(1L);
+        Warehouse updatedWarehouse = warehouseDao.update(warehouse);
+        updatedWarehouse.setIdNumber(1L);
+        assertAll(
+                () -> assertEquals(warehouse.getIdNumber(), updatedWarehouse.getIdNumber()),
+                () -> assertEquals(warehouse.getName(), updatedWarehouse.getName()),
+                () -> assertEquals(warehouse.getPrice(), updatedWarehouse.getPrice()),
+                () -> assertEquals(warehouse.getAmount(), updatedWarehouse.getAmount())
+        );
     }
 
     /**
      * testing delete method to return true.
      *
-     * @throws SQLException exception
+     * @throws RepositoryException exception
      */
     @Test
-    void whenDeleteMethodCalledAndEntityExistsThenReturnTrue() throws SQLException, RepositoryException {
-        when(mockStatement.executeUpdate()).thenReturn(1);
-        boolean result = warehouseRepositoryImpl.delete(warehouse.getIdNumber());
-
+    void whenDeleteCorrectlyExecutedThenReturnTrue() throws RepositoryException {
+        warehouse.setIdNumber(1L);
+        when(mockJdbcTemplate.update("DELETE FROM warehouse WHERE id = ?", warehouse.getIdNumber()))
+                .thenReturn(1);
+        boolean result = warehouseDao.delete(1L);
         assertTrue(result);
     }
 
     /**
      * testing delete method to return false.
      *
-     * @throws SQLException exception
+     * @throws RepositoryException exception
      */
     @Test
-    void whenDeleteMethodCalledAndEntityDoesNotExistsThenReturnFalse() throws SQLException, RepositoryException {
-        when(mockStatement.executeUpdate()).thenReturn(-1);
-        boolean result = warehouseRepositoryImpl.delete(warehouse.getIdNumber());
-
+    void whenDeleteCorrectlyExecutedThenReturnFalse() throws RepositoryException {
+        warehouse.setIdNumber(1L);
+        when(mockJdbcTemplate.update("DELETE FROM warehouse WHERE id = ?", warehouse.getIdNumber()))
+                .thenReturn(0);
+        boolean result = warehouseDao.delete(1L);
         assertFalse(result);
     }
 
     /**
-     * testing get method to return object.
+     * testing getById method to return the warehouse.
+     *
+     * @throws RepositoryException exception
      */
     @Test
-    void whenGetByIdCalledThenCorrectEntityReturn() throws SQLException, RepositoryException {
-        when(mockResultSet.next()).thenReturn(true).thenReturn(false);
-
-     //   assertTrue(warehouseRepositoryImpl.get(1L).isPresent());
+    void whenGetByIdCorrectlyExecutedThenReturnWarehouse() throws RepositoryException {
+        warehouse.setIdNumber(1L);
+        when(mockJdbcTemplate.queryForObject(eq("SELECT * FROM warehouse WHERE id = ?"), any(Object[].class),
+                any(RowMapper.class))).thenReturn(warehouse);
+        Warehouse warehouseGet = warehouseDao.get(warehouse.getIdNumber());
+        assertEquals(warehouse, warehouseGet);
     }
 
     /**
-     * testing get method to return null.
-     */
-//    @Test
-//    void whenGetByIdCalledThenReturnOptionalEmpty() throws SQLException, RepositoryException {
-//        when(mockResultSet.next()).thenReturn(false);
-//
-//        assertEquals(Optional.empty(), warehouseRepositoryImpl.get(1L));
-//    }
-
-    /**
-     * testing getAll method to return empty List.
+     * testing getAll method to return the list of Warehouses.
      *
-     * @throws SQLException exception
+     * @throws RepositoryException exception
      */
     @Test
-    void whenGetAllMethodCalledThenCorrectListReturns() throws SQLException, RepositoryException {
-        when(mockResultSet.next()).thenReturn(true, false);
-        List<Warehouse> warehouses = warehouseRepositoryImpl.getAll();
+    void whenGetAllCorrectlyThenReturnList() throws RepositoryException {
+        List<Map<String, Object>> list = getListFromGetAllMethod();
+        when(mockJdbcTemplate.queryForList("SELECT * FROM warehouse")).thenReturn(list);
 
-        assertFalse(warehouses.isEmpty());
+        List<Warehouse> createdList = warehouseDao.getAll();
+        List<Warehouse> expectedList = warehouseDao.getWarehouseFromListOfMap(list);
+        System.out.println(expectedList);
+        System.out.println(createdList);
+        assertEquals(createdList, expectedList);
     }
 
     /**
@@ -165,8 +151,8 @@ public class WarehouseRepositoryMockTest {
     @Test
     void whenCreateMethodCalledThrowsSQLExceptionThenDaoExceptionMustBeThrown() {
         Throwable exception = assertThrows(RepositoryException.class, () -> {
-            when(mockConnection.prepareStatement(INSERT_WAREHOUSE, Statement.RETURN_GENERATED_KEYS)).thenThrow(new SQLException());
-            warehouseRepositoryImpl.create(warehouse);
+            when(mockJdbcTemplate.update(any(PreparedStatementCreator.class), any(KeyHolder.class))).thenThrow(new DataAccessException(""){});
+            warehouseDao.create(warehouse);
         });
 
         assertEquals(exception.getMessage(), FAILED_TO_CREATE_NEW_WAREHOUSE.getMessage());
@@ -178,8 +164,8 @@ public class WarehouseRepositoryMockTest {
     @Test
     void whenUpdateMethodCalledThrowsSQLExceptionThenDaoExceptionMustBeThrown() {
         Throwable exception = assertThrows(RepositoryException.class, () -> {
-            when(mockConnection.prepareStatement(UPDATE_WAREHOUSE)).thenThrow(new SQLException());
-            warehouseRepositoryImpl.update(warehouse);
+            when(mockJdbcTemplate.update(any(String.class), any(PreparedStatementSetter.class))).thenThrow(new DataAccessException(""){});
+            warehouseDao.update(warehouse);
         });
 
         assertEquals(exception.getMessage(), FAILED_TO_UPDATE_WAREHOUSE.getMessage());
@@ -191,8 +177,9 @@ public class WarehouseRepositoryMockTest {
     @Test
     void whenDeleteMethodCalledThrowsSQLExceptionThenDaoExceptionMustBeThrown() {
         Throwable exception = assertThrows(RepositoryException.class, () -> {
-            when(mockConnection.prepareStatement(DELETE_WAREHOUSE_BY_ID)).thenThrow(new SQLException());
-            warehouseRepositoryImpl.delete(warehouse.getIdNumber());
+            when(mockJdbcTemplate.update(any(String.class), any(Long.class))).thenThrow(new DataAccessException(""){});
+            warehouse.setIdNumber(1L);
+            warehouseDao.delete(warehouse.getIdNumber());
         });
 
         assertEquals(exception.getMessage(), FAILED_TO_DELETE_WAREHOUSE.getMessage());
@@ -204,8 +191,8 @@ public class WarehouseRepositoryMockTest {
     @Test
     void whenGetAllMethodCalledThrowsSQLExceptionThenDaoExceptionMustBeThrown() {
         Throwable exception = assertThrows(RepositoryException.class, () -> {
-            when(mockConnection.prepareStatement(SELECT_ALL_WAREHOUSES)).thenThrow(new SQLException());
-            warehouseRepositoryImpl.getAll();
+            when(mockJdbcTemplate.queryForList(any(String.class))).thenThrow(new DataAccessException(""){});
+            warehouseDao.getAll();
         });
 
         assertEquals(exception.getMessage(), FAILED_TO_GET_ALL_WAREHOUSE.getMessage());
@@ -214,13 +201,24 @@ public class WarehouseRepositoryMockTest {
     /**
      * testing get method to throw FAILED_TO_GET_SHOP_BY_ID Exception.
      */
-//    @Test
-//    void whenGetByIdThrowsSQLExceptionThenDaoExceptionMustBeThrown() {
-//        Throwable exception = assertThrows(RepositoryException.class, () -> {
-//            when(mockConnection.prepareStatement(SELECT_WAREHOUSE_BY_ID)).thenThrow(new SQLException());
-//            warehouseRepositoryImpl.get(1L);
-//        });
-//
-//        assertEquals(exception.getMessage(), FAILED_TO_GET_WAREHOUSE_BY_ID.getMessage() + " 1");
-//    }
+    @Test
+    void whenGetByIdThrowsSQLExceptionThenDaoExceptionMustBeThrown() {
+        Throwable exception = assertThrows(RepositoryException.class, () -> {
+            when(mockJdbcTemplate.queryForObject(any(String.class), any(Object[].class), any(RowMapper.class))).thenThrow(new DataAccessException(""){});
+            warehouseDao.get(1L);
+        });
+
+        assertEquals(exception.getMessage(), FAILED_TO_GET_WAREHOUSE_BY_ID.getMessage() + " 1");
+    }
+
+    private List getListFromGetAllMethod() {
+        List<Map> listFromQuery = new LinkedList<>();
+        Map<String, Object> map = new LinkedHashMap<>();
+        map.put("idNumber", warehouse.getIdNumber());
+        map.put("name", warehouse.getName());
+        map.put("price", warehouse.getPrice());
+        map.put("amount", warehouse.getAmount());
+        listFromQuery.add(map);
+        return listFromQuery;
+    }
 }

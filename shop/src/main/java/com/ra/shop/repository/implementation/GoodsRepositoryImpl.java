@@ -3,7 +3,9 @@ package com.ra.shop.repository.implementation;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.util.*;
+
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import com.ra.shop.enums.ExceptionMessage;
@@ -50,8 +52,8 @@ public final class GoodsRepositoryImpl implements IRepository<Goods> {
         try {
             jdbcTemplate.update(connection ->
                             createPreparedStatement(entity, connection,
-                                    "INSERT INTO GOODS (NAME, BARCODE, PRICE) VALUES (?,?,?)")
-                    , generatedKeys);
+                                    "INSERT INTO GOODS (NAME, BARCODE, PRICE) VALUES (?,?,?)"),
+                    generatedKeys);
             entity.setId((Long) generatedKeys.getKey());
             return entity;
         } catch (DataAccessException ex) {
