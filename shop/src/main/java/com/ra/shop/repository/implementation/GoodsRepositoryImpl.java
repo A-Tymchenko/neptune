@@ -71,7 +71,7 @@ public final class GoodsRepositoryImpl implements IRepository<Goods> {
      * @return entity.
      */
     @Override
-    public Goods get(final Long entityId) throws RepositoryException {
+    public Goods get(final long entityId) throws RepositoryException {
         try {
             return jdbcTemplate.queryForObject("SELECT * FROM GOODS WHERE ID = ?",
                     BeanPropertyRowMapper.newInstance(Goods.class), entityId);
@@ -109,7 +109,7 @@ public final class GoodsRepositoryImpl implements IRepository<Goods> {
      * @return true else false.
      */
     @Override
-    public boolean delete(final Long entityId) throws RepositoryException {
+    public boolean delete(final long entityId) throws RepositoryException {
         try {
             return jdbcTemplate.update("DELETE FROM GOODS WHERE ID = ?", entityId) > 0;
         } catch (DataAccessException ex) {

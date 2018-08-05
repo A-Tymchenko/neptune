@@ -128,6 +128,9 @@ public class UserRepositoryMockTest {
 
     @Test
     void whenGetUserThenThrowRepositoryException() {
+        User user = new User("3809934252275", "Pasha", "Volum",
+                "Moscow", "pasha_213@gmail.com");
+        user.setId(1L);
         when(jdbcTemplate
                 .queryForObject(
                         eq("SELECT * FROM USERS WHERE USER_ID = ?"),
@@ -135,7 +138,7 @@ public class UserRepositoryMockTest {
                         any(Object[].class)))
                 .thenThrow(new DataAccessException(""){});
         Throwable repositoryException = assertThrows(RepositoryException.class, () -> {
-            repository.get(new User().getId());
+            repository.get(user.getId());
         });
         assertNotNull(repositoryException);
         assertEquals(RepositoryException.class, repositoryException.getClass());
@@ -178,11 +181,14 @@ public class UserRepositoryMockTest {
 
     @Test
     void whenDeleteUserThenThrowRepositoryException() {
+        User user = new User("3809934252275", "Pasha", "Volum",
+                "Moscow", "pasha_213@gmail.com");
+        user.setId(1L);
         when(jdbcTemplate.update(
                 eq("DELETE FROM USERS WHERE USER_ID = ?"),
                 any(Object.class))).thenThrow(new DataAccessException(""){});
         Throwable repositoryException = assertThrows(RepositoryException.class, () -> {
-            repository.delete(new User().getId());
+            repository.delete(user.getId());
         });
         assertNotNull(repositoryException);
         assertEquals(RepositoryException.class, repositoryException.getClass());

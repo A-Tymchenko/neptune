@@ -123,6 +123,8 @@ public class OrderRepositoryMockTest {
 
     @Test
     void whenGetOrderThenThrowRepositoryException() {
+        Order order = new Order(10, 100d, false, 0, false);
+        order.setId(1L);
         when(jdbcTemplate
                 .queryForObject(
                         eq("SELECT * FROM ORDERS WHERE ORDER_ID = ?"),
@@ -130,7 +132,8 @@ public class OrderRepositoryMockTest {
                         any(Object[].class)))
                 .thenThrow(new DataAccessException(""){});
         Throwable repositoryException = assertThrows(RepositoryException.class, () -> {
-            repository.get(new Order().getId());
+            repository.get(order.getId());
+
         });
         assertNotNull(repositoryException);
         assertEquals(RepositoryException.class, repositoryException.getClass());
@@ -172,11 +175,13 @@ public class OrderRepositoryMockTest {
 
     @Test
     void whenDeleteOrderThenThrowRepositoryException() {
+        Order order = new Order(10, 100d, false, 0, false);
+        order.setId(1L);
         when(jdbcTemplate.update(
                 eq("DELETE FROM ORDERS WHERE ORDER_ID = ?"),
                 any(Object.class))).thenThrow(new DataAccessException(""){});
         Throwable repositoryException = assertThrows(RepositoryException.class, () -> {
-            repository.delete(new Order().getId());
+            repository.delete(order.getId());
         });
         assertNotNull(repositoryException);
         assertEquals(RepositoryException.class, repositoryException.getClass());

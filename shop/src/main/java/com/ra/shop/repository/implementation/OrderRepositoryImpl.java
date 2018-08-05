@@ -89,7 +89,7 @@ public class OrderRepositoryImpl implements IRepository<Order> {
      * @throws RepositoryException can be thrown if any error occurs.
      */
     @Override
-    public Order get(final Long entityId) throws RepositoryException {
+    public Order get(final long entityId) throws RepositoryException {
         final Order found;
         try {
             final BeanPropertyRowMapper<Order> mapper = BeanPropertyRowMapper.newInstance(Order.class);
@@ -137,7 +137,7 @@ public class OrderRepositoryImpl implements IRepository<Order> {
      * @throws RepositoryException can be thrown if any error occurs.
      */
     @Override
-    public boolean delete(final Long entityId) throws RepositoryException {
+    public boolean delete(final long entityId) throws RepositoryException {
         try {
             final int deletedRowsNumber = jdbcTemplate.update(
                     "DELETE FROM ORDERS WHERE ORDER_ID = ?",

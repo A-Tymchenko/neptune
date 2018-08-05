@@ -92,7 +92,7 @@ public class WarehouseRepositoryImpl implements IRepository<Warehouse> {
      * @return count of deleted rows
      */
     @Override
-    public boolean delete(final Long entityId) throws RepositoryException {
+    public boolean delete(final long entityId) throws RepositoryException {
         boolean result;
         try {
             result = jdbcTemplate.update("DELETE FROM warehouse WHERE id = ?", entityId) > 0;
@@ -111,7 +111,7 @@ public class WarehouseRepositoryImpl implements IRepository<Warehouse> {
      * @return Optional of warehouse or empty optional
      */
     @Override
-    public Warehouse get(final Long entityId) throws RepositoryException {
+    public Warehouse get(final long entityId) throws RepositoryException {
         Warehouse warehouse;
         try {
             warehouse = jdbcTemplate.queryForObject("SELECT * FROM warehouse WHERE id = ?",

@@ -88,7 +88,7 @@ public class UserRepositoryImpl implements IRepository<User> {
      * @throws RepositoryException can be thrown if any error occurs.
      */
     @Override
-    public User get(final Long entityId) throws RepositoryException {
+    public User get(final long entityId) throws RepositoryException {
         final User found;
         try {
             final BeanPropertyRowMapper<User> mapper = BeanPropertyRowMapper.newInstance(User.class);
@@ -136,7 +136,7 @@ public class UserRepositoryImpl implements IRepository<User> {
      * @throws RepositoryException can be thrown if any error occurs.
      */
     @Override
-    public boolean delete(final Long entityId) throws RepositoryException {
+    public boolean delete(final long entityId) throws RepositoryException {
         try {
             final int deletedRowsNumber = jdbcTemplate.update(
                     "DELETE FROM USERS WHERE USER_ID = ?",
