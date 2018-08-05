@@ -28,9 +28,7 @@ public class OrderRepositoryMockTest {
     private static JdbcTemplate jdbcTemplate;
     private KeyHolder keyHolder;
 
-    private Connection connection;
     private PreparedStatement statement;
-    private ResultSet resultSet;
 
     @BeforeAll
     static void initGlobal() {
@@ -41,9 +39,7 @@ public class OrderRepositoryMockTest {
     @BeforeEach
     void setup() throws SQLException {
         keyHolder = mock(KeyHolder.class);
-        connection = mock(Connection.class);
         statement = mock(PreparedStatement.class);
-        resultSet = mock(ResultSet.class);
     }
 
     @Test
@@ -148,5 +144,22 @@ public class OrderRepositoryMockTest {
         assertEquals(RepositoryException.class, repositoryException.getClass());
     }
 
+    /*@Test
+    void whenGetAllOrdersThenThrowRepositoryException() {
+        when(jdbcTemplate.queryForList(anyString())).thenThrow(new DataAccessException(""){});
+        Throwable repositoryException = assertThrows(RepositoryException.class, () -> {
+            repository.getAll();
+        });
+        assertEquals(RepositoryException.class, repositoryException.getClass());
+    }*/
 
+    /*@Test
+    void whenDeleteOrderThenThrowRepositoryException() {
+        when(jdbcTemplate.update(anyString(), any(Object.class))).thenThrow(new DataAccessException(""){});
+        Throwable repositoryException = assertThrows(RepositoryException.class, () -> {
+            repository.delete(new Order().getId());
+        });
+        assertNotNull(repositoryException);
+        assertEquals(RepositoryException.class, repositoryException.getClass());
+    }*/
 }
