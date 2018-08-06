@@ -1,7 +1,9 @@
 package com.ra.airport.servlet.handler;
 
 import java.io.IOException;
-import java.util.List;
+import java.util.*;
+import com.ra.airport.dto.FlightDto;
+import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -10,6 +12,7 @@ import com.ra.airport.repository.exception.AirPortDaoException;
 import com.ra.airport.service.FlightService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -36,11 +39,14 @@ public class GetFlightsHandler implements ServletHandler {
     @Override
     public void get(final HttpServletRequest request, final HttpServletResponse response) throws AirPortDaoException {
        final List<Flight> flights = flightService.getAll();
-        try {
-            response.getWriter().println(flights);
-        } catch (IOException e) {
-           LOGGER.error(e);
+       List <FlightDto> result = new ArrayList<>();
+        for (Flight flight : flights) {
+            FlightDto flightDto = new FlightDto();
+            BeanUtils.copyProperties(flight, flightDto);
+            result.add(flightDto);
         }
-        // call jsp
+        request.setAttribute("flights", result);
+
+        redirectToJSP("WEB-INF/flights_view.jsp",request, response);
     }
 }
