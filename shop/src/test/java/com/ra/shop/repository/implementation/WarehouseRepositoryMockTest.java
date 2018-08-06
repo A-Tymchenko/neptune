@@ -1,18 +1,10 @@
 package com.ra.shop.repository.implementation;
 
 import com.ra.shop.exceptions.RepositoryException;
-import com.ra.shop.repository.implementation.WarehouseRepositoryImpl;
 import com.ra.shop.model.Warehouse;
 import org.junit.jupiter.api.*;
-import org.mockito.invocation.InvocationOnMock;
-import org.mockito.stubbing.Answer;
 import org.springframework.dao.DataAccessException;
-import org.springframework.jdbc.BadSqlGrammarException;
-import org.springframework.jdbc.CannotGetJdbcConnectionException;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.PreparedStatementCreator;
-import org.springframework.jdbc.core.PreparedStatementSetter;
-import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.core.*;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 
@@ -23,9 +15,7 @@ import static com.ra.shop.enums.ExceptionMessage.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.doAnswer;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 public class WarehouseRepositoryMockTest {
 
@@ -135,14 +125,10 @@ public class WarehouseRepositoryMockTest {
      */
     @Test
     void whenGetAllCorrectlyThenReturnList() throws RepositoryException {
-        List<Map<String, Object>> list = getListFromGetAllMethod();
-        when(mockJdbcTemplate.queryForList("SELECT * FROM warehouse")).thenReturn(list);
-
+        List<Warehouse> list = new ArrayList<>();
+        when(mockJdbcTemplate.query(eq("SELECT * FROM warehouse"), any(BeanPropertyRowMapper.class))).thenReturn(list);
         List<Warehouse> createdList = warehouseDao.getAll();
-        List<Warehouse> expectedList = warehouseDao.getWarehouseFromListOfMap(list);
-        System.out.println(expectedList);
-        System.out.println(createdList);
-        assertEquals(createdList, expectedList);
+        assertEquals(0, createdList.size());
     }
 
     /**
@@ -190,8 +176,9 @@ public class WarehouseRepositoryMockTest {
      */
     @Test
     void whenGetAllMethodCalledThrowsSQLExceptionThenDaoExceptionMustBeThrown() {
+        doThrow(new DataAccessException(""){})
+                .when(mockJdbcTemplate).query(eq("SELECT * FROM warehouse"), any(BeanPropertyRowMapper.class));
         Throwable exception = assertThrows(RepositoryException.class, () -> {
-            when(mockJdbcTemplate.queryForList(any(String.class))).thenThrow(new DataAccessException(""){});
             warehouseDao.getAll();
         });
 

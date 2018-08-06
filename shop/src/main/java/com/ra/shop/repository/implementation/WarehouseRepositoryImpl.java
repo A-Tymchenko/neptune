@@ -3,8 +3,6 @@ package com.ra.shop.repository.implementation;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 import com.ra.shop.enums.ExceptionMessage;
 import com.ra.shop.exceptions.RepositoryException;
@@ -22,12 +20,13 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class  WarehouseRepositoryImpl implements IRepository<Warehouse> {
+
+    private static final Logger LOGGER = LogManager.getLogger(WarehouseRepositoryImpl.class);
+
     private static final int NAME = 1;
     private static final int PRICE = 2;
     private static final int AMOUNT = 3;
     private static final int ID_NUMBER = 4;
-
-    private static final Logger LOGGER = LogManager.getLogger(WarehouseRepositoryImpl.class);
 
     private final transient JdbcTemplate jdbcTemplate;
     private final transient KeyHolder keyHolder = new GeneratedKeyHolder();
@@ -131,15 +130,15 @@ public class  WarehouseRepositoryImpl implements IRepository<Warehouse> {
      */
     @Override
     public List<Warehouse> getAll() throws RepositoryException {
-        final List<Map<String, Object>> listWithParams;
+        final List<Warehouse> warehouses;
         try {
-            listWithParams = jdbcTemplate.queryForList("SELECT * FROM warehouse");
+            warehouses = jdbcTemplate.query("SELECT * FROM warehouse", BeanPropertyRowMapper.newInstance(Warehouse.class));
         } catch (DataAccessException e) {
             LOGGER.error(ExceptionMessage.FAILED_TO_GET_ALL_WAREHOUSE.getMessage(), e);
             throw new RepositoryException(ExceptionMessage.FAILED_TO_GET_ALL_WAREHOUSE.getMessage());
         }
         LOGGER.info("Got List of warehouses");
-        return getWarehouseFromListOfMap(listWithParams);
+        return warehouses;
     }
 
     /**
@@ -154,20 +153,4 @@ public class  WarehouseRepositoryImpl implements IRepository<Warehouse> {
         preparedStatement.setInt(AMOUNT, warehouse.getAmount());
     }
 
-    /**
-     * Method retrieves a warehouse from the preparedStatement.
-     *
-     * @param list received from a Data Base
-     * @return warehouse with filled fields
-     */
-    public List<Warehouse> getWarehouseFromListOfMap(final List<Map<String, Object>> list) {
-        return list.stream().map((Map<String, Object> map) -> {
-            final Warehouse warehouse = new Warehouse();
-            warehouse.setIdNumber((Long) map.get("id"));
-            warehouse.setName((String) map.get("name"));
-            warehouse.setPrice((Double) map.get("price"));
-            warehouse.setAmount((Integer) map.get("amount"));
-            return warehouse;
-        }).collect(Collectors.toList());
-    }
 }

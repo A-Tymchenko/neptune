@@ -91,11 +91,25 @@ public class WarehouseRepositoryImplTest {
      */
     @Test
     void whenGetAllThenWarehousesMustReturn() throws RepositoryException {
+        Warehouse[] warehouses = getWarehouses();
         List<Warehouse> expectedList = new ArrayList<>();
-        expectedList.add(warehouseRepository.create(new Warehouse("loha", 1.1, 1)));
-        expectedList.add(warehouseRepository.create(new Warehouse("gosha", 1.1, 1)));
-        expectedList.add(warehouseRepository.create(new Warehouse("moisha", 1.1, 1)));
-        List<Warehouse> warehouses = warehouseRepository.getAll();
-        assertEquals(expectedList, warehouses);
+        Collections.addAll(expectedList, warehouses);
+        addWarehouses(warehouses);
+        List<Warehouse> actualList = warehouseRepository.getAll();
+        assertEquals(expectedList.size(), actualList.size());
+    }
+
+    private void addWarehouses(Warehouse[] warehouses) throws RepositoryException {
+        for (int i = 0; i < warehouses.length; i++) {
+            warehouseRepository.create(warehouses[i]);
+        }
+    }
+
+    private Warehouse[] getWarehouses() {
+        return new Warehouse[] {
+                new Warehouse("loha", 1.1, 1),
+                new Warehouse("gosha", 1.1, 1),
+                new Warehouse("moisha", 1.1, 1)
+        };
     }
 }
