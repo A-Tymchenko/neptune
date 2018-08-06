@@ -122,8 +122,8 @@ public class WarehouseRepositoryMockTest {
     @Test
     void whenGetByIdCorrectlyExecutedThenReturnWarehouse() throws RepositoryException {
         warehouse.setIdNumber(1L);
-        when(mockJdbcTemplate.queryForObject(eq("SELECT * FROM warehouse WHERE id = ?"), any(Object[].class),
-                any(RowMapper.class))).thenReturn(warehouse);
+        when(mockJdbcTemplate.queryForObject(eq("SELECT * FROM warehouse WHERE id = ?"), any(RowMapper.class),
+                any(Object.class))).thenReturn(warehouse);
         Warehouse warehouseGet = warehouseDao.get(warehouse.getIdNumber());
         assertEquals(warehouse, warehouseGet);
     }
@@ -204,7 +204,7 @@ public class WarehouseRepositoryMockTest {
     @Test
     void whenGetByIdThrowsSQLExceptionThenDaoExceptionMustBeThrown() {
         Throwable exception = assertThrows(RepositoryException.class, () -> {
-            when(mockJdbcTemplate.queryForObject(any(String.class), any(Object[].class), any(RowMapper.class))).thenThrow(new DataAccessException(""){});
+            when(mockJdbcTemplate.queryForObject(any(String.class), any(RowMapper.class), any(Object.class))).thenThrow(new DataAccessException(""){});
             warehouseDao.get(1L);
         });
 

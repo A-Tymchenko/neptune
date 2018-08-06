@@ -21,7 +21,7 @@ import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Component;
 
 @Component
-public class WarehouseRepositoryImpl implements IRepository<Warehouse> {
+public class  WarehouseRepositoryImpl implements IRepository<Warehouse> {
     private static final int NAME = 1;
     private static final int PRICE = 2;
     private static final int AMOUNT = 3;
@@ -92,7 +92,7 @@ public class WarehouseRepositoryImpl implements IRepository<Warehouse> {
      * @return count of deleted rows
      */
     @Override
-    public boolean delete(final Long entityId) throws RepositoryException {
+    public boolean delete(final long entityId) throws RepositoryException {
         boolean result;
         try {
             result = jdbcTemplate.update("DELETE FROM warehouse WHERE id = ?", entityId) > 0;
@@ -111,11 +111,11 @@ public class WarehouseRepositoryImpl implements IRepository<Warehouse> {
      * @return Optional of warehouse or empty optional
      */
     @Override
-    public Warehouse get(final Long entityId) throws RepositoryException {
+    public Warehouse get(final long entityId) throws RepositoryException {
         Warehouse warehouse;
         try {
             warehouse = jdbcTemplate.queryForObject("SELECT * FROM warehouse WHERE id = ?",
-                    new Object[]{entityId}, BeanPropertyRowMapper.newInstance(Warehouse.class));
+                    BeanPropertyRowMapper.newInstance(Warehouse.class), entityId);
         } catch (DataAccessException e) {
             LOGGER.error(ExceptionMessage.FAILED_TO_GET_WAREHOUSE_BY_ID.getMessage(), e);
             throw new RepositoryException(ExceptionMessage.FAILED_TO_GET_WAREHOUSE_BY_ID.getMessage() + " " + entityId);
@@ -131,15 +131,15 @@ public class WarehouseRepositoryImpl implements IRepository<Warehouse> {
      */
     @Override
     public List<Warehouse> getAll() throws RepositoryException {
-        final List<Map<String, Object>> rows;
+        final List<Map<String, Object>> listWithParams;
         try {
-            rows = jdbcTemplate.queryForList("SELECT * FROM warehouse");
+            listWithParams = jdbcTemplate.queryForList("SELECT * FROM warehouse");
         } catch (DataAccessException e) {
             LOGGER.error(ExceptionMessage.FAILED_TO_GET_ALL_WAREHOUSE.getMessage(), e);
             throw new RepositoryException(ExceptionMessage.FAILED_TO_GET_ALL_WAREHOUSE.getMessage());
         }
         LOGGER.info("Got List of warehouses");
-        return getWarehouseFromListOfMap(rows);
+        return getWarehouseFromListOfMap(listWithParams);
     }
 
     /**

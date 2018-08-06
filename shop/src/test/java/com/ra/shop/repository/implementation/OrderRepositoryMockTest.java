@@ -26,21 +26,17 @@ import static org.mockito.Mockito.*;
 
 public class OrderRepositoryMockTest {
 
-    private static OrderRepositoryImpl repository;
-    private static JdbcTemplate jdbcTemplate;
+    private OrderRepositoryImpl repository;
+    private JdbcTemplate jdbcTemplate;
     private KeyHolder keyHolder;
 
     private Connection connection;
     private PreparedStatement statement;
 
-    @BeforeAll
-    static void initGlobal() {
-        jdbcTemplate = mock(JdbcTemplate.class);
-        repository = new OrderRepositoryImpl(jdbcTemplate);
-    }
-
     @BeforeEach
     void setup() {
+        jdbcTemplate = mock(JdbcTemplate.class);
+        repository = new OrderRepositoryImpl(jdbcTemplate);
         keyHolder = mock(KeyHolder.class);
         connection = mock(Connection.class);
         statement = mock(PreparedStatement.class);
@@ -73,7 +69,7 @@ public class OrderRepositoryMockTest {
                 .queryForObject(
                         eq("SELECT * FROM ORDERS WHERE ORDER_ID = ?"),
                         any(RowMapper.class),
-                        any(Object[].class))).thenReturn(order);
+                        any(Object.class))).thenReturn(order);
         Order found = repository.get(order.getId());
         assertNotNull(found);
         assertEquals(order, found);
@@ -123,14 +119,17 @@ public class OrderRepositoryMockTest {
 
     @Test
     void whenGetOrderThenThrowRepositoryException() {
+        Order order = new Order(10, 100d, false, 0, false);
+        order.setId(1L);
         when(jdbcTemplate
                 .queryForObject(
                         eq("SELECT * FROM ORDERS WHERE ORDER_ID = ?"),
                         any(RowMapper.class),
-                        any(Object[].class)))
+                        any(Object.class)))
                 .thenThrow(new DataAccessException(""){});
         Throwable repositoryException = assertThrows(RepositoryException.class, () -> {
-            repository.get(new Order().getId());
+            repository.get(order.getId());
+
         });
         assertNotNull(repositoryException);
         assertEquals(RepositoryException.class, repositoryException.getClass());
@@ -172,11 +171,13 @@ public class OrderRepositoryMockTest {
 
     @Test
     void whenDeleteOrderThenThrowRepositoryException() {
+        Order order = new Order(10, 100d, false, 0, false);
+        order.setId(1L);
         when(jdbcTemplate.update(
                 eq("DELETE FROM ORDERS WHERE ORDER_ID = ?"),
                 any(Object.class))).thenThrow(new DataAccessException(""){});
         Throwable repositoryException = assertThrows(RepositoryException.class, () -> {
-            repository.delete(new Order().getId());
+            repository.delete(order.getId());
         });
         assertNotNull(repositoryException);
         assertEquals(RepositoryException.class, repositoryException.getClass());

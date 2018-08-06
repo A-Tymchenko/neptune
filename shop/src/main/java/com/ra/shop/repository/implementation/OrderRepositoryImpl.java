@@ -5,12 +5,14 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
+import com.ra.shop.enums.ExceptionMessage;
 import com.ra.shop.exceptions.RepositoryException;
 import com.ra.shop.model.Order;
 import com.ra.shop.repository.IRepository;
-import org.apache.log4j.Logger;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
@@ -28,7 +30,7 @@ public class OrderRepositoryImpl implements IRepository<Order> {
     /**
      * Logger.
      */
-    private static final Logger LOGGER = Logger.getLogger(OrderRepositoryImpl.class);
+    private static final Logger LOGGER = LogManager.getLogger(OrderRepositoryImpl.class);
 
     /**
      * KeyHolder instance stores primary keys.
@@ -59,7 +61,6 @@ public class OrderRepositoryImpl implements IRepository<Order> {
      */
     @Override
     public Order create(final Order entity) throws RepositoryException {
-        Objects.requireNonNull(entity);
         final Long orderId;
         try {
             jdbcTemplate.update(con -> {
@@ -71,9 +72,8 @@ public class OrderRepositoryImpl implements IRepository<Order> {
             }, keyHolder);
             orderId = (Long) keyHolder.getKey();
         } catch (DataAccessException e) {
-            final String message = String.format("Order{id:%d} NOT CREATED!", entity.getId());
-            LOGGER.error(message, e);
-            throw new RepositoryException(message, e);
+            LOGGER.error(ExceptionMessage.FAILED_TO_CREATE_NEW_ORDER.getMessage(), e);
+            throw new RepositoryException(ExceptionMessage.FAILED_TO_CREATE_NEW_ORDER.getMessage(), e);
         }
         entity.setId(orderId);
         return entity;
@@ -87,7 +87,7 @@ public class OrderRepositoryImpl implements IRepository<Order> {
      * @throws RepositoryException can be thrown if any error occurs.
      */
     @Override
-    public Order get(final Long entityId) throws RepositoryException {
+    public Order get(final long entityId) throws RepositoryException {
         final Order found;
         try {
             final BeanPropertyRowMapper<Order> mapper = BeanPropertyRowMapper.newInstance(Order.class);
@@ -96,9 +96,8 @@ public class OrderRepositoryImpl implements IRepository<Order> {
                     mapper,
                     entityId);
         } catch (DataAccessException e) {
-            final String message = String.format("Order{id:%d} NOT FOUND!", entityId);
-            LOGGER.error(message, e);
-            throw new RepositoryException(message, e);
+            LOGGER.error(ExceptionMessage.FAILED_TO_GET_ORDER_BY_ID.getMessage(), e);
+            throw new RepositoryException(ExceptionMessage.FAILED_TO_GET_ORDER_BY_ID.getMessage(), e);
         }
         return found;
     }
@@ -112,7 +111,6 @@ public class OrderRepositoryImpl implements IRepository<Order> {
      */
     @Override
     public Order update(final Order newEntity) throws RepositoryException {
-        Objects.requireNonNull(newEntity);
         try {
             jdbcTemplate.update(
                     "UPDATE ORDERS SET NUMBER = ?, PRICE = ?, DELIVERY_INCLUDED = ?, "
@@ -123,9 +121,8 @@ public class OrderRepositoryImpl implements IRepository<Order> {
                     });
             return newEntity;
         } catch (DataAccessException e) {
-            final String message = String.format("Order{id:%d} NOT UPDATED!", newEntity.getId());
-            LOGGER.error(message, e);
-            throw new RepositoryException(message, e);
+            LOGGER.error(ExceptionMessage.FAILED_TO_UPDATE_ORDER.getMessage(), e);
+            throw new RepositoryException(ExceptionMessage.FAILED_TO_UPDATE_ORDER.getMessage(), e);
         }
     }
 
@@ -137,16 +134,15 @@ public class OrderRepositoryImpl implements IRepository<Order> {
      * @throws RepositoryException can be thrown if any error occurs.
      */
     @Override
-    public boolean delete(final Long entityId) throws RepositoryException {
+    public boolean delete(final long entityId) throws RepositoryException {
         try {
             final int deletedRowsNumber = jdbcTemplate.update(
                     "DELETE FROM ORDERS WHERE ORDER_ID = ?",
                     entityId);
             return deletedRowsNumber > 0;
         } catch (DataAccessException e) {
-            final String message = String.format("Order{id:%d} NOT DELETED!", entityId);
-            LOGGER.error(message, e);
-            throw new RepositoryException(message, e);
+            LOGGER.error(ExceptionMessage.FAILED_TO_DELETE_ORDER.getMessage(), e);
+            throw new RepositoryException(ExceptionMessage.FAILED_TO_DELETE_ORDER.getMessage(), e);
         }
     }
 
@@ -163,9 +159,8 @@ public class OrderRepositoryImpl implements IRepository<Order> {
             map = jdbcTemplate.queryForList("SELECT * FROM ORDERS");
             getListOfOrders(map);
         } catch (DataAccessException e) {
-            final String message = "No orders found in database!";
-            LOGGER.error(message, e);
-            throw new RepositoryException(message, e);
+            LOGGER.error(ExceptionMessage.FAILED_TO_GET_ALL_ORDER.getMessage(), e);
+            throw new RepositoryException(ExceptionMessage.FAILED_TO_GET_ALL_ORDER.getMessage(), e);
         }
         return getListOfOrders(map);
     }
