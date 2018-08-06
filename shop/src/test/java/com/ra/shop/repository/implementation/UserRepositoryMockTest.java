@@ -71,7 +71,7 @@ public class UserRepositoryMockTest {
                 .queryForObject(
                         eq("SELECT * FROM USERS WHERE USER_ID = ?"),
                         any(RowMapper.class),
-                        any(Object[].class))).thenReturn(user);
+                        any(Object.class))).thenReturn(user);
         User found = repository.get(user.getId());
         assertNotNull(found);
         assertEquals(user, found);
@@ -131,7 +131,7 @@ public class UserRepositoryMockTest {
                 .queryForObject(
                         eq("SELECT * FROM USERS WHERE USER_ID = ?"),
                         any(RowMapper.class),
-                        any(Object[].class)))
+                        any(Object.class)))
                 .thenThrow(new DataAccessException(""){});
         Throwable repositoryException = assertThrows(RepositoryException.class, () -> {
             repository.get(user.getId());

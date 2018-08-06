@@ -48,7 +48,7 @@ public class UserRepositoryIntegrationTest {
     }
 
     @Test
-    void whenGetUserThenReturnOptionalOfUser() throws RepositoryException {
+    void whenGetUserThenReturnCorrectUser() throws RepositoryException {
         User user = new User("3809934252275", "Pashink", "Lum",
                 "Moscow", "Lum_2@gmail.com");
         User created = repository.create(user);
