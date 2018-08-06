@@ -245,7 +245,7 @@ project("advertisement_integration_test") {
 }
 
 project("airport") {
-    
+
     apply plugin: 'war'
 
     dependencies {
