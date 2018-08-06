@@ -5,7 +5,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 import com.ra.shop.enums.ExceptionMessage;
 import com.ra.shop.exceptions.RepositoryException;
@@ -62,7 +61,6 @@ public class OrderRepositoryImpl implements IRepository<Order> {
      */
     @Override
     public Order create(final Order entity) throws RepositoryException {
-        Objects.requireNonNull(entity);
         final Long orderId;
         try {
             jdbcTemplate.update(con -> {
@@ -113,7 +111,6 @@ public class OrderRepositoryImpl implements IRepository<Order> {
      */
     @Override
     public Order update(final Order newEntity) throws RepositoryException {
-        Objects.requireNonNull(newEntity);
         try {
             jdbcTemplate.update(
                     "UPDATE ORDERS SET NUMBER = ?, PRICE = ?, DELIVERY_INCLUDED = ?, "
