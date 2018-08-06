@@ -58,7 +58,8 @@ class GoodsRepositoryMockTest {
 
     @Test
     void whenReadAllGoodThenReturnsNotEmptyList() throws Exception {
-        when(mockJdbcTemplate.queryForList("SELECT * FROM GOODS")).thenReturn(createListOfMap());
+        when(mockJdbcTemplate.query(eq("SELECT * FROM GOODS"), any(BeanPropertyRowMapper.class)))
+                .thenReturn(Arrays.asList(TEST_GOODS));
 
         assertFalse(dao.getAll().isEmpty());
     }
@@ -79,7 +80,7 @@ class GoodsRepositoryMockTest {
 
     @Test
     void whenGetAllGoodsThrowsExceptionThenRepositoryExceptionThrown() {
-        when(mockJdbcTemplate.queryForList(anyString())).thenThrow(new EmptyResultDataAccessException(0));
+        when(mockJdbcTemplate.query(anyString(), any(BeanPropertyRowMapper.class))).thenThrow(new EmptyResultDataAccessException(0));
 
         assertThrows(RepositoryException.class, () -> dao.getAll());
     }
@@ -134,17 +135,6 @@ class GoodsRepositoryMockTest {
         Goods goods = dao.update(TEST_GOODS);
 
         assertEquals(goods, TEST_GOODS);
-    }
-
-    private List createListOfMap() {
-        List<Map<String, Object>> listToMapFrom = new ArrayList<>();
-        Map<String, Object> goods = new HashMap<>();
-        goods.put("ID", TEST_GOODS.getId());
-        goods.put("NAME", TEST_GOODS.getName());
-        goods.put("BARCODE", TEST_GOODS.getBarcode());
-        goods.put("PRICE", TEST_GOODS.getPrice());
-        listToMapFrom.add(goods);
-        return listToMapFrom;
     }
 }
 

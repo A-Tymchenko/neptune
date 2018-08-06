@@ -1,12 +1,9 @@
 package com.ra.shop.repository.implementation;
 
-import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 import com.ra.shop.enums.ExceptionMessage;
 import com.ra.shop.exceptions.RepositoryException;
@@ -33,11 +30,6 @@ public final class GoodsRepositoryImpl implements IRepository<Goods> {
     private final transient KeyHolder generatedKeys = new GeneratedKeyHolder();
     private final transient JdbcTemplate jdbcTemplate;
 
-    private static final Integer FIRST_SQL_INDEX = 1;
-    private static final Integer SECOND_SQL_INDEX = 2;
-    private static final Integer THIRD_SQL_INDEX = 3;
-    private static final Integer FOURTH_SQL_INDEX = 4;
-
     @Autowired
     public GoodsRepositoryImpl(final JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
@@ -52,10 +44,12 @@ public final class GoodsRepositoryImpl implements IRepository<Goods> {
     @Override
     public Goods create(final Goods entity) throws RepositoryException {
         try {
-            jdbcTemplate.update(connection ->
-                            createPreparedStatement(entity, connection,
-                                    "INSERT INTO GOODS (NAME, BARCODE, PRICE) VALUES (?,?,?)"),
-                    generatedKeys);
+            jdbcTemplate.update(connection -> {
+                final PreparedStatement statement = connection.prepareStatement(
+                        "INSERT INTO GOODS (NAME, BARCODE, PRICE) VALUES (?,?,?)");
+                setStatementGoodsInSQLIndexes(statement, entity);
+                return statement;
+            }, generatedKeys);
             entity.setId((Long) generatedKeys.getKey());
             return entity;
         } catch (DataAccessException ex) {
@@ -93,7 +87,8 @@ public final class GoodsRepositoryImpl implements IRepository<Goods> {
             jdbcTemplate.update("UPDATE GOODS SET NAME = ?, BARCODE = ?, PRICE = ? WHERE ID = ?",
                     statement -> {
                         setStatementGoodsInSQLIndexes(statement, newEntity);
-                        statement.setLong(FOURTH_SQL_INDEX, newEntity.getId());
+                        final int goodsId = 4;
+                        statement.setLong(goodsId, newEntity.getId());
                     });
             return newEntity;
         } catch (DataAccessException ex) {
@@ -126,9 +121,8 @@ public final class GoodsRepositoryImpl implements IRepository<Goods> {
     @Override
     public List<Goods> getAll() throws RepositoryException {
         try {
-            return jdbcTemplate.queryForList("SELECT * FROM GOODS").stream()
-                    .map(goods -> getGoodsFromMap(goods))
-                    .collect(Collectors.toList());
+            return jdbcTemplate.query("SELECT * FROM GOODS",
+                    BeanPropertyRowMapper.newInstance(Goods.class));
         } catch (DataAccessException ex) {
             LOGGER.error(ExceptionMessage.FAILED_TO_GET_ALL_GOODS.getMessage(), ex);
             throw new RepositoryException(ExceptionMessage.FAILED_TO_GET_ALL_GOODS.getMessage(), ex);
@@ -143,31 +137,11 @@ public final class GoodsRepositoryImpl implements IRepository<Goods> {
      */
     private void setStatementGoodsInSQLIndexes(final PreparedStatement statement,
                                                final Goods entity) throws SQLException {
-        statement.setString(FIRST_SQL_INDEX, entity.getName());
-        statement.setLong(SECOND_SQL_INDEX, entity.getBarcode());
-        statement.setDouble(THIRD_SQL_INDEX, entity.getPrice());
-    }
-
-    /**
-     * Create goods.
-     *
-     * @param mapGoods with DataBase.
-     * @return Goods.
-     */
-    private Goods getGoodsFromMap(final Map<String, Object> mapGoods) {
-        final Goods goods = new Goods((String) mapGoods.get("NAME"),
-                (Long) mapGoods.get("BARCODE"),
-                (Double) mapGoods.get("PRICE"));
-        goods.setId((Long) mapGoods.get("ID"));
-        return goods;
-    }
-
-    private PreparedStatement createPreparedStatement(final Goods goods, final Connection connection,
-                                                      final String sql) throws SQLException {
-        final PreparedStatement preparedStatement = connection.prepareStatement(sql);
-        preparedStatement.setString(FIRST_SQL_INDEX, goods.getName());
-        preparedStatement.setLong(SECOND_SQL_INDEX, goods.getBarcode());
-        preparedStatement.setDouble(THIRD_SQL_INDEX, goods.getPrice());
-        return preparedStatement;
+        final int name = 1;
+        final int barcode = 2;
+        final int price = 3;
+        statement.setString(name, entity.getName());
+        statement.setLong(barcode, entity.getBarcode());
+        statement.setDouble(price, entity.getPrice());
     }
 }
