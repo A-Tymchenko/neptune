@@ -5,7 +5,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 import com.ra.shop.enums.ExceptionMessage;
 import com.ra.shop.exceptions.RepositoryException;
@@ -61,7 +60,6 @@ public class UserRepositoryImpl implements IRepository<User> {
      */
     @Override
     public User create(final User entity) throws RepositoryException {
-        Objects.requireNonNull(entity);
         final Long userId;
         try {
             jdbcTemplate.update(con -> {
@@ -112,7 +110,6 @@ public class UserRepositoryImpl implements IRepository<User> {
      */
     @Override
     public User update(final User newEntity) throws RepositoryException {
-        Objects.requireNonNull(newEntity);
         try {
             jdbcTemplate.update(
                     "UPDATE USERS SET PHONE_NUMBER= ?,NAME = ?,SECOND_NAME= ?,COUNTRY= ?,EMAIL_ADDRESS= ? WHERE USER_ID= ?",
