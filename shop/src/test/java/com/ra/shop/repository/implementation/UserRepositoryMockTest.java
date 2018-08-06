@@ -26,21 +26,17 @@ import static org.mockito.Mockito.*;
 
 public class UserRepositoryMockTest {
 
-    private static UserRepositoryImpl repository;
-    private static JdbcTemplate jdbcTemplate;
+    private UserRepositoryImpl repository;
+    private JdbcTemplate jdbcTemplate;
     private KeyHolder keyHolder;
 
     private Connection connection;
     private PreparedStatement statement;
 
-    @BeforeAll
-    static void initGlobal() {
-        jdbcTemplate = mock(JdbcTemplate.class);
-        repository = new UserRepositoryImpl(jdbcTemplate);
-    }
-
     @BeforeEach
     void setup() {
+        jdbcTemplate = mock(JdbcTemplate.class);
+        repository = new UserRepositoryImpl(jdbcTemplate);
         keyHolder = mock(KeyHolder.class);
         connection = mock(Connection.class);
         statement = mock(PreparedStatement.class);
