@@ -2,9 +2,7 @@ package com.ra.shop.repository.implementation;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import com.ra.shop.enums.ExceptionMessage;
 import com.ra.shop.exceptions.RepositoryException;
@@ -154,34 +152,12 @@ public class OrderRepositoryImpl implements IRepository<Order> {
      */
     @Override
     public List<Order> getAll() throws RepositoryException {
-        final List<Map<String, Object>> map;
+        List<Order> orders;
         try {
-            map = jdbcTemplate.queryForList("SELECT * FROM ORDERS");
-            getListOfOrders(map);
+            orders = jdbcTemplate.query("SELECT * FROM ORDERS", BeanPropertyRowMapper.newInstance(Order.class));
         } catch (DataAccessException e) {
             LOGGER.error(ExceptionMessage.FAILED_TO_GET_ALL_ORDER.getMessage(), e);
             throw new RepositoryException(ExceptionMessage.FAILED_TO_GET_ALL_ORDER.getMessage(), e);
-        }
-        return getListOfOrders(map);
-    }
-
-    /**
-     * Method iterate over the list of orders, set params into order instances and adds them to ArrayList and returns.
-     *
-     * @param map stores params for each entity.
-     * @return List list of orders.
-     */
-    public List<Order> getListOfOrders(final List<Map<String, Object>> map) {
-        final List<Order> orders = new ArrayList<>();
-        final Order order = new Order();
-        for (final Map<String, Object> row : map) {
-            order.setId((Long) row.get("ORDER_ID"));
-            order.setNumber((Integer) row.get("NUMBER"));
-            order.setPrice((Double) row.get("PRICE"));
-            order.setDeliveryIncluded((Boolean) row.get("DELIVERY_INCLUDED"));
-            order.setDeliveryCost((Integer) row.get("DELIVERY_COST"));
-            order.setExecuted((Boolean) row.get("EXECUTED"));
-            orders.add(order);
         }
         return orders;
     }

@@ -2,7 +2,6 @@ package com.ra.shop.repository.implementation;
 
 import com.ra.shop.exceptions.RepositoryException;
 import com.ra.shop.model.Order;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.invocation.InvocationOnMock;
@@ -15,9 +14,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Matchers.any;
@@ -95,11 +92,10 @@ public class OrderRepositoryMockTest {
 
     @Test
     void whenGetAllThenReturnListOfExistedOrders() throws RepositoryException {
-        List<Map<String, Object>> orders = getListOfOrders();
-        when(jdbcTemplate.queryForList(eq("SELECT * FROM ORDERS"))).thenReturn(orders);
+        List<Order> orders = new ArrayList<>();
+        when(jdbcTemplate.query(eq("SELECT * FROM ORDERS"), any(RowMapper.class))).thenReturn(orders);
         List<Order> actual = repository.getAll();
-        List<Order> expected = repository.getListOfOrders(orders);
-        assertEquals(expected, actual);
+        assertEquals(0, actual.size());
     }
 
     @Test
@@ -161,8 +157,9 @@ public class OrderRepositoryMockTest {
     }
 
     @Test
-    void whenGetAllOrdersThenThrowRepositoryException() {
-        when(jdbcTemplate.queryForList(eq("SELECT * FROM ORDERS"))).thenThrow(new DataAccessException(""){});
+    void whenGetAllOrdersThenThrowRepositoryException() throws SQLException {
+        doThrow(new DataAccessException(""){})
+                .when(jdbcTemplate).query(eq("SELECT * FROM ORDERS"), any(BeanPropertyRowMapper.class));
         Throwable repositoryException = assertThrows(RepositoryException.class, () -> {
             repository.getAll();
         });
@@ -181,21 +178,6 @@ public class OrderRepositoryMockTest {
         });
         assertNotNull(repositoryException);
         assertEquals(RepositoryException.class, repositoryException.getClass());
-    }
-
-    private List<Map<String, Object>> getListOfOrders() {
-        List<Map<String, Object>> mapList = new ArrayList<>();
-        Map<String, Object> map = new HashMap<>();
-        Order order = new Order(121, 13d, true, 90, true);
-        order.setId(9L);
-        map.put("ORDER_ID", order.getId());
-        map.put("NUMBER", order.getNumber());
-        map.put("PRICE", order.getPrice());
-        map.put("DELIVERY_INCLUDED", order.getDeliveryIncluded());
-        map.put("DELIVERY_COST", order.getDeliveryCost());
-        map.put("EXECUTED", order.getExecuted());
-        mapList.add(map);
-        return mapList;
     }
 
 }

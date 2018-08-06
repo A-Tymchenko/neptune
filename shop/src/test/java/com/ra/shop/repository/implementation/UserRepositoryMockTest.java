@@ -2,7 +2,6 @@ package com.ra.shop.repository.implementation;
 
 import com.ra.shop.exceptions.RepositoryException;
 import com.ra.shop.model.User;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.invocation.InvocationOnMock;
@@ -15,9 +14,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Matchers.any;
@@ -99,11 +96,10 @@ public class UserRepositoryMockTest {
 
     @Test
     void whenGetAllThenReturnListOfExistedUsers() throws RepositoryException {
-        List<Map<String, Object>> users = getListOfUsers();
-        when(jdbcTemplate.queryForList(eq("SELECT * FROM USERS"))).thenReturn(users);
+        List<User> users = new ArrayList<>();
+        when(jdbcTemplate.query(eq("SELECT * FROM USERS"), any(BeanPropertyRowMapper.class))).thenReturn(users);
         List<User> actual = repository.getAll();
-        List<User> expected = repository.getListOfUsers(users);
-        assertEquals(expected, actual);
+        assertEquals(0, actual.size());
     }
 
     @Test
@@ -168,7 +164,8 @@ public class UserRepositoryMockTest {
 
     @Test
     void whenGetAllUsersThenThrowRepositoryException() {
-        when(jdbcTemplate.queryForList(eq("SELECT * FROM USERS"))).thenThrow(new DataAccessException(""){});
+        doThrow(new DataAccessException(""){})
+                .when(jdbcTemplate).query(eq("SELECT * FROM USERS"), any(BeanPropertyRowMapper.class));
         Throwable repositoryException = assertThrows(RepositoryException.class, () -> {
             repository.getAll();
         });
@@ -188,22 +185,6 @@ public class UserRepositoryMockTest {
         });
         assertNotNull(repositoryException);
         assertEquals(RepositoryException.class, repositoryException.getClass());
-    }
-
-    private List<Map<String, Object>> getListOfUsers() {
-        List<Map<String, Object>> mapList = new ArrayList<>();
-        Map<String, Object> map = new HashMap<>();
-        User user = new User( "3806734536743", "Adolf", "Hitlerl",
-                "German", "adolfyk_1945@gmail.com");
-        user.setId(9L);
-        map.put("USER_ID", user.getId());
-        map.put("PHONE_NUMBER", user.getPhoneNumber());
-        map.put("NAME", user.getName());
-        map.put("SECOND_NAME", user.getSecondName());
-        map.put("COUNTRY", user.getCountry());
-        map.put("EMAIL_ADDRESS", user.getEmailAddress());
-        mapList.add(map);
-        return mapList;
     }
 
 }
