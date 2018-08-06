@@ -32,7 +32,6 @@ public class UserRepositoryIntegrationTest {
         User user = new User("3809978957860", "Pasha", "Vakula",
                 "Poland", "vakula_2123@gmail.com");
         User created = repository.create(user);
-        assertNotNull(created);
         assertEquals(user, created);
     }
 
@@ -43,7 +42,6 @@ public class UserRepositoryIntegrationTest {
             repository.create(new User("3809934252275", "Pasha", "Volum",
                     "Moscow", "pasha_213@gmail.com"));
         });
-        assertNotNull(repositoryException);
         assertEquals(RepositoryException.class, repositoryException.getClass());
     }
 
@@ -53,7 +51,6 @@ public class UserRepositoryIntegrationTest {
                 "Moscow", "Lum_2@gmail.com");
         User created = repository.create(user);
         User found = repository.get(created.getId());
-        assertNotNull(found);
         assertEquals(user, created);
     }
 
@@ -63,7 +60,6 @@ public class UserRepositoryIntegrationTest {
         Throwable repositoryException = assertThrows(RepositoryException.class, () -> {
             repository.get(1L);
         });
-        assertNotNull(repositoryException);
         assertEquals(RepositoryException.class, repositoryException.getClass());
     }
 
@@ -76,7 +72,6 @@ public class UserRepositoryIntegrationTest {
         user.setSecondName("Zahrema");
         user.setCountry("Turkey");
         User updated = repository.update(user);
-        assertNotNull(updated);
         assertAll(() -> {
             assertEquals(created.getName(), updated.getName());
             assertEquals(created.getSecondName(), updated.getSecondName());
@@ -91,7 +86,6 @@ public class UserRepositoryIntegrationTest {
             repository.update(new User("3806754352134", "Tas", "Zur",
                     "Ukraine", "Zur_123@gmail.com"));
         });
-        assertNotNull(repositoryException);
         assertEquals(RepositoryException.class, repositoryException.getClass());
     }
 
@@ -110,7 +104,6 @@ public class UserRepositoryIntegrationTest {
         Throwable repositoryException = assertThrows(RepositoryException.class, () -> {
             repository.delete(1L);
         });
-        assertNotNull(repositoryException);
         assertEquals(RepositoryException.class, repositoryException.getClass());
     }
 
@@ -119,7 +112,6 @@ public class UserRepositoryIntegrationTest {
         User[] users = getUsers();
         addAllUsersToDB(users);
         List<User> actual = repository.getAll();
-        assertFalse(actual.isEmpty());
         assertEquals(3, actual.size());
     }
 
@@ -129,7 +121,6 @@ public class UserRepositoryIntegrationTest {
         Throwable repositoryException = assertThrows(RepositoryException.class, () -> {
             repository.getAll();
         });
-        assertNotNull(repositoryException);
         assertEquals(RepositoryException.class, repositoryException.getClass());
     }
 

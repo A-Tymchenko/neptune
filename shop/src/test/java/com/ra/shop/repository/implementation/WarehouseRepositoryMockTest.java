@@ -140,7 +140,6 @@ public class WarehouseRepositoryMockTest {
             when(mockJdbcTemplate.update(any(PreparedStatementCreator.class), any(KeyHolder.class))).thenThrow(new DataAccessException(""){});
             warehouseDao.create(warehouse);
         });
-
         assertEquals(exception.getMessage(), FAILED_TO_CREATE_NEW_WAREHOUSE.getMessage());
     }
 
@@ -153,7 +152,6 @@ public class WarehouseRepositoryMockTest {
             when(mockJdbcTemplate.update(any(String.class), any(PreparedStatementSetter.class))).thenThrow(new DataAccessException(""){});
             warehouseDao.update(warehouse);
         });
-
         assertEquals(exception.getMessage(), FAILED_TO_UPDATE_WAREHOUSE.getMessage());
     }
 
@@ -167,7 +165,6 @@ public class WarehouseRepositoryMockTest {
             warehouse.setIdNumber(1L);
             warehouseDao.delete(warehouse.getIdNumber());
         });
-
         assertEquals(exception.getMessage(), FAILED_TO_DELETE_WAREHOUSE.getMessage());
     }
 
@@ -181,7 +178,6 @@ public class WarehouseRepositoryMockTest {
         Throwable exception = assertThrows(RepositoryException.class, () -> {
             warehouseDao.getAll();
         });
-
         assertEquals(exception.getMessage(), FAILED_TO_GET_ALL_WAREHOUSE.getMessage());
     }
 
@@ -194,18 +190,7 @@ public class WarehouseRepositoryMockTest {
             when(mockJdbcTemplate.queryForObject(any(String.class), any(RowMapper.class), any(Object.class))).thenThrow(new DataAccessException(""){});
             warehouseDao.get(1L);
         });
-
         assertEquals(exception.getMessage(), FAILED_TO_GET_WAREHOUSE_BY_ID.getMessage() + " 1");
     }
 
-    private List getListFromGetAllMethod() {
-        List<Map> listFromQuery = new LinkedList<>();
-        Map<String, Object> map = new LinkedHashMap<>();
-        map.put("idNumber", warehouse.getIdNumber());
-        map.put("name", warehouse.getName());
-        map.put("price", warehouse.getPrice());
-        map.put("amount", warehouse.getAmount());
-        listFromQuery.add(map);
-        return listFromQuery;
-    }
 }

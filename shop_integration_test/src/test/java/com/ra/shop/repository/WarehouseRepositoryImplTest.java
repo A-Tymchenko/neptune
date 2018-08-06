@@ -39,7 +39,6 @@ public class WarehouseRepositoryImplTest {
     @Test
     void whenCreateTableThenNewWarehouseMustReturn() throws RepositoryException {
         warehouseRepository.create(warehouse);
-
         assertEquals(1L, (long) warehouse.getIdNumber());
     }
 
@@ -52,7 +51,6 @@ public class WarehouseRepositoryImplTest {
     void whenUpdateThenUpdatedWarehouseReturns() throws RepositoryException {
         Warehouse expectedWarehouse = warehouseRepository.create(warehouse);
         expectedWarehouse.setName("AloGarage");
-
         Warehouse updatedWarehouse = warehouseRepository.update(expectedWarehouse);
         assertEquals(expectedWarehouse, updatedWarehouse);
     }
@@ -67,7 +65,6 @@ public class WarehouseRepositoryImplTest {
         Warehouse createdWarehouse = warehouseRepository.create(warehouse);
         warehouseRepository.delete(createdWarehouse.getIdNumber());
         boolean result = warehouseRepository.delete(createdWarehouse.getIdNumber());
-
         assertFalse(result);
     }
 
@@ -80,7 +77,6 @@ public class WarehouseRepositoryImplTest {
     void whenDeleteCorrectlyThenDeleteAndReturnTrue() throws RepositoryException {
         Warehouse createdWarehouse1 = warehouseRepository.create(warehouse);
         boolean result = warehouseRepository.delete(createdWarehouse1.getIdNumber());
-
         assertTrue(result);
     }
 

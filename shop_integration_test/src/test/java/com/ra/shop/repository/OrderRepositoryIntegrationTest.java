@@ -31,7 +31,6 @@ public class OrderRepositoryIntegrationTest {
     void whenCreateOrderThenReturnCreatedOrder() throws RepositoryException {
         Order order = new Order(10, 90d, false, 0, false);
         Order created = repository.create(order);
-        assertNotNull(created);
         assertEquals(order, created);
     }
 
@@ -41,7 +40,6 @@ public class OrderRepositoryIntegrationTest {
         Throwable repositoryException = assertThrows(RepositoryException.class, () -> {
             repository.create(new Order(1, 10d, false, 0, false));
         });
-        assertNotNull(repositoryException);
         assertEquals(RepositoryException.class, repositoryException.getClass());
     }
 
@@ -50,7 +48,6 @@ public class OrderRepositoryIntegrationTest {
         Order order = new Order(10, 90d, false, 0, false);
         Order created = repository.create(order);
         Order found = repository.get(created.getId());
-        assertNotNull(found);
         assertEquals(order, created);
     }
 
@@ -60,7 +57,6 @@ public class OrderRepositoryIntegrationTest {
         Throwable repositoryException = assertThrows(RepositoryException.class, () -> {
             repository.get(1L);
         });
-        assertNotNull(repositoryException);
         assertEquals(RepositoryException.class, repositoryException.getClass());
     }
 
@@ -72,7 +68,6 @@ public class OrderRepositoryIntegrationTest {
         order.setDeliveryIncluded(true);
         order.setDeliveryCost(120);
         Order updated = repository.update(order);
-        assertNotNull(updated);
         assertAll(() -> {
             assertEquals(created.getPrice(), updated.getPrice());
             assertEquals(created.getDeliveryIncluded(), updated.getDeliveryIncluded());
@@ -86,7 +81,6 @@ public class OrderRepositoryIntegrationTest {
         Throwable repositoryException = assertThrows(RepositoryException.class, () -> {
             repository.update(new Order(1, 10d, false, 0, false));
         });
-        assertNotNull(repositoryException);
         assertEquals(RepositoryException.class, repositoryException.getClass());
     }
 
@@ -104,7 +98,6 @@ public class OrderRepositoryIntegrationTest {
         Throwable repositoryException = assertThrows(RepositoryException.class, () -> {
             repository.delete(1L);
         });
-        assertNotNull(repositoryException);
         assertEquals(RepositoryException.class, repositoryException.getClass());
     }
 
@@ -113,7 +106,6 @@ public class OrderRepositoryIntegrationTest {
         Order[] orders = getOrders();
         addAllOrdersToDB(orders);
         List<Order> actual = repository.getAll();
-        assertFalse(actual.isEmpty());
         assertEquals(3, actual.size());
     }
 
@@ -123,7 +115,6 @@ public class OrderRepositoryIntegrationTest {
         Throwable repositoryException = assertThrows(RepositoryException.class, () -> {
             repository.getAll();
         });
-        assertNotNull(repositoryException);
         assertEquals(RepositoryException.class, repositoryException.getClass());
     }
 
