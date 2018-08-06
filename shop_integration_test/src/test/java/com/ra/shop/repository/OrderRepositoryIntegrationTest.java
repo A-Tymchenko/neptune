@@ -46,7 +46,7 @@ public class OrderRepositoryIntegrationTest {
     }
 
     @Test
-    void whenGetOrderThenReturnOptionalOfOrder() throws RepositoryException {
+    void whenGetOrderThenReturnCorrectEntity() throws RepositoryException {
         Order order = new Order(10, 90d, false, 0, false);
         Order created = repository.create(order);
         Order found = repository.get(created.getId());

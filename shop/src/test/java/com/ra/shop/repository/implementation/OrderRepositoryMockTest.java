@@ -69,7 +69,7 @@ public class OrderRepositoryMockTest {
                 .queryForObject(
                         eq("SELECT * FROM ORDERS WHERE ORDER_ID = ?"),
                         any(RowMapper.class),
-                        any(Object[].class))).thenReturn(order);
+                        any(Object.class))).thenReturn(order);
         Order found = repository.get(order.getId());
         assertNotNull(found);
         assertEquals(order, found);
@@ -125,7 +125,7 @@ public class OrderRepositoryMockTest {
                 .queryForObject(
                         eq("SELECT * FROM ORDERS WHERE ORDER_ID = ?"),
                         any(RowMapper.class),
-                        any(Object[].class)))
+                        any(Object.class)))
                 .thenThrow(new DataAccessException(""){});
         Throwable repositoryException = assertThrows(RepositoryException.class, () -> {
             repository.get(order.getId());
