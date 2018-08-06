@@ -12,7 +12,6 @@
             <th>Id</th>
             <th>Name</th>
             <th>Carrier</th>
-            <th>Duration</th>
             <th>Departure date</th>
             <th>Arrival date</th>
             <th>Fare</th>
@@ -23,7 +22,6 @@
                 <td><c:out value="${flight.getFlId()}"/></td>
                 <td><c:out value="${flight.getName()}"/></td>
                 <td><c:out value="${flight.getCarrier()}"/></td>
-                <td><c:out value="${flight.getDuration()}"/></td>
                 <td><c:out value="${flight.getDepartureDate()}"/></td>
                 <td><c:out value="${flight.getArrivalDate()}"/></td>
                 <td><c:out value="${flight.getFare()}"/></td>

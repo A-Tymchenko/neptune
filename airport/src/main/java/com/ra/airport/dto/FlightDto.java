@@ -10,7 +10,6 @@ public class FlightDto {
     private Integer flId;
     private String name;
     private String carrier;
-    private LocalTime duration;
     private LocalDateTime departureDate;
     private LocalDateTime arrivalDate;
     private Double fare;
@@ -41,14 +40,6 @@ public class FlightDto {
 
     public void setCarrier(final String carrier) {
         this.carrier = carrier;
-    }
-
-    public LocalTime getDuration() {
-        return duration;
-    }
-
-    public void setDuration(final LocalTime duration) {
-        this.duration = duration;
     }
 
     public LocalDateTime getDepartureDate() {

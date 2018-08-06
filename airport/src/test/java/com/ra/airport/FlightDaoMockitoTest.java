@@ -178,7 +178,6 @@ public class FlightDaoMockitoTest {
         flight.setFlId(1);
         flight.setName(" ");
         flight.setCarrier(" ");
-        flight.setDuration(LocalTime.NOON);
         flight.setFare(Double.MIN_VALUE);
         flight.setMealOn(true);
         flight.setDepartureDate(LocalDateTime.MIN);

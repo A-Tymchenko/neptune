@@ -12,7 +12,6 @@ public class Flight {
    private Integer flId;
    private String name;
    private String carrier;
-   private LocalTime duration;
    private LocalDateTime departureDate;
    private LocalDateTime arrivalDate;
    private Double fare;
@@ -42,14 +41,6 @@ public class Flight {
 
     public void setCarrier(final String carrier) {
         this.carrier = carrier;
-    }
-
-    public LocalTime getDuration() {
-        return duration;
-    }
-
-    public void setDuration(final LocalTime duration) {
-        this.duration = duration;
     }
 
     public LocalDateTime getDepartureDate() {
@@ -96,7 +87,6 @@ public class Flight {
         return Objects.equals(flId, flight.flId)
                 && Objects.equals(name, flight.name)
                 && Objects.equals(carrier, flight.carrier)
-                && Objects.equals(duration, flight.duration)
                 && Objects.equals(departureDate, flight.departureDate)
                 && Objects.equals(arrivalDate, flight.arrivalDate)
                 && Objects.equals(fare, flight.fare)
@@ -109,7 +99,6 @@ public class Flight {
                 + "id=" + flId
                 + ", name='" + name + '\''
                 + ", carrier='" + carrier + '\''
-                + ", duration=" + duration
                 + ", departureDate=" + departureDate
                 + ", arrivalDate=" + arrivalDate
                 + ", fare=" + fare
@@ -119,6 +108,6 @@ public class Flight {
 
     @Override
     public int hashCode() {
-        return Objects.hash(flId, name, carrier, duration, departureDate, arrivalDate, fare, mealOn);
+        return Objects.hash(flId, name, carrier, departureDate, arrivalDate, fare, mealOn);
     }
 }
