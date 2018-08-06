@@ -4,8 +4,6 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 import com.ra.shop.enums.ExceptionMessage;
 import com.ra.shop.exceptions.RepositoryException;
@@ -89,7 +87,8 @@ public final class GoodsRepositoryImpl implements IRepository<Goods> {
             jdbcTemplate.update("UPDATE GOODS SET NAME = ?, BARCODE = ?, PRICE = ? WHERE ID = ?",
                     statement -> {
                         setStatementGoodsInSQLIndexes(statement, newEntity);
-                        statement.setLong(4, newEntity.getId());
+                        final int goodsId = 4;
+                        statement.setLong(goodsId, newEntity.getId());
                     });
             return newEntity;
         } catch (DataAccessException ex) {
