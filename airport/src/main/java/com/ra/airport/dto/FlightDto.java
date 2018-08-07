@@ -1,6 +1,6 @@
 package com.ra.airport.dto;
 
-import java.time.*;
+import java.time.LocalDateTime;
 
 /**
  * Flight Dto object.
