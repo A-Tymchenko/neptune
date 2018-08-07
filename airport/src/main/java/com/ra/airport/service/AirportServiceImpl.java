@@ -1,4 +1,46 @@
 package com.ra.airport.service;
 
-public class AirportServiceImpl {
+import java.util.List;
+import java.util.Optional;
+
+import com.ra.airport.entity.Airport;
+import com.ra.airport.repository.exception.AirPortDaoException;
+import com.ra.airport.repository.impl.AirportDAOImpl;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+@Component
+public class AirportServiceImpl implements AirPortService<Airport> {
+
+    private final transient AirportDAOImpl airportDAO;
+
+    @Autowired
+    public AirportServiceImpl(final AirportDAOImpl airportDAO) {
+        this.airportDAO = airportDAO;
+    }
+
+    @Override
+    public Airport create(final Airport entity) throws AirPortDaoException {
+        return null;
+    }
+
+    @Override
+    public Airport update(final Airport entity) throws AirPortDaoException {
+        return null;
+    }
+
+    @Override
+    public boolean delete(final Airport entity) throws AirPortDaoException {
+        return false;
+    }
+
+    @Override
+    public Optional<Airport> getById(final int entityId) throws AirPortDaoException {
+        return Optional.empty();
+    }
+
+    @Override
+    public List<Airport> getAll() throws AirPortDaoException {
+        return airportDAO.getAll();
+    }
 }
