@@ -2,9 +2,7 @@ package com.ra.shop.repository.implementation;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import com.ra.shop.enums.ExceptionMessage;
 import com.ra.shop.exceptions.RepositoryException;
@@ -153,34 +151,12 @@ public class UserRepositoryImpl implements IRepository<User> {
      */
     @Override
     public List<User> getAll() throws RepositoryException {
-        final List<Map<String, Object>> map;
+        final List<User> users;
         try {
-            map = jdbcTemplate.queryForList("SELECT * FROM USERS");
-            getListOfUsers(map);
+            users = jdbcTemplate.query("SELECT * FROM USERS", BeanPropertyRowMapper.newInstance(User.class));
         } catch (DataAccessException e) {
             LOGGER.error(ExceptionMessage.FAILED_TO_GET_ALL_USER.getMessage(), e);
             throw new RepositoryException(ExceptionMessage.FAILED_TO_GET_ALL_USER.getMessage(), e);
-        }
-        return getListOfUsers(map);
-    }
-
-    /**
-     * Method iterate over the list of users, set params into user instances and adds them to ArrayList and returns.
-     *
-     * @param map stores params for each entity.
-     * @return List list of users.
-     */
-    public List<User> getListOfUsers(final List<Map<String, Object>> map) {
-        final List<User> users = new ArrayList<>();
-        final User user = new User();
-        for (final Map<String, Object> row : map) {
-            user.setId((Long) row.get("USER_ID"));
-            user.setPhoneNumber((String) row.get("PHONE_NUMBER"));
-            user.setName((String) row.get("NAME"));
-            user.setSecondName((String) row.get("SECOND_NAME"));
-            user.setCountry((String) row.get("COUNTRY"));
-            user.setEmailAddress((String) row.get("EMAIL_ADDRESS"));
-            users.add(user);
         }
         return users;
     }

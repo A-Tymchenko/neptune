@@ -2,11 +2,8 @@ package com.ra.shop.repository.implementation;
 
 import com.ra.shop.exceptions.RepositoryException;
 import com.ra.shop.model.Order;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.invocation.InvocationOnMock;
-import org.mockito.stubbing.Answer;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.*;
 import org.springframework.jdbc.support.KeyHolder;
@@ -15,9 +12,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Matchers.any;
@@ -48,30 +43,23 @@ public class OrderRepositoryMockTest {
         when(connection.prepareStatement(
                 eq("INSERT INTO ORDERS (NUMBER, PRICE, DELIVERY_INCLUDED, DELIVERY_COST, EXECUTED) "
                 + "VALUES (?, ?, ?, ?, ?)"))).thenReturn(statement);
-        doAnswer(new Answer() {
-            @Override
-            public Object answer(InvocationOnMock invocation) throws Throwable {
-                ((PreparedStatementCreator) invocation.getArguments()[0]).createPreparedStatement(connection);
-                return null;
-            }
+        doAnswer(invocation -> {
+            ((PreparedStatementCreator) invocation.getArguments()[0]).createPreparedStatement(connection);
+            return null;
         }).when(jdbcTemplate).update(any(PreparedStatementCreator.class), any(KeyHolder.class));
         when(keyHolder.getKey()).thenReturn(1L);
         Order created = repository.create(order);
         order.setId((long) keyHolder.getKey());
-        assertNotNull(created);
+        assertEquals(order, created);
     }
 
     @Test
     void whenGetOrderThenReturnCorrectEntity() throws RepositoryException {
         Order order = new Order(10, 100d, false, 0, false);
         order.setId(1L);
-        when(jdbcTemplate
-                .queryForObject(
-                        eq("SELECT * FROM ORDERS WHERE ORDER_ID = ?"),
-                        any(RowMapper.class),
+        when(jdbcTemplate.queryForObject(eq("SELECT * FROM ORDERS WHERE ORDER_ID = ?"), any(RowMapper.class),
                         any(Object.class))).thenReturn(order);
         Order found = repository.get(order.getId());
-        assertNotNull(found);
         assertEquals(order, found);
     }
 
@@ -95,25 +83,21 @@ public class OrderRepositoryMockTest {
 
     @Test
     void whenGetAllThenReturnListOfExistedOrders() throws RepositoryException {
-        List<Map<String, Object>> orders = getListOfOrders();
-        when(jdbcTemplate.queryForList(eq("SELECT * FROM ORDERS"))).thenReturn(orders);
+        List<Order> orders = new ArrayList<>();
+        when(jdbcTemplate.query(eq("SELECT * FROM ORDERS"), any(RowMapper.class))).thenReturn(orders);
         List<Order> actual = repository.getAll();
-        List<Order> expected = repository.getListOfOrders(orders);
-        assertEquals(expected, actual);
+        assertEquals(0, actual.size());
     }
 
     @Test
     void whenUpdateOrderThenReturnUpdatedOrder() throws RepositoryException {
         Order order = new Order(10, 100d, false, 0, false);
         order.setId(1L);
-        final String query = "UPDATE ORDERS SET NUMBER = ?, PRICE = ?, DELIVERY_INCLUDED = ?, "
-                + "DELIVERY_COST = ?, EXECUTED = ? WHERE ORDER_ID = ?";
-        doAnswer(invocation -> {
-            ((PreparedStatementSetter) invocation.getArguments()[1]).setValues(statement);
+        doAnswer(invocation -> {((PreparedStatementSetter) invocation.getArguments()[1]).setValues(statement);
             return null;
-        }).when(jdbcTemplate).update(eq(query), any(PreparedStatementSetter.class));
+        }).when(jdbcTemplate).update(eq("UPDATE ORDERS SET NUMBER = ?, PRICE = ?, DELIVERY_INCLUDED = ?, "
+                + "DELIVERY_COST = ?, EXECUTED = ? WHERE ORDER_ID = ?"), any(PreparedStatementSetter.class));
         Order updated = repository.update(order);
-        assertNotNull(updated);
         assertEquals(order, updated);
     }
 
@@ -121,27 +105,21 @@ public class OrderRepositoryMockTest {
     void whenGetOrderThenThrowRepositoryException() {
         Order order = new Order(10, 100d, false, 0, false);
         order.setId(1L);
-        when(jdbcTemplate
-                .queryForObject(
-                        eq("SELECT * FROM ORDERS WHERE ORDER_ID = ?"),
-                        any(RowMapper.class),
-                        any(Object.class)))
-                .thenThrow(new DataAccessException(""){});
+        when(jdbcTemplate.queryForObject(eq("SELECT * FROM ORDERS WHERE ORDER_ID = ?"), any(RowMapper.class),
+                        any(Object.class))).thenThrow(new DataAccessException(""){});
         Throwable repositoryException = assertThrows(RepositoryException.class, () -> {
             repository.get(order.getId());
-
         });
-        assertNotNull(repositoryException);
         assertEquals(RepositoryException.class, repositoryException.getClass());
     }
 
     @Test
     void whenUpdateOrderThenThrowRepositoryException() {
-        when(jdbcTemplate.update(anyString(), any(PreparedStatementSetter.class))).thenThrow(new DataAccessException(""){});
+        when(jdbcTemplate.update(anyString(), any(PreparedStatementSetter.class)))
+                .thenThrow(new DataAccessException(""){});
         Throwable repositoryException = assertThrows(RepositoryException.class, () -> {
             repository.update(new Order());
         });
-        assertNotNull(repositoryException);
         assertEquals(RepositoryException.class, repositoryException.getClass());
     }
 
@@ -156,13 +134,13 @@ public class OrderRepositoryMockTest {
         Throwable repositoryException = assertThrows(RepositoryException.class, () -> {
             repository.create(order);
         });
-        assertNotNull(repositoryException);
         assertEquals(RepositoryException.class, repositoryException.getClass());
     }
 
     @Test
-    void whenGetAllOrdersThenThrowRepositoryException() {
-        when(jdbcTemplate.queryForList(eq("SELECT * FROM ORDERS"))).thenThrow(new DataAccessException(""){});
+    void whenGetAllOrdersThenThrowRepositoryException() throws SQLException {
+        doThrow(new DataAccessException(""){})
+                .when(jdbcTemplate).query(eq("SELECT * FROM ORDERS"), any(BeanPropertyRowMapper.class));
         Throwable repositoryException = assertThrows(RepositoryException.class, () -> {
             repository.getAll();
         });
@@ -173,29 +151,12 @@ public class OrderRepositoryMockTest {
     void whenDeleteOrderThenThrowRepositoryException() {
         Order order = new Order(10, 100d, false, 0, false);
         order.setId(1L);
-        when(jdbcTemplate.update(
-                eq("DELETE FROM ORDERS WHERE ORDER_ID = ?"),
-                any(Object.class))).thenThrow(new DataAccessException(""){});
+        when(jdbcTemplate.update(eq("DELETE FROM ORDERS WHERE ORDER_ID = ?"), any(Object.class)))
+                .thenThrow(new DataAccessException(""){});
         Throwable repositoryException = assertThrows(RepositoryException.class, () -> {
             repository.delete(order.getId());
         });
-        assertNotNull(repositoryException);
         assertEquals(RepositoryException.class, repositoryException.getClass());
-    }
-
-    private List<Map<String, Object>> getListOfOrders() {
-        List<Map<String, Object>> mapList = new ArrayList<>();
-        Map<String, Object> map = new HashMap<>();
-        Order order = new Order(121, 13d, true, 90, true);
-        order.setId(9L);
-        map.put("ORDER_ID", order.getId());
-        map.put("NUMBER", order.getNumber());
-        map.put("PRICE", order.getPrice());
-        map.put("DELIVERY_INCLUDED", order.getDeliveryIncluded());
-        map.put("DELIVERY_COST", order.getDeliveryCost());
-        map.put("EXECUTED", order.getExecuted());
-        mapList.add(map);
-        return mapList;
     }
 
 }

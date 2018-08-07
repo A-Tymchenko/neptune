@@ -80,7 +80,8 @@ class GoodsRepositoryMockTest {
 
     @Test
     void whenGetAllGoodsThrowsExceptionThenRepositoryExceptionThrown() {
-        when(mockJdbcTemplate.query(anyString(), any(BeanPropertyRowMapper.class))).thenThrow(new EmptyResultDataAccessException(0));
+        when(mockJdbcTemplate.query(anyString(), any(BeanPropertyRowMapper.class)))
+                .thenThrow(new EmptyResultDataAccessException(0));
 
         assertThrows(RepositoryException.class, () -> dao.getAll());
     }
@@ -136,5 +137,6 @@ class GoodsRepositoryMockTest {
 
         assertEquals(goods, TEST_GOODS);
     }
+
 }
 
