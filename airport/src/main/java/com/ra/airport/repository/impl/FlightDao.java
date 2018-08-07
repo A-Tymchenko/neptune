@@ -30,7 +30,7 @@ public class FlightDao implements AirPortDao<Flight> {
 
     private static final String INSERT_FLIGHT_SQL = "INSERT INTO flight "
             + "(name, carrier, meal_on, fare, departure_date, arrival_date) "
-            + " VALUES(?,?,?,?,?,?)";
+            + "VALUES(?,?,?,?,?,?)";
 
     private static final String UPDATE_FLIGHT_SQL = "UPDATE flight "
             + "SET name = ?, carrier = ?, meal_on = ?, fare = ?, departure_date = ?, arrival_date = ? "
