@@ -2,8 +2,7 @@ package com.ra.shop.repository.implementation;
 
 import com.ra.shop.exceptions.RepositoryException;
 import com.ra.shop.model.Order;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.*;
 import org.springframework.jdbc.support.KeyHolder;
@@ -12,7 +11,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Matchers.any;
@@ -27,6 +25,14 @@ public class OrderRepositoryMockTest {
 
     private Connection connection;
     private PreparedStatement statement;
+    private static Order TEST_ORDER = new Order(10, 100d, false, 0, false);
+    private static final Long DEFAULT_ID = 1L;
+
+
+    @BeforeAll
+    static void createSchema() {
+        TEST_ORDER.setId(DEFAULT_ID);
+    }
 
     @BeforeEach
     void setup() {
@@ -39,124 +45,102 @@ public class OrderRepositoryMockTest {
 
     @Test
     void whenCreateOrderThenReturnCreatedOrder() throws RepositoryException, SQLException {
-        Order order = new Order(10, 100d, false, 0, false);
         when(connection.prepareStatement(
                 eq("INSERT INTO ORDERS (NUMBER, PRICE, DELIVERY_INCLUDED, DELIVERY_COST, EXECUTED) "
-                + "VALUES (?, ?, ?, ?, ?)"))).thenReturn(statement);
+                        + "VALUES (?, ?, ?, ?, ?)"))).thenReturn(statement);
         doAnswer(invocation -> {
             ((PreparedStatementCreator) invocation.getArguments()[0]).createPreparedStatement(connection);
             return null;
         }).when(jdbcTemplate).update(any(PreparedStatementCreator.class), any(KeyHolder.class));
-        when(keyHolder.getKey()).thenReturn(1L);
-        Order created = repository.create(order);
-        order.setId((long) keyHolder.getKey());
-        assertEquals(order, created);
+        when(keyHolder.getKey()).thenReturn(DEFAULT_ID);
+        Order created = repository.create(TEST_ORDER);
+        TEST_ORDER.setId((long) keyHolder.getKey());
+
+        assertEquals(TEST_ORDER, created);
     }
 
     @Test
     void whenGetOrderThenReturnCorrectEntity() throws RepositoryException {
-        Order order = new Order(10, 100d, false, 0, false);
-        order.setId(1L);
         when(jdbcTemplate.queryForObject(eq("SELECT * FROM ORDERS WHERE ORDER_ID = ?"), any(RowMapper.class),
-                        any(Object.class))).thenReturn(order);
-        Order found = repository.get(order.getId());
-        assertEquals(order, found);
+                any(Object.class))).thenReturn(TEST_ORDER);
+
+        assertEquals(TEST_ORDER, repository.get(TEST_ORDER.getId()));
     }
 
     @Test
     void whenDeleteOrderThenReturnSuccessfulQueryExecutionResultTrue() throws RepositoryException {
-        Order order = new Order(10, 100d, false, 0, false);
-        order.setId(5L);
+        TEST_ORDER.setId(5L);
         when(jdbcTemplate.update(eq("DELETE FROM ORDERS WHERE ORDER_ID = ?"), any(Object.class))).thenReturn(1);
-        boolean isDeleted = repository.delete(order.getId());
-        assertTrue(isDeleted);
+
+        assertTrue(repository.delete(TEST_ORDER.getId()));
     }
 
     @Test
     void whenDeleteOrderThenReturnUnsuccessfulQueryExecutionResultFalse() throws RepositoryException {
-        Order order = new Order(10, 100d, false, 0, false);
-        order.setId(6L);
+        TEST_ORDER.setId(6L);
         when(jdbcTemplate.update(eq("DELETE FROM ORDERS WHERE ORDER_ID = ?"), any(Object.class))).thenReturn(0);
-        boolean isDeleted = repository.delete(order.getId());
-        assertFalse(isDeleted);
+
+        assertFalse(repository.delete(TEST_ORDER.getId()));
     }
 
     @Test
     void whenGetAllThenReturnListOfExistedOrders() throws RepositoryException {
-        List<Order> orders = new ArrayList<>();
-        when(jdbcTemplate.query(eq("SELECT * FROM ORDERS"), any(RowMapper.class))).thenReturn(orders);
-        List<Order> actual = repository.getAll();
-        assertEquals(0, actual.size());
+        when(jdbcTemplate.query(eq("SELECT * FROM ORDERS"), any(RowMapper.class)))
+                .thenReturn(new ArrayList<>());
+
+        assertTrue(repository.getAll().isEmpty());
     }
 
     @Test
     void whenUpdateOrderThenReturnUpdatedOrder() throws RepositoryException {
-        Order order = new Order(10, 100d, false, 0, false);
-        order.setId(1L);
-        doAnswer(invocation -> {((PreparedStatementSetter) invocation.getArguments()[1]).setValues(statement);
+        doAnswer(invocation -> {
+            ((PreparedStatementSetter) invocation.getArguments()[1]).setValues(statement);
             return null;
         }).when(jdbcTemplate).update(eq("UPDATE ORDERS SET NUMBER = ?, PRICE = ?, DELIVERY_INCLUDED = ?, "
                 + "DELIVERY_COST = ?, EXECUTED = ? WHERE ORDER_ID = ?"), any(PreparedStatementSetter.class));
-        Order updated = repository.update(order);
-        assertEquals(order, updated);
+
+        assertEquals(TEST_ORDER, repository.update(TEST_ORDER));
     }
 
     @Test
     void whenGetOrderThenThrowRepositoryException() {
-        Order order = new Order(10, 100d, false, 0, false);
-        order.setId(1L);
-        when(jdbcTemplate.queryForObject(eq("SELECT * FROM ORDERS WHERE ORDER_ID = ?"), any(RowMapper.class),
-                        any(Object.class))).thenThrow(new DataAccessException(""){});
-        Throwable repositoryException = assertThrows(RepositoryException.class, () -> {
-            repository.get(order.getId());
-        });
-        assertEquals(RepositoryException.class, repositoryException.getClass());
+        when(jdbcTemplate.queryForObject(anyString(), any(RowMapper.class),
+                any(Object.class))).thenThrow(new DataAccessException("") {});
+
+        assertThrows(RepositoryException.class, () -> repository.get(TEST_ORDER.getId()));
     }
 
     @Test
     void whenUpdateOrderThenThrowRepositoryException() {
         when(jdbcTemplate.update(anyString(), any(PreparedStatementSetter.class)))
-                .thenThrow(new DataAccessException(""){});
-        Throwable repositoryException = assertThrows(RepositoryException.class, () -> {
-            repository.update(new Order());
-        });
-        assertEquals(RepositoryException.class, repositoryException.getClass());
+                .thenThrow(new DataAccessException("") {});
+
+        assertThrows(RepositoryException.class, () -> repository.update(new Order()));
     }
 
     @Test
     void whenCreateOrderThenThrowRepositoryException() throws SQLException {
-        Order order = new Order(10, 100d, false, 0, false);
-        when(connection.prepareStatement(
-                eq("INSERT INTO ORDERS (NUMBER, PRICE, DELIVERY_INCLUDED, DELIVERY_COST, EXECUTED) "
-                + "VALUES (?, ?, ?, ?, ?)"))).thenReturn(statement);
-        doThrow(new DataAccessException(""){})
+        when(connection.prepareStatement(anyString())).thenReturn(statement);
+        doThrow(new DataAccessException("") {})
                 .when(jdbcTemplate).update(any(PreparedStatementCreator.class), any(KeyHolder.class));
-        Throwable repositoryException = assertThrows(RepositoryException.class, () -> {
-            repository.create(order);
-        });
-        assertEquals(RepositoryException.class, repositoryException.getClass());
+
+        assertThrows(RepositoryException.class, () -> repository.create(TEST_ORDER));
     }
 
     @Test
-    void whenGetAllOrdersThenThrowRepositoryException() throws SQLException {
-        doThrow(new DataAccessException(""){})
-                .when(jdbcTemplate).query(eq("SELECT * FROM ORDERS"), any(BeanPropertyRowMapper.class));
-        Throwable repositoryException = assertThrows(RepositoryException.class, () -> {
-            repository.getAll();
-        });
-        assertEquals(RepositoryException.class, repositoryException.getClass());
+    void whenGetAllOrdersThenThrowRepositoryException(){
+        doThrow(new DataAccessException("") {})
+                .when(jdbcTemplate).query(anyString(), any(BeanPropertyRowMapper.class));
+
+        assertThrows(RepositoryException.class, () -> repository.getAll());
     }
 
     @Test
     void whenDeleteOrderThenThrowRepositoryException() {
-        Order order = new Order(10, 100d, false, 0, false);
-        order.setId(1L);
-        when(jdbcTemplate.update(eq("DELETE FROM ORDERS WHERE ORDER_ID = ?"), any(Object.class)))
-                .thenThrow(new DataAccessException(""){});
-        Throwable repositoryException = assertThrows(RepositoryException.class, () -> {
-            repository.delete(order.getId());
-        });
-        assertEquals(RepositoryException.class, repositoryException.getClass());
+        when(jdbcTemplate.update(anyString(), any(Object.class)))
+                .thenThrow(new DataAccessException("") {});
+
+        assertThrows(RepositoryException.class, () -> repository.delete(TEST_ORDER.getId()));
     }
 
 }

@@ -31,68 +31,43 @@ public class WarehouseRepositoryImplTest {
         warehouse = new Warehouse("Lol", 1.1, 2);
     }
 
-    /**
-     * testing new warehouse creation.
-     *
-     * @throws RepositoryException exception
-     */
     @Test
     void whenCreateTableThenNewWarehouseMustReturn() throws RepositoryException {
         warehouseRepository.create(warehouse);
         assertEquals(1L, (long) warehouse.getIdNumber());
     }
 
-    /**
-     * testing update warehouse.
-     *
-     * @throws RepositoryException exception
-     */
     @Test
     void whenUpdateThenUpdatedWarehouseReturns() throws RepositoryException {
         Warehouse expectedWarehouse = warehouseRepository.create(warehouse);
         expectedWarehouse.setName("AloGarage");
-        Warehouse updatedWarehouse = warehouseRepository.update(expectedWarehouse);
-        assertEquals(expectedWarehouse, updatedWarehouse);
+
+        assertEquals(expectedWarehouse, warehouseRepository.update(expectedWarehouse));
     }
 
-    /**
-     * testing delete warehouse twice.
-     *
-     * @throws RepositoryException exception
-     */
     @Test
     void whenDeleteFalseThenReturnFalse() throws RepositoryException {
         Warehouse createdWarehouse = warehouseRepository.create(warehouse);
         warehouseRepository.delete(createdWarehouse.getIdNumber());
-        boolean result = warehouseRepository.delete(createdWarehouse.getIdNumber());
-        assertFalse(result);
+
+        assertFalse(warehouseRepository.delete(createdWarehouse.getIdNumber()));
     }
 
-    /**
-     * testing delete warehouse.
-     *
-     * @throws RepositoryException exception
-     */
     @Test
     void whenDeleteCorrectlyThenDeleteAndReturnTrue() throws RepositoryException {
         Warehouse createdWarehouse1 = warehouseRepository.create(warehouse);
-        boolean result = warehouseRepository.delete(createdWarehouse1.getIdNumber());
-        assertTrue(result);
+
+        assertTrue(warehouseRepository.delete(createdWarehouse1.getIdNumber()));
     }
 
-    /**
-     * testing getAll warehouses.
-     *
-     * @throws RepositoryException exception
-     */
     @Test
     void whenGetAllThenWarehousesMustReturn() throws RepositoryException {
         Warehouse[] warehouses = getWarehouses();
         List<Warehouse> expectedList = new ArrayList<>();
         Collections.addAll(expectedList, warehouses);
         addWarehouses(warehouses);
-        List<Warehouse> actualList = warehouseRepository.getAll();
-        assertEquals(expectedList.size(), actualList.size());
+
+        assertEquals(expectedList.size(), warehouseRepository.getAll().size());
     }
 
     private void addWarehouses(Warehouse[] warehouses) throws RepositoryException {
@@ -102,7 +77,7 @@ public class WarehouseRepositoryImplTest {
     }
 
     private Warehouse[] getWarehouses() {
-        return new Warehouse[] {
+        return new Warehouse[]{
                 new Warehouse("loha", 1.1, 1),
                 new Warehouse("gosha", 1.1, 1),
                 new Warehouse("moisha", 1.1, 1)

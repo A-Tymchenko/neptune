@@ -9,10 +9,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.jdbc.Sql;
-import org.springframework.test.context.jdbc.SqlGroup;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-
-import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.context.jdbc.Sql.ExecutionPhase.AFTER_TEST_METHOD;
@@ -27,31 +24,30 @@ public class UserRepositoryIntegrationTest {
     @Autowired
     private UserRepositoryImpl repository;
 
+    private static final User TEST_USER = new User("3809978957860", "Pasha", "Vakula",
+            "Poland", "vakula_2123@gmail.com");
+    private static final User TEST_USER_UPDATE = new User("3809978957860", "Gugulya", "Zahrema",
+            "Turkey", "vakula_2123@gmail.com");
+
     @Test
     void whenCreateUserThenReturnCreatedUser() throws RepositoryException {
-        User user = new User("3809978957860", "Pasha", "Vakula",
-                "Poland", "vakula_2123@gmail.com");
-        User created = repository.create(user);
-        assertEquals(user, created);
+
+        assertEquals(TEST_USER, repository.create(TEST_USER));
     }
 
     @Test
     @Sql(executionPhase = BEFORE_TEST_METHOD, scripts = "classpath:drop_table.sql")
     void whenCreateUserThenThrowRepositoryException() {
         Throwable repositoryException = assertThrows(RepositoryException.class, () -> {
-            repository.create(new User("3809934252275", "Pasha", "Volum",
-                    "Moscow", "pasha_213@gmail.com"));
+            repository.create(TEST_USER);
         });
         assertEquals(RepositoryException.class, repositoryException.getClass());
     }
 
     @Test
     void whenGetUserThenReturnCorrectUser() throws RepositoryException {
-        User user = new User("3809934252275", "Pashink", "Lum",
-                "Moscow", "Lum_2@gmail.com");
-        User created = repository.create(user);
-        User found = repository.get(created.getId());
-        assertEquals(user, created);
+
+        assertEquals(TEST_USER, repository.create(TEST_USER));
     }
 
     @Test
@@ -65,17 +61,14 @@ public class UserRepositoryIntegrationTest {
 
     @Test
     void whenUpdateUserThenReturnUpdatedUser() throws RepositoryException {
-        User user = new User("3809978957860", "Pas", "Lank",
-                "Poland", "Lank_3@gmail.com");
-        User created = repository.create(user);
-        user.setName("Gugulya");
-        user.setSecondName("Zahrema");
-        user.setCountry("Turkey");
-        User updated = repository.update(user);
+        User created = repository.create(TEST_USER);
+        TEST_USER_UPDATE.setId(created.getId());
+        User updated = repository.update(TEST_USER_UPDATE);
+
         assertAll(() -> {
-            assertEquals(created.getName(), updated.getName());
-            assertEquals(created.getSecondName(), updated.getSecondName());
-            assertEquals(created.getCountry(), updated.getCountry());
+            assertEquals(TEST_USER_UPDATE.getName(), updated.getName());
+            assertEquals(TEST_USER_UPDATE.getSecondName(), updated.getSecondName());
+            assertEquals(TEST_USER_UPDATE.getCountry(), updated.getCountry());
         });
     }
 
@@ -83,19 +76,16 @@ public class UserRepositoryIntegrationTest {
     @Sql(executionPhase = BEFORE_TEST_METHOD, scripts = "classpath:drop_table.sql")
     void whenUpdateUserThenThrowRepositoryException() {
         Throwable repositoryException = assertThrows(RepositoryException.class, () -> {
-            repository.update(new User("3806754352134", "Tas", "Zur",
-                    "Ukraine", "Zur_123@gmail.com"));
+            repository.update(TEST_USER);
         });
         assertEquals(RepositoryException.class, repositoryException.getClass());
     }
 
     @Test
     void whenDeleteUserThenReturnTrueOnSuccessfulExecution() throws RepositoryException {
-        User user = new User("3806754352134", "Taras", "Mazur",
-                "Ukraine", "mazur_123@gmail.com");
-        User created = repository.create(user);
-        boolean isDeleted = repository.delete(created.getId());
-        assertTrue(isDeleted);
+        User created = repository.create(TEST_USER);
+
+        assertTrue(repository.delete(created.getId()));
     }
 
     @Test
@@ -111,8 +101,8 @@ public class UserRepositoryIntegrationTest {
     void whenGetAllUsersThenReturnListOfUsers() throws RepositoryException {
         User[] users = getUsers();
         addAllUsersToDB(users);
-        List<User> actual = repository.getAll();
-        assertEquals(3, actual.size());
+
+        assertEquals(3, repository.getAll().size());
     }
 
     @Test

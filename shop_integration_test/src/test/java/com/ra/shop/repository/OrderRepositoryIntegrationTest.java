@@ -9,10 +9,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.jdbc.Sql;
-import org.springframework.test.context.jdbc.SqlGroup;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-
-import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.context.jdbc.Sql.ExecutionPhase.AFTER_TEST_METHOD;
@@ -27,28 +24,31 @@ public class OrderRepositoryIntegrationTest {
     @Autowired
     private OrderRepositoryImpl repository;
 
+    private static final Order TEST_ORDER = new Order(10, 90d, false,
+            0, false);
+    private static final Order TEST_ORDER_UPDATE = new Order(10, 900d, true,
+            120, false);
+
     @Test
     void whenCreateOrderThenReturnCreatedOrder() throws RepositoryException {
-        Order order = new Order(10, 90d, false, 0, false);
-        Order created = repository.create(order);
-        assertEquals(order, created);
+        Order created = repository.create(TEST_ORDER);
+
+        assertEquals(TEST_ORDER, created);
     }
 
     @Test
     @Sql(scripts = "classpath:drop_table.sql", executionPhase = BEFORE_TEST_METHOD)
     void whenCreateOrderThenThrowRepositoryException() {
         Throwable repositoryException = assertThrows(RepositoryException.class, () -> {
-            repository.create(new Order(1, 10d, false, 0, false));
+            repository.create(TEST_ORDER);
         });
         assertEquals(RepositoryException.class, repositoryException.getClass());
     }
 
     @Test
     void whenGetOrderThenReturnCorrectEntity() throws RepositoryException {
-        Order order = new Order(10, 90d, false, 0, false);
-        Order created = repository.create(order);
-        Order found = repository.get(created.getId());
-        assertEquals(order, created);
+
+        assertEquals(TEST_ORDER, repository.create(TEST_ORDER));
     }
 
     @Test
@@ -62,16 +62,14 @@ public class OrderRepositoryIntegrationTest {
 
     @Test
     void whenUpdateOrderThenReturnUpdatedOrder() throws RepositoryException {
-        Order order = new Order(10, 90d, false, 0, false);
-        Order created = repository.create(order);
-        order.setPrice(900d);
-        order.setDeliveryIncluded(true);
-        order.setDeliveryCost(120);
-        Order updated = repository.update(order);
+        Order created = repository.create(TEST_ORDER);
+        TEST_ORDER_UPDATE.setId(created.getId());
+        Order updated = repository.update(TEST_ORDER_UPDATE);
+
         assertAll(() -> {
-            assertEquals(created.getPrice(), updated.getPrice());
-            assertEquals(created.getDeliveryIncluded(), updated.getDeliveryIncluded());
-            assertEquals(created.getDeliveryCost(), updated.getDeliveryCost());
+            assertEquals(TEST_ORDER_UPDATE.getPrice(), updated.getPrice());
+            assertEquals(TEST_ORDER_UPDATE.getDeliveryIncluded(), updated.getDeliveryIncluded());
+            assertEquals(TEST_ORDER_UPDATE.getDeliveryCost(), updated.getDeliveryCost());
         });
     }
 
@@ -79,17 +77,16 @@ public class OrderRepositoryIntegrationTest {
     @Sql(scripts = "classpath:drop_table.sql", executionPhase = BEFORE_TEST_METHOD)
     void whenUpdateOrderThenThrowRepositoryException() {
         Throwable repositoryException = assertThrows(RepositoryException.class, () -> {
-            repository.update(new Order(1, 10d, false, 0, false));
+            repository.update(TEST_ORDER);
         });
         assertEquals(RepositoryException.class, repositoryException.getClass());
     }
 
     @Test
     void whenDeleteOrderThenReturnTrueOnSuccessfulExecution() throws RepositoryException {
-        Order order = new Order(10, 90d, false, 0, false);
-        Order created = repository.create(order);
-        boolean isDeleted = repository.delete(created.getId());
-        assertTrue(isDeleted);
+        Order created = repository.create(TEST_ORDER);
+
+        assertTrue(repository.delete(created.getId()));
     }
 
     @Test
@@ -105,8 +102,8 @@ public class OrderRepositoryIntegrationTest {
     void whenGetAllOrdersThenReturnListOfOrders() throws RepositoryException {
         Order[] orders = getOrders();
         addAllOrdersToDB(orders);
-        List<Order> actual = repository.getAll();
-        assertEquals(3, actual.size());
+
+        assertEquals(3, repository.getAll().size());
     }
 
     @Test

@@ -19,10 +19,10 @@ class GoodsRepositoryMockTest {
 
     private static GoodsRepositoryImpl dao;
     private static JdbcTemplate mockJdbcTemplate;
-    private static Goods TEST_GOODS = new Goods("Camel", 7622210609779L, 1.2d);
     private Connection mockConnection;
     private PreparedStatement mockStatement;
     private KeyHolder mockGeneratedKeyHolder;
+    private static Goods TEST_GOODS = new Goods("Camel", 7622210609779L, 1.2d);
     private static final Long DEFAULT_ID = 1L;
     private static final Long GENERATION_ID = 2L;
 
@@ -133,9 +133,8 @@ class GoodsRepositoryMockTest {
         }).when(mockJdbcTemplate)
                 .update(eq("UPDATE GOODS SET NAME = ?, BARCODE = ?, PRICE = ? WHERE ID = ?"),
                         any(PreparedStatementSetter.class));
-        Goods goods = dao.update(TEST_GOODS);
 
-        assertEquals(goods, TEST_GOODS);
+        assertEquals(dao.update(TEST_GOODS), TEST_GOODS);
     }
 
 }
