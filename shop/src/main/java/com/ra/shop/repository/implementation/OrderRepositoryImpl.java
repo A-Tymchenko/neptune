@@ -1,200 +1,188 @@
 package com.ra.shop.repository.implementation;
 
-import java.sql.Connection;
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
-import com.ra.shop.config.ConnectionFactory;
 import com.ra.shop.enums.ExceptionMessage;
 import com.ra.shop.exceptions.RepositoryException;
 import com.ra.shop.model.Order;
 import com.ra.shop.repository.IRepository;
-import org.apache.log4j.Logger;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
+import org.springframework.jdbc.core.BeanPropertyRowMapper;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
+import org.springframework.stereotype.Component;
 
 /**
- * Implementation of IRepository interface.
+ * IRepository implementation using Spring jdbc.
  */
+@Component
 public class OrderRepositoryImpl implements IRepository<Order> {
 
     /**
      * Logger.
      */
-    private static final Logger LOGGER = Logger.getLogger(OrderRepositoryImpl.class);
+    private static final Logger LOGGER = LogManager.getLogger(OrderRepositoryImpl.class);
 
     /**
-     * Constant represents order number.
+     * KeyHolder instance stores primary keys.
      */
-    private static final Integer NUMBER = 1;
+    private final transient KeyHolder keyHolder = new GeneratedKeyHolder();
 
     /**
-     * Constant represents order total price.
+     * JdbcTemplate instance.
      */
-    private static final Integer PRICE = 2;
+    private final transient JdbcTemplate jdbcTemplate;
 
     /**
-     * Constant represents a delivery option will be included or not.
-     */
-    private static final Integer DELIVERY_INCLUDED = 3;
-
-    /**
-     * Constant represents delivery cost if option is positive.
-     */
-    private static final Integer DELIVERY_COST = 4;
-
-    /**
-     * Constant represents order condition, whether it`s executed or not.
-     */
-    private static final Integer EXECUTED = 5;
-
-    /**
-     * Field connectionFactory.
-     */
-    private final transient ConnectionFactory connectionFactory;
-
-    /**
-     * Constructs new OrderRepositoryImp instance, as an argument accepts ConnectionFactory instance.
+     * Constructor accepts jdbcTemplate as a parameter.
      *
-     * @param connectionFactory instance.
+     * @param jdbcTemplate jdbcTemplate
      */
-    public OrderRepositoryImpl(final ConnectionFactory connectionFactory) {
-        this.connectionFactory = connectionFactory;
+    @Autowired
+    public OrderRepositoryImpl(final JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
     }
 
-    @Override
-    public List<Order> getAll() throws RepositoryException {
-        final List<Order> all = new ArrayList<>();
-        try (Connection connection = connectionFactory.getConnection();
-             PreparedStatement statement = connection.prepareStatement("SELECT * FROM ORDERS")) {
-            final ResultSet resultSet = statement.executeQuery();
-            while (resultSet.next()) {
-                final Order order = fillEntityWithValues(resultSet);
-                all.add(order);
-            }
-            return all;
-        } catch (SQLException e) {
-            LOGGER.error(e.getMessage(), e);
-            throw new RepositoryException(ExceptionMessage.FAILED_TO_GET_ALL_ORDER.getMessage(), e);
-        }
-    }
-
+    /**
+     * Method adds an entity to database.
+     *
+     * @param entity that will be created.
+     * @return Order persisted entity.
+     * @throws RepositoryException can be thrown if any error occurs.
+     */
     @Override
     public Order create(final Order entity) throws RepositoryException {
-        try (Connection connection = connectionFactory.getConnection();
-             PreparedStatement statement = connection.prepareStatement(
-                 "INSERT INTO ORDERS (NUMBER, PRICE, DELIVERY_INCLUDED, DELIVERY_COST, EXECUTED) "
-                     + "VALUES(?, ?, ?, ?, ?)",
-                 Statement.RETURN_GENERATED_KEYS)) {
-            setStatementValuesForCreation(statement, entity);
-            statement.executeUpdate();
-            final ResultSet primaryKeys = statement.getGeneratedKeys();
-            if (primaryKeys.next()) {
-                entity.setId(primaryKeys.getLong(1));
-            }
-        } catch (SQLException e) {
-            LOGGER.error(e.getMessage(), e);
+        final Long orderId;
+        try {
+            jdbcTemplate.update(con -> {
+                final PreparedStatement statement = con.prepareStatement(
+                        "INSERT INTO ORDERS (NUMBER, PRICE, DELIVERY_INCLUDED, DELIVERY_COST, EXECUTED) "
+                                + "VALUES (?, ?, ?, ?, ?)");
+                fillEntityWithParameters(statement, entity);
+                return statement;
+            }, keyHolder);
+            orderId = (Long) keyHolder.getKey();
+        } catch (DataAccessException e) {
+            LOGGER.error(ExceptionMessage.FAILED_TO_CREATE_NEW_ORDER.getMessage(), e);
             throw new RepositoryException(ExceptionMessage.FAILED_TO_CREATE_NEW_ORDER.getMessage(), e);
         }
+        entity.setId(orderId);
         return entity;
     }
 
+    /**
+     * Method performs search in database and returns an entity with pointed id.
+     *
+     * @param entityId - id of searched entity.
+     * @return Order searched entity.
+     * @throws RepositoryException can be thrown if any error occurs.
+     */
     @Override
-    public Optional<Order> get(final long entityId) throws RepositoryException {
-        try (Connection connection = connectionFactory.getConnection();
-             PreparedStatement statement = connection.prepareStatement("SELECT * FROM ORDERS WHERE ORDER_ID = ?")) {
-            statement.setLong(1, entityId);
-            final ResultSet res = statement.executeQuery();
-            if (res.next()) {
-                final Order found = fillEntityWithValues(res);
-                return Optional.of(found);
-            }
-        } catch (SQLException e) {
-            LOGGER.error(e.getMessage(), e);
-            throw new RepositoryException(ExceptionMessage.FAILED_TO_GET_ORDER_BY_ID.getMessage() + " " + entityId, e);
+    public Order get(final long entityId) throws RepositoryException {
+        final Order found;
+        try {
+            final BeanPropertyRowMapper<Order> mapper = BeanPropertyRowMapper.newInstance(Order.class);
+            found = jdbcTemplate.queryForObject(
+                    "SELECT * FROM ORDERS WHERE ORDER_ID = ?",
+                    mapper,
+                    entityId);
+        } catch (DataAccessException e) {
+            LOGGER.error(ExceptionMessage.FAILED_TO_GET_ORDER_BY_ID.getMessage(), e);
+            throw new RepositoryException(ExceptionMessage.FAILED_TO_GET_ORDER_BY_ID.getMessage(), e);
         }
-        return Optional.empty();
+        return found;
     }
 
+    /**
+     * Method performs update operation.
+     *
+     * @param newEntity updated version of entity.
+     * @return Order updated version of entity.
+     * @throws RepositoryException can be thrown if any error occurs.
+     */
     @Override
     public Order update(final Order newEntity) throws RepositoryException {
-        try (Connection connection = connectionFactory.getConnection();
-             PreparedStatement statement = connection.prepareStatement(
-                 "UPDATE ORDERS SET NUMBER = ?, PRICE = ?, DELIVERY_INCLUDED = ?, "
-                     + "DELIVERY_COST = ?, EXECUTED = ? WHERE ORDER_ID = ?")) {
-            setStatementValuesForUpdate(statement, newEntity);
-            statement.executeUpdate();
-        } catch (SQLException e) {
-            LOGGER.error(e.getMessage(), e);
+        try {
+            jdbcTemplate.update(
+                    "UPDATE ORDERS SET NUMBER = ?, PRICE = ?, DELIVERY_INCLUDED = ?, "
+                            + "DELIVERY_COST = ?, EXECUTED = ? WHERE ORDER_ID = ?", statement -> {
+                        fillEntityWithParameters(statement, newEntity);
+                        final int orderId = 6;
+                        statement.setLong(orderId, newEntity.getId());
+                    });
+            return newEntity;
+        } catch (DataAccessException e) {
+            LOGGER.error(ExceptionMessage.FAILED_TO_UPDATE_ORDER.getMessage(), e);
             throw new RepositoryException(ExceptionMessage.FAILED_TO_UPDATE_ORDER.getMessage(), e);
         }
-        return newEntity;
     }
 
+    /**
+     * Method performs delete operation.
+     *
+     * @param entityId of entity that will be deleted.
+     * @return boolean true if entity removed successfully or false if not.
+     * @throws RepositoryException can be thrown if any error occurs.
+     */
     @Override
     public boolean delete(final long entityId) throws RepositoryException {
-        try (Connection connection = connectionFactory.getConnection();
-             PreparedStatement statement = connection.prepareStatement("DELETE FROM ORDERS WHERE ORDER_ID = ?")) {
-            statement.setLong(1, entityId);
-            return statement.executeUpdate() > 0;
-        } catch (SQLException e) {
-            LOGGER.error(e.getMessage(), e);
+        try {
+            final int deletedRowsNumber = jdbcTemplate.update(
+                    "DELETE FROM ORDERS WHERE ORDER_ID = ?",
+                    entityId);
+            return deletedRowsNumber > 0;
+        } catch (DataAccessException e) {
+            LOGGER.error(ExceptionMessage.FAILED_TO_DELETE_ORDER.getMessage(), e);
             throw new RepositoryException(ExceptionMessage.FAILED_TO_DELETE_ORDER.getMessage(), e);
         }
     }
 
     /**
-     * Method configuring PrepareStatement for update method.
+     * Method returns list of entities that stored in database.
+     *
+     * @return List list of existed orders.
+     * @throws RepositoryException can be thrown if any error occurs.
+     */
+    @Override
+    public List<Order> getAll() throws RepositoryException {
+        List<Order> orders;
+        try {
+            orders = jdbcTemplate.query("SELECT * FROM ORDERS", BeanPropertyRowMapper.newInstance(Order.class));
+        } catch (DataAccessException e) {
+            LOGGER.error(ExceptionMessage.FAILED_TO_GET_ALL_ORDER.getMessage(), e);
+            throw new RepositoryException(ExceptionMessage.FAILED_TO_GET_ALL_ORDER.getMessage(), e);
+        }
+        return orders;
+    }
+
+    /**
+     * Method fills order entity with parameters using preparedStatement.
      *
      * @param statement PreparedStatement.
-     * @param newEntity - entity that will be updated.
+     * @param order     order entity that will be created.
      * @throws SQLException if any error occurs.
      */
-    private void setStatementValuesForUpdate(final PreparedStatement statement, final Order newEntity) throws SQLException {
-        final int orderId = 6;
-        statement.setInt(NUMBER, newEntity.getNumber());
-        statement.setDouble(PRICE, newEntity.getPrice());
-        statement.setBoolean(DELIVERY_INCLUDED, newEntity.getDeliveryIncluded());
-        statement.setInt(DELIVERY_COST, newEntity.getDeliveryCost());
-        statement.setBoolean(EXECUTED, newEntity.getExecuted());
-        statement.setLong(orderId, newEntity.getId());
+    private void fillEntityWithParameters(final PreparedStatement statement, final Order order) throws SQLException {
+        final int number = 1;
+        final int price = 2;
+        final int deliveryIncluded = 3;
+        final int deliveryCost = 4;
+        final int executed = 5;
+        statement.setInt(number, order.getNumber());
+        statement.setDouble(price, order.getPrice());
+        statement.setBoolean(deliveryIncluded, order.getDeliveryIncluded());
+        statement.setInt(deliveryCost, order.getDeliveryCost());
+        statement.setBoolean(executed, order.getExecuted());
     }
-
-    /**
-     * Method configuring PrepareStatement for create method.
-     *
-     * @param preparedStatement PreparedStatement.
-     * @param order             new order.
-     * @throws SQLException if any error occurs.
-     */
-    private void setStatementValuesForCreation(final PreparedStatement preparedStatement, final Order order) throws SQLException {
-        preparedStatement.setInt(NUMBER, order.getNumber());
-        preparedStatement.setDouble(PRICE, order.getPrice());
-        preparedStatement.setBoolean(DELIVERY_INCLUDED, order.getDeliveryIncluded());
-        preparedStatement.setInt(DELIVERY_COST, order.getDeliveryCost());
-        preparedStatement.setBoolean(EXECUTED, order.getExecuted());
-    }
-
-    /**
-     * Method returns resultSet with order params inside.
-     *
-     * @param resultSet resultSet.
-     * @return new Order that filled with values from resultSet.
-     * @throws SQLException if any error occurs.
-     */
-    private Order fillEntityWithValues(final ResultSet resultSet) throws SQLException {
-        final Long orderId = resultSet.getLong("ORDER_ID");
-        final Integer number = resultSet.getInt("NUMBER");
-        final Double price = resultSet.getDouble("PRICE");
-        final Boolean deliveryIncluded = resultSet.getBoolean("DELIVERY_INCLUDED");
-        final Integer deliveryCost = resultSet.getInt("DELIVERY_COST");
-        final Boolean executed = resultSet.getBoolean("EXECUTED");
-        final Order order = new Order(number, price, deliveryIncluded, deliveryCost, executed);
-        order.setId(orderId);
-        return order;
-    }
-
 }
+
+
+
+
