@@ -32,17 +32,12 @@ import static org.mockito.Mockito.eq;
 
 public class FlightDaoMockitoTest {
 
-    private static final String INSERT_FLIGHT_SQL = "INSERT INTO flight "
-            + "(name, carrier, meal_on, fare, departure_date, arrival_date) "
-            + " VALUES(?,?,?,?,?,?)";
-
-    private static final String UPDATE_FLIGHT_SQL = "UPDATE flight "
-            + "SET name = ?, carrier = ?, meal_on = ?, fare = ?, departure_date = ?, arrival_date = ? "
-            + "WHERE flId = ?";
     private static final String SELECT_FLIGHT_BY_ID_SQL = "SELECT * FROM flight WHERE flId = ?";
     private static final String DELETE_FLIGHT_BY_ID_SQL = "DELETE FROM flight WHERE flId = ?";
     private static final String SELECT_LAST_GENERATED_ID_SQL = "SELECT SCOPE_IDENTITY()";
     private static final String SELECT_ALL_FLIGHTS_SQL ="SELECT * FROM flight";
+    private static final String INSERT_FLIGHT_SQL = "INSERT INTO flight (name, carrier, meal_on, fare, departure_date, arrival_date) VALUES(?,?,?,?,?,?)";
+    private static final String UPDATE_FLIGHT_SQL = "UPDATE flight SET name = ?, carrier = ?, meal_on = ?, fare = ?, departure_date = ?, arrival_date = ? WHERE flId = ?";
 
     private FlightDao flightDao;
     private Flight flight;
