@@ -29,12 +29,12 @@
                  <td><c:out value="${airport.address}" /></td>
                  <td><c:out value="${airport.terminalCount}" /></td>
                  <td><button type="button" onclick='deleteAirport("<c:out value="${airport.apId}" />")'>Delete</button></td>
+                 <td><button type="button" onclick='updateAirport("<c:out value="${airport.apId}" />")'>Update</button></td>
               </tr>
            </c:forEach>
            </tbody>
         </table>
-        <caption><button type="button">Update</button>
-        <button id="addAirport">Add airport</button></caption>
+        <caption><button id="addAirport">Add airport</button></caption>
         <caption><div id="addModal" class="modal">
           <div class="modal-content">
             <span class="close">&times;</span>
@@ -53,8 +53,11 @@
     var btn = document.getElementById("addAirport");
     var span = document.getElementsByClassName("close")[0];
     var airports = getAirports();
+    var actionType = "update";
+    var updatedAirport = new Object();
     btn.onclick = function() {
         modal.style.display = "block";
+        actionType = "addAirport";
     }
     span.onclick = function() {
         modal.style.display = "none";
@@ -89,7 +92,27 @@
             }
         }
     }
-    function saveAirport(){
+    function saveAirport() {
+        if(actionType == "update"){
+            let row = document.getElementById(updatedAirport.id);
+            let cell = row.cells;
+            updatedAirport.name = cell[0].innerHTML = document.getElementById("name").value;
+            updatedAirport.num = cell[1].innerHTML = document.getElementById("num").value;
+            updatedAirport.type = cell[2].innerHTML = document.getElementById("type").value;
+            updatedAirport.address = cell[3].innerHTML = document.getElementById("address").value;
+            updatedAirport.terminalCount = cell[4].innerHTML = document.getElementById("terminals").value;
+            for (let i = 0; i < airports.length; i++) {
+                        let airport = airports[i]
+                        if (airport.id == updatedAirport.id) {
+                            airports[i] = updatedAirport;
+                        }
+                    }
+        }
+        if(actionType == "addAirport"){
+            saveNewAirport();
+        }
+    }
+    function saveNewAirport(){
         let airport = new Object();
         airport.name = document.getElementById("name").value;
         airport.num = document.getElementById("num").value;
@@ -105,8 +128,26 @@
                    '<td>' + airport.address + '</td>' +
                    '<td>' + airport.terminalCount + '</td>' +
                    '<td><button type="button" onclick="deleteAirport(' + airport.id + ')">Delete</button></td>' +
+                   '<td><button type="button" onclick="updateAirport(' + airport.id + ')">Update</button></td>' +
                    '</tr>'
         document.getElementById("airports").innerHTML = document.getElementById("airports").innerHTML + row;
+    }
+    function updateAirport(id){
+        actionType = "update";
+        modal.style.display = "block";
+        let row = document.getElementById(id);
+        let cell = row.cells;
+        updatedAirport.id = id;
+        updatedAirport.name = cell[0].innerHTML;
+        updatedAirport.num = cell[1].innerHTML;
+        updatedAirport.type = cell[2].innerHTML;
+        updatedAirport.address = cell[3].innerHTML;
+        updatedAirport.terminalCount = cell[4].innerHTML;
+        document.getElementById("name").value = updatedAirport.name;
+        document.getElementById("num").value = updatedAirport.num;
+        document.getElementById("type").value = updatedAirport.type;
+        document.getElementById("address").value = updatedAirport.address;
+        document.getElementById("terminals").value = updatedAirport.terminalCount;
     }
 </script>
 <style>
