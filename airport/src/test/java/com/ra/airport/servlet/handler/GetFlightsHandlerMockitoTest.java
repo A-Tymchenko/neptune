@@ -1,10 +1,13 @@
 package com.ra.airport.servlet.handler;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import javax.servlet.RequestDispatcher;
+import javax.servlet.ServletException;
 import com.ra.airport.dto.FlightDto;
 import com.ra.airport.entity.Flight;
 import com.ra.airport.repository.exception.AirPortDaoException;
@@ -15,16 +18,16 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
-
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 public class GetFlightsHandlerMockitoTest {
 
     private static final String DATE_TIME_FORMAT = "yyyy-MM-dd HH:mm:ss";
     private static final String DEPARTURE_DATE = "2018-06-17 13:15:00";
     private static final String ARRIVAL_DATE = "2018-06-17 15:16:00";
+    private static final String PATH_TO_JSP = "WEB-INF/flights_view.jsp";
 
     private GetFlightsHandler flightsHandler;
 
@@ -36,6 +39,9 @@ public class GetFlightsHandlerMockitoTest {
 
     @Mock
     private FlightService mockFlightService;
+
+    @Mock
+    private RequestDispatcher mockRequestDispatcher;
 
     @BeforeEach
     public void init() throws AirPortDaoException {
@@ -69,6 +75,23 @@ public class GetFlightsHandlerMockitoTest {
                   () -> assertEquals(flight.getDepartureDate(), flightDto.getDepartureDate()),
                   () -> assertEquals(flight.getArrivalDate(), flightDto.getArrivalDate())
         );
+    }
+
+    @Test
+    public void whenRedirectToJSPThrowExceptionThenItShouldCatch() throws ServletException, IOException {
+        mockRequest = mock(MockHttpServletRequest.class);
+        doThrow(new IOException()).when(mockRequestDispatcher).forward(mockRequest, mockResponse);
+        when(mockRequest.getRequestDispatcher(PATH_TO_JSP)).thenReturn(mockRequestDispatcher);
+        flightsHandler.redirectToJSP(PATH_TO_JSP, mockRequest, mockResponse);
+    }
+
+    @Test
+    public void whenPostThenGetMethodShouldCalledOnce() throws AirPortDaoException {
+        flightsHandler = mock(GetFlightsHandler.class);
+        doCallRealMethod().when(flightsHandler).post(mockRequest, mockResponse);
+        flightsHandler.post(mockRequest, mockResponse);
+        
+        verify(flightsHandler, times(1)).get(mockRequest, mockResponse);
     }
 
 
