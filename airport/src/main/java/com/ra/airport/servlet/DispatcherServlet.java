@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.sql.Connection;
 import java.sql.SQLException;
-import javax.servlet.ServletConfig;
+import javax.servlet.*;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -17,6 +17,7 @@ import com.ra.airport.servlet.handler.ServletHandler;
 import com.ra.airport.servlet.handler.factory.HandlerFactory;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.util.Strings;
 import org.h2.tools.RunScript;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
@@ -69,9 +70,13 @@ public class DispatcherServlet extends HttpServlet {
      * @param resp response
      */
     @Override
-    protected void doGet(final HttpServletRequest req, final HttpServletResponse resp) {
+    protected void doGet(final HttpServletRequest req, final HttpServletResponse resp) throws IOException, ServletException {
         try {
             handlerFactory.handleGetRequest(this.getPath(req), req, resp);
+            String jspPath = (String) req.getAttribute("jspPath");
+            if (Strings.isNotBlank(jspPath)) {
+               req.getRequestDispatcher(jspPath).forward(req, resp);
+            }
         } catch (AirPortDaoException e) {
             LOGGER.error("Error get request processing", e);
         }
