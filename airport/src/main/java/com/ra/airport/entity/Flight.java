@@ -1,7 +1,6 @@
 package com.ra.airport.entity;
 
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.Objects;
 
 /**
