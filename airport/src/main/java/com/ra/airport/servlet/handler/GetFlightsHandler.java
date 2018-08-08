@@ -39,8 +39,7 @@ public class GetFlightsHandler implements ServletHandler {
             result.add(createFlightDto(flight));
         }
         request.setAttribute("flights", result);
-
-        redirectToJSP("WEB-INF/flights_view.jsp", request, response);
+        request.setAttribute("jspPath", "WEB-INF/flights_view.jsp");
     }
 
     private FlightDto createFlightDto(final Flight flight) {

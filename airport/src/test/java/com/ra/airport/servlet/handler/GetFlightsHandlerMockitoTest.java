@@ -78,14 +78,6 @@ public class GetFlightsHandlerMockitoTest {
     }
 
     @Test
-    public void whenRedirectToJSPThrowExceptionThenItShouldCatch() throws ServletException, IOException {
-        mockRequest = mock(MockHttpServletRequest.class);
-        doThrow(new IOException()).when(mockRequestDispatcher).forward(mockRequest, mockResponse);
-        when(mockRequest.getRequestDispatcher(PATH_TO_JSP)).thenReturn(mockRequestDispatcher);
-        flightsHandler.redirectToJSP(PATH_TO_JSP, mockRequest, mockResponse);
-    }
-
-    @Test
     public void whenPostThenGetMethodShouldCalledOnce() throws AirPortDaoException {
         flightsHandler = mock(GetFlightsHandler.class);
         doCallRealMethod().when(flightsHandler).post(mockRequest, mockResponse);
