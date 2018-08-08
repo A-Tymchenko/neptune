@@ -2,8 +2,6 @@ package com.ra.advertisement.controller.post;
 
 import com.ra.advertisement.controller.Controller;
 import com.ra.advertisement.service.DeviceAdvertisementServiceImpl;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -16,7 +14,6 @@ import java.util.List;
 
 @Component
 public class DeviceSaveController implements Controller {
-    private static final Logger LOGGER = LogManager.getLogger(DeviceSaveController.class);
     private final transient DeviceAdvertisementServiceImpl deviceService;
 
     @Autowired
@@ -25,18 +22,10 @@ public class DeviceSaveController implements Controller {
     }
 
     @Override
-    public void execute(final HttpServletRequest request, final HttpServletResponse response) {
+    public void execute(final HttpServletRequest request, final HttpServletResponse response) throws ServletException, IOException {
         final List<String> answer = deviceService.saveEntityService(request);
         request.setAttribute("result", answer);
         final RequestDispatcher requestDispatcher = request.getRequestDispatcher("/deviceform.jsp");
-        try {
-            requestDispatcher.forward(request, response);
-        } catch (ServletException e) {
-            final String message = "Trouble in the DeviceSaveController method";
-            LOGGER.error(message, e);
-        } catch (IOException e) {
-            final String message = "Trouble in the DeviceSaveController method";
-            LOGGER.error(message, e);
-        }
+        requestDispatcher.forward(request, response);
     }
 }

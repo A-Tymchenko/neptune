@@ -12,7 +12,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Component("controlerPostFactory")
-public final class ControllerPostFactory implements ControllerFactory {
+public class ControllerPostFactory implements ControllerFactory {
     private final transient Map<String, Controller> controllersMap = new HashMap<>();
     @Autowired
     private transient AdvertSaveController advSaveController;

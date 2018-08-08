@@ -13,7 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component("controlerGetFactory")
-public final class ControllerGetFactory implements ControllerFactory {
+public class ControllerGetFactory implements ControllerFactory {
     private final transient Map<String, Controller> controllersMap = new HashMap<>();
     @Autowired
     private transient GetAllAdvertController getAllAContr;
