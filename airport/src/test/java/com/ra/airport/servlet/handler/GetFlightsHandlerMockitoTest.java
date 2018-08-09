@@ -51,10 +51,9 @@ public class GetFlightsHandlerMockitoTest {
 
         mockRequest = new MockHttpServletRequest();
         mockResponse = new MockHttpServletResponse();
+        flightsHandler = new GetFlightsHandler(mockFlightService);
 
         when(mockFlightService.getAll()).thenReturn(flights);
-
-        flightsHandler = new GetFlightsHandler(mockFlightService);
     }
 
     @Test
