@@ -1,9 +1,9 @@
 package com.ra.advertisement.dto;
 
-import org.hibernate.validator.constraints.URL;
-
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
+
+import org.hibernate.validator.constraints.URL;
 
 public class AdvertisementDto {
     private Long adId;

@@ -1,20 +1,20 @@
 package com.ra.advertisement.service;
 
-import com.ra.advertisement.dao.AdvertisementAdvertisementDaoImpl;
-import com.ra.advertisement.dto.AdvertisementDto;
-import com.ra.advertisement.entity.Advertisement;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
 import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
+
+import com.ra.advertisement.dao.AdvertisementAdvertisementDaoImpl;
+import com.ra.advertisement.dto.AdvertisementDto;
+import com.ra.advertisement.entity.Advertisement;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 @Service("advertService")
 public class AdvertisementAdvertisementServiceImpl implements AdvertisementService<AdvertisementDto, Advertisement> {
@@ -63,6 +63,7 @@ public class AdvertisementAdvertisementServiceImpl implements AdvertisementServi
 
     /**
      * This method maps data from HttpServletRequest request on dto Object.
+     *
      * @param request HttpServletRequest request
      * @return dto Object
      */
@@ -77,6 +78,7 @@ public class AdvertisementAdvertisementServiceImpl implements AdvertisementServi
 
     /**
      * This method map data from dto Object on Entity.
+     *
      * @param dto dto Object
      * @return Entity
      */
@@ -92,12 +94,13 @@ public class AdvertisementAdvertisementServiceImpl implements AdvertisementServi
 
     /**
      * This method convert List of Entities into List of dto.
+     *
      * @param advertisementList list of Entities
      * @return List of dto.
      */
-    public List<AdvertisementDto> mapListEntityIntoDto(List<Advertisement> advertisementList) {
-        List<AdvertisementDto> advertDtoList = advertisementList.stream().map(
-                s -> new AdvertisementDto(s.getAdId(),s.getTitle(), s.getContext(), s.getImageUrl(), s.getLanguage())
+    public List<AdvertisementDto> mapListEntityIntoDto(final List<Advertisement> advertisementList) {
+        final List<AdvertisementDto> advertDtoList = advertisementList.stream().map(
+                s -> new AdvertisementDto(s.getAdId(), s.getTitle(), s.getContext(), s.getImageUrl(), s.getLanguage())
         ).collect(Collectors.toList());
         return advertDtoList;
 

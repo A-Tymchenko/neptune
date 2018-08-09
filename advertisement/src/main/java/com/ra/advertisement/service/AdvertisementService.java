@@ -1,7 +1,7 @@
 package com.ra.advertisement.service;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.List;
+import javax.servlet.http.HttpServletRequest;
 
 public interface AdvertisementService<T, E> {
     /**

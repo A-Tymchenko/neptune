@@ -4,11 +4,10 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import javax.servlet.RequestDispatcher;
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 
 public class IndexControllerMockTest {
@@ -26,9 +25,9 @@ public class IndexControllerMockTest {
     }
 
     @Test
-    void whenControllerRedirectResponseOnceReturnTrue() throws ServletException, IOException {
-        indexController.execute(mockRequest, mockResponse);
-        verify(mockResponse).sendRedirect("/index.jsp");
-        verify(mockResponse, times(1)).sendRedirect("/index.jsp");
+    void whenControllerRedirectResponseOnceReturnTrue() {
+        String pathExpected = "/index.jsp";
+        String pathResult = indexController.execute(mockRequest, mockResponse);
+        assertEquals(pathExpected, pathResult);
     }
 }

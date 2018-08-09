@@ -1,16 +1,16 @@
 package com.ra.advertisement.controller.get;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import com.ra.advertisement.controller.Controller;
 import org.springframework.stereotype.Component;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-
-@Component
+@Component("favicon.ico")
 public class IndexController implements Controller {
     @Override
-    public void execute(final HttpServletRequest request, final HttpServletResponse response) throws IOException {
-        response.sendRedirect("/index.jsp");
+    public String execute(final HttpServletRequest request, final HttpServletResponse response) {
+        final String path = "/index.jsp";
+        return path;
     }
 }

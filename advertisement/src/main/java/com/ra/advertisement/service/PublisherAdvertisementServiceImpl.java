@@ -1,20 +1,20 @@
 package com.ra.advertisement.service;
 
-import com.ra.advertisement.dao.PublisherAdvertisementDaoImpl;
-import com.ra.advertisement.dto.PublisherDto;
-import com.ra.advertisement.entity.Publisher;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
 import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
+
+import com.ra.advertisement.dao.PublisherAdvertisementDaoImpl;
+import com.ra.advertisement.dto.PublisherDto;
+import com.ra.advertisement.entity.Publisher;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 @Service("publisherService")
 public class PublisherAdvertisementServiceImpl implements AdvertisementService<PublisherDto, Publisher> {
@@ -65,6 +65,7 @@ public class PublisherAdvertisementServiceImpl implements AdvertisementService<P
 
     /**
      * This method maps data from HttpServletRequest request on dto Object.
+     *
      * @param request HttpServletRequest request
      * @return dto Object
      */
@@ -79,6 +80,7 @@ public class PublisherAdvertisementServiceImpl implements AdvertisementService<P
 
     /**
      * This method map data from dto Object on Entity.
+     *
      * @param dto dto Object
      * @return Entity
      */
@@ -93,11 +95,12 @@ public class PublisherAdvertisementServiceImpl implements AdvertisementService<P
 
     /**
      * This method convert List of Entities into List of dto.
+     *
      * @param publisherList list of Entities
      * @return List of dto.
      */
-    public List<PublisherDto> mapListEntityIntoDto(List<Publisher> publisherList) {
-        List<PublisherDto> publisherDto = publisherList.stream().map(
+    public List<PublisherDto> mapListEntityIntoDto(final List<Publisher> publisherList) {
+        final List<PublisherDto> publisherDto = publisherList.stream().map(
                 s -> new PublisherDto(s.getPubId(), s.getName(), s.getAddress(), s.getTelephone(), s.getCountry()))
                 .collect(Collectors.toList());
         return publisherDto;

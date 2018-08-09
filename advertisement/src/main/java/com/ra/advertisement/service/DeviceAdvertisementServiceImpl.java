@@ -1,20 +1,20 @@
 package com.ra.advertisement.service;
 
-import com.ra.advertisement.dao.DeviceAdvertisementDaoImpl;
-import com.ra.advertisement.dto.DeviceDto;
-import com.ra.advertisement.entity.Device;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
 import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
+
+import com.ra.advertisement.dao.DeviceAdvertisementDaoImpl;
+import com.ra.advertisement.dto.DeviceDto;
+import com.ra.advertisement.entity.Device;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 @Service("deviceService")
 public class DeviceAdvertisementServiceImpl implements AdvertisementService<DeviceDto, Device> {
@@ -64,6 +64,7 @@ public class DeviceAdvertisementServiceImpl implements AdvertisementService<Devi
 
     /**
      * This method maps data from HttpServletRequest request on dto Object.
+     *
      * @param request HttpServletRequest request
      * @return dto Object
      */
@@ -77,6 +78,7 @@ public class DeviceAdvertisementServiceImpl implements AdvertisementService<Devi
 
     /**
      * This method map data from dto Object on Entity.
+     *
      * @param dto dto Object
      * @return Entity
      */
@@ -90,12 +92,13 @@ public class DeviceAdvertisementServiceImpl implements AdvertisementService<Devi
 
     /**
      * This method convert List of Entities into List of dto.
+     *
      * @param deviceList list of Entities
      * @return List of dto.
      */
-    public List<DeviceDto> mapListEntityIntoDto(List<Device> deviceList) {
-        List<DeviceDto> deviceDto = deviceList.stream().map(
-                s -> new DeviceDto(s.getDevId(),s.getName(), s.getModel(), s.getDeviceType()))
+    public List<DeviceDto> mapListEntityIntoDto(final List<Device> deviceList) {
+        final List<DeviceDto> deviceDto = deviceList.stream().map(
+                s -> new DeviceDto(s.getDevId(), s.getName(), s.getModel(), s.getDeviceType()))
                 .collect(Collectors.toList());
         return deviceDto;
     }

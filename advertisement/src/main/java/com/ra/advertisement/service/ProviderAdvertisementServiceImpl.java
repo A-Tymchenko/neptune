@@ -1,20 +1,20 @@
 package com.ra.advertisement.service;
 
-import com.ra.advertisement.dao.ProviderAdvertisementDaoImpl;
-import com.ra.advertisement.dto.ProviderDto;
-import com.ra.advertisement.entity.Provider;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
 import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
+
+import com.ra.advertisement.dao.ProviderAdvertisementDaoImpl;
+import com.ra.advertisement.dto.ProviderDto;
+import com.ra.advertisement.entity.Provider;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 @Service("providerService")
 public class ProviderAdvertisementServiceImpl implements AdvertisementService<ProviderDto, Provider> {
@@ -63,6 +63,7 @@ public class ProviderAdvertisementServiceImpl implements AdvertisementService<Pr
 
     /**
      * This method maps data from HttpServletRequest request on dto Object.
+     *
      * @param request HttpServletRequest request
      * @return dto Object
      */
@@ -77,6 +78,7 @@ public class ProviderAdvertisementServiceImpl implements AdvertisementService<Pr
 
     /**
      * This method map data from dto Object on Entity.
+     *
      * @param dto dto Object
      * @return Entity
      */
@@ -91,12 +93,13 @@ public class ProviderAdvertisementServiceImpl implements AdvertisementService<Pr
 
     /**
      * This method convert List of Entities into List of dto.
+     *
      * @param providerList list of Entities
      * @return List of dto.
      */
-    public List<ProviderDto> mapListEntityIntoDto(List<Provider> providerList) {
-        List<ProviderDto> providerDto = providerList.stream().map(
-                s -> new ProviderDto(s.getProvId(),s.getName(), s.getAddress(), s.getTelephone(), s.getCountry()))
+    public List<ProviderDto> mapListEntityIntoDto(final List<Provider> providerList) {
+        final List<ProviderDto> providerDto = providerList.stream().map(
+                s -> new ProviderDto(s.getProvId(), s.getName(), s.getAddress(), s.getTelephone(), s.getCountry()))
                 .collect(Collectors.toList());
         return providerDto;
     }
