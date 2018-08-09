@@ -3,6 +3,7 @@ package com.ra.advertisement.controller;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.context.ApplicationContext;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -19,6 +20,7 @@ public class AdvertisementServletMockTest {
     private static RequestDispatcher mockRequestDispatcher;
     private static HttpServletRequest mockRequest;
     private static HttpServletResponse mockResponse;
+    private static ApplicationContext context;
 
     @BeforeAll
     public static void init() {
@@ -26,12 +28,14 @@ public class AdvertisementServletMockTest {
         mockController = mock(Controller.class);
         mockRequest = mock(HttpServletRequest.class);
         mockResponse = mock(HttpServletResponse.class);
+        context = mock(ApplicationContext.class);
     }
 
     @BeforeEach
     public void reInit() {
         mockRequestDispatcher = mock(RequestDispatcher.class);
         when(mockRequest.getRequestDispatcher(anyString())).thenReturn(mockRequestDispatcher);
+        when(context.getBean(anyString())).thenReturn(mockController);
     }
 
     @Test
