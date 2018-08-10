@@ -47,4 +47,14 @@ public class GetFlightsHandler implements ServletHandler {
         BeanUtils.copyProperties(flight, flightDto);
         return flightDto;
     }
+
+    @Override
+    public void delete(final HttpServletRequest request, final HttpServletResponse response) {
+
+    }
+
+    @Override
+    public void put(final HttpServletRequest request, final HttpServletResponse response) {
+
+    }
 }
