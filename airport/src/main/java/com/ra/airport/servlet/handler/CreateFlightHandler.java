@@ -31,6 +31,11 @@ public class CreateFlightHandler implements ServletHandler {
         flightService.create(flight);
     }
 
+    @Override
+    public void get(HttpServletRequest request, HttpServletResponse response) {
+        request.setAttribute("jspPath","WEB-INF/create_flight.jsp");
+    }
+
     private FlightDto createFlightDto(HttpServletRequest request) {
         FlightDto flightDto = new FlightDto();
         flightDto.setName(request.getParameter("name"));
@@ -41,10 +46,5 @@ public class CreateFlightHandler implements ServletHandler {
         flightDto.setArrivalDate(LocalDateTime.parse(request.getParameter("arrivalDate")));
 
         return flightDto;
-    }
-
-    @Override
-    public void get(HttpServletRequest request, HttpServletResponse response) {
-        request.setAttribute("jspPath","WEB-INF/create_flight.jsp");
     }
 }

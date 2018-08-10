@@ -1,13 +1,11 @@
 package com.ra.airport.servlet.handler;
 
-import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import javax.servlet.RequestDispatcher;
-import javax.servlet.ServletException;
 import com.ra.airport.dto.FlightDto;
 import com.ra.airport.entity.Flight;
 import com.ra.airport.repository.exception.AirPortDaoException;
@@ -27,7 +25,6 @@ public class GetFlightsHandlerMockitoTest {
     private static final String DATE_TIME_FORMAT = "yyyy-MM-dd HH:mm:ss";
     private static final String DEPARTURE_DATE = "2018-06-17 13:15:00";
     private static final String ARRIVAL_DATE = "2018-06-17 15:16:00";
-    private static final String PATH_TO_JSP = "WEB-INF/flights.jsp";
 
     private GetFlightsHandler flightsHandler;
 
@@ -39,9 +36,6 @@ public class GetFlightsHandlerMockitoTest {
 
     @Mock
     private FlightService mockFlightService;
-
-    @Mock
-    private RequestDispatcher mockRequestDispatcher;
 
     @BeforeEach
     public void init() throws AirPortDaoException {
