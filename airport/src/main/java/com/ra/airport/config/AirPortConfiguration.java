@@ -5,9 +5,11 @@ import java.util.Map;
 import javax.sql.DataSource;
 
 import com.ra.airport.servlet.handler.AddAirprtHandler;
+import com.ra.airport.servlet.handler.DeleteAirportHandler;
 import com.ra.airport.servlet.handler.GetAirportsHandler;
 import com.ra.airport.servlet.handler.GetFlightsHandler;
 import com.ra.airport.servlet.handler.ServletHandler;
+import com.ra.airport.servlet.handler.UpdateAirportHandler;
 import com.ra.airport.servlet.handler.factory.HandlerFactory;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
@@ -38,7 +40,13 @@ public class AirPortConfiguration {
     private transient GetAirportsHandler airportsHandler;
 
     @Autowired
-    private transient AddAirprtHandler addAirprtHandler;
+    private transient AddAirprtHandler createAirHand;
+
+    @Autowired
+    private transient UpdateAirportHandler updateAirHand;
+
+    @Autowired
+    private transient DeleteAirportHandler deleteAirHand;
 
     /**
      * Register {@link DataSource} bean.
@@ -86,14 +94,16 @@ public class AirPortConfiguration {
      * Register handlers map.
      * Using by {@link HandlerFactory}.
      *
-     * @return NamedParameterJdbcTemplate.
+     * @return Map.
      */
     @Bean
     public Map<String, ServletHandler> handlers() {
         final Map<String, ServletHandler> handlers = new HashMap<>();
         handlers.put("/flights", getFlightsHandler);
         handlers.put("/airports", airportsHandler);
-        handlers.put("/addairport", addAirprtHandler);
+        handlers.put("/airport/create", createAirHand);
+        handlers.put("/airport/update", updateAirHand);
+        handlers.put("/airport/delete", deleteAirHand);
         return handlers;
     }
 
