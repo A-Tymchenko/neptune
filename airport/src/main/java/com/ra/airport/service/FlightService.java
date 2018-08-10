@@ -25,7 +25,7 @@ public class FlightService implements AirPortService<Flight> {
 
     @Override
     public Flight create(final Flight flight) throws AirPortDaoException {
-        return null;
+        return flightDao.create(flight);
     }
 
     @Override
