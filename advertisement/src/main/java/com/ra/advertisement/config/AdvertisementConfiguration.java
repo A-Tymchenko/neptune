@@ -12,6 +12,8 @@ import org.springframework.core.env.Environment;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.SimpleDriverDataSource;
 
+import java.net.URL;
+
 @Configuration
 @ComponentScan("com.ra.advertisement")
 @PropertySource("classpath:config.properties")
