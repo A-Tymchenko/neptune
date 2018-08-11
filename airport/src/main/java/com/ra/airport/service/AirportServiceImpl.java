@@ -21,22 +21,22 @@ public class AirportServiceImpl implements AirPortService<Airport> {
 
     @Override
     public Airport create(final Airport entity) throws AirPortDaoException {
-        return null;
+        return airportDAO.create(entity);
     }
 
     @Override
     public Airport update(final Airport entity) throws AirPortDaoException {
-        return null;
+        return airportDAO.update(entity);
     }
 
     @Override
     public boolean delete(final Airport entity) throws AirPortDaoException {
-        return false;
+        return airportDAO.delete(entity);
     }
 
     @Override
     public Optional<Airport> getById(final int entityId) throws AirPortDaoException {
-        return Optional.empty();
+        return airportDAO.getById(entityId);
     }
 
     @Override

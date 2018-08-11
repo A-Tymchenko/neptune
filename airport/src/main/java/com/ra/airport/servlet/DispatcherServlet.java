@@ -4,7 +4,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.sql.Connection;
 import java.sql.SQLException;
-import javax.servlet.*;
+import javax.servlet.ServletConfig;
+import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -73,7 +74,7 @@ public class DispatcherServlet extends HttpServlet {
     protected void doGet(final HttpServletRequest req, final HttpServletResponse resp) throws IOException, ServletException {
         try {
             handlerFactory.handleGetRequest(this.getPath(req), req, resp);
-            String jspPath = (String) req.getAttribute("jspPath");
+            final String jspPath = (String) req.getAttribute("jspPath");
             if (Strings.isNotBlank(jspPath)) {
                req.getRequestDispatcher(jspPath).forward(req, resp);
             }

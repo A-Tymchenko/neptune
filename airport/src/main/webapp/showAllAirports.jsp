@@ -96,11 +96,16 @@
         if(actionType == "update"){
             let row = document.getElementById(updatedAirport.id);
             let cell = row.cells;
-            updatedAirport.name = cell[0].innerHTML = document.getElementById("name").value;
-            updatedAirport.num = cell[1].innerHTML = document.getElementById("num").value;
-            updatedAirport.type = cell[2].innerHTML = document.getElementById("type").value;
-            updatedAirport.address = cell[3].innerHTML = document.getElementById("address").value;
-            updatedAirport.terminalCount = cell[4].innerHTML = document.getElementById("terminals").value;
+            let air = new Object();
+            air.apId = updatedAirport.id;
+            air.apName = updatedAirport.name = cell[0].innerHTML = document.getElementById("name").value;
+            air.apNum = updatedAirport.num = cell[1].innerHTML = document.getElementById("num").value;
+            air.apType = updatedAirport.type = cell[2].innerHTML = document.getElementById("type").value;
+            air.address = updatedAirport.address = cell[3].innerHTML = document.getElementById("address").value;
+            air.terminalCount = updatedAirport.terminalCount = cell[4].innerHTML = document.getElementById("terminals").value;
+            req("/airport/airport/update", "airport=" + JSON.stringify(air)).then(function(response){
+                console.log(response);
+            });
             for (let i = 0; i < airports.length; i++) {
                         let airport = airports[i]
                         if (airport.id == updatedAirport.id) {
@@ -148,6 +153,30 @@
         document.getElementById("type").value = updatedAirport.type;
         document.getElementById("address").value = updatedAirport.address;
         document.getElementById("terminals").value = updatedAirport.terminalCount;
+    }
+    function req(url, body)
+    {
+        return new Promise(function(resolve, reject)
+        {
+            let req = new XMLHttpRequest();
+            req.open('POST', url);
+            req.onload = function()
+            {
+                if (req.status == 200)
+                {
+                    resolve(req.response);
+                }
+                else
+                {
+                    reject(Error(req.statusText));
+                }
+            };
+            req.onerror = function()
+            {
+                reject(Error("Network Error"));
+            };
+            req.send(body);
+        });
     }
 </script>
 <style>

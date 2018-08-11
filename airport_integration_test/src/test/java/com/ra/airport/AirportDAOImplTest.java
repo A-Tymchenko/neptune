@@ -1,5 +1,6 @@
 package com.ra.airport;
 
+import com.google.gson.Gson;
 import com.ra.airport.config.AirPortConfiguration;
 import com.ra.airport.repository.exception.AirPortDaoException;
 import com.ra.airport.repository.impl.AirportDAOImpl;

@@ -1,6 +1,7 @@
 package com.ra.airport.servlet.handler;
 
-import java.util.List;
+import com.google.gson.Gson;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -12,24 +13,26 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
-public class GetAirportsHandler implements ServletHandler {
+public class UpdateAirportHandler implements ServletHandler {
 
     private final transient AirPortService<Airport> airportService;
 
     @Autowired
-    public GetAirportsHandler(final AirportServiceImpl airportService) {
+    public UpdateAirportHandler(final AirportServiceImpl airportService) {
         this.airportService = airportService;
     }
 
     @Override
     public void post(final HttpServletRequest request, final HttpServletResponse response) throws AirPortDaoException {
-
+        final String jsonAirport = (String) request.getAttribute("airport");
+        final Gson gson = new Gson();
+        final Airport airport = gson.fromJson(jsonAirport, Airport.class);
+        airportService.update(airport);
+        request.setAttribute("jspPath", "updateAirport");
     }
 
     @Override
     public void get(final HttpServletRequest request, final HttpServletResponse response) throws AirPortDaoException {
-        final List<Airport> list = airportService.getAll();
-        request.setAttribute("airports", list);
-        request.setAttribute("jspPath", "showAllAirports.jsp");
+
     }
 }
