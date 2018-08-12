@@ -103,7 +103,8 @@
             air.apType = updatedAirport.type = cell[2].innerHTML = document.getElementById("type").value;
             air.address = updatedAirport.address = cell[3].innerHTML = document.getElementById("address").value;
             air.terminalCount = updatedAirport.terminalCount = cell[4].innerHTML = document.getElementById("terminals").value;
-            req("/airport/airport/update", "airport=" + JSON.stringify(air)).then(function(response){
+            req("/airport/update", "apId=" + air.apId + "&apName=" + air.apName + "&apNum=" + air.apNum
+                + "&apType=" + air.apType + "&address=" + air.address + "&terminalCount=" + air.terminalCount).then(function(response){
                 console.log(response);
             });
             for (let i = 0; i < airports.length; i++) {
@@ -159,7 +160,8 @@
         return new Promise(function(resolve, reject)
         {
             let req = new XMLHttpRequest();
-            req.open('POST', url);
+            req.open('POST', url, true);
+            req.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
             req.onload = function()
             {
                 if (req.status == 200)

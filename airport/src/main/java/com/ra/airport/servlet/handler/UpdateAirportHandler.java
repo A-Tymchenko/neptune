@@ -1,14 +1,14 @@
 package com.ra.airport.servlet.handler;
 
-import com.google.gson.Gson;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.ra.airport.dto.AirportDTO;
 import com.ra.airport.entity.Airport;
 import com.ra.airport.repository.exception.AirPortDaoException;
 import com.ra.airport.service.AirPortService;
 import com.ra.airport.service.AirportServiceImpl;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -24,15 +24,25 @@ public class UpdateAirportHandler implements ServletHandler {
 
     @Override
     public void post(final HttpServletRequest request, final HttpServletResponse response) throws AirPortDaoException {
-        final String jsonAirport = (String) request.getAttribute("airport");
-        final Gson gson = new Gson();
-        final Airport airport = gson.fromJson(jsonAirport, Airport.class);
+        final AirportDTO airportDTO = createAirportDTO(request);
+        final var airport = new Airport();
+        BeanUtils.copyProperties(airportDTO, airport);
         airportService.update(airport);
-        request.setAttribute("jspPath", "updateAirport");
     }
 
     @Override
     public void get(final HttpServletRequest request, final HttpServletResponse response) throws AirPortDaoException {
+        request.setAttribute("jspPath", "updateAirport.jsp");
+    }
 
+    private AirportDTO createAirportDTO(final HttpServletRequest request) {
+        final var airportDTO = new AirportDTO();
+        airportDTO.setApId(Integer.parseInt(request.getParameter("apId")));
+        airportDTO.setApName(request.getParameter("apName"));
+        airportDTO.setApNum(Integer.parseInt(request.getParameter("apNum")));
+        airportDTO.setApType(request.getParameter("apType"));
+        airportDTO.setAddress(request.getParameter("address"));
+        airportDTO.setTerminalCount(Integer.parseInt(request.getParameter("terminalCount")));
+        return airportDTO;
     }
 }
