@@ -36,6 +36,16 @@ public class CreateFlightHandler implements ServletHandler {
         request.setAttribute("jspPath","WEB-INF/create_flight.jsp");
     }
 
+    @Override
+    public void delete(HttpServletRequest request, HttpServletResponse response) throws AirPortDaoException {
+
+    }
+
+    @Override
+    public void put(HttpServletRequest request, HttpServletResponse response) throws AirPortDaoException {
+
+    }
+
     private FlightDto createFlightDto(HttpServletRequest request) {
         FlightDto flightDto = new FlightDto();
         flightDto.setName(request.getParameter("name"));

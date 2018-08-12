@@ -2,6 +2,7 @@ package com.ra.airport.config;
 
 import java.util.HashMap;
 import java.util.Map;
+import com.ra.airport.servlet.handler.DeleteFlightHandler;
 import javax.sql.DataSource;
 
 import com.ra.airport.servlet.handler.CreateFlightHandler;
@@ -35,6 +36,9 @@ public class AirPortConfiguration {
 
     @Autowired
     private transient CreateFlightHandler createFlightHandler;
+
+    @Autowired
+    private transient DeleteFlightHandler deleteFlightHandler;
 
     /**
      * Register {@link DataSource} bean.
@@ -89,6 +93,7 @@ public class AirPortConfiguration {
         final Map<String, ServletHandler> handlers = new HashMap<>();
         handlers.put("/flights", getFlightsHandler);
         handlers.put("/create_flight", createFlightHandler);
+        handlers.put("/delete_flight", deleteFlightHandler);
         return handlers;
     }
 

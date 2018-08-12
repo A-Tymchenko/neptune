@@ -16,6 +16,7 @@
             <th>Arrival date</th>
             <th>Fare</th>
             <th>Meal on</th>
+            <th>Action</th>
         </tr>
         <c:forEach var="flight" items="${flights}">
             <tr>
@@ -26,6 +27,11 @@
                 <td><c:out value="${flight.getArrivalDate()}"/></td>
                 <td><c:out value="${flight.getFare()}"/></td>
                 <td><c:out value="${flight.getMealOn()}"/></td>
+                <td>
+                    <form method="post" action="/delete_flight?id=${flight.getFlId()}" >
+                        <input type="submit" align="center" value="delete">
+                    </form>
+                </td>
             </tr>
         </c:forEach>
     </table>

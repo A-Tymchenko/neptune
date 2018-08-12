@@ -35,7 +35,7 @@ public class FlightService implements AirPortService<Flight> {
 
     @Override
     public boolean delete(final Flight flight) throws AirPortDaoException {
-        return false;
+       return flightDao.delete(flight);
     }
 
     @Override
