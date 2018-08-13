@@ -7,7 +7,6 @@ import com.ra.airport.dto.AirportDTO;
 import com.ra.airport.entity.Airport;
 import com.ra.airport.repository.exception.AirPortDaoException;
 import com.ra.airport.service.AirPortService;
-import com.ra.airport.service.AirportServiceImpl;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -18,7 +17,7 @@ public class UpdateAirportHandler implements ServletHandler {
     private final transient AirPortService<Airport> airportService;
 
     @Autowired
-    public UpdateAirportHandler(final AirportServiceImpl airportService) {
+    public UpdateAirportHandler(final AirPortService<Airport> airportService) {
         this.airportService = airportService;
     }
 
@@ -28,12 +27,11 @@ public class UpdateAirportHandler implements ServletHandler {
         final var airport = new Airport();
         BeanUtils.copyProperties(airportDTO, airport);
         airportService.update(airport);
-        request.setAttribute("jspPath", "updateAirport.jsp");
     }
 
     @Override
     public void get(final HttpServletRequest request, final HttpServletResponse response) throws AirPortDaoException {
-        request.setAttribute("jspPath", "updateAirport.jsp");
+
     }
 
     @Override

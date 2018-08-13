@@ -91,6 +91,9 @@
                 airports.splice(i,1);
             }
         }
+        req("/airport/delete", "apId="+id).then(function (response) {
+            console.log("airport: " + id + " deleted successfuly");
+        })
     }
     function saveAirport() {
         if(actionType == "update"){
@@ -103,9 +106,9 @@
             air.apType = updatedAirport.type = cell[2].innerHTML = document.getElementById("type").value;
             air.address = updatedAirport.address = cell[3].innerHTML = document.getElementById("address").value;
             air.terminalCount = updatedAirport.terminalCount = cell[4].innerHTML = document.getElementById("terminals").value;
-            req("/airport/airport/update", "apId=" + air.apId + "&apName=" + air.apName + "&apNum=" + air.apNum
+            req("/airport/update", "apId=" + air.apId + "&apName=" + air.apName + "&apNum=" + air.apNum
                 + "&apType=" + air.apType + "&address=" + air.address + "&terminalCount=" + air.terminalCount).then(function(response){
-                console.log(response);
+                console.log("airport: " + air.apId + " updated successfuly");
             });
             for (let i = 0; i < airports.length; i++) {
                         let airport = airports[i]
@@ -125,6 +128,10 @@
         airport.type = document.getElementById("type").value;
         airport.address = document.getElementById("address").value;
         airport.terminalCount = document.getElementById("terminals").value;
+        req("/airport/create", "apName=" + airport.name + "&apNum=" + airport.num
+            + "&apType=" + airport.type + "&address=" + airport.address + "&terminalCount=" + airport.terminalCount).then(function(response){
+            location.replace("/airports");
+        });
         airport.id = Math.random();
         airports.push(airport);
         let row = '<tr id = "' + airport.id + '">' +

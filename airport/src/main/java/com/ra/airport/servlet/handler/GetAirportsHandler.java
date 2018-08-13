@@ -7,7 +7,6 @@ import javax.servlet.http.HttpServletResponse;
 import com.ra.airport.entity.Airport;
 import com.ra.airport.repository.exception.AirPortDaoException;
 import com.ra.airport.service.AirPortService;
-import com.ra.airport.service.AirportServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -17,13 +16,13 @@ public class GetAirportsHandler implements ServletHandler {
     private final transient AirPortService<Airport> airportService;
 
     @Autowired
-    public GetAirportsHandler(final AirportServiceImpl airportService) {
+    public GetAirportsHandler(final AirPortService<Airport> airportService) {
         this.airportService = airportService;
     }
 
     @Override
     public void post(final HttpServletRequest request, final HttpServletResponse response) throws AirPortDaoException {
-
+        this.get(request, response);
     }
 
     @Override
