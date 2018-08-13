@@ -18,7 +18,7 @@
     Arrival date<br>
     <input type="datetime-local" name="arrivalDate"/><p/>
 
-    <input type="checkbox" name="mealOn">Meal on<br><br>
+    <input type="checkbox" name="mealOn" value="true">Meal on<br><br>
     
     <input type="submit" value="Submit" name="submitButton">
 </form>

@@ -1,17 +1,15 @@
 package com.ra.airport.config;
 
-import java.util.HashMap;
-import java.util.Map;
-import com.ra.airport.servlet.handler.DeleteFlightHandler;
-import com.ra.airport.servlet.handler.UpdateFlightHandler;
-import javax.sql.DataSource;
-
+import java.util.*;
 import com.ra.airport.servlet.handler.CreateFlightHandler;
+import com.ra.airport.servlet.handler.DeleteFlightHandler;
 import com.ra.airport.servlet.handler.GetFlightsHandler;
 import com.ra.airport.servlet.handler.ServletHandler;
+import com.ra.airport.servlet.handler.UpdateFlightHandler;
 import com.ra.airport.servlet.handler.factory.HandlerFactory;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
+import javax.sql.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -46,6 +44,7 @@ public class AirPortConfiguration {
 
     /**
      * Register {@link DataSource} bean.
+     *
      * @return data source bean
      */
     @Bean
@@ -55,6 +54,7 @@ public class AirPortConfiguration {
 
     /**
      * Register {@link HikariConfig} bean. Set main properties to it.
+     *
      * @return return config for {@link DataSource} bean
      */
     @Bean
@@ -69,6 +69,7 @@ public class AirPortConfiguration {
 
     /**
      * Register {@link JdbcTemplate} bean.
+     *
      * @return template
      */
     @Bean
@@ -104,6 +105,7 @@ public class AirPortConfiguration {
 
     /**
      * Register {@link HandlerFactory} bean.
+     *
      * @return handlerFactory.
      */
     @Bean

@@ -30,7 +30,7 @@ public class FlightService implements AirPortService<Flight> {
 
     @Override
     public Flight update(final Flight flight) throws AirPortDaoException {
-        return null;
+       return flightDao.update(flight);
     }
 
     @Override
@@ -40,7 +40,7 @@ public class FlightService implements AirPortService<Flight> {
 
     @Override
     public Optional<Flight> getById(final int flightId) throws AirPortDaoException {
-        return Optional.empty();
+        return flightDao.getById(flightId);
     }
 
     @Override

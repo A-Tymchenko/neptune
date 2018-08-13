@@ -29,6 +29,8 @@ public class CreateFlightHandler implements ServletHandler {
         Flight flight = new Flight();
         BeanUtils.copyProperties(flightDto, flight);
         flightService.create(flight);
+
+        request.setAttribute("jspPath", "/flights");
     }
 
     @Override

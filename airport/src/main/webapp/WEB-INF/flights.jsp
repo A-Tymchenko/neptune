@@ -16,7 +16,8 @@
             <th>Arrival date</th>
             <th>Fare</th>
             <th>Meal on</th>
-            <th>Action</th>
+            <th>Delete</th>
+            <th>Update</th>
         </tr>
         <c:forEach var="flight" items="${flights}">
             <tr>
@@ -32,9 +33,11 @@
                         <input type="submit" align="center" value="delete">
                     </form>
                 </td>
+                <td><a href="/update_flight?id=${flight.getFlId()}">Update</a></td>
             </tr>
         </c:forEach>
     </table>
+    <a href="/create_flight">Create</a>
 </div>
 </body>
 </html>
