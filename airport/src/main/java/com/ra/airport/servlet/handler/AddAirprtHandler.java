@@ -18,4 +18,14 @@ public class AddAirprtHandler implements ServletHandler {
     public void get(final HttpServletRequest request, final HttpServletResponse response) throws AirPortDaoException {
 
     }
+
+    @Override
+    public void delete(final HttpServletRequest request, final HttpServletResponse response) throws AirPortDaoException {
+
+    }
+
+    @Override
+    public void put(final HttpServletRequest request, final HttpServletResponse response) throws AirPortDaoException {
+
+    }
 }

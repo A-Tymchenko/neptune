@@ -32,4 +32,14 @@ public class GetAirportsHandler implements ServletHandler {
         request.setAttribute("airports", list);
         request.setAttribute("jspPath", "showAllAirports.jsp");
     }
+
+    @Override
+    public void delete(final HttpServletRequest request, final HttpServletResponse response) throws AirPortDaoException {
+
+    }
+
+    @Override
+    public void put(final HttpServletRequest request, final HttpServletResponse response) throws AirPortDaoException {
+
+    }
 }

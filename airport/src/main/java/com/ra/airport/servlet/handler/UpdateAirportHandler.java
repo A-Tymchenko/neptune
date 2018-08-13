@@ -28,11 +28,22 @@ public class UpdateAirportHandler implements ServletHandler {
         final var airport = new Airport();
         BeanUtils.copyProperties(airportDTO, airport);
         airportService.update(airport);
+        request.setAttribute("jspPath", "updateAirport.jsp");
     }
 
     @Override
     public void get(final HttpServletRequest request, final HttpServletResponse response) throws AirPortDaoException {
         request.setAttribute("jspPath", "updateAirport.jsp");
+    }
+
+    @Override
+    public void delete(final HttpServletRequest request, final HttpServletResponse response) throws AirPortDaoException {
+
+    }
+
+    @Override
+    public void put(final HttpServletRequest request, final HttpServletResponse response) throws AirPortDaoException {
+
     }
 
     private AirportDTO createAirportDTO(final HttpServletRequest request) {

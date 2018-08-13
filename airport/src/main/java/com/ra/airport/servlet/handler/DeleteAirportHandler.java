@@ -35,4 +35,14 @@ public class DeleteAirportHandler implements ServletHandler {
     public void get(final HttpServletRequest request, final HttpServletResponse response) throws AirPortDaoException {
         post(request, response);
     }
+
+    @Override
+    public void delete(final HttpServletRequest request, final HttpServletResponse response) throws AirPortDaoException {
+
+    }
+
+    @Override
+    public void put(final HttpServletRequest request, final HttpServletResponse response) throws AirPortDaoException {
+
+    }
 }

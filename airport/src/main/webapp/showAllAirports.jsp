@@ -103,7 +103,7 @@
             air.apType = updatedAirport.type = cell[2].innerHTML = document.getElementById("type").value;
             air.address = updatedAirport.address = cell[3].innerHTML = document.getElementById("address").value;
             air.terminalCount = updatedAirport.terminalCount = cell[4].innerHTML = document.getElementById("terminals").value;
-            req("/airport/update", "apId=" + air.apId + "&apName=" + air.apName + "&apNum=" + air.apNum
+            req("/airport/airport/update", "apId=" + air.apId + "&apName=" + air.apName + "&apNum=" + air.apNum
                 + "&apType=" + air.apType + "&address=" + air.address + "&terminalCount=" + air.terminalCount).then(function(response){
                 console.log(response);
             });
