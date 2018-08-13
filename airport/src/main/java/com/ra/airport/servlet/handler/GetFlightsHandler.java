@@ -43,4 +43,14 @@ public class GetFlightsHandler implements ServletHandler {
         }
         // call jsp
     }
+
+    @Override
+    public void delete(final HttpServletRequest request, final HttpServletResponse response) {
+
+    }
+
+    @Override
+    public void put(final HttpServletRequest request, final HttpServletResponse response) {
+
+    }
 }

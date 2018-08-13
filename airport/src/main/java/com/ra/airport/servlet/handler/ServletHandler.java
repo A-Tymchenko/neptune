@@ -15,4 +15,14 @@ public interface ServletHandler {
      * Called where request method is get.
      */
     void get(HttpServletRequest request, HttpServletResponse response) throws AirPortDaoException;
+
+    /**
+     * Called where request method is delete.
+     */
+    void delete(HttpServletRequest request, HttpServletResponse response) throws AirPortDaoException;
+
+    /**
+     * Called where request method is put.
+     */
+    void put(HttpServletRequest request, HttpServletResponse response) throws AirPortDaoException;
 }
