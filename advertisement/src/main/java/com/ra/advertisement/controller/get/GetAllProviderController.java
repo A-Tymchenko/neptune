@@ -19,6 +19,12 @@ public class GetAllProviderController implements Controller {
         this.providerService = providerService;
     }
 
+    /**
+     * This Controller puts into request the list of providerdto objects and return path to allproviders.jsp.
+     * @param request  HttpServlet request
+     * @param response HttpServlet response
+     * @return path to allproviders.jsp
+     */
     @Override
     public String execute(final HttpServletRequest request, final HttpServletResponse response) {
         final List<ProviderDto> listOfProvDto = providerService.getAllEntityService();

@@ -103,6 +103,5 @@ public class AdvertisementAdvertisementServiceImpl implements AdvertisementServi
                 s -> new AdvertisementDto(s.getAdId(), s.getTitle(), s.getContext(), s.getImageUrl(), s.getLanguage())
         ).collect(Collectors.toList());
         return advertDtoList;
-
     }
 }

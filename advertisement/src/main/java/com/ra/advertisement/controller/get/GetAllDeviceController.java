@@ -19,6 +19,13 @@ public class GetAllDeviceController implements Controller {
         this.deviceService = deviceService;
     }
 
+
+    /**
+     * This Controller puts into request the list of devicedto objects and return path to alldevices.jsp.
+     * @param request  HttpServlet request
+     * @param response HttpServlet response
+     * @return path to alldevices.jsp
+     */
     @Override
     public String execute(final HttpServletRequest request, final HttpServletResponse response) {
         final List<DeviceDto> listOfDeviceDto = deviceService.getAllEntityService();

@@ -19,6 +19,12 @@ public class GetAllPublisherController implements Controller {
         this.publisherService = publisherService;
     }
 
+    /**
+     * This Controller puts into request the list of publisherdto objects and return path to allpublishers.jsp.
+     * @param request  HttpServlet request
+     * @param response HttpServlet response
+     * @return path to allpublishers.jsp
+     */
     @Override
     public String execute(final HttpServletRequest request, final HttpServletResponse response) {
         final List<PublisherDto> listOfPublDto = publisherService.getAllEntityService();

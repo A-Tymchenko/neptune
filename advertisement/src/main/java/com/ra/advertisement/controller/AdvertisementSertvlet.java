@@ -15,12 +15,22 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 public class AdvertisementSertvlet extends HttpServlet {
     private final transient ApplicationContext context = new AnnotationConfigApplicationContext(AdvertisementConfiguration.class);
 
+    /**
+     * init method for Servlet.
+     */
     @Override
     public void init() {
         final InitDataBase initDataBase = (InitDataBase) context.getBean("initData");
         initDataBase.initData();
     }
 
+    /**
+     * This method gets Get requests from user and return responses.
+     * @param req request
+     * @param resp response
+     * @throws ServletException Servlet Exception
+     * @throws IOException IOExctption
+     */
     @Override
     public void doGet(final HttpServletRequest req, final HttpServletResponse resp) throws ServletException, IOException {
         final String[] resultOfSplit = req.getRequestURI().split("/");
@@ -31,6 +41,13 @@ public class AdvertisementSertvlet extends HttpServlet {
         requestDispatcher.forward(req, resp);
     }
 
+    /**
+     * This method gets Post requests from user and return responses.
+     * @param req request
+     * @param resp response
+     * @throws ServletException Servlet Exception
+     * @throws IOException IOExctption
+     */
     @Override
     public void doPost(final HttpServletRequest req, final HttpServletResponse resp) throws ServletException, IOException {
         final String reqestParameter = req.getParameter("saveEntity");

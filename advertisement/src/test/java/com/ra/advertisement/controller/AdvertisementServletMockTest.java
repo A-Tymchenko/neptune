@@ -1,5 +1,12 @@
 package com.ra.advertisement.controller;
 
+import java.io.IOException;
+import java.lang.reflect.Field;
+import javax.servlet.RequestDispatcher;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import com.ra.advertisement.config.InitDataBase;
 import com.ra.advertisement.controller.get.GetAllAdvertController;
 import com.ra.advertisement.controller.get.IndexController;
@@ -8,13 +15,6 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.context.ApplicationContext;
-
-import javax.servlet.RequestDispatcher;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.lang.reflect.Field;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
@@ -104,10 +104,8 @@ public class AdvertisementServletMockTest {
 
     @Test
     public void initDbMethodReturnTrue() {
-
         InitDataBase initDataBase = mock(InitDataBase.class);
         when(mockContext.getBean(anyString())).thenReturn(initDataBase);
-        //doNothing().when(initDataBase).initData();
         advertisementSertvlet.init();
         verify(mockContext, times(2)).getBean(anyString());
     }

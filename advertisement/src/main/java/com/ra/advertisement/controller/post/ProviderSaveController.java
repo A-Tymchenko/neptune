@@ -18,6 +18,12 @@ public class ProviderSaveController implements Controller {
         this.providerService = providerService;
     }
 
+    /**
+     * This Controller puts into request the result of saving of Provider and return path to providerform.jsp.
+     * @param request  HttpServlet request
+     * @param response HttpServlet response
+     * @return path to providerform.jsp
+     */
     @Override
     public String execute(final HttpServletRequest request, final HttpServletResponse response) {
         final List<String> answer = providerService.saveEntityService(request);

@@ -1,16 +1,14 @@
 package com.ra.advertisement.controller.get;
 
+import java.util.ArrayList;
+import java.util.List;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import com.ra.advertisement.dto.DeviceDto;
 import com.ra.advertisement.service.DeviceAdvertisementServiceImpl;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
@@ -35,7 +33,7 @@ public class GetAllDevicesControllerMockTest {
     }
 
     @Test
-    void whenGetAllEntityServiceWasUsedOnceAndPathWasReturnedReturnTrue() throws ServletException, IOException {
+    void whenGetAllEntityServiceWasUsedOnceAndPathWasReturnedReturnTrue() {
         when(mockDeviceService.getAllEntityService()).thenReturn(listOfDevices);
         String pathExpected = "/WEB-INF/jsp/alldevices.jsp";
         String pathResult = deviceController.execute(mockRequest, mockResponse);

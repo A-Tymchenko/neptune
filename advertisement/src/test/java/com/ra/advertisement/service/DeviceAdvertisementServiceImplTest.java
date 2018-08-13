@@ -1,5 +1,12 @@
 package com.ra.advertisement.service;
 
+import java.util.*;
+import javax.servlet.http.HttpServletRequest;
+import javax.validation.ConstraintViolation;
+import javax.validation.Validation;
+import javax.validation.Validator;
+import javax.validation.ValidatorFactory;
+
 import com.ra.advertisement.dao.DeviceAdvertisementDaoImpl;
 import com.ra.advertisement.dto.DeviceDto;
 import com.ra.advertisement.entity.Device;
@@ -8,18 +15,10 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.jdbc.core.JdbcTemplate;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.validation.ConstraintViolation;
-import javax.validation.Validation;
-import javax.validation.Validator;
-import javax.validation.ValidatorFactory;
-import java.util.*;
-
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
-
 
 public class DeviceAdvertisementServiceImplTest {
     private static DeviceAdvertisementServiceImpl deviceService;

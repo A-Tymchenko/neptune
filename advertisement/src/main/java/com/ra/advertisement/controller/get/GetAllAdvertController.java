@@ -19,6 +19,12 @@ public class GetAllAdvertController implements Controller {
         this.advertService = advertService;
     }
 
+    /**
+     * This Controller puts into request the list of advertDto objects and return path to alladvertisement.jsp.
+     * @param request  HttpServlet request
+     * @param response HttpServlet response
+     * @return path to alladvertisement.jsp
+     */
     @Override
     public String execute(final HttpServletRequest request, final HttpServletResponse response) {
         final List<AdvertisementDto> listOfAdvertDto = advertService.getAllEntityService();

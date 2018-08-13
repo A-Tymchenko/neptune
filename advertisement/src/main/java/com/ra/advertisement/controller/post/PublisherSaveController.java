@@ -18,6 +18,12 @@ public class PublisherSaveController implements Controller {
         this.publisherService = publisherService;
     }
 
+    /**
+     * This Controller puts into request the result of saving of Publisher and return path to publisherform.jsp.
+     * @param request  HttpServlet request
+     * @param response HttpServlet response
+     * @return path to publisherform.jsp
+     */
     @Override
     public String execute(final HttpServletRequest request, final HttpServletResponse response) {
         final List<String> answer = publisherService.saveEntityService(request);

@@ -18,6 +18,12 @@ public class AdvertSaveController implements Controller {
         this.advertService = advertService;
     }
 
+    /**
+     * This Controller puts into request the result of saving of Advert and return path to advertisementform.jsp.
+     * @param request  HttpServlet request
+     * @param response HttpServlet response
+     * @return path to advertisementform.jsp
+     */
     @Override
     public String execute(final HttpServletRequest request, final HttpServletResponse response) {
         final List<String> answer = advertService.saveEntityService(request);
