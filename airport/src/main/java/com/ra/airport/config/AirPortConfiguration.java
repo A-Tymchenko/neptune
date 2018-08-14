@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 import javax.sql.DataSource;
 
-import com.ra.airport.servlet.handler.AddAirprtHandler;
+import com.ra.airport.servlet.handler.CreateAirportHandler;
 import com.ra.airport.servlet.handler.DeleteAirportHandler;
 import com.ra.airport.servlet.handler.GetAirportsHandler;
 import com.ra.airport.servlet.handler.GetFlightsHandler;
@@ -40,7 +40,7 @@ public class AirPortConfiguration {
     private transient GetAirportsHandler airportsHandler;
 
     @Autowired
-    private transient AddAirprtHandler createAirHand;
+    private transient CreateAirportHandler createAirHand;
 
     @Autowired
     private transient UpdateAirportHandler updateAirHand;

@@ -12,12 +12,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
-public class AddAirprtHandler implements ServletHandler {
+public class CreateAirportHandler implements ServletHandler {
 
     private final transient AirPortService<Airport> airportService;
 
     @Autowired
-    public AddAirprtHandler(final AirPortService<Airport> airportService) {
+    public CreateAirportHandler(final AirPortService<Airport> airportService) {
         this.airportService = airportService;
     }
 

@@ -89,6 +89,7 @@ public class DispatcherServlet extends HttpServlet {
      * @param req request
      * @param resp response
      */
+
     @Override
     protected void doPost(final HttpServletRequest req, final HttpServletResponse resp) {
         try {
@@ -97,7 +98,6 @@ public class DispatcherServlet extends HttpServlet {
             LOGGER.error("Error post request processing", e);
         }
     }
-
     /**
      * Return path to servlet.
      *
