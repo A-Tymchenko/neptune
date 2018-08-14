@@ -80,13 +80,6 @@ public class DispatcherServlet extends HttpServlet {
         }
     }
 
-    private void redirectRequest(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        final String jspPath = (String) req.getAttribute("jspPath");
-        if (Strings.isNotBlank(jspPath)) {
-           req.getRequestDispatcher(jspPath).forward(req, resp);
-        }
-    }
-
     /**
      * Process post request.
      *
