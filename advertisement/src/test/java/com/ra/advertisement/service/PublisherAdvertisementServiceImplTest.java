@@ -3,9 +3,7 @@ package com.ra.advertisement.service;
 import java.util.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.ConstraintViolation;
-import javax.validation.Validation;
 import javax.validation.Validator;
-import javax.validation.ValidatorFactory;
 
 import com.ra.advertisement.dao.PublisherAdvertisementDaoImpl;
 import com.ra.advertisement.dto.PublisherDto;
@@ -25,6 +23,7 @@ public class PublisherAdvertisementServiceImplTest {
     private static PublisherAdvertisementServiceImpl publisherService;
     private static PublisherAdvertisementDaoImpl mockPublisherDao;
     private static HttpServletRequest mockRequest;
+    private static BeanValidator beanValidator;
     private static Validator validator;
     private PublisherDto publisherDto;
     private Publisher publisher;
@@ -33,13 +32,13 @@ public class PublisherAdvertisementServiceImplTest {
 
     @BeforeAll
     public static void init() {
+        beanValidator = new BeanValidator();
         mockJdbcTemplate = mock(JdbcTemplate.class);
         mockRequest = mock(HttpServletRequest.class);
         mockPublisherDao = new PublisherAdvertisementDaoImpl(mockJdbcTemplate);
-        publisherService = new PublisherAdvertisementServiceImpl(mockPublisherDao);
+        publisherService = new PublisherAdvertisementServiceImpl(mockPublisherDao, beanValidator);
         mockPublisherDao = mock(PublisherAdvertisementDaoImpl.class);
-        final ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
-        validator = factory.getValidator();
+        validator = beanValidator.getValidator();
     }
 
     @BeforeEach
@@ -62,7 +61,7 @@ public class PublisherAdvertisementServiceImplTest {
     @Test
     public void saveEntityServiceMethodExecutedWithConstraintViolationReturnTrue() {
         when(mockRequest.getParameter("telephone")).thenReturn("text instead of number");
-        final PublisherDto dto = PublisherAdvertisementServiceImpl.pubDtoCreator(mockRequest);
+        final PublisherDto dto = publisherService.pubDtoCreator(mockRequest);
         final Set<ConstraintViolation<PublisherDto>> violations = validator.validate(dto);
         publisherService.saveEntityService(mockRequest);
         assertTrue(!violations.isEmpty());
@@ -77,7 +76,7 @@ public class PublisherAdvertisementServiceImplTest {
     public void saveEntityServiceMethodExecutedWithNoConstraintViolationReturnTrue() {
         final List<String> allMessages = new ArrayList<>();
         when(mockRequest.getParameter("telephone")).thenReturn(publisherDto.getTelephone());
-        final PublisherDto dto = PublisherAdvertisementServiceImpl.pubDtoCreator(mockRequest);
+        final PublisherDto dto = publisherService.pubDtoCreator(mockRequest);
         final Set<ConstraintViolation<PublisherDto>> violations = validator.validate(dto);
         publisherService.saveEntityService(mockRequest);
         final Publisher publisherCreated = publisherService.pubCreator(dto);
@@ -90,7 +89,7 @@ public class PublisherAdvertisementServiceImplTest {
      */
     @Test
     public void convertDtoIntoEntityReturnTrue() {
-        Publisher publisherCreated = PublisherAdvertisementServiceImpl.pubCreator(publisherDto);
+        Publisher publisherCreated = publisherService.pubCreator(publisherDto);
         assertAll("publisherCreated",
                 () -> assertEquals(publisherCreated.getName(), publisherDto.getName()),
                 () -> assertEquals(publisherCreated.getAddress(), publisherDto.getAddress()),
@@ -103,7 +102,7 @@ public class PublisherAdvertisementServiceImplTest {
      */
     @Test
     public void convertHttpServletRequestIntoDto() {
-        PublisherDto publisherDtoCreatedSecond = PublisherAdvertisementServiceImpl.pubDtoCreator(mockRequest);
+        PublisherDto publisherDtoCreatedSecond = publisherService.pubDtoCreator(mockRequest);
         assertAll("publisherDtoCreatedSecond",
                 () -> assertEquals(publisherDtoCreatedSecond.getName(), publisherDto.getName()),
                 () -> assertEquals(publisherDtoCreatedSecond.getAddress(), publisherDto.getAddress()),

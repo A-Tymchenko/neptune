@@ -5,6 +5,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.ra.advertisement.controller.Controller;
+import com.ra.advertisement.controller.PathsEnum;
 import com.ra.advertisement.dto.PublisherDto;
 import com.ra.advertisement.service.PublisherAdvertisementServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,8 +30,6 @@ public class GetAllPublisherController implements Controller {
     public String execute(final HttpServletRequest request, final HttpServletResponse response) {
         final List<PublisherDto> listOfPublDto = publisherService.getAllEntityService();
         request.setAttribute("publisherdto", listOfPublDto);
-        final String path = "/WEB-INF/jsp/allpublishers.jsp";
-        return path;
-
+        return PathsEnum.ALL_PUBLISHERS.getPath();
     }
 }

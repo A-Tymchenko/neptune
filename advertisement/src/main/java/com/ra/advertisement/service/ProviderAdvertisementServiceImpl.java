@@ -6,9 +6,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.ConstraintViolation;
-import javax.validation.Validation;
 import javax.validation.Validator;
-import javax.validation.ValidatorFactory;
 
 import com.ra.advertisement.dao.ProviderAdvertisementDaoImpl;
 import com.ra.advertisement.dto.ProviderDto;
@@ -23,10 +21,10 @@ public class ProviderAdvertisementServiceImpl implements AdvertisementService<Pr
     private static Validator validator;
 
     @Autowired
-    public ProviderAdvertisementServiceImpl(final ProviderAdvertisementDaoImpl providerDao) {
+    public ProviderAdvertisementServiceImpl(final ProviderAdvertisementDaoImpl providerDao,
+                                            final BeanValidator beanValidator) {
         this.providerDao = providerDao;
-        final ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
-        validator = factory.getValidator();
+        this.validator = beanValidator.getValidator();
     }
 
     /**
@@ -67,7 +65,7 @@ public class ProviderAdvertisementServiceImpl implements AdvertisementService<Pr
      * @param request HttpServletRequest request
      * @return dto Object
      */
-    public static ProviderDto provDtoCreator(final HttpServletRequest request) {
+    public ProviderDto provDtoCreator(final HttpServletRequest request) {
         final ProviderDto providerDto = new ProviderDto();
         providerDto.setName(request.getParameter("name"));
         providerDto.setAddress(request.getParameter("address"));
@@ -82,7 +80,7 @@ public class ProviderAdvertisementServiceImpl implements AdvertisementService<Pr
      * @param dto dto Object
      * @return Entity
      */
-    public static Provider provCreator(final ProviderDto dto) {
+    public Provider provCreator(final ProviderDto dto) {
         final Provider provider = new Provider();
         provider.setName(dto.getName());
         provider.setAddress(dto.getAddress());

@@ -5,6 +5,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.ra.advertisement.controller.Controller;
+import com.ra.advertisement.controller.PathsEnum;
 import com.ra.advertisement.service.AdvertisementAdvertisementServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -28,7 +29,6 @@ public class AdvertSaveController implements Controller {
     public String execute(final HttpServletRequest request, final HttpServletResponse response) {
         final List<String> answer = advertService.saveEntityService(request);
         request.setAttribute("result", answer);
-        final String path = "/advertisementform.jsp";
-        return path;
+        return PathsEnum.ADVERTISEMENT_FORM.getPath();
     }
 }

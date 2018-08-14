@@ -5,6 +5,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.ra.advertisement.controller.Controller;
+import com.ra.advertisement.controller.PathsEnum;
 import com.ra.advertisement.dto.ProviderDto;
 import com.ra.advertisement.service.ProviderAdvertisementServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,7 +30,6 @@ public class GetAllProviderController implements Controller {
     public String execute(final HttpServletRequest request, final HttpServletResponse response) {
         final List<ProviderDto> listOfProvDto = providerService.getAllEntityService();
         request.setAttribute("providerdto", listOfProvDto);
-        final String path = "/WEB-INF/jsp/allproviders.jsp";
-        return path;
+        return PathsEnum.ALL_PROVIDERS.getPath();
     }
 }

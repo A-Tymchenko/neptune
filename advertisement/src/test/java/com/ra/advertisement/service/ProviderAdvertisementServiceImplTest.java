@@ -3,9 +3,7 @@ package com.ra.advertisement.service;
 import java.util.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.ConstraintViolation;
-import javax.validation.Validation;
 import javax.validation.Validator;
-import javax.validation.ValidatorFactory;
 
 import com.ra.advertisement.dao.ProviderAdvertisementDaoImpl;
 import com.ra.advertisement.dto.ProviderDto;
@@ -25,6 +23,7 @@ public class ProviderAdvertisementServiceImplTest {
     private static ProviderAdvertisementServiceImpl providerService;
     private static ProviderAdvertisementDaoImpl mockProviderDao;
     private static HttpServletRequest mockRequest;
+    private static BeanValidator beanValidator;
     private static Validator validator;
     private ProviderDto providerDto;
     private Provider provider;
@@ -33,13 +32,13 @@ public class ProviderAdvertisementServiceImplTest {
 
     @BeforeAll
     public static void init() {
+        beanValidator = new BeanValidator();
         mockJdbcTemplate = mock(JdbcTemplate.class);
         mockRequest = mock(HttpServletRequest.class);
         mockProviderDao = new ProviderAdvertisementDaoImpl(mockJdbcTemplate);
-        providerService = new ProviderAdvertisementServiceImpl(mockProviderDao);
+        providerService = new ProviderAdvertisementServiceImpl(mockProviderDao, beanValidator);
         mockProviderDao = mock(ProviderAdvertisementDaoImpl.class);
-        final ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
-        validator = factory.getValidator();
+        validator = beanValidator.getValidator();
     }
 
     @BeforeEach
@@ -62,7 +61,7 @@ public class ProviderAdvertisementServiceImplTest {
     @Test
     public void saveEntityServiceMethodExecutedWithConstraintViolationReturnTrue() {
         when(mockRequest.getParameter("telephone")).thenReturn("text instead of number");
-        final ProviderDto dto = ProviderAdvertisementServiceImpl.provDtoCreator(mockRequest);
+        final ProviderDto dto = providerService.provDtoCreator(mockRequest);
         final Set<ConstraintViolation<ProviderDto>> violations = validator.validate(dto);
         providerService.saveEntityService(mockRequest);
         assertTrue(!violations.isEmpty());
@@ -77,7 +76,7 @@ public class ProviderAdvertisementServiceImplTest {
     public void saveEntityServiceMethodExecutedWithNoConstraintViolationReturnTrue() {
         final List<String> allMessages = new ArrayList<>();
         when(mockRequest.getParameter("telephone")).thenReturn(providerDto.getTelephone());
-        final ProviderDto dto = ProviderAdvertisementServiceImpl.provDtoCreator(mockRequest);
+        final ProviderDto dto = providerService.provDtoCreator(mockRequest);
         final Set<ConstraintViolation<ProviderDto>> violations = validator.validate(dto);
         providerService.saveEntityService(mockRequest);
         final Provider providerCreated = providerService.provCreator(dto);
@@ -90,7 +89,7 @@ public class ProviderAdvertisementServiceImplTest {
      */
     @Test
     public void convertDtoIntoEntityReturnTrue() {
-        Provider providerCreated = ProviderAdvertisementServiceImpl.provCreator(providerDto);
+        Provider providerCreated = providerService.provCreator(providerDto);
         assertAll("providerCreated",
                 () -> assertEquals(providerCreated.getName(), providerDto.getName()),
                 () -> assertEquals(providerCreated.getAddress(), providerDto.getAddress()),
@@ -103,7 +102,7 @@ public class ProviderAdvertisementServiceImplTest {
      */
     @Test
     public void convertHttpServletRequestIntoDto() {
-        ProviderDto providerDtoCreatedSecond = ProviderAdvertisementServiceImpl.provDtoCreator(mockRequest);
+        ProviderDto providerDtoCreatedSecond = providerService.provDtoCreator(mockRequest);
         assertAll("providerDtoCreatedSecond",
                 () -> assertEquals(providerDtoCreatedSecond.getName(), providerDto.getName()),
                 () -> assertEquals(providerDtoCreatedSecond.getAddress(), providerDto.getAddress()),

@@ -3,9 +3,7 @@ package com.ra.advertisement.service;
 import java.util.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.ConstraintViolation;
-import javax.validation.Validation;
 import javax.validation.Validator;
-import javax.validation.ValidatorFactory;
 
 import com.ra.advertisement.dao.DeviceAdvertisementDaoImpl;
 import com.ra.advertisement.dto.DeviceDto;
@@ -24,6 +22,7 @@ public class DeviceAdvertisementServiceImplTest {
     private static DeviceAdvertisementServiceImpl deviceService;
     private static DeviceAdvertisementDaoImpl mockDeviceDao;
     private static HttpServletRequest mockRequest;
+    private static BeanValidator beanValidator;
     private static Validator validator;
     private DeviceDto deviceDto;
     private Device device;
@@ -32,19 +31,18 @@ public class DeviceAdvertisementServiceImplTest {
 
     @BeforeAll
     public static void init() {
+        beanValidator = new BeanValidator();
         mockJdbcTemplate = mock(JdbcTemplate.class);
         mockRequest = mock(HttpServletRequest.class);
         mockDeviceDao = new DeviceAdvertisementDaoImpl(mockJdbcTemplate);
-        deviceService = new DeviceAdvertisementServiceImpl(mockDeviceDao);
+        deviceService = new DeviceAdvertisementServiceImpl(mockDeviceDao, beanValidator);
         mockDeviceDao = mock(DeviceAdvertisementDaoImpl.class);
-        final ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
-        validator = factory.getValidator();
+        validator = beanValidator.getValidator();
     }
 
     @BeforeEach
     public void reInitAdvertisementDao() {
         deviceDto = new DeviceDto("Nokia", "25-10", "Mobile Phone");
-        ;
         device = new Device(1L, "Nokia", "25-10", "Mobile Phone");
         deviceList = new ArrayList<>();
         deviceList.add(device);
@@ -61,7 +59,7 @@ public class DeviceAdvertisementServiceImplTest {
     @Test
     public void saveEntityServiceMethodExecutedWithConstraintViolationReturnTrue() {
         when(mockRequest.getParameter("deviceType")).thenReturn("t");
-        final DeviceDto dto = DeviceAdvertisementServiceImpl.devDtoCreator(mockRequest);
+        final DeviceDto dto = deviceService.devDtoCreator(mockRequest);
         final Set<ConstraintViolation<DeviceDto>> violations = validator.validate(dto);
         deviceService.saveEntityService(mockRequest);
         assertTrue(!violations.isEmpty());
@@ -76,7 +74,7 @@ public class DeviceAdvertisementServiceImplTest {
     public void saveEntityServiceMethodExecutedWithNoConstraintViolationReturnTrue() {
         final List<String> allMessages = new ArrayList<>();
         when(mockRequest.getParameter("deviceType")).thenReturn(device.getDeviceType());
-        final DeviceDto dto = DeviceAdvertisementServiceImpl.devDtoCreator(mockRequest);
+        final DeviceDto dto = deviceService.devDtoCreator(mockRequest);
         final Set<ConstraintViolation<DeviceDto>> violations = validator.validate(dto);
         deviceService.saveEntityService(mockRequest);
         final Device deviceCreated = deviceService.devCreator(dto);
@@ -89,7 +87,7 @@ public class DeviceAdvertisementServiceImplTest {
      */
     @Test
     public void convertDtoIntoEntityReturnTrue() {
-        Device deviceCreated = DeviceAdvertisementServiceImpl.devCreator(deviceDto);
+        Device deviceCreated = deviceService.devCreator(deviceDto);
         assertAll("deviceCreated",
                 () -> assertEquals(deviceCreated.getName(), deviceDto.getName()),
                 () -> assertEquals(deviceCreated.getModel(), deviceDto.getModel()),
@@ -101,7 +99,7 @@ public class DeviceAdvertisementServiceImplTest {
      */
     @Test
     public void convertHttpServletRequestIntoDto() {
-        DeviceDto deviceDtoCreated = DeviceAdvertisementServiceImpl.devDtoCreator(mockRequest);
+        DeviceDto deviceDtoCreated = deviceService.devDtoCreator(mockRequest);
         assertAll("deviceDtoCreated",
                 () -> assertEquals(deviceDtoCreated.getName(), deviceDto.getName()),
                 () -> assertEquals(deviceDtoCreated.getModel(), deviceDto.getModel()),

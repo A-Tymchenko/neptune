@@ -6,9 +6,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.ConstraintViolation;
-import javax.validation.Validation;
 import javax.validation.Validator;
-import javax.validation.ValidatorFactory;
 
 import com.ra.advertisement.dao.AdvertisementAdvertisementDaoImpl;
 import com.ra.advertisement.dto.AdvertisementDto;
@@ -23,10 +21,10 @@ public class AdvertisementAdvertisementServiceImpl implements AdvertisementServi
     private static Validator validator;
 
     @Autowired
-    public AdvertisementAdvertisementServiceImpl(final AdvertisementAdvertisementDaoImpl advertDao) {
+    public AdvertisementAdvertisementServiceImpl(final AdvertisementAdvertisementDaoImpl advertDao,
+                                                 final BeanValidator beanValidator) {
         this.advertDao = advertDao;
-        final ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
-        validator = factory.getValidator();
+        this.validator = beanValidator.getValidator();
     }
 
     /**
@@ -67,7 +65,7 @@ public class AdvertisementAdvertisementServiceImpl implements AdvertisementServi
      * @param request HttpServletRequest request
      * @return dto Object
      */
-    public static AdvertisementDto advDtoCreator(final HttpServletRequest request) {
+    public AdvertisementDto advDtoCreator(final HttpServletRequest request) {
         final AdvertisementDto advertisementDto = new AdvertisementDto();
         advertisementDto.setTitle(request.getParameter("title"));
         advertisementDto.setContext(request.getParameter("context"));
@@ -82,7 +80,7 @@ public class AdvertisementAdvertisementServiceImpl implements AdvertisementServi
      * @param dto dto Object
      * @return Entity
      */
-    public static Advertisement advCreator(final AdvertisementDto dto) {
+    public Advertisement advCreator(final AdvertisementDto dto) {
         final Advertisement advertisement = new Advertisement();
         advertisement.setAdId(dto.getAdId());
         advertisement.setTitle(dto.getTitle());

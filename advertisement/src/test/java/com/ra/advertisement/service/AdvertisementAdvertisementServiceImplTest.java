@@ -3,9 +3,7 @@ package com.ra.advertisement.service;
 import java.util.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.ConstraintViolation;
-import javax.validation.Validation;
 import javax.validation.Validator;
-import javax.validation.ValidatorFactory;
 
 import com.ra.advertisement.dao.AdvertisementAdvertisementDaoImpl;
 import com.ra.advertisement.dto.AdvertisementDto;
@@ -27,6 +25,7 @@ public class AdvertisementAdvertisementServiceImplTest {
     private static AdvertisementAdvertisementServiceImpl advertService;
     private static AdvertisementAdvertisementDaoImpl mockAdvertDao;
     private static HttpServletRequest mockRequest;
+    private static BeanValidator beanValidator;
     private static Validator validator;
     private AdvertisementDto advertisementDto;
     private Advertisement advertisement;
@@ -35,13 +34,13 @@ public class AdvertisementAdvertisementServiceImplTest {
 
     @BeforeAll
     public static void init() {
+        beanValidator = new BeanValidator();
         mockJdbcTemplate = mock(JdbcTemplate.class);
         mockRequest = mock(HttpServletRequest.class);
         mockAdvertDao = new AdvertisementAdvertisementDaoImpl(mockJdbcTemplate);
-        advertService = new AdvertisementAdvertisementServiceImpl(mockAdvertDao);
+        advertService = new AdvertisementAdvertisementServiceImpl(mockAdvertDao, beanValidator);
         mockAdvertDao = mock(AdvertisementAdvertisementDaoImpl.class);
-        final ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
-        validator = factory.getValidator();
+        validator = beanValidator.getValidator();
     }
 
     @BeforeEach
@@ -65,7 +64,7 @@ public class AdvertisementAdvertisementServiceImplTest {
     @Test
     public void saveEntityServiceMethodExecutedWithConstraintViolationReturnTrue() {
         when(mockRequest.getParameter("imageUrl")).thenReturn(advertisementDto.getImageUrl());
-        final AdvertisementDto dto = AdvertisementAdvertisementServiceImpl.advDtoCreator(mockRequest);
+        final AdvertisementDto dto = advertService.advDtoCreator(mockRequest);
         final Set<ConstraintViolation<AdvertisementDto>> violations = validator.validate(dto);
         advertService.saveEntityService(mockRequest);
         assertTrue(!violations.isEmpty());
@@ -80,7 +79,7 @@ public class AdvertisementAdvertisementServiceImplTest {
     public void saveEntityServiceMethodExecutedWithNoConstraintViolationReturnTrue() {
         final List<String> allMessages = new ArrayList<>();
         when(mockRequest.getParameter("imageUrl")).thenReturn("https://ithillel.ua/");
-        final AdvertisementDto dto = AdvertisementAdvertisementServiceImpl.advDtoCreator(mockRequest);
+        final AdvertisementDto dto = advertService.advDtoCreator(mockRequest);
         final Set<ConstraintViolation<AdvertisementDto>> violations = validator.validate(dto);
         advertService.saveEntityService(mockRequest);
         final Advertisement advertisementCreated = advertService.advCreator(dto);
@@ -93,7 +92,7 @@ public class AdvertisementAdvertisementServiceImplTest {
      */
     @Test
     public void convertDtoIntoEntityReturnTrue() {
-        Advertisement advertisementCreated = AdvertisementAdvertisementServiceImpl.advCreator(advertisementDto);
+        Advertisement advertisementCreated = advertService.advCreator(advertisementDto);
         assertAll("advertisement",
                 () -> assertEquals(advertisementCreated.getTitle(), advertisementDto.getTitle()),
                 () -> assertEquals(advertisementCreated.getContext(), advertisementDto.getContext()),
@@ -106,7 +105,7 @@ public class AdvertisementAdvertisementServiceImplTest {
      */
     @Test
     public void convertHttpServletRequestIntoDto() {
-        AdvertisementDto advertisementDtoCreated = AdvertisementAdvertisementServiceImpl.advDtoCreator(mockRequest);
+        AdvertisementDto advertisementDtoCreated = advertService.advDtoCreator(mockRequest);
         assertAll("advertisementDtoCreated",
                 () -> assertEquals(advertisementDtoCreated.getTitle(), advertisementDto.getTitle()),
                 () -> assertEquals(advertisementDtoCreated.getContext(), advertisementDto.getContext()),

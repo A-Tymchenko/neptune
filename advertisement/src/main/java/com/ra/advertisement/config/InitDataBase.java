@@ -1,6 +1,5 @@
 package com.ra.advertisement.config;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.sql.Connection;
@@ -33,13 +32,7 @@ public class InitDataBase {
             final Connection connection = this.dataSource.getConnection();
             final Resource creationTables = new ClassPathResource("./advertisement_db.sql");
             RunScript.execute(connection, new InputStreamReader(creationTables.getInputStream()));
-        } catch (SQLException e) {
-            final String message = "Trouble in the initDataBase method";
-            LOGGER.error(message, e);
-        } catch (FileNotFoundException e) {
-            final String message = "Trouble in the initDataBase method";
-            LOGGER.error(message, e);
-        } catch (IOException e) {
+        } catch (SQLException | IOException e) {
             final String message = "Trouble in the initDataBase method";
             LOGGER.error(message, e);
         }

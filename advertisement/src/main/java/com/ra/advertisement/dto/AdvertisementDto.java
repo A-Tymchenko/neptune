@@ -1,8 +1,8 @@
 package com.ra.advertisement.dto;
 
-import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
 
+import org.hibernate.validator.constraints.NotEmpty;
 import org.hibernate.validator.constraints.URL;
 
 public class AdvertisementDto {

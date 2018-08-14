@@ -6,9 +6,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.ConstraintViolation;
-import javax.validation.Validation;
 import javax.validation.Validator;
-import javax.validation.ValidatorFactory;
 
 import com.ra.advertisement.dao.DeviceAdvertisementDaoImpl;
 import com.ra.advertisement.dto.DeviceDto;
@@ -23,10 +21,10 @@ public class DeviceAdvertisementServiceImpl implements AdvertisementService<Devi
     private static Validator validator;
 
     @Autowired
-    public DeviceAdvertisementServiceImpl(final DeviceAdvertisementDaoImpl deviceDao) {
+    public DeviceAdvertisementServiceImpl(final DeviceAdvertisementDaoImpl deviceDao,
+                                          final BeanValidator beanValidator) {
         this.deviceDao = deviceDao;
-        final ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
-        validator = factory.getValidator();
+        this.validator = beanValidator.getValidator();
     }
 
     /**
@@ -68,7 +66,7 @@ public class DeviceAdvertisementServiceImpl implements AdvertisementService<Devi
      * @param request HttpServletRequest request
      * @return dto Object
      */
-    public static DeviceDto devDtoCreator(final HttpServletRequest request) {
+    public DeviceDto devDtoCreator(final HttpServletRequest request) {
         final DeviceDto devicetDto = new DeviceDto();
         devicetDto.setName(request.getParameter("name"));
         devicetDto.setModel(request.getParameter("model"));
@@ -82,7 +80,7 @@ public class DeviceAdvertisementServiceImpl implements AdvertisementService<Devi
      * @param dto dto Object
      * @return Entity
      */
-    public static Device devCreator(final DeviceDto dto) {
+    public Device devCreator(final DeviceDto dto) {
         final Device device = new Device();
         device.setName(dto.getName());
         device.setModel(dto.getModel());

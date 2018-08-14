@@ -6,9 +6,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.ConstraintViolation;
-import javax.validation.Validation;
 import javax.validation.Validator;
-import javax.validation.ValidatorFactory;
 
 import com.ra.advertisement.dao.PublisherAdvertisementDaoImpl;
 import com.ra.advertisement.dto.PublisherDto;
@@ -23,10 +21,10 @@ public class PublisherAdvertisementServiceImpl implements AdvertisementService<P
     private static Validator validator;
 
     @Autowired
-    public PublisherAdvertisementServiceImpl(final PublisherAdvertisementDaoImpl publisherDao) {
+    public PublisherAdvertisementServiceImpl(final PublisherAdvertisementDaoImpl publisherDao,
+                                             final BeanValidator beanValidator) {
         this.publisherDao = publisherDao;
-        final ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
-        validator = factory.getValidator();
+        this.validator = beanValidator.getValidator();
     }
 
     /**
@@ -69,7 +67,7 @@ public class PublisherAdvertisementServiceImpl implements AdvertisementService<P
      * @param request HttpServletRequest request
      * @return dto Object
      */
-    public static PublisherDto pubDtoCreator(final HttpServletRequest request) {
+    public PublisherDto pubDtoCreator(final HttpServletRequest request) {
         final PublisherDto publisherDto = new PublisherDto();
         publisherDto.setName(request.getParameter("name"));
         publisherDto.setAddress(request.getParameter("address"));
@@ -84,7 +82,7 @@ public class PublisherAdvertisementServiceImpl implements AdvertisementService<P
      * @param dto dto Object
      * @return Entity
      */
-    public static Publisher pubCreator(final PublisherDto dto) {
+    public Publisher pubCreator(final PublisherDto dto) {
         final Publisher publisher = new Publisher();
         publisher.setName(dto.getName());
         publisher.setAddress(dto.getAddress());
