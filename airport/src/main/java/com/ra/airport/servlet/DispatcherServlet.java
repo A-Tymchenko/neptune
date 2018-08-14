@@ -74,10 +74,7 @@ public class DispatcherServlet extends HttpServlet {
     protected void doGet(final HttpServletRequest req, final HttpServletResponse resp) throws IOException, ServletException {
         try {
             handlerFactory.handleGetRequest(this.getPath(req), req, resp);
-            final String jspPath = (String) req.getAttribute("jspPath");
-            if (Strings.isNotBlank(jspPath)) {
-               req.getRequestDispatcher(jspPath).forward(req, resp);
-            }
+            redirectRequest(req, resp);
         } catch (AirPortDaoException e) {
             LOGGER.error("Error get request processing", e);
         }
@@ -90,11 +87,20 @@ public class DispatcherServlet extends HttpServlet {
      * @param resp response
      */
     @Override
-    protected void doPost(final HttpServletRequest req, final HttpServletResponse resp) {
+    protected void doPost(final HttpServletRequest req, final HttpServletResponse resp) throws IOException, ServletException {
         try {
             handlerFactory.handlePostRequest(this.getPath(req), req, resp);
+            redirectRequest(req, resp);
         } catch (AirPortDaoException e) {
             LOGGER.error("Error post request processing", e);
+        }
+    }
+
+    private void redirectRequest(final HttpServletRequest req, final HttpServletResponse resp)
+            throws ServletException, IOException {
+        final String jspPath = (String) req.getAttribute("jspPath");
+        if (Strings.isNotBlank(jspPath)) {
+            req.getRequestDispatcher(jspPath).forward(req, resp);
         }
     }
 
