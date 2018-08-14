@@ -41,38 +41,33 @@ public class DispatcherServletMockitoTest {
     }
 
     @Test
-    public void whereServerStartInitContext() {
-        dispatcherServlet.init(servletConfig);
-    }
-
-    @Test
-    public void whereGetRequestThenRedirectToJSP() throws IOException, ServletException, NoSuchFieldException, IllegalAccessException {
-        Field field = DispatcherServlet.class.getDeclaredField("handlerFactory");
-        field.setAccessible(true);
-        field.set(dispatcherServlet, handlerFactory);
+    public void whereGetRequestThenRedirectToJSP() throws IOException, ServletException, AirPortDaoException {
         dispatcherServlet.doGet(request, response);
+        Mockito.verify(handlerFactory, Mockito.times(1)).handleGetRequest("/airports", request, response);
     }
 
     @Test
-    public void wherePostRequestThenRedirectToJSP() throws IOException, ServletException, NoSuchFieldException, IllegalAccessException {
-        Field field = DispatcherServlet.class.getDeclaredField("handlerFactory");
-        field.setAccessible(true);
-        field.set(dispatcherServlet, handlerFactory);
+    public void wherePostRequestThenRedirectToJSP() throws IOException, ServletException, AirPortDaoException {
         request.setAttribute("jspPath", "TEST");
         dispatcherServlet.doPost(request, response);
+        Mockito.verify(handlerFactory, Mockito.times(1)).handlePostRequest("/airports", request, response);
     }
 
     @Test
-    public void wherePostRequestThenThrowException() throws IOException, ServletException, NoSuchFieldException, IllegalAccessException, AirPortDaoException {
-        request.setAttribute("jspPath", "TEST");
+    public void wherePostRequestThenThrowException() throws IOException, ServletException, AirPortDaoException {
         Mockito.doThrow(AirPortDaoException.class).when(handlerFactory).handlePostRequest(Mockito.any(), Mockito.any(), Mockito.any());
         dispatcherServlet.doPost(request, response);
     }
 
     @Test
-    public void whereGetRequestThenThrowException() throws IOException, ServletException, NoSuchFieldException, IllegalAccessException, AirPortDaoException {
+    public void whereGetRequestThenThrowException() throws IOException, ServletException, AirPortDaoException {
         Mockito.doThrow(AirPortDaoException.class).when(handlerFactory).handleGetRequest(Mockito.any(), Mockito.any(), Mockito.any());
         dispatcherServlet.doGet(request, response);
+    }
+
+    @Test
+    public void whereServerStartInitContext() {
+        dispatcherServlet.init(servletConfig);
     }
 
 

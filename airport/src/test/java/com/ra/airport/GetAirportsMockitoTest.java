@@ -7,6 +7,7 @@ import com.ra.airport.servlet.handler.CreateAirportHandler;
 import com.ra.airport.servlet.handler.GetAirportsHandler;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
@@ -21,12 +22,13 @@ import java.util.function.Consumer;
 
 public class GetAirportsMockitoTest {
 
+    @Mock
+    private List<Airport> airports;
+
+    @InjectMocks
     public GetAirportsHandler airportHandler;
     private MockHttpServletRequest mockRequest;
     private MockHttpServletResponse mockResponse;
-
-    @Mock
-    private List<Airport> airports;
 
     @Mock
     Airport airport;
@@ -50,6 +52,7 @@ public class GetAirportsMockitoTest {
             return null;
         }).when(airports).forEach(Mockito.any());
         airportHandler.get(mockRequest, mockResponse);
+        Mockito.verify(airportService, Mockito.times(1)).getAll();
     }
 
     @Test void testPutDeletePostMethods() throws AirPortDaoException {
