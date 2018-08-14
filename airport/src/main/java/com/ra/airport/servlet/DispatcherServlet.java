@@ -103,6 +103,14 @@ public class DispatcherServlet extends HttpServlet {
         }
     }
 
+    private void redirectRequest(final HttpServletRequest req, final HttpServletResponse resp)
+            throws ServletException, IOException {
+        final String jspPath = (String) req.getAttribute("jspPath");
+        if (Strings.isNotBlank(jspPath)) {
+            req.getRequestDispatcher(jspPath).forward(req, resp);
+        }
+    }
+
     /**
      * Return path to servlet.
      *
