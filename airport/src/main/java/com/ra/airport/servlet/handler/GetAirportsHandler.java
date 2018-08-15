@@ -39,7 +39,7 @@ public class GetAirportsHandler implements ServletHandler {
         request.setAttribute("jspPath", "showAllAirports.jsp");
     }
 
-    private AirportDTO createAirportDTO(Airport airport) {
+    private AirportDTO createAirportDTO(final Airport airport) {
         final AirportDTO airportDTO = new AirportDTO();
         BeanUtils.copyProperties(airport, airportDTO);
         return airportDTO;

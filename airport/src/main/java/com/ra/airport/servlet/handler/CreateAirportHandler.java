@@ -1,6 +1,5 @@
 package com.ra.airport.servlet.handler;
 
-import javax.naming.OperationNotSupportedException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
