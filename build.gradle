@@ -235,6 +235,15 @@ project("advertisement") {
         compile spring.context
         compile spring.jdbc
         compile spring.test
+        compile web.servlet
+        compile web.jstl
+        compile misc.javaEl
+        compile misc.glassfishEl
+        compile hibernate.validator
+    }
+    apply plugin: 'war'
+    war {
+        archiveName = 'advertproject.war'
     }
 }
 

@@ -15,7 +15,7 @@ import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Component;
 
 @Component("providerDao")
-public final class ProviderAdvertisementDaoImpl implements AdvertisementDao<Provider> {
+public class ProviderAdvertisementDaoImpl implements AdvertisementDao<Provider> {
     private final transient JdbcTemplate jdbcTemplate;
     private final transient KeyHolder keyHolder = new GeneratedKeyHolder();
     private static final String GET_PROV_BY_ID = "SELECT * FROM PROVIDER WHERE PROV_ID=?";

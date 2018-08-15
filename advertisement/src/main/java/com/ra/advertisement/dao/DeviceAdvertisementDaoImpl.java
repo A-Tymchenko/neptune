@@ -15,7 +15,7 @@ import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Component;
 
 @Component("deviceDao")
-public final class DeviceAdvertisementDaoImpl implements AdvertisementDao<Device> {
+public class DeviceAdvertisementDaoImpl implements AdvertisementDao<Device> {
     private final transient JdbcTemplate jdbcTemplate;
     private final transient KeyHolder keyHolder = new GeneratedKeyHolder();
     private static final String GET_DEVICE_BY_ID = "SELECT * FROM DEVICES WHERE DEV_ID=?";
