@@ -28,6 +28,7 @@ public class CreateAirportHandler implements ServletHandler {
         final var airport = new Airport();
         BeanUtils.copyProperties(airportDTO, airport);
         airportService.create(airport);
+        request.setAttribute("jspPath", "createAirport.jsp");
     }
 
     private AirportDTO createAirportDTO(final HttpServletRequest request) {
