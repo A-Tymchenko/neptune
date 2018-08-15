@@ -4,6 +4,7 @@ import java.util.*;
 import com.ra.airport.entity.Flight;
 import com.ra.airport.repository.exception.AirPortDaoException;
 import com.ra.airport.service.FlightService;
+import javax.naming.OperationNotSupportedException;
 import javax.servlet.http.*;
 import org.apache.logging.log4j.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,12 +37,12 @@ public class DeleteFlightHandler implements ServletHandler {
     }
 
     @Override
-    public void put(HttpServletRequest request, HttpServletResponse response) {
-
+    public void put(HttpServletRequest request, HttpServletResponse response) throws OperationNotSupportedException {
+        throw new OperationNotSupportedException();
     }
 
     @Override
-    public void get(HttpServletRequest request, HttpServletResponse response) {
-
+    public void get(HttpServletRequest request, HttpServletResponse response) throws OperationNotSupportedException {
+        throw new OperationNotSupportedException();
     }
 }

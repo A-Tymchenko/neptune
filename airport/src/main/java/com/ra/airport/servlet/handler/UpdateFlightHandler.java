@@ -5,6 +5,7 @@ import com.ra.airport.dto.FlightDto;
 import com.ra.airport.entity.Flight;
 import com.ra.airport.repository.exception.AirPortDaoException;
 import com.ra.airport.service.FlightService;
+import javax.naming.OperationNotSupportedException;
 import javax.servlet.http.*;
 import org.apache.logging.log4j.util.Strings;
 import org.springframework.beans.BeanUtils;
@@ -37,11 +38,6 @@ public class UpdateFlightHandler implements ServletHandler {
     }
 
     @Override
-    public void delete(HttpServletRequest request, HttpServletResponse response) throws AirPortDaoException {
-
-    }
-
-    @Override
     public void put(HttpServletRequest request, HttpServletResponse response) throws AirPortDaoException {
         FlightDto flightDto = createFlightDto(request);
         Flight flight = new Flight();
@@ -62,5 +58,10 @@ public class UpdateFlightHandler implements ServletHandler {
         flightDto.setArrivalDate(LocalDateTime.parse(request.getParameter("arrivalDate")));
 
         return flightDto;
+    }
+
+    @Override
+    public void delete(HttpServletRequest request, HttpServletResponse response) throws AirPortDaoException, OperationNotSupportedException {
+        throw new OperationNotSupportedException();
     }
 }

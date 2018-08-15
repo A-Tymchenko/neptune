@@ -1,5 +1,6 @@
 package com.ra.airport.servlet.handler;
 
+import javax.naming.OperationNotSupportedException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -14,15 +15,15 @@ public interface ServletHandler {
     /**
      * Called where request method is get.
      */
-    void get(HttpServletRequest request, HttpServletResponse response) throws AirPortDaoException;
+    void get(HttpServletRequest request, HttpServletResponse response) throws AirPortDaoException, OperationNotSupportedException;
 
     /**
      * Called where request method is delete.
      */
-    void delete(HttpServletRequest request, HttpServletResponse response) throws AirPortDaoException;
+    void delete(HttpServletRequest request, HttpServletResponse response) throws AirPortDaoException, OperationNotSupportedException;
 
     /**
      * Called where request method is put.
      */
-    void put(HttpServletRequest request, HttpServletResponse response) throws AirPortDaoException;
+    void put(HttpServletRequest request, HttpServletResponse response) throws AirPortDaoException, OperationNotSupportedException;
 }

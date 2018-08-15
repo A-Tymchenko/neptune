@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.Optional;
 import com.ra.airport.entity.Flight;
 import com.ra.airport.service.FlightService;
+import javax.naming.OperationNotSupportedException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import com.ra.airport.dto.FlightDto;
@@ -38,16 +39,6 @@ public class CreateFlightHandler implements ServletHandler {
         request.setAttribute("jspPath","WEB-INF/create_flight.jsp");
     }
 
-    @Override
-    public void delete(HttpServletRequest request, HttpServletResponse response) throws AirPortDaoException {
-
-    }
-
-    @Override
-    public void put(HttpServletRequest request, HttpServletResponse response) throws AirPortDaoException {
-
-    }
-
     private FlightDto createFlightDto(HttpServletRequest request) {
         FlightDto flightDto = new FlightDto();
         flightDto.setName(request.getParameter("name"));
@@ -58,5 +49,15 @@ public class CreateFlightHandler implements ServletHandler {
         flightDto.setArrivalDate(LocalDateTime.parse(request.getParameter("arrivalDate")));
 
         return flightDto;
+    }
+
+    @Override
+    public void delete(HttpServletRequest request, HttpServletResponse response) throws AirPortDaoException, OperationNotSupportedException {
+         throw new OperationNotSupportedException();
+    }
+
+    @Override
+    public void put(HttpServletRequest request, HttpServletResponse response) throws AirPortDaoException, OperationNotSupportedException {
+        throw new OperationNotSupportedException();
     }
 }

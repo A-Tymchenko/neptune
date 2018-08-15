@@ -2,6 +2,7 @@ package com.ra.airport.servlet.handler;
 
 import java.util.ArrayList;
 import java.util.List;
+import javax.naming.OperationNotSupportedException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -49,12 +50,12 @@ public class GetFlightsHandler implements ServletHandler {
     }
 
     @Override
-    public void delete(final HttpServletRequest request, final HttpServletResponse response) {
-
+    public void delete(final HttpServletRequest request, final HttpServletResponse response) throws OperationNotSupportedException {
+        throw new OperationNotSupportedException();
     }
 
     @Override
-    public void put(final HttpServletRequest request, final HttpServletResponse response) {
-
+    public void put(final HttpServletRequest request, final HttpServletResponse response) throws OperationNotSupportedException {
+        throw new OperationNotSupportedException();
     }
 }
