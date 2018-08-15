@@ -21,8 +21,8 @@ public class HandlerFactory {
      *
      * @throw AirPortDaoException
      */
-    public void handleGetRequest(final String path, final HttpServletRequest request, final HttpServletResponse response)
-            throws AirPortDaoException, OperationNotSupportedException {
+    public void handleGetRequest(final String path, final HttpServletRequest request,
+                                 final HttpServletResponse response) throws AirPortDaoException, OperationNotSupportedException {
         if (handlers.containsKey(path)) {
             final ServletHandler handler = handlers.get(path);
             handler.get(request, response);
@@ -32,8 +32,8 @@ public class HandlerFactory {
     /**
      * Init post request to EntityHandler.
      */
-    public void handlePostRequest(final String path, final HttpServletRequest request, final HttpServletResponse response)
-            throws AirPortDaoException, OperationNotSupportedException {
+    public void handlePostRequest(final String path, final HttpServletRequest request,
+                                  final HttpServletResponse response) throws AirPortDaoException, OperationNotSupportedException {
         if (handlers.containsKey(path)) {
             final ServletHandler handler = handlers.get(path);
             handler.post(request, response);
