@@ -5,6 +5,7 @@ import com.ra.airport.repository.exception.AirPortDaoException;
 import com.ra.airport.repository.impl.FlightDao;
 import org.springframework.context.ApplicationContext;
 
+import javax.naming.OperationNotSupportedException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -19,18 +20,23 @@ import java.util.List;
 public class GetAllFlightsHandler implements ServletHandler {
 
     @Override
-    public void post(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    public void post(HttpServletRequest request, HttpServletResponse response) {
 
     }
 
     @Override
-    public void get(HttpServletRequest request, HttpServletResponse response) throws IOException, AirPortDaoException {
-        final ApplicationContext context = getApplicationContext(request);
-        FlightDao flightDao = context.getBean(FlightDao.class);
-        List<Flight> flights = flightDao.getAll();
-        PrintWriter out = response.getWriter();
-        out.println(flights);
-        // it's only example get service from context and call some method
+    public void get(HttpServletRequest request, HttpServletResponse response) throws AirPortDaoException {
+        
+    }
+
+    @Override
+    public void delete(HttpServletRequest request, HttpServletResponse response) {
+
+    }
+
+    @Override
+    public void put(HttpServletRequest request, HttpServletResponse response) throws AirPortDaoException, OperationNotSupportedException {
+
     }
 
     private ApplicationContext getApplicationContext(HttpServletRequest request) {
