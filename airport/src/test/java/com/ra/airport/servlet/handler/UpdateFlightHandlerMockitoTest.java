@@ -16,6 +16,7 @@ import org.springframework.mock.web.MockHttpServletResponse;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.Mockito.*;
 
 public class UpdateFlightHandlerMockitoTest {
@@ -68,7 +69,22 @@ public class UpdateFlightHandlerMockitoTest {
     @Test
     public void whenPutThenFlightShouldBeUpdatedAndPathToJspShouldBeSetToRequest() throws AirPortDaoException {
         updateFlightHandler.put(mockRequest, mockResponse);
+        String jspPath = (String) mockRequest.getAttribute("jspPath");
+
+        assertEquals("/flights", jspPath);
+
         verify(mockFlightService, times(1)).update(flight);
+    }
+
+    @Test
+    public void whenGetAndIdNotPassedThenPathToJspShouldBeSetToRequest() throws AirPortDaoException {
+        mockRequest.setParameter("id", "");
+        updateFlightHandler.get(mockRequest, mockResponse);
+        String jspPath = (String) mockRequest.getAttribute("jspPath");
+        FlightDto flight = (FlightDto) mockRequest.getAttribute("flight");
+
+        assertEquals("WEB-INF/update_flight.jsp", jspPath);
+        assertNull(flight);
     }
 
     private void createRequest() {

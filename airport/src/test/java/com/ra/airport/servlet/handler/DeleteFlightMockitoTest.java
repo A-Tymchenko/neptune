@@ -34,6 +34,7 @@ public class DeleteFlightMockitoTest {
         mockResponse = new MockHttpServletResponse();
         deleteFlightHandler = mock(DeleteFlightHandler.class);
         doCallRealMethod().when(deleteFlightHandler).post(mockRequest, mockResponse);
+        doCallRealMethod().when(deleteFlightHandler).delete(mockRequest, mockResponse);
     }
 
     @Test
@@ -51,5 +52,13 @@ public class DeleteFlightMockitoTest {
           String result = (String) mockRequest.getAttribute("jspPath");
 
           assertEquals("/flights", result);
+    }
+
+    @Test
+    public void whenDeleteAndIdNotPassedThenServiceShouldNotBeCalled() throws AirPortDaoException {
+        mockRequest.setParameter("id","");
+        deleteFlightHandler.delete(mockRequest, mockResponse);
+
+        verify(mockFlightService, times(0)).delete(flight);
     }
 }
