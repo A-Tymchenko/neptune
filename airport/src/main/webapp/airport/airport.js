@@ -45,6 +45,7 @@
         })
     }
     function saveAirport() {
+        modal.style.display = "none";
         if(actionType == "update"){
             let row = document.getElementById(updatedAirport.id);
             let cell = row.cells;
@@ -79,7 +80,7 @@
         airport.terminalCount = document.getElementById("terminals").value;
         req("/airport/create", "apName=" + airport.name + "&apNum=" + airport.num
             + "&apType=" + airport.type + "&address=" + airport.address + "&terminalCount=" + airport.terminalCount).then(function(response){
-            airport.id = response.slice(response.indexOf("id") + 2, response.indexOf(" created"))
+            airport.id = response.slice(response.indexOf("id") + 3, response.indexOf(" created"))
                     airports.push(airport);
                     let row = '<tr id = "' + airport.id + '">' +
                                '<td>' + airport.name + '</td>' +

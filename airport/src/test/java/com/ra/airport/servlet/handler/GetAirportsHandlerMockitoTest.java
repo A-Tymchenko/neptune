@@ -15,7 +15,7 @@ import org.springframework.mock.web.MockHttpServletResponse;
 import java.util.List;
 import java.util.function.Consumer;
 
-public class GetAirportsMockitoTest {
+public class GetAirportsHandlerMockitoTest {
 
     @Mock
     private List<Airport> airports;

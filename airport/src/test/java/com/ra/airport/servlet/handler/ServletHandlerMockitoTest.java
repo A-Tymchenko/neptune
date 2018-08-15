@@ -7,6 +7,7 @@ import org.springframework.mock.web.MockHttpServletResponse;
 
 import javax.naming.OperationNotSupportedException;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -25,34 +26,34 @@ public class ServletHandlerMockitoTest {
     }
 
     @Test
-    public void wherePostThrowNewException() {
+    public void wherePostThrowOperationNotSupportedException() {
         Throwable thrown = assertThrows(OperationNotSupportedException.class, () -> {
             servletHandler.post(mockRequest, mockResponse);
         });
-        assertNotNull(thrown.getMessage());
+        assertEquals(thrown.getMessage(), "Method POST not supported on this URL");
     }
 
     @Test
-    public void whereGetThrowNewException() {
+    public void whereGetThrowOperationNotSupportedException() {
         Throwable thrown = assertThrows(OperationNotSupportedException.class, () -> {
             servletHandler.get(mockRequest, mockResponse);
         });
-        assertNotNull(thrown.getMessage());
+        assertEquals(thrown.getMessage(), "Method GET not supported on this URL");
     }
 
     @Test
-    public void whereDeleteThrowNewException() {
+    public void whereDeleteThrowOperationNotSupportedException() {
         Throwable thrown = assertThrows(OperationNotSupportedException.class, () -> {
             servletHandler.delete(mockRequest, mockResponse);
         });
-        assertNotNull(thrown.getMessage());
+        assertEquals(thrown.getMessage(), "Method DELETE not supported on this URL");
     }
 
     @Test
-    public void wherePutThrowNewException() {
+    public void wherePutThrowOperationNotSupportedException() {
         Throwable thrown = assertThrows(OperationNotSupportedException.class, () -> {
             servletHandler.put(mockRequest, mockResponse);
         });
-        assertNotNull(thrown.getMessage());
+        assertEquals(thrown.getMessage(), "Method PUT not supported on this URL");
     }
 }

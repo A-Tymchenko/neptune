@@ -12,7 +12,7 @@ import org.mockito.MockitoAnnotations;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 
-public class DeleteAirportMockitoTest {
+public class DeleteAirportHandlerMockitoTest {
 
     @Mock
     private AirportServiceImpl airportService;
