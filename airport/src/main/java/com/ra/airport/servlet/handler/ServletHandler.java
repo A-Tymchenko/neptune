@@ -1,31 +1,28 @@
 package com.ra.airport.servlet.handler;
 
-import java.io.IOException;
-import javax.naming.OperationNotSupportedException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.ra.airport.repository.exception.AirPortDaoException;
 
 public interface ServletHandler {
-    
     /**
      * Called where request method is post.
      */
-    void post(HttpServletRequest request, HttpServletResponse response) throws AirPortDaoException, OperationNotSupportedException;
+    void post(HttpServletRequest request, HttpServletResponse response) throws AirPortDaoException;
 
     /**
      * Called where request method is get.
      */
-    void get(HttpServletRequest request, HttpServletResponse response) throws AirPortDaoException, OperationNotSupportedException;
+    void get(HttpServletRequest request, HttpServletResponse response) throws AirPortDaoException;
 
     /**
      * Called where request method is delete.
      */
-    void delete(HttpServletRequest request, HttpServletResponse response) throws AirPortDaoException, OperationNotSupportedException;
+    void delete(HttpServletRequest request, HttpServletResponse response) throws AirPortDaoException;
 
     /**
      * Called where request method is put.
      */
-    void put(HttpServletRequest request, HttpServletResponse response) throws AirPortDaoException, OperationNotSupportedException;
+    void put(HttpServletRequest request, HttpServletResponse response) throws AirPortDaoException;
 }

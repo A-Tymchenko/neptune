@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.sql.Connection;
 import java.sql.SQLException;
-import javax.naming.OperationNotSupportedException;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -76,7 +75,7 @@ public class DispatcherServlet extends HttpServlet {
         try {
             handlerFactory.handleGetRequest(this.getPath(req), req, resp);
             redirectRequest(req, resp);
-        } catch (OperationNotSupportedException | AirPortDaoException e) {
+        } catch (AirPortDaoException e) {
             LOGGER.error("Error get request processing", e);
         }
     }
@@ -92,7 +91,7 @@ public class DispatcherServlet extends HttpServlet {
         try {
             handlerFactory.handlePostRequest(this.getPath(req), req, resp);
             redirectRequest(req, resp);
-        } catch (OperationNotSupportedException | AirPortDaoException e) {
+        } catch (AirPortDaoException e) {
             LOGGER.error("Error post request processing", e);
         }
     }

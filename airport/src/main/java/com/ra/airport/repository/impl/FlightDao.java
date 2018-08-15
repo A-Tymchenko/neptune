@@ -26,7 +26,7 @@ import org.springframework.stereotype.Repository;
 /**
  * Implementation of {@link AirPortDao} interface.
  */
-@Repository("flightDao")
+@Repository
 public class FlightDao implements AirPortDao<Flight> {
 
     private static final String INSERT_FLIGHT_SQL = "INSERT INTO flight "

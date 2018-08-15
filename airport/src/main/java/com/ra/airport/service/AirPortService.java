@@ -1,4 +1,4 @@
-package com.ra.airport.repository;
+package com.ra.airport.service;
 
 import java.util.List;
 import java.util.Optional;
@@ -6,9 +6,11 @@ import java.util.Optional;
 import com.ra.airport.repository.exception.AirPortDaoException;
 
 /**
- * Interface provide methods for the CRUD operations.
+ * Service provides methods for Airport CRUD operations.
+ * Using {@link com.ra.airport.repository.AirPortDao}.
  */
-public interface AirPortDao<T> {
+public interface AirPortService<T> {
+
     /**
      * Create entity in DB and return it.
      * @param entity entity to create
