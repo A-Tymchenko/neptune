@@ -32,7 +32,11 @@ public class UpdateFlightHandler implements ServletHandler {
         String flightId = request.getParameter("id");
         if (Strings.isNotBlank(flightId)) {
             flightService.getById(Integer.parseInt(flightId)).ifPresent(
-                    flight -> request.setAttribute("flight",flight));
+                    flight -> {
+                        FlightDto flightDto = new FlightDto();
+                        BeanUtils.copyProperties(flight, flightDto);
+                        request.setAttribute("flight", flightDto);
+                    });
         }
         request.setAttribute("jspPath", "WEB-INF/update_flight.jsp");
     }

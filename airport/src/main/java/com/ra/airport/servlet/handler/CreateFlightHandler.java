@@ -1,8 +1,6 @@
 package com.ra.airport.servlet.handler;
 
 import java.time.*;
-import java.util.Map;
-import java.util.Optional;
 import com.ra.airport.entity.Flight;
 import com.ra.airport.service.FlightService;
 import javax.naming.OperationNotSupportedException;

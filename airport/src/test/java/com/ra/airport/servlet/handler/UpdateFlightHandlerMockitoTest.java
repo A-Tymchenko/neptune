@@ -1,9 +1,9 @@
 package com.ra.airport.servlet.handler;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.*;
-import java.time.*;
-import java.time.format.*;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Optional;
+import com.ra.airport.dto.FlightDto;
 import com.ra.airport.entity.Flight;
 import com.ra.airport.repository.exception.AirPortDaoException;
 import com.ra.airport.service.FlightService;
@@ -13,8 +13,12 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.mockito.Mockito.*;
 
-public class CreateFlightHandlerMockitoTest {
+public class UpdateFlightHandlerMockitoTest {
 
     private static final String DATE_TIME_FORMAT = "yyyy-MM-dd HH:mm:ss";
     private static final String DEPARTURE_DATE = "2018-06-17 13:15:00";
@@ -22,7 +26,7 @@ public class CreateFlightHandlerMockitoTest {
 
     private Flight flight;
 
-    private CreateFlightHandler createFlightHandler;
+    private UpdateFlightHandler updateFlightHandler;
 
     private MockHttpServletRequest mockRequest;
 
@@ -32,30 +36,44 @@ public class CreateFlightHandlerMockitoTest {
     private FlightService mockFlightService;
 
     @BeforeEach
-    public void init() {
+    public void init() throws AirPortDaoException {
         MockitoAnnotations.initMocks(this);
         createFlight();
-        createFlightHandler = new CreateFlightHandler(mockFlightService);
-        mockRequest = new MockHttpServletRequest();
+        updateFlightHandler = new UpdateFlightHandler(mockFlightService);
         mockResponse = new MockHttpServletResponse();
         createRequest();
+        when(mockFlightService.getById(1)).thenReturn(Optional.of(flight));
     }
 
     @Test
-    public void whenGetThenPathToJspShouldBeSetToRequest() {
-        createFlightHandler.get(mockRequest, mockResponse);
-        String result = (String) mockRequest.getAttribute("jspPath");
-        assertEquals("WEB-INF/create_flight.jsp", result);
+    public void whenGetThenDtoEntityAndPathToJspShouldBeSetToRequest() throws AirPortDaoException {
+        updateFlightHandler.get(mockRequest, mockResponse);
+        String jspPath = (String) mockRequest.getAttribute("jspPath");
+        FlightDto flightDto = (FlightDto) mockRequest.getAttribute("flight");
+
+        assertEquals("WEB-INF/update_flight.jsp", jspPath);
+
+        assertNotNull(flightDto);
     }
 
     @Test
-    public void whenPostCorrectFlightShouldBeCreated() throws AirPortDaoException {
-        createFlightHandler.post(mockRequest, mockResponse);
-        verify(mockFlightService, times(1)).create(flight);
+    public void whenPostThenPutMethodShouldBeCalled() throws AirPortDaoException {
+        updateFlightHandler = mock(UpdateFlightHandler.class);
+        doCallRealMethod().when(updateFlightHandler).post(mockRequest, mockResponse);
+        updateFlightHandler.post(mockRequest, mockResponse);
+        
+        verify(updateFlightHandler, times(1)).put(mockRequest, mockResponse);
+    }
+
+    @Test
+    public void whenPutThenFlightShouldBeUpdatedAndPathToJspShouldBeSetToRequest() throws AirPortDaoException {
+        updateFlightHandler.put(mockRequest, mockResponse);
+        verify(mockFlightService, times(1)).update(flight);
     }
 
     private void createRequest() {
         mockRequest = new MockHttpServletRequest();
+        mockRequest.setParameter("id",flight.getFlId().toString());
         mockRequest.setParameter("name",flight.getName());
         mockRequest.setParameter("carrier",flight.getCarrier());
         mockRequest.setParameter("fare",flight.getFare().toString());
@@ -69,6 +87,7 @@ public class CreateFlightHandlerMockitoTest {
         LocalDateTime departureDate = LocalDateTime.parse(DEPARTURE_DATE, formatter);
         LocalDateTime arrivalDate = LocalDateTime.parse(ARRIVAL_DATE, formatter);
         flight = new Flight();
+        flight.setFlId(1);
         flight.setName("Kyiv-Rome");
         flight.setCarrier("Wizz Air");
         flight.setMealOn(true);
