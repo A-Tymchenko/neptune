@@ -36,7 +36,7 @@ public class GetAirportsHandler implements ServletHandler {
             result.add(createAirportDTO(airport));
         });
         request.setAttribute("airports", result);
-        request.setAttribute("jspPath", "showAllAirports.jsp");
+        request.setAttribute("jspPath", "show_airports.jsp");
     }
 
     private AirportDTO createAirportDTO(final Airport airport) {

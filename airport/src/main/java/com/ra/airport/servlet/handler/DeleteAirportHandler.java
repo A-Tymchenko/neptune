@@ -33,7 +33,8 @@ public class DeleteAirportHandler implements ServletHandler {
             final var airport = new Airport();
             airport.setApId(Integer.parseInt(airportId));
             airportService.delete(airport);
-            request.setAttribute("jspPath", "deleteAirport.jsp");
+            request.setAttribute("airport", airport);
+            request.setAttribute("jspPath", "delete_airport.jsp");
         }
     }
 }
