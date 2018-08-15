@@ -1,4 +1,4 @@
-package com.ra.airport;
+package com.ra.airport.service;
 
 import com.ra.airport.entity.Airport;
 import com.ra.airport.repository.exception.AirPortDaoException;

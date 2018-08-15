@@ -27,11 +27,6 @@ public class DeleteAirportHandler implements ServletHandler {
     }
 
     @Override
-    public void get(final HttpServletRequest request, final HttpServletResponse response) throws AirPortDaoException {
-        delete(request, response);
-    }
-
-    @Override
     public void delete(final HttpServletRequest request, final HttpServletResponse response) throws AirPortDaoException {
         final String airportId = request.getParameter("apId");
         if (Strings.isNotBlank(airportId)) {
@@ -39,10 +34,5 @@ public class DeleteAirportHandler implements ServletHandler {
             airport.setApId(Integer.parseInt(airportId));
             airportService.delete(airport);
         }
-    }
-
-    @Override
-    public void put(final HttpServletRequest request, final HttpServletResponse response) throws AirPortDaoException {
-
     }
 }

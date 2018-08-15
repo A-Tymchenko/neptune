@@ -1,8 +1,7 @@
-package com.ra.airport;
+package com.ra.airport.servlet.handler;
 
 import com.ra.airport.repository.exception.AirPortDaoException;
 import com.ra.airport.service.AirportServiceImpl;
-import com.ra.airport.servlet.handler.UpdateAirportHandler;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
@@ -31,12 +30,6 @@ public class UpdateAirportMockitoTest {
     @Test
     public void whenUpdateThenAirportShoudBeUpdated() throws AirPortDaoException {
         airportHandler.post(mockRequest, mockResponse);
-    }
-
-    @Test void testPutDeleteGetMethods() throws AirPortDaoException {
-        airportHandler.put(mockRequest, mockResponse);
-        airportHandler.get(mockRequest, mockResponse);
-        airportHandler.delete(mockRequest, mockResponse);
     }
 
     private void createRequest(MockHttpServletRequest mockRequest) {

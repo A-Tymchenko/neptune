@@ -1,9 +1,8 @@
-package com.ra.airport;
+package com.ra.airport.servlet.handler;
 
 import com.ra.airport.entity.Airport;
 import com.ra.airport.repository.exception.AirPortDaoException;
 import com.ra.airport.service.AirportServiceImpl;
-import com.ra.airport.servlet.handler.DeleteAirportHandler;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -13,13 +12,13 @@ import org.mockito.MockitoAnnotations;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 
-public class DeleteAirportMockitoTest {
+public class CreateAirportMockitoTest {
 
     @Mock
     private AirportServiceImpl airportService;
 
     @InjectMocks
-    private DeleteAirportHandler airportHandler;
+    private CreateAirportHandler airportHandler;
     private MockHttpServletRequest mockRequest;
     private MockHttpServletResponse mockResponse;
     private Airport airport;
@@ -27,27 +26,23 @@ public class DeleteAirportMockitoTest {
     @BeforeEach
     public void init() {
         MockitoAnnotations.initMocks(this);
-        airport = new Airport(1,null, 0, null, null, 0);
+        airport = new Airport(null,"Kenedy", 4949034, "International", "USA New Yourk", 10);
         mockRequest = new MockHttpServletRequest();
         mockResponse = new MockHttpServletResponse();
-        mockRequest.setParameter("apId", "1");
+        createRequest(mockRequest);
     }
 
     @Test
-    public void whenDeleteAirportThenAirportShoudBeDeleted() throws AirPortDaoException {
-        airportHandler.delete(mockRequest, mockResponse);
-        Mockito.verify(airportService, Mockito.times(1)).delete(airport);
-    }
-
-    @Test void testPutPostGetMethods() throws AirPortDaoException {
-        airportHandler.put(mockRequest, mockResponse);
-        airportHandler.get(mockRequest, mockResponse);
+    public void whenCreateThenNewAirportShoudBeCreated() throws AirPortDaoException {
         airportHandler.post(mockRequest, mockResponse);
+        Mockito.verify(airportService, Mockito.times(1)).create(airport);
     }
 
-    @Test
-    void whenIdIsBlanckThenNothingShoudBeDleted() throws AirPortDaoException {
-        mockRequest.setParameter("apId", "");
-        airportHandler.delete(mockRequest, mockResponse);
+    private void createRequest(MockHttpServletRequest mockRequest) {
+        mockRequest.setParameter("apName", "Kenedy");
+        mockRequest.setParameter("apNum", "4949034");
+        mockRequest.setParameter("apType", "International");
+        mockRequest.setParameter("address", "USA New Yourk");
+        mockRequest.setParameter("terminalCount", "10");
     }
 }

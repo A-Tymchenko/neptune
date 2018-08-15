@@ -1,4 +1,4 @@
-package com.ra.airport;
+package com.ra.airport.servlet.handler;
 
 import com.ra.airport.repository.exception.AirPortDaoException;
 import com.ra.airport.servlet.DispatcherServlet;
@@ -12,6 +12,7 @@ import org.mockito.MockitoAnnotations;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 
+import javax.naming.OperationNotSupportedException;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import java.io.IOException;
@@ -41,26 +42,26 @@ public class DispatcherServletMockitoTest {
     }
 
     @Test
-    public void whereGetRequestThenRedirectToJSP() throws IOException, ServletException, AirPortDaoException {
+    public void whereGetRequestThenRedirectToJSP() throws IOException, ServletException, AirPortDaoException, OperationNotSupportedException {
         dispatcherServlet.doGet(request, response);
         Mockito.verify(handlerFactory, Mockito.times(1)).handleGetRequest("/airports", request, response);
     }
 
     @Test
-    public void wherePostRequestThenRedirectToJSP() throws IOException, ServletException, AirPortDaoException {
+    public void wherePostRequestThenRedirectToJSP() throws IOException, ServletException, AirPortDaoException, OperationNotSupportedException {
         request.setAttribute("jspPath", "TEST");
         dispatcherServlet.doPost(request, response);
         Mockito.verify(handlerFactory, Mockito.times(1)).handlePostRequest("/airports", request, response);
     }
 
     @Test
-    public void wherePostRequestThenThrowException() throws IOException, ServletException, AirPortDaoException {
+    public void wherePostRequestThenThrowException() throws IOException, ServletException, AirPortDaoException, OperationNotSupportedException {
         Mockito.doThrow(AirPortDaoException.class).when(handlerFactory).handlePostRequest(Mockito.any(), Mockito.any(), Mockito.any());
         dispatcherServlet.doPost(request, response);
     }
 
     @Test
-    public void whereGetRequestThenThrowException() throws IOException, ServletException, AirPortDaoException {
+    public void whereGetRequestThenThrowException() throws IOException, ServletException, AirPortDaoException, OperationNotSupportedException {
         Mockito.doThrow(AirPortDaoException.class).when(handlerFactory).handleGetRequest(Mockito.any(), Mockito.any(), Mockito.any());
         dispatcherServlet.doGet(request, response);
     }

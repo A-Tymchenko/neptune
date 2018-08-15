@@ -1,6 +1,7 @@
 package com.ra.airport.servlet.handler.factory;
 
 import java.util.Map;
+import javax.naming.OperationNotSupportedException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -20,8 +21,8 @@ public class HandlerFactory {
      *
      * @throw AirPortDaoException
      */
-    public void handleGetRequest(final String path, final HttpServletRequest request,
-                                 final HttpServletResponse response) throws AirPortDaoException {
+    public void handleGetRequest(final String path, final HttpServletRequest request, final HttpServletResponse response)
+            throws AirPortDaoException, OperationNotSupportedException {
         if (handlers.containsKey(path)) {
             final ServletHandler handler = handlers.get(path);
             handler.get(request, response);
@@ -31,8 +32,8 @@ public class HandlerFactory {
     /**
      * Init post request to EntityHandler.
      */
-    public void handlePostRequest(final String path, final HttpServletRequest request,
-                                  final HttpServletResponse response) throws AirPortDaoException {
+    public void handlePostRequest(final String path, final HttpServletRequest request, final HttpServletResponse response)
+            throws AirPortDaoException, OperationNotSupportedException {
         if (handlers.containsKey(path)) {
             final ServletHandler handler = handlers.get(path);
             handler.post(request, response);

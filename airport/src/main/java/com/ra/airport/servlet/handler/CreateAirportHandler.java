@@ -1,5 +1,6 @@
 package com.ra.airport.servlet.handler;
 
+import javax.naming.OperationNotSupportedException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -27,21 +28,6 @@ public class CreateAirportHandler implements ServletHandler {
         final var airport = new Airport();
         BeanUtils.copyProperties(airportDTO, airport);
         airportService.create(airport);
-    }
-
-    @Override
-    public void get(final HttpServletRequest request, final HttpServletResponse response) throws AirPortDaoException {
-
-    }
-
-    @Override
-    public void delete(final HttpServletRequest request, final HttpServletResponse response) throws AirPortDaoException {
-
-    }
-
-    @Override
-    public void put(final HttpServletRequest request, final HttpServletResponse response) throws AirPortDaoException {
-
     }
 
     private AirportDTO createAirportDTO(final HttpServletRequest request) {

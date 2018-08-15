@@ -29,21 +29,6 @@ public class UpdateAirportHandler implements ServletHandler {
         airportService.update(airport);
     }
 
-    @Override
-    public void get(final HttpServletRequest request, final HttpServletResponse response) throws AirPortDaoException {
-
-    }
-
-    @Override
-    public void delete(final HttpServletRequest request, final HttpServletResponse response) throws AirPortDaoException {
-
-    }
-
-    @Override
-    public void put(final HttpServletRequest request, final HttpServletResponse response) throws AirPortDaoException {
-
-    }
-
     private AirportDTO createAirportDTO(final HttpServletRequest request) {
         final var airportDTO = new AirportDTO();
         airportDTO.setApId(Integer.parseInt(request.getParameter("apId")));

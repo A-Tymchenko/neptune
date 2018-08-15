@@ -39,16 +39,6 @@ public class GetAirportsHandler implements ServletHandler {
         request.setAttribute("jspPath", "showAllAirports.jsp");
     }
 
-    @Override
-    public void delete(final HttpServletRequest request, final HttpServletResponse response) throws AirPortDaoException {
-
-    }
-
-    @Override
-    public void put(final HttpServletRequest request, final HttpServletResponse response) throws AirPortDaoException {
-
-    }
-
     private AirportDTO createAirportDTO(Airport airport) {
         final AirportDTO airportDTO = new AirportDTO();
         BeanUtils.copyProperties(airport, airportDTO);
