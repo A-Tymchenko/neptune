@@ -33,7 +33,7 @@ public class HandlerFactory {
      * Init post request to EntityHandler.
      */
     public void handlePostRequest(final String path, final HttpServletRequest request,
-                                  final HttpServletResponse response) throws AirPortDaoException {
+                                  final HttpServletResponse response) throws AirPortDaoException, OperationNotSupportedException {
         if (handlers.containsKey(path)) {
             final ServletHandler handler = handlers.get(path);
             handler.post(request, response);

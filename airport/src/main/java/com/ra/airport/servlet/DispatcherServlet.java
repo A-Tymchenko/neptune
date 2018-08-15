@@ -92,7 +92,7 @@ public class DispatcherServlet extends HttpServlet {
         try {
             handlerFactory.handlePostRequest(this.getPath(req), req, resp);
             redirectRequest(req, resp);
-        } catch (AirPortDaoException e) {
+        } catch (OperationNotSupportedException | AirPortDaoException e) {
             LOGGER.error("Error post request processing", e);
         }
     }

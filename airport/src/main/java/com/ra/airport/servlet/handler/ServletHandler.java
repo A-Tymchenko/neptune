@@ -10,7 +10,7 @@ public interface ServletHandler {
     /**
      * Called where request method is post.
      */
-    void post(HttpServletRequest request, HttpServletResponse response) throws AirPortDaoException;
+    void post(HttpServletRequest request, HttpServletResponse response) throws AirPortDaoException, OperationNotSupportedException;
 
     /**
      * Called where request method is get.
