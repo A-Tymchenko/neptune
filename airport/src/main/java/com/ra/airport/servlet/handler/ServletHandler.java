@@ -10,20 +10,32 @@ public interface ServletHandler {
     /**
      * Called where request method is post.
      */
-    void post(HttpServletRequest request, HttpServletResponse response) throws AirPortDaoException, OperationNotSupportedException;
+    default void post(HttpServletRequest request, HttpServletResponse response) throws AirPortDaoException,
+            OperationNotSupportedException {
+        throw new OperationNotSupportedException("Method POST not supported on this URL");
+    }
 
     /**
      * Called where request method is get.
      */
-    void get(HttpServletRequest request, HttpServletResponse response) throws AirPortDaoException, OperationNotSupportedException;
+    default void get(HttpServletRequest request, HttpServletResponse response) throws AirPortDaoException,
+            OperationNotSupportedException {
+        throw new OperationNotSupportedException("Method GET not supported on this URL");
+    }
 
     /**
      * Called where request method is delete.
      */
-    void delete(HttpServletRequest request, HttpServletResponse response) throws AirPortDaoException, OperationNotSupportedException;
+    default void delete(HttpServletRequest request, HttpServletResponse response) throws AirPortDaoException,
+            OperationNotSupportedException {
+        throw new OperationNotSupportedException("Method DELETE not supported on this URL");
+    }
 
     /**
      * Called where request method is put.
      */
-    void put(HttpServletRequest request, HttpServletResponse response) throws AirPortDaoException, OperationNotSupportedException;
+    default void put(HttpServletRequest request, HttpServletResponse response) throws AirPortDaoException,
+            OperationNotSupportedException {
+        throw new OperationNotSupportedException("Method PUT not supported on this URL");
+    }
 }
