@@ -63,9 +63,4 @@ public class UpdateFlightHandler implements ServletHandler {
 
         return flightDto;
     }
-
-    @Override
-    public void delete(HttpServletRequest request, HttpServletResponse response) throws AirPortDaoException, OperationNotSupportedException {
-        throw new OperationNotSupportedException();
-    }
 }

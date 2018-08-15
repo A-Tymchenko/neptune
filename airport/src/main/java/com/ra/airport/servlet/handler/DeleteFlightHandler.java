@@ -35,14 +35,4 @@ public class DeleteFlightHandler implements ServletHandler {
             flightService.delete(flight);
         }
     }
-
-    @Override
-    public void put(HttpServletRequest request, HttpServletResponse response) throws OperationNotSupportedException {
-        throw new OperationNotSupportedException();
-    }
-
-    @Override
-    public void get(HttpServletRequest request, HttpServletResponse response) throws OperationNotSupportedException {
-        throw new OperationNotSupportedException();
-    }
 }

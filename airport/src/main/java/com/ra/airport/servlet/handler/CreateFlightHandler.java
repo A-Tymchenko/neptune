@@ -48,14 +48,4 @@ public class CreateFlightHandler implements ServletHandler {
 
         return flightDto;
     }
-
-    @Override
-    public void delete(HttpServletRequest request, HttpServletResponse response) throws AirPortDaoException, OperationNotSupportedException {
-         throw new OperationNotSupportedException();
-    }
-
-    @Override
-    public void put(HttpServletRequest request, HttpServletResponse response) throws AirPortDaoException, OperationNotSupportedException {
-        throw new OperationNotSupportedException();
-    }
 }
