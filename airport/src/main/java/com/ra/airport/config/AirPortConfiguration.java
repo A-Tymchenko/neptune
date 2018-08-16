@@ -4,11 +4,8 @@ import java.util.HashMap;
 import java.util.Map;
 import javax.sql.DataSource;
 
-import com.ra.airport.servlet.handler.CreateFlightHandler;
-import com.ra.airport.servlet.handler.DeleteFlightHandler;
 import com.ra.airport.servlet.handler.GetFlightsHandler;
 import com.ra.airport.servlet.handler.ServletHandler;
-import com.ra.airport.servlet.handler.UpdateFlightHandler;
 import com.ra.airport.servlet.handler.factory.HandlerFactory;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
@@ -44,9 +41,20 @@ public class AirPortConfiguration {
     @Autowired
     private transient UpdateFlightHandler updateFlightHand;
 
+    @Autowired
+    private transient GetAirportsHandler airportsHandler;
+
+    @Autowired
+    private transient CreateAirportHandler createAirportHand;
+
+    @Autowired
+    private transient UpdateAirportHandler updateAirportHand;
+
+    @Autowired
+    private transient DeleteAirportHandler deleteAirportHand;
+
     /**
      * Register {@link DataSource} bean.
-     *
      * @return data source bean
      */
     @Bean
@@ -56,7 +64,6 @@ public class AirPortConfiguration {
 
     /**
      * Register {@link HikariConfig} bean. Set main properties to it.
-     *
      * @return return config for {@link DataSource} bean
      */
     @Bean
@@ -71,7 +78,6 @@ public class AirPortConfiguration {
 
     /**
      * Register {@link JdbcTemplate} bean.
-     *
      * @return template
      */
     @Bean
@@ -93,7 +99,7 @@ public class AirPortConfiguration {
      * Register handlers map.
      * Using by {@link HandlerFactory}.
      *
-     * @return NamedParameterJdbcTemplate.
+     * @return Map.
      */
     @Bean
     public Map<String, ServletHandler> handlers() {
@@ -102,6 +108,10 @@ public class AirPortConfiguration {
         handlers.put("/create_flight", createFlightHand);
         handlers.put("/delete_flight", deleteFlightHand);
         handlers.put("/update_flight", updateFlightHand);
+        handlers.put("/airports", airportsHandler);
+        handlers.put("/airport/create", createAirportHand);
+        handlers.put("/airport/update", updateAirportHand);
+        handlers.put("/airport/delete", deleteAirportHand);
         return handlers;
     }
 
