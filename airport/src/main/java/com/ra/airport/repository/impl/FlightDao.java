@@ -3,7 +3,6 @@ package com.ra.airport.repository.impl;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.sql.Time;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -30,11 +29,11 @@ import org.springframework.stereotype.Repository;
 public class FlightDao implements AirPortDao<Flight> {
 
     private static final String INSERT_FLIGHT_SQL = "INSERT INTO flight "
-            + "(name, carrier, duration, meal_on, fare, departure_date, arrival_date) "
-            + " VALUES(?,?,?,?,?,?,?)";
+            + "(name, carrier, meal_on, fare, departure_date, arrival_date) "
+            + "VALUES(?,?,?,?,?,?)";
 
     private static final String UPDATE_FLIGHT_SQL = "UPDATE flight "
-            + "SET name = ?, carrier = ?, duration = ?, meal_on = ?, fare = ?, departure_date = ?, arrival_date = ? "
+            + "SET name = ?, carrier = ?, meal_on = ?, fare = ?, departure_date = ?, arrival_date = ? "
             + "WHERE flId = ?";
 
     private static final Logger LOGGER = LogManager.getLogger(FlightDao.class);
@@ -159,7 +158,6 @@ public class FlightDao implements AirPortDao<Flight> {
         final LocalDateTime departureDate = flight.getDepartureDate();
         preparedStatement.setString(StatementParameter.FLIGHT_NAME.get(), flight.getName());
         preparedStatement.setString(StatementParameter.FLIGHT_CARRIER.get(), flight.getCarrier());
-        preparedStatement.setTime(StatementParameter.FLIGHT_DURATION.get(), Time.valueOf(flight.getDuration()));
         preparedStatement.setBoolean(StatementParameter.FLIGHT_MEAL_ON.get(), flight.getMealOn());
         preparedStatement.setDouble(StatementParameter.FLIGHT_FARE.get(), flight.getFare());
         preparedStatement.setTimestamp(StatementParameter.FLIGHT_DEPARTURE_DATE.get(), Timestamp.valueOf(departureDate));

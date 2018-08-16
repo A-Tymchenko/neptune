@@ -54,7 +54,6 @@ public class FlightDaoTest {
         flight = new Flight();
         flight.setName("Kyiv-Rome");
         flight.setCarrier("Wizz Air");
-        flight.setDuration(LocalTime.of(02, 00, 00));
         flight.setMealOn(true);
         flight.setFare(100.0);
         flight.setDepartureDate(departureDate);
@@ -103,7 +102,6 @@ public class FlightDaoTest {
     private Flight changeFlight(Flight flight) {
         flight.setName("Kyiv-Berlin");
         flight.setCarrier("MAU");
-        flight.setDuration(flight.getDuration().plus(1, ChronoUnit.HOURS));
         flight.setMealOn(false);
         flight.setFare(Double.valueOf(200));
         flight.setDepartureDate(flight.getDepartureDate().plusDays(1));
