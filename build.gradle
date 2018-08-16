@@ -259,7 +259,6 @@ project("airport") {
         compile spring.context
         compile spring.jdbc
         compile spring.test
-        compile web.jstl
     }
 }
 
