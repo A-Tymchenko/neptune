@@ -1,12 +1,13 @@
 package com.ra.airport.servlet.handler;
 
-import java.time.*;
+import java.time.LocalDateTime;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import com.ra.airport.dto.FlightDto;
 import com.ra.airport.entity.Flight;
 import com.ra.airport.repository.exception.AirPortDaoException;
 import com.ra.airport.service.FlightService;
-import javax.naming.OperationNotSupportedException;
-import javax.servlet.http.*;
 import org.apache.logging.log4j.util.Strings;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,25 +16,25 @@ import org.springframework.stereotype.Component;
 @Component
 public class UpdateFlightHandler implements ServletHandler {
 
-    private FlightService flightService;
+    private final transient FlightService flightService;
 
     @Autowired
-    public UpdateFlightHandler(FlightService flightService) {
+    public UpdateFlightHandler(final FlightService flightService) {
         this.flightService = flightService;
     }
 
     @Override
-    public void post(HttpServletRequest request, HttpServletResponse response) throws AirPortDaoException {
+    public void post(final HttpServletRequest request, final HttpServletResponse response) throws AirPortDaoException {
         put(request, response);
     }
 
     @Override
-    public void get(HttpServletRequest request, HttpServletResponse response) throws AirPortDaoException {
-        String flightId = request.getParameter("id");
+    public void get(final HttpServletRequest request, final HttpServletResponse response) throws AirPortDaoException {
+        final String flightId = request.getParameter("id");
         if (Strings.isNotBlank(flightId)) {
             flightService.getById(Integer.parseInt(flightId)).ifPresent(
                     flight -> {
-                        FlightDto flightDto = new FlightDto();
+                        final FlightDto flightDto = new FlightDto();
                         BeanUtils.copyProperties(flight, flightDto);
                         request.setAttribute("flight", flightDto);
                     });
@@ -42,17 +43,17 @@ public class UpdateFlightHandler implements ServletHandler {
     }
 
     @Override
-    public void put(HttpServletRequest request, HttpServletResponse response) throws AirPortDaoException {
-        FlightDto flightDto = createFlightDto(request);
-        Flight flight = new Flight();
+    public void put(final HttpServletRequest request, final HttpServletResponse response) throws AirPortDaoException {
+        final FlightDto flightDto = createFlightDto(request);
+        final Flight flight = new Flight();
         BeanUtils.copyProperties(flightDto, flight);
         flightService.update(flight);
 
         request.setAttribute("jspPath", "/flights");
     }
 
-    private FlightDto createFlightDto(HttpServletRequest request) {
-        FlightDto flightDto = new FlightDto();
+    private FlightDto createFlightDto(final HttpServletRequest request) {
+        final FlightDto flightDto = new FlightDto();
         flightDto.setFlId(Integer.parseInt(request.getParameter("id")));
         flightDto.setName(request.getParameter("name"));
         flightDto.setCarrier(request.getParameter("carrier"));

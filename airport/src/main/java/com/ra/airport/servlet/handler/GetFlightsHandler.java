@@ -2,7 +2,6 @@ package com.ra.airport.servlet.handler;
 
 import java.util.ArrayList;
 import java.util.List;
-import javax.naming.OperationNotSupportedException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 

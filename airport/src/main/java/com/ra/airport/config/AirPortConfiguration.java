@@ -1,6 +1,9 @@
 package com.ra.airport.config;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
+import javax.sql.DataSource;
+
 import com.ra.airport.servlet.handler.CreateFlightHandler;
 import com.ra.airport.servlet.handler.DeleteFlightHandler;
 import com.ra.airport.servlet.handler.GetFlightsHandler;
@@ -9,7 +12,6 @@ import com.ra.airport.servlet.handler.UpdateFlightHandler;
 import com.ra.airport.servlet.handler.factory.HandlerFactory;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
-import javax.sql.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -31,16 +33,16 @@ public class AirPortConfiguration {
     private transient Environment environment;
 
     @Autowired
-    private transient GetFlightsHandler getFlightsHandler;
+    private transient GetFlightsHandler getFlightsHand;
 
     @Autowired
-    private transient CreateFlightHandler createFlightHandler;
+    private transient CreateFlightHandler createFlightHand;
 
     @Autowired
-    private transient DeleteFlightHandler deleteFlightHandler;
+    private transient DeleteFlightHandler deleteFlightHand;
 
     @Autowired
-    private transient UpdateFlightHandler updateFlightHandler;
+    private transient UpdateFlightHandler updateFlightHand;
 
     /**
      * Register {@link DataSource} bean.
@@ -96,10 +98,10 @@ public class AirPortConfiguration {
     @Bean
     public Map<String, ServletHandler> handlers() {
         final Map<String, ServletHandler> handlers = new HashMap<>();
-        handlers.put("/flights", getFlightsHandler);
-        handlers.put("/create_flight", createFlightHandler);
-        handlers.put("/delete_flight", deleteFlightHandler);
-        handlers.put("/update_flight", updateFlightHandler);
+        handlers.put("/flights", getFlightsHand);
+        handlers.put("/create_flight", createFlightHand);
+        handlers.put("/delete_flight", deleteFlightHand);
+        handlers.put("/update_flight", updateFlightHand);
         return handlers;
     }
 
