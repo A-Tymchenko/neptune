@@ -72,7 +72,7 @@ public class DispatcherServlet extends HttpServlet {
      * @param resp response
      */
     @Override
-    protected void doGet(final HttpServletRequest req, final HttpServletResponse resp) throws IOException, ServletException {
+    public void doGet(final HttpServletRequest req, final HttpServletResponse resp) throws IOException, ServletException {
         try {
             handlerFactory.handleGetRequest(this.getPath(req), req, resp);
             redirectRequest(req, resp);
@@ -88,7 +88,7 @@ public class DispatcherServlet extends HttpServlet {
      * @param resp response
      */
     @Override
-    protected void doPost(final HttpServletRequest req, final HttpServletResponse resp) throws IOException, ServletException {
+    public void doPost(final HttpServletRequest req, final HttpServletResponse resp) throws IOException, ServletException {
         try {
             handlerFactory.handlePostRequest(this.getPath(req), req, resp);
             redirectRequest(req, resp);
