@@ -4,8 +4,15 @@ import java.util.HashMap;
 import java.util.Map;
 import javax.sql.DataSource;
 
+import com.ra.airport.servlet.handler.CreateAirportHandler;
+import com.ra.airport.servlet.handler.CreateFlightHandler;
+import com.ra.airport.servlet.handler.DeleteAirportHandler;
+import com.ra.airport.servlet.handler.DeleteFlightHandler;
+import com.ra.airport.servlet.handler.GetAirportsHandler;
 import com.ra.airport.servlet.handler.GetFlightsHandler;
 import com.ra.airport.servlet.handler.ServletHandler;
+import com.ra.airport.servlet.handler.UpdateAirportHandler;
+import com.ra.airport.servlet.handler.UpdateFlightHandler;
 import com.ra.airport.servlet.handler.factory.HandlerFactory;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
@@ -105,9 +112,9 @@ public class AirPortConfiguration {
     public Map<String, ServletHandler> handlers() {
         final Map<String, ServletHandler> handlers = new HashMap<>();
         handlers.put("/flights", getFlightsHand);
-        handlers.put("/create_flight", createFlightHand);
-        handlers.put("/delete_flight", deleteFlightHand);
-        handlers.put("/update_flight", updateFlightHand);
+        handlers.put("/flight/create", createFlightHand);
+        handlers.put("/flight/delete", deleteFlightHand);
+        handlers.put("/flight/update", updateFlightHand);
         handlers.put("/airports", airportsHandler);
         handlers.put("/airport/create", createAirportHand);
         handlers.put("/airport/update", updateAirportHand);

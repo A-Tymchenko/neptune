@@ -39,7 +39,7 @@ public class UpdateFlightHandler implements ServletHandler {
                         request.setAttribute("flight", flightDto);
                     });
         }
-        request.setAttribute("jspPath", "WEB-INF/update_flight.jsp");
+        request.setAttribute("jspPath", "/flight/update_flight.jsp");
     }
 
     @Override

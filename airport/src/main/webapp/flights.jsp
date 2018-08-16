@@ -29,15 +29,15 @@
                 <td><c:out value="${flight.getFare()}"/></td>
                 <td><c:out value="${flight.getMealOn()}"/></td>
                 <td>
-                    <form method="post" action="/delete_flight?id=${flight.getFlId()}" >
+                    <form method="post" action="/flight/delete?id=${flight.getFlId()}" >
                         <input type="submit" align="center" value="delete">
                     </form>
                 </td>
-                <td><a href="/update_flight?id=${flight.getFlId()}">Update</a></td>
+                <td><a href="/flight/update?id=${flight.getFlId()}">Update</a></td>
             </tr>
         </c:forEach>
     </table>
-    <a href="/create_flight">Create</a>
+    <a href="/flight/create">Create</a>
 </div>
 </body>
 </html>
