@@ -2,17 +2,9 @@ package com.ra.airport.config;
 
 import java.util.HashMap;
 import java.util.Map;
+import com.ra.airport.servlet.handler.*;
 import javax.sql.DataSource;
 
-import com.ra.airport.servlet.handler.CreateAirportHandler;
-import com.ra.airport.servlet.handler.CreateFlightHandler;
-import com.ra.airport.servlet.handler.DeleteAirportHandler;
-import com.ra.airport.servlet.handler.DeleteFlightHandler;
-import com.ra.airport.servlet.handler.GetAirportsHandler;
-import com.ra.airport.servlet.handler.GetFlightsHandler;
-import com.ra.airport.servlet.handler.ServletHandler;
-import com.ra.airport.servlet.handler.UpdateAirportHandler;
-import com.ra.airport.servlet.handler.UpdateFlightHandler;
 import com.ra.airport.servlet.handler.factory.HandlerFactory;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
@@ -59,6 +51,9 @@ public class AirPortConfiguration {
 
     @Autowired
     private transient DeleteAirportHandler deleteAirportHand;
+
+    @Autowired
+    private transient CreatePlaneHandler createPlaneHand;
 
     /**
      * Register {@link DataSource} bean.
@@ -119,6 +114,7 @@ public class AirPortConfiguration {
         handlers.put("/airport/create", createAirportHand);
         handlers.put("/airport/update", updateAirportHand);
         handlers.put("/airport/delete", deleteAirportHand);
+        handlers.put("/plane/create", createAirportHand);
         return handlers;
     }
 

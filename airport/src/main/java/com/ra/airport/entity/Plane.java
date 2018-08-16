@@ -38,7 +38,7 @@ public class Plane {
         return type;
     }
 
-    public int getPlateNumber() {
+    public Integer getPlateNumber() {
         return plateNumber;
     }
 
@@ -58,7 +58,7 @@ public class Plane {
         this.type = type;
     }
 
-    public void setPlateNumber(final int plateNumber) {
+    public void setPlateNumber(final Integer plateNumber) {
         this.plateNumber = plateNumber;
     }
 
