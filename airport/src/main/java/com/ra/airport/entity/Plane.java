@@ -1,9 +1,8 @@
 package com.ra.airport.entity;
 
-import java.io.Serializable;
 import java.util.Objects;
 
-public class Plane implements Serializable {
+public class Plane {
 
     private Integer planeId;
     private String owner;
