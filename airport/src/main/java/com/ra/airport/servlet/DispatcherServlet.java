@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.sql.Connection;
 import java.sql.SQLException;
+import javax.naming.OperationNotSupportedException;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -71,11 +72,11 @@ public class DispatcherServlet extends HttpServlet {
      * @param resp response
      */
     @Override
-    protected void doGet(final HttpServletRequest req, final HttpServletResponse resp) throws IOException, ServletException {
+    public void doGet(final HttpServletRequest req, final HttpServletResponse resp) throws IOException, ServletException {
         try {
             handlerFactory.handleGetRequest(this.getPath(req), req, resp);
             redirectRequest(req, resp);
-        } catch (AirPortDaoException e) {
+        } catch (OperationNotSupportedException | AirPortDaoException e) {
             LOGGER.error("Error get request processing", e);
         }
     }
@@ -87,11 +88,11 @@ public class DispatcherServlet extends HttpServlet {
      * @param resp response
      */
     @Override
-    protected void doPost(final HttpServletRequest req, final HttpServletResponse resp) throws IOException, ServletException {
+    public void doPost(final HttpServletRequest req, final HttpServletResponse resp) throws IOException, ServletException {
         try {
             handlerFactory.handlePostRequest(this.getPath(req), req, resp);
             redirectRequest(req, resp);
-        } catch (AirPortDaoException e) {
+        } catch (OperationNotSupportedException | AirPortDaoException e) {
             LOGGER.error("Error post request processing", e);
         }
     }
