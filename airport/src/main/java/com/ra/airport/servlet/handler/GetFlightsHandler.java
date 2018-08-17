@@ -33,13 +33,7 @@ public class GetFlightsHandler implements ServletHandler {
 
     @Override
     public void get(final HttpServletRequest request, final HttpServletResponse response) throws AirPortDaoException {
-       final List<Flight> flights = flightService.getAll();
-       final List<FlightDto> result = new ArrayList<>();
-       for (final Flight flight : flights) {
-            result.add(createFlightDto(flight));
-        }
-        request.setAttribute("flights", result);
-        request.setAttribute("jspPath", "/flights.jsp");
+        throw new  RuntimeException();
     }
 
     private FlightDto createFlightDto(final Flight flight) {
