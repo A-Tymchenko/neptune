@@ -28,14 +28,14 @@ public class GetFlightsHandler implements ServletHandler {
 
     @Override
     public void post(final HttpServletRequest request, final HttpServletResponse response) throws AirPortDaoException {
-       get(request, response);
+        get(request, response);
     }
 
     @Override
     public void get(final HttpServletRequest request, final HttpServletResponse response) throws AirPortDaoException {
-       final List<Flight> flights = flightService.getAll();
-       final List<FlightDto> result = new ArrayList<>();
-       for (final Flight flight : flights) {
+        final List<Flight> flights = flightService.getAll();
+        final List<FlightDto> result = new ArrayList<>();
+        for (final Flight flight : flights) {
             result.add(createFlightDto(flight));
         }
         request.setAttribute("flights", result);
