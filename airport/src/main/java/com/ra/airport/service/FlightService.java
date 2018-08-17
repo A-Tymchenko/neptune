@@ -25,22 +25,22 @@ public class FlightService implements AirPortService<Flight> {
 
     @Override
     public Flight create(final Flight flight) throws AirPortDaoException {
-        return null;
+        return flightDao.create(flight);
     }
 
     @Override
     public Flight update(final Flight flight) throws AirPortDaoException {
-        return null;
+       return flightDao.update(flight);
     }
 
     @Override
     public boolean delete(final Flight flight) throws AirPortDaoException {
-        return false;
+       return flightDao.delete(flight);
     }
 
     @Override
     public Optional<Flight> getById(final int flightId) throws AirPortDaoException {
-        return Optional.empty();
+        return flightDao.getById(flightId);
     }
 
     @Override
