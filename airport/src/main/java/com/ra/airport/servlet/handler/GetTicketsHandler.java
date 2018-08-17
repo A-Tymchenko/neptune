@@ -1,5 +1,10 @@
 package com.ra.airport.servlet.handler;
 
+import java.util.ArrayList;
+import java.util.List;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import com.ra.airport.dto.TicketDTO;
 import com.ra.airport.entity.Ticket;
 import com.ra.airport.repository.exception.AirPortDaoException;
@@ -7,12 +12,6 @@ import com.ra.airport.service.AirPortService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
-import javax.naming.OperationNotSupportedException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.util.ArrayList;
-import java.util.List;
 
 @Component
 public class GetTicketsHandler implements ServletHandler {
@@ -26,7 +25,7 @@ public class GetTicketsHandler implements ServletHandler {
 
     @Override
     public void post(final HttpServletRequest request, final HttpServletResponse response) throws AirPortDaoException {
-        this.get(request,response);
+        this.get(request, response);
     }
 
     @Override
@@ -37,10 +36,10 @@ public class GetTicketsHandler implements ServletHandler {
             result.add(createTicketDTO(ticket));
         });
         request.setAttribute("tickets", result);
-        request.setAttribute("jspPath", "showAllTickets.jsp");
+        request.setAttribute("jspPath", "show_tickets.jsp");
     }
 
-    private TicketDTO createTicketDTO(Ticket ticket) {
+    private TicketDTO createTicketDTO(final Ticket ticket) {
         final TicketDTO ticketDTO = new TicketDTO();
         BeanUtils.copyProperties(ticket, ticketDTO);
         return ticketDTO;

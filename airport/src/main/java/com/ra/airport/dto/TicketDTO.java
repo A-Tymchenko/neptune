@@ -16,7 +16,7 @@ public class TicketDTO {
         return ticketId;
     }
 
-    public void setTicketId(Integer ticketId) {
+    public void setTicketId(final Integer ticketId) {
         this.ticketId = ticketId;
     }
 
@@ -24,7 +24,7 @@ public class TicketDTO {
         return ticketNumber;
     }
 
-    public void setTicketNumber(String ticketNumber) {
+    public void setTicketNumber(final String ticketNumber) {
         this.ticketNumber = ticketNumber;
     }
 
@@ -32,7 +32,7 @@ public class TicketDTO {
         return passengerName;
     }
 
-    public void setPassengerName(String passengerName) {
+    public void setPassengerName(final String passengerName) {
         this.passengerName = passengerName;
     }
 
@@ -40,7 +40,7 @@ public class TicketDTO {
         return document;
     }
 
-    public void setDocument(String document) {
+    public void setDocument(final String document) {
         this.document = document;
     }
 
@@ -48,7 +48,7 @@ public class TicketDTO {
         return sellingDate;
     }
 
-    public void setSellingDate(Timestamp sellingDate) {
+    public void setSellingDate(final Timestamp sellingDate) {
         this.sellingDate = sellingDate;
     }
 }

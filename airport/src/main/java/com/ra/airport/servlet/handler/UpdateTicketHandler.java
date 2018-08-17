@@ -1,5 +1,9 @@
 package com.ra.airport.servlet.handler;
 
+import java.sql.Timestamp;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import com.ra.airport.dto.TicketDTO;
 import com.ra.airport.entity.Ticket;
 import com.ra.airport.repository.exception.AirPortDaoException;
@@ -8,12 +12,8 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.sql.Timestamp;
-
 @Component
-public class UpdateTicketHandler implements ServletHandler{
+public class UpdateTicketHandler implements ServletHandler {
 
     private final transient AirPortService<Ticket> ticketService;
 
@@ -23,12 +23,13 @@ public class UpdateTicketHandler implements ServletHandler{
     }
 
     @Override
-    public void post(HttpServletRequest request, HttpServletResponse response) throws AirPortDaoException {
-        final var ticketDTO = createTicketDTO(request);
+    public void post(final HttpServletRequest request, final HttpServletResponse response) throws AirPortDaoException {
+        final TicketDTO ticketDTO = createTicketDTO(request);
         final var ticket = new Ticket();
         BeanUtils.copyProperties(ticketDTO, ticket);
-        ticketService.update(ticket);
-        request.setAttribute("jspPath", "updateTicket.jsp");
+        final Ticket result = ticketService.update(ticket);
+        request.setAttribute("ticket", result);
+        request.setAttribute("jspPath", "update_ticket.jsp");
     }
 
     private TicketDTO createTicketDTO(final HttpServletRequest request) {

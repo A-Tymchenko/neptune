@@ -4,15 +4,11 @@ import java.util.HashMap;
 import java.util.Map;
 import javax.sql.DataSource;
 
-import com.ra.airport.servlet.handler.CreateAirportHandler;
-import com.ra.airport.servlet.handler.CreateFlightHandler;
-import com.ra.airport.servlet.handler.DeleteAirportHandler;
-import com.ra.airport.servlet.handler.DeleteFlightHandler;
-import com.ra.airport.servlet.handler.GetAirportsHandler;
-import com.ra.airport.servlet.handler.GetFlightsHandler;
+import com.ra.airport.servlet.handler.CreateTicketHandler;
+import com.ra.airport.servlet.handler.DeleteTicketHandler;
+import com.ra.airport.servlet.handler.GetTicketsHandler;
 import com.ra.airport.servlet.handler.ServletHandler;
-import com.ra.airport.servlet.handler.UpdateAirportHandler;
-import com.ra.airport.servlet.handler.UpdateFlightHandler;
+import com.ra.airport.servlet.handler.UpdateTicketHandler;
 import com.ra.airport.servlet.handler.factory.HandlerFactory;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
@@ -37,28 +33,16 @@ public class AirPortConfiguration {
     private transient Environment environment;
 
     @Autowired
-    private transient GetFlightsHandler getFlightsHand;
+    private transient GetTicketsHandler getTicketsHand;
 
     @Autowired
-    private transient CreateFlightHandler createFlightHand;
+    private transient CreateTicketHandler createTicketHand;
 
     @Autowired
-    private transient DeleteFlightHandler deleteFlightHand;
+    private transient DeleteTicketHandler deleteTicketHand;
 
     @Autowired
-    private transient UpdateFlightHandler updateFlightHand;
-
-    @Autowired
-    private transient GetAirportsHandler airportsHandler;
-
-    @Autowired
-    private transient CreateAirportHandler createAirportHand;
-
-    @Autowired
-    private transient UpdateAirportHandler updateAirportHand;
-
-    @Autowired
-    private transient DeleteAirportHandler deleteAirportHand;
+    private transient UpdateTicketHandler updateTicketHand;
 
     /**
      * Register {@link DataSource} bean.
@@ -111,14 +95,10 @@ public class AirPortConfiguration {
     @Bean
     public Map<String, ServletHandler> handlers() {
         final Map<String, ServletHandler> handlers = new HashMap<>();
-        handlers.put("/flights", getFlightsHand);
-        handlers.put("/flight/create", createFlightHand);
-        handlers.put("/flight/delete", deleteFlightHand);
-        handlers.put("/flight/update", updateFlightHand);
-        handlers.put("/airports", airportsHandler);
-        handlers.put("/airport/create", createAirportHand);
-        handlers.put("/airport/update", updateAirportHand);
-        handlers.put("/airport/delete", deleteAirportHand);
+        handlers.put("/tickets", getTicketsHand);
+        handlers.put("/ticket/create", createTicketHand);
+        handlers.put("/ticket/delete", deleteTicketHand);
+        handlers.put("/ticket/update", updateTicketHand);
         return handlers;
     }
 

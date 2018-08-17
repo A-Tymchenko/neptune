@@ -1,15 +1,14 @@
 package com.ra.airport.servlet.handler;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import com.ra.airport.entity.Ticket;
 import com.ra.airport.repository.exception.AirPortDaoException;
 import com.ra.airport.service.AirPortService;
 import org.apache.logging.log4j.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
-import javax.naming.OperationNotSupportedException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 @Component
 public class DeleteTicketHandler implements ServletHandler {
@@ -33,7 +32,8 @@ public class DeleteTicketHandler implements ServletHandler {
             final var ticket = new Ticket();
             ticket.setTicketId(Integer.parseInt(ticketId));
             ticketService.delete(ticket);
-            request.setAttribute("jspPath", "deleteTicket.jsp");
+            request.setAttribute("ticket", ticket);
+            request.setAttribute("jspPath", "delete_ticket.jsp");
         }
     }
 }
