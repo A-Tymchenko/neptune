@@ -2,9 +2,20 @@ package com.ra.airport.config;
 
 import java.util.HashMap;
 import java.util.Map;
-import com.ra.airport.servlet.handler.*;
 import javax.sql.DataSource;
-
+import com.ra.airport.servlet.handler.CreateAirportHandler;
+import com.ra.airport.servlet.handler.CreateFlightHandler;
+import com.ra.airport.servlet.handler.CreatePlaneHandler;
+import com.ra.airport.servlet.handler.DeleteAirportHandler;
+import com.ra.airport.servlet.handler.DeleteFlightHandler;
+import com.ra.airport.servlet.handler.DeletePlaneHandler;
+import com.ra.airport.servlet.handler.GetAirportsHandler;
+import com.ra.airport.servlet.handler.GetFlightsHandler;
+import com.ra.airport.servlet.handler.GetPlanesHandler;
+import com.ra.airport.servlet.handler.ServletHandler;
+import com.ra.airport.servlet.handler.UpdateAirportHandler;
+import com.ra.airport.servlet.handler.UpdateFlightHandler;
+import com.ra.airport.servlet.handler.UpdatePlaneHandler;
 import com.ra.airport.servlet.handler.factory.HandlerFactory;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
@@ -53,7 +64,17 @@ public class AirPortConfiguration {
     private transient DeleteAirportHandler deleteAirportHand;
 
     @Autowired
+    private transient GetPlanesHandler getPlanesHandler;
+
+    @Autowired
     private transient CreatePlaneHandler createPlaneHand;
+
+    @Autowired
+    private transient UpdatePlaneHandler updatePlaneHand;
+
+    @Autowired
+    private transient DeletePlaneHandler deletePlaneHand;
+
 
     /**
      * Register {@link DataSource} bean.
@@ -114,7 +135,10 @@ public class AirPortConfiguration {
         handlers.put("/airport/create", createAirportHand);
         handlers.put("/airport/update", updateAirportHand);
         handlers.put("/airport/delete", deleteAirportHand);
-        handlers.put("/plane/create", createAirportHand);
+        handlers.put("/plane/create", createPlaneHand);
+        handlers.put("/plane/update", updatePlaneHand);
+        handlers.put("/plane/delete", deletePlaneHand);
+        handlers.put("/planes", getPlanesHandler);
         return handlers;
     }
 

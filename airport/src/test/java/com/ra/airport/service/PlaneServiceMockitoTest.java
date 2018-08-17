@@ -50,7 +50,7 @@ public class PlaneServiceMockitoTest {
     @Test
     public void whenGetByIdThenDaoMethodShouldBeCalled() throws AirPortDaoException {
         planeService.getById(plane.getPlaneId());
-        verify(planeDao, times(1)).getById(1);
+        verify(planeDao, times(1)).getById(plane.getPlaneId());
     }
 
     @Test
@@ -61,6 +61,7 @@ public class PlaneServiceMockitoTest {
 
     private void createPlane() {
         plane = new Plane();
+        plane.setPlaneId(1);
         plane.setPlateNumber(2);
         plane.setModel(SPACE);
         plane.setType(SPACE);

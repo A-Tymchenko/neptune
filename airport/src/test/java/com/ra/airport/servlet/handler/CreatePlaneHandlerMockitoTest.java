@@ -1,10 +1,5 @@
 package com.ra.airport.servlet.handler;
 
-import java.time.*;
-import java.time.format.*;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
 import com.ra.airport.entity.Plane;
 import com.ra.airport.repository.exception.AirPortDaoException;
 import com.ra.airport.service.PlaneService;
@@ -14,6 +9,9 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 public class CreatePlaneHandlerMockitoTest {
 
@@ -63,7 +61,6 @@ public class CreatePlaneHandlerMockitoTest {
 
     private void createPlane() {
         plane = new Plane();
-        plane.setPlaneId(1);
         plane.setPlateNumber(2);
         plane.setModel(SPACE);
         plane.setType(SPACE);

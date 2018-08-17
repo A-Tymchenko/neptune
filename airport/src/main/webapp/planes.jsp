@@ -13,6 +13,8 @@
             <th>Model</th>
             <th>Type</th>
             <th>Plate number</th>
+            <th>Delete</th>
+            <th>Update</th>
         </tr>
         <c:forEach var="plane" items="${planes}">
             <tr>

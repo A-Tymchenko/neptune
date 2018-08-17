@@ -14,7 +14,7 @@
     Type<br>
     <input type="text" name="type" value="${plane.getType()}"><p/>
     Plate number<br>
-    <input type="number" name="plate_number" value="${plane.getPlateNumber()}"><p/>
+    <input type="number" name="plateNumber" value="${plane.getPlateNumber()}"><p/>
     <br>
     <input type="submit" value="Submit" name="submitButton">
 </form>

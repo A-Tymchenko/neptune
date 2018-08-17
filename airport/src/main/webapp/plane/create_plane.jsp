@@ -14,7 +14,7 @@
     Type<br>
     <input type="text" name="type"><p/>
     Plate number<br>
-    <input type="number" name="plate_number"><p/>
+    <input type="number" name="plateNumber"><p/>
     <br>
     <input type="submit" value="Submit" name="submitButton">
 </form>
