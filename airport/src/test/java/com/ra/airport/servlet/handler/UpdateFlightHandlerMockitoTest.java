@@ -52,7 +52,7 @@ public class UpdateFlightHandlerMockitoTest {
         String jspPath = (String) mockRequest.getAttribute("jspPath");
         FlightDto flightDto = (FlightDto) mockRequest.getAttribute("flight");
 
-        assertEquals("/flight/update_flight.jsp", jspPath);
+        assertEquals("/flight/update_ticket.jsp", jspPath);
 
         assertNotNull(flightDto);
     }
@@ -83,7 +83,7 @@ public class UpdateFlightHandlerMockitoTest {
         String jspPath = (String) mockRequest.getAttribute("jspPath");
         FlightDto flight = (FlightDto) mockRequest.getAttribute("flight");
 
-        assertEquals("/flight/update_flight.jsp", jspPath);
+        assertEquals("/flight/update_ticket.jsp", jspPath);
         assertNull(flight);
     }
 
