@@ -2,6 +2,7 @@ package com.ra.airport.service;
 
 import java.util.List;
 import java.util.Optional;
+
 import com.ra.airport.entity.Plane;
 import com.ra.airport.repository.exception.AirPortDaoException;
 import com.ra.airport.repository.impl.PlaneDao;
@@ -18,7 +19,7 @@ public class PlaneService implements AirPortService<Plane> {
     private final transient PlaneDao planeDao;
 
     @Autowired
-    public PlaneService(PlaneDao planeDao) {
+    public PlaneService(final PlaneDao planeDao) {
         this.planeDao = planeDao;
     }
 
@@ -30,7 +31,7 @@ public class PlaneService implements AirPortService<Plane> {
      * @throws AirPortDaoException exception for DAO layer
      */
     @Override
-    public Plane create(Plane plane) throws AirPortDaoException {
+    public Plane create(final Plane plane) throws AirPortDaoException {
         return planeDao.create(plane);
     }
 
@@ -42,7 +43,7 @@ public class PlaneService implements AirPortService<Plane> {
      * @throws AirPortDaoException exception for DAO layer
      */
     @Override
-    public Plane update(Plane plane) throws AirPortDaoException {
+    public Plane update(final Plane plane) throws AirPortDaoException {
         return planeDao.update(plane);
     }
 
@@ -55,7 +56,7 @@ public class PlaneService implements AirPortService<Plane> {
      * @throws AirPortDaoException exception for DAO layer
      */
     @Override
-    public boolean delete(Plane plane) throws AirPortDaoException {
+    public boolean delete(final Plane plane) throws AirPortDaoException {
         return planeDao.delete(plane);
     }
 
@@ -67,7 +68,7 @@ public class PlaneService implements AirPortService<Plane> {
      * @throws AirPortDaoException exception for DAO layer
      */
     @Override
-    public Optional<Plane> getById(int planeId) throws AirPortDaoException {
+    public Optional<Plane> getById(final int planeId) throws AirPortDaoException {
         return planeDao.getById(planeId);
     }
 

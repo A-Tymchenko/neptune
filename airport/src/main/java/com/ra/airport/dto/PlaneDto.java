@@ -16,7 +16,7 @@ public class PlaneDto {
         return planeId;
     }
 
-    public void setPlaneId(Integer planeId) {
+    public void setPlaneId(final Integer planeId) {
         this.planeId = planeId;
     }
 
@@ -24,7 +24,7 @@ public class PlaneDto {
         return owner;
     }
 
-    public void setOwner(String owner) {
+    public void setOwner(final String owner) {
         this.owner = owner;
     }
 
@@ -32,7 +32,7 @@ public class PlaneDto {
         return model;
     }
 
-    public void setModel(String model) {
+    public void setModel(final String model) {
         this.model = model;
     }
 
@@ -40,7 +40,7 @@ public class PlaneDto {
         return type;
     }
 
-    public void setType(String type) {
+    public void setType(final String type) {
         this.type = type;
     }
 
@@ -48,7 +48,7 @@ public class PlaneDto {
         return plateNumber;
     }
 
-    public void setPlateNumber(Integer plateNumber) {
+    public void setPlateNumber(final Integer plateNumber) {
         this.plateNumber = plateNumber;
     }
 }
