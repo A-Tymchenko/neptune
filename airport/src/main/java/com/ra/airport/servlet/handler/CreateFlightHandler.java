@@ -34,7 +34,7 @@ public class CreateFlightHandler implements ServletHandler {
 
     @Override
     public void get(final HttpServletRequest request, final HttpServletResponse response) {
-        request.setAttribute("jspPath", "/flight/create_ticket.jsp");
+        request.setAttribute("jspPath", "/flight/create_flight.jsp");
     }
 
     private FlightDto createFlightDto(final HttpServletRequest request) {
