@@ -45,7 +45,7 @@ public class CreateFlightHandlerMockitoTest {
     public void whenGetThenPathToJspShouldBeSetToRequest() {
         createFlightHandler.get(mockRequest, mockResponse);
         String result = (String) mockRequest.getAttribute("jspPath");
-        assertEquals("/flight/create_ticket.jsp", result);
+        assertEquals("/flight/create_flight.jsp", result);
     }
 
     @Test
