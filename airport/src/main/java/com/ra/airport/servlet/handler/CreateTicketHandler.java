@@ -29,7 +29,7 @@ public class CreateTicketHandler implements ServletHandler {
         BeanUtils.copyProperties(ticketDTO, ticket);
         final Ticket result = ticketService.create(ticket);
         request.setAttribute("ticket", result);
-        request.setAttribute("jspPath", "/ticket/create_ticket.jsp");
+        request.setAttribute("jspPath", "create_ticket.jsp");
     }
 
     private TicketDTO createTicketDTO(final HttpServletRequest request) {

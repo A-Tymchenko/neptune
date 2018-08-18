@@ -33,7 +33,7 @@ public class DeleteTicketHandler implements ServletHandler {
             ticket.setTicketId(Integer.parseInt(ticketId));
             ticketService.delete(ticket);
             request.setAttribute("ticket", ticket);
-            request.setAttribute("jspPath", "/tickets.jsp");
+            request.setAttribute("jspPath", "delete_ticket.jsp");
         }
     }
 }

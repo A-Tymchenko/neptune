@@ -36,7 +36,7 @@ public class GetTicketsHandler implements ServletHandler {
             result.add(createTicketDTO(ticket));
         });
         request.setAttribute("tickets", result);
-        request.setAttribute("jspPath", "/tickets.jsp");
+        request.setAttribute("jspPath", "tickets.jsp");
     }
 
     private TicketDTO createTicketDTO(final Ticket ticket) {

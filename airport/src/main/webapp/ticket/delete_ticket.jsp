@@ -4,6 +4,6 @@
 "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <body>
-Ticket id:<c:out value="${ticket.ticketId}" /> updated successfully
+Ticket id:<c:out value="${aticket.ticketI}" /> deleted successfully
 </body>
 </html>
