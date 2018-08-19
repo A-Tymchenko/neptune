@@ -7,16 +7,20 @@ import javax.sql.DataSource;
 import com.ra.airport.servlet.handler.CreateAirportHandler;
 import com.ra.airport.servlet.handler.CreateFlightHandler;
 import com.ra.airport.servlet.handler.CreatePlaneHandler;
+import com.ra.airport.servlet.handler.CreateTicketHandler;
 import com.ra.airport.servlet.handler.DeleteAirportHandler;
 import com.ra.airport.servlet.handler.DeleteFlightHandler;
 import com.ra.airport.servlet.handler.DeletePlaneHandler;
+import com.ra.airport.servlet.handler.DeleteTicketHandler;
 import com.ra.airport.servlet.handler.GetAirportsHandler;
 import com.ra.airport.servlet.handler.GetFlightsHandler;
 import com.ra.airport.servlet.handler.GetPlanesHandler;
+import com.ra.airport.servlet.handler.GetTicketsHandler;
 import com.ra.airport.servlet.handler.ServletHandler;
 import com.ra.airport.servlet.handler.UpdateAirportHandler;
 import com.ra.airport.servlet.handler.UpdateFlightHandler;
 import com.ra.airport.servlet.handler.UpdatePlaneHandler;
+import com.ra.airport.servlet.handler.UpdateTicketHandler;
 import com.ra.airport.servlet.handler.factory.HandlerFactory;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
@@ -75,6 +79,18 @@ public class AirPortConfiguration {
 
     @Autowired
     private transient DeletePlaneHandler deletePlaneHand;
+
+    @Autowired
+    private transient GetTicketsHandler getTicketsHandler;
+
+    @Autowired
+    private transient CreateTicketHandler createTicketHand;
+
+    @Autowired
+    private transient UpdateTicketHandler updateTicketHand;
+
+    @Autowired
+    private transient DeleteTicketHandler deleteTicketHand;
 
 
     /**
@@ -140,6 +156,10 @@ public class AirPortConfiguration {
         handlers.put("/plane/update", updatePlaneHand);
         handlers.put("/plane/delete", deletePlaneHand);
         handlers.put("/planes", getPlanesHandler);
+        handlers.put("/tickets", getTicketsHandler);
+        handlers.put("/ticket/create", createTicketHand);
+        handlers.put("/ticket/update", updateTicketHand);
+        handlers.put("/ticket/delete", deleteTicketHand);
         return handlers;
     }
 
