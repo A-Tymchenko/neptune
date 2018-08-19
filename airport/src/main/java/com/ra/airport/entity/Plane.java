@@ -1,9 +1,8 @@
 package com.ra.airport.entity;
 
-import java.io.Serializable;
 import java.util.Objects;
 
-public class Plane implements Serializable {
+public class Plane {
 
     private Integer planeId;
     private String owner;
@@ -39,7 +38,7 @@ public class Plane implements Serializable {
         return type;
     }
 
-    public int getPlateNumber() {
+    public Integer getPlateNumber() {
         return plateNumber;
     }
 
@@ -59,7 +58,7 @@ public class Plane implements Serializable {
         this.type = type;
     }
 
-    public void setPlateNumber(final int plateNumber) {
+    public void setPlateNumber(final Integer plateNumber) {
         this.plateNumber = plateNumber;
     }
 
