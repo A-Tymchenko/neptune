@@ -26,6 +26,8 @@ public class HandlerFactory {
         if (handlers.containsKey(path)) {
             final ServletHandler handler = handlers.get(path);
             handler.get(request, response);
+        } else {
+            request.setAttribute("jspPath", "index.jsp");
         }
     }
 

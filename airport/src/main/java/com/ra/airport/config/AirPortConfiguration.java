@@ -4,23 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 import javax.sql.DataSource;
 
-import com.ra.airport.servlet.handler.CreateAirportHandler;
-import com.ra.airport.servlet.handler.CreateFlightHandler;
-import com.ra.airport.servlet.handler.CreatePlaneHandler;
-import com.ra.airport.servlet.handler.CreateTicketHandler;
-import com.ra.airport.servlet.handler.DeleteAirportHandler;
-import com.ra.airport.servlet.handler.DeleteFlightHandler;
-import com.ra.airport.servlet.handler.DeletePlaneHandler;
-import com.ra.airport.servlet.handler.DeleteTicketHandler;
-import com.ra.airport.servlet.handler.GetAirportsHandler;
-import com.ra.airport.servlet.handler.GetFlightsHandler;
-import com.ra.airport.servlet.handler.GetPlanesHandler;
-import com.ra.airport.servlet.handler.GetTicketsHandler;
 import com.ra.airport.servlet.handler.ServletHandler;
-import com.ra.airport.servlet.handler.UpdateAirportHandler;
-import com.ra.airport.servlet.handler.UpdateFlightHandler;
-import com.ra.airport.servlet.handler.UpdatePlaneHandler;
-import com.ra.airport.servlet.handler.UpdateTicketHandler;
 import com.ra.airport.servlet.handler.factory.HandlerFactory;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
@@ -45,52 +29,16 @@ public class AirPortConfiguration {
     private transient Environment environment;
 
     @Autowired
-    private transient GetFlightsHandler getFlightsHand;
+    private transient AirportMappingConfig airportMapping;
 
     @Autowired
-    private transient CreateFlightHandler createFlightHand;
+    private transient FlightMappingConfig flightMapping;
 
     @Autowired
-    private transient DeleteFlightHandler deleteFlightHand;
+    private transient PlaneMappingConfig planeMapping;
 
     @Autowired
-    private transient UpdateFlightHandler updateFlightHand;
-
-    @Autowired
-    private transient GetAirportsHandler airportsHandler;
-
-    @Autowired
-    private transient CreateAirportHandler createAirportHand;
-
-    @Autowired
-    private transient UpdateAirportHandler updateAirportHand;
-
-    @Autowired
-    private transient DeleteAirportHandler deleteAirportHand;
-
-    @Autowired
-    private transient GetPlanesHandler getPlanesHandler;
-
-    @Autowired
-    private transient CreatePlaneHandler createPlaneHand;
-
-    @Autowired
-    private transient UpdatePlaneHandler updatePlaneHand;
-
-    @Autowired
-    private transient DeletePlaneHandler deletePlaneHand;
-
-    @Autowired
-    private transient GetTicketsHandler getTicketsHandler;
-
-    @Autowired
-    private transient CreateTicketHandler createTicketHand;
-
-    @Autowired
-    private transient UpdateTicketHandler updateTicketHand;
-
-    @Autowired
-    private transient DeleteTicketHandler deleteTicketHand;
+    private transient TicketMappingConfig ticketMapping;
 
 
     /**
@@ -144,22 +92,10 @@ public class AirPortConfiguration {
     @Bean
     public Map<String, ServletHandler> handlers() {
         final Map<String, ServletHandler> handlers = new HashMap<>();
-        handlers.put("/flights", getFlightsHand);
-        handlers.put("/flight/create", createFlightHand);
-        handlers.put("/flight/delete", deleteFlightHand);
-        handlers.put("/flight/update", updateFlightHand);
-        handlers.put("/airports", airportsHandler);
-        handlers.put("/airport/create", createAirportHand);
-        handlers.put("/airport/update", updateAirportHand);
-        handlers.put("/airport/delete", deleteAirportHand);
-        handlers.put("/plane/create", createPlaneHand);
-        handlers.put("/plane/update", updatePlaneHand);
-        handlers.put("/plane/delete", deletePlaneHand);
-        handlers.put("/planes", getPlanesHandler);
-        handlers.put("/tickets", getTicketsHandler);
-        handlers.put("/ticket/create", createTicketHand);
-        handlers.put("/ticket/update", updateTicketHand);
-        handlers.put("/ticket/delete", deleteTicketHand);
+        handlers.putAll(airportMapping.getMapping());
+        handlers.putAll(flightMapping.getMapping());
+        handlers.putAll(planeMapping.getMapping());
+        handlers.putAll(ticketMapping.getMapping());
         return handlers;
     }
 
@@ -170,6 +106,7 @@ public class AirPortConfiguration {
      */
     @Bean
     public HandlerFactory handlerFactory() {
+
         return new HandlerFactory(handlers());
     }
 }
