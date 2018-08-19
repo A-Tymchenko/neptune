@@ -53,7 +53,7 @@ function saveTicket() {
         tic.ticketNumber = updatedTicket.ticketNumber = cell[0].innerHTML = document.getElementById("ticketNumber").value;
         tic.passengerName = updatedTicket.passengerName = cell[1].innerHTML = document.getElementById("passengerName").value;
         tic.document = updatedTicket.document = cell[2].innerHTML = document.getElementById("document").value;
-        tic.sellingDate = updatedTicket.sellingDate = cell[3].innerHTML = document.getElementById("sellingDate").value;
+        tic.sellingDate = updatedTicket.sellingDate = cell[3].innerHTML = document.getElementById("sellingDate").value.replace("T", " ") + ":00";
         req("/ticket/update", "ticketId=" + tic.ticketId + "&ticketNumber=" + tic.ticketNumber + "&passengerName=" + tic.passengerName
             + "&document=" + tic.document + "&sellingDate=" + tic.sellingDate).then(function(response){
             console.log("ticket: " + tic.ticketId + " updated successfully");
@@ -74,18 +74,18 @@ function saveNewTicket(){
     ticket.ticketNumber = document.getElementById("ticketNumber").value;
     ticket.passengerName = document.getElementById("passengerName").value;
     ticket.document = document.getElementById("document").value;
-    ticket.sellingDate = document.getElementById("sellingDate").value;
+    ticket.sellingDate = document.getElementById("sellingDate").value.replace("T", " ") + ":00";
     req("/ticket/create", "ticketNumber=" + ticket.ticketNumber + "&passengerName=" + ticket.passengerName
         + "&document=" + ticket.document + "&sellingDate=" + ticket.sellingDate).then(function(response){
-        ticket.id = response.slice(response.indexOf("id") + 3, response.indexOf(" created"))
+        ticket.ticketId = response.slice(response.indexOf("id") + 3, response.indexOf(" created"))
         tickets.push(ticket);
         let row = '<tr id = "' + ticket.ticketId + '">' +
             '<td>' + ticket.ticketNumber + '</td>' +
             '<td>' + ticket.passengerName + '</td>' +
             '<td>' + ticket.document + '</td>' +
             '<td>' + ticket.sellingDate + '</td>' +
-            '<td><button type="button" onclick="deleteTicket(' + ticket.id + ')">Delete</button></td>' +
-            '<td><button type="button" onclick="updateTicket(' + ticket.id + ')">Update</button></td>' +
+            '<td><button type="button" onclick="deleteTicket(' + ticket.ticketId + ')">Delete</button></td>' +
+            '<td><button type="button" onclick="updateTicket(' + ticket.ticketId + ')">Update</button></td>' +
             '</tr>'
         document.getElementById("tickets").innerHTML = document.getElementById("tickets").innerHTML + row;
     });
