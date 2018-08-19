@@ -49,9 +49,9 @@
    </div>
 </body>
 <script type="text/javascript">
-    <%@include file="airport/airport.js"%>
+    <%@include file="../airport/airport.js"%>
 </script>
 <style>
-    <%@include file="airport/airport.css"%>
+    <%@include file="../airport/airport.css"%>
 </style>
 </html>

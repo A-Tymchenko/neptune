@@ -2,6 +2,8 @@ package com.ra.airport.config;
 
 import java.util.HashMap;
 import java.util.Map;
+import com.ra.airport.FlightsController;
+import com.ra.airport.entity.Flight;
 import javax.sql.DataSource;
 
 import com.ra.airport.servlet.handler.CreateAirportHandler;
@@ -28,12 +30,16 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.web.servlet.ViewResolver;
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
+import org.springframework.web.servlet.view.InternalResourceViewResolver;
 
 /**
  * Spring configuration class for DAO layer.
  */
 @PropertySource("classpath:config.properties")
 @ComponentScan("com.ra.airport")
+@EnableWebMvc
 @Configuration
 public class AirPortConfiguration {
 
@@ -76,9 +82,9 @@ public class AirPortConfiguration {
     @Autowired
     private transient DeletePlaneHandler deletePlaneHand;
 
-
     /**
      * Register {@link DataSource} bean.
+     *
      * @return data source bean
      */
     @Bean
@@ -88,6 +94,7 @@ public class AirPortConfiguration {
 
     /**
      * Register {@link HikariConfig} bean. Set main properties to it.
+     *
      * @return return config for {@link DataSource} bean
      */
     @Bean
@@ -102,6 +109,7 @@ public class AirPortConfiguration {
 
     /**
      * Register {@link JdbcTemplate} bean.
+     *
      * @return template
      */
     @Bean
@@ -151,5 +159,18 @@ public class AirPortConfiguration {
     @Bean
     public HandlerFactory handlerFactory() {
         return new HandlerFactory(handlers());
+    }
+
+    @Bean
+    public ViewResolver viewResolver() {
+        InternalResourceViewResolver viewResolver = new InternalResourceViewResolver();
+        viewResolver.setPrefix("/WEB-INF/views/");
+        viewResolver.setSuffix(".jsp");
+        return viewResolver;
+    }
+
+    @Bean
+    public FlightsController flightsController() {
+        return new FlightsController();
     }
 }
