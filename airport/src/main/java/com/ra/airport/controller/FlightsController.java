@@ -1,4 +1,4 @@
-package com.ra.airport;
+package com.ra.airport.controller;
 
 import java.util.*;
 import javax.servlet.http.*;
