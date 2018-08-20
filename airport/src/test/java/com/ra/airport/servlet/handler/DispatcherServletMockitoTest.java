@@ -2,7 +2,6 @@ package com.ra.airport.servlet.handler;
 
 import com.ra.airport.repository.exception.AirPortDaoException;
 import com.ra.airport.servlet.DispatcherServlet;
-import com.ra.airport.servlet.handler.factory.HandlerFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
