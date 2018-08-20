@@ -13,7 +13,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-@Component
+@Component("/planes")
 public class GetPlanesHandler implements ServletHandler {
 
     private final transient PlaneService planeService;

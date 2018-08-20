@@ -1,11 +1,7 @@
 package com.ra.airport.config;
 
-import java.util.HashMap;
-import java.util.Map;
 import javax.sql.DataSource;
 
-import com.ra.airport.servlet.handler.ServletHandler;
-import com.ra.airport.servlet.handler.factory.HandlerFactory;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,18 +23,6 @@ public class AirPortConfiguration {
 
     @Autowired
     private transient Environment environment;
-
-    @Autowired
-    private transient AirportMappingConfig airportMapping;
-
-    @Autowired
-    private transient FlightMappingConfig flightMapping;
-
-    @Autowired
-    private transient PlaneMappingConfig planeMapping;
-
-    @Autowired
-    private transient TicketMappingConfig ticketMapping;
 
 
     /**
@@ -81,32 +65,5 @@ public class AirPortConfiguration {
     @Bean
     public NamedParameterJdbcTemplate namedParameterJdbcTemplate() {
         return new NamedParameterJdbcTemplate(dataSource());
-    }
-
-    /**
-     * Register handlers map.
-     * Using by {@link HandlerFactory}.
-     *
-     * @return Map.
-     */
-    @Bean
-    public Map<String, ServletHandler> handlers() {
-        final Map<String, ServletHandler> handlers = new HashMap<>();
-        handlers.putAll(airportMapping.getMapping());
-        handlers.putAll(flightMapping.getMapping());
-        handlers.putAll(planeMapping.getMapping());
-        handlers.putAll(ticketMapping.getMapping());
-        return handlers;
-    }
-
-    /**
-     * Register {@link HandlerFactory} bean.
-     *
-     * @return handlerFactory.
-     */
-    @Bean
-    public HandlerFactory handlerFactory() {
-
-        return new HandlerFactory(handlers());
     }
 }

@@ -10,7 +10,7 @@ import org.apache.logging.log4j.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-@Component
+@Component("/ticket/delete")
 public class DeleteTicketHandler implements ServletHandler {
 
     private final transient AirPortService<Ticket> ticketService;

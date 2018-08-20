@@ -16,7 +16,6 @@ import javax.sql.DataSource;
 import com.ra.airport.config.AirPortConfiguration;
 import com.ra.airport.repository.exception.AirPortDaoException;
 import com.ra.airport.servlet.handler.ServletHandler;
-import com.ra.airport.servlet.handler.factory.HandlerFactory;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.util.Strings;
@@ -32,20 +31,18 @@ import org.springframework.core.io.Resource;
 @WebServlet(urlPatterns = "/")
 public class DispatcherServlet extends HttpServlet {
 
-    private static HandlerFactory handlerFactory;
-
     private static final Logger LOGGER = LogManager.getLogger(DispatcherServlet.class);
+
+    private static AnnotationConfigApplicationContext context;
 
     /**
      * Init servlet and {@link AnnotationConfigApplicationContext}.
-     * For {@link HandlerFactory} class initialization.
      *
      * @param config servlet config
      */
     @Override
     public void init(final ServletConfig config) {
-        final AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(AirPortConfiguration.class);
-        handlerFactory = context.getBean(HandlerFactory.class);
+        context = new AnnotationConfigApplicationContext(AirPortConfiguration.class);
         initDataBase(context);
     }
 
@@ -74,7 +71,7 @@ public class DispatcherServlet extends HttpServlet {
     @Override
     public void doGet(final HttpServletRequest req, final HttpServletResponse resp) throws IOException, ServletException {
         try {
-            handlerFactory.handleGetRequest(this.getPath(req), req, resp);
+            this.getHandler(req).get(req, resp);
             redirectRequest(req, resp);
         } catch (OperationNotSupportedException | AirPortDaoException e) {
             LOGGER.error("Error get request processing", e);
@@ -90,7 +87,7 @@ public class DispatcherServlet extends HttpServlet {
     @Override
     public void doPost(final HttpServletRequest req, final HttpServletResponse resp) throws IOException, ServletException {
         try {
-            handlerFactory.handlePostRequest(this.getPath(req), req, resp);
+            this.getHandler(req).post(req, resp);
             redirectRequest(req, resp);
         } catch (OperationNotSupportedException | AirPortDaoException e) {
             LOGGER.error("Error post request processing", e);
@@ -111,7 +108,7 @@ public class DispatcherServlet extends HttpServlet {
      * @param req request
      * @return path to servlet
      */
-    private String getPath(final HttpServletRequest req) {
-        return req.getServletPath();
+    private ServletHandler getHandler(final HttpServletRequest req) {
+        return (ServletHandler) context.getBean(req.getServletPath());
     }
 }

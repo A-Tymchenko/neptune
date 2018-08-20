@@ -9,6 +9,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 
@@ -23,7 +24,9 @@ public class DispatcherServletMockitoTest {
     @Mock
     private ServletConfig servletConfig;
     @Mock
-    private HandlerFactory handlerFactory;
+    private AnnotationConfigApplicationContext context;
+    @Mock
+    private ServletHandler servletHandler;
     @InjectMocks
     private DispatcherServlet dispatcherServlet;
 
@@ -36,33 +39,34 @@ public class DispatcherServletMockitoTest {
         request = new MockHttpServletRequest();
         response = new MockHttpServletResponse();
         request.setServletPath("/airports");
-        Field field = DispatcherServlet.class.getDeclaredField("handlerFactory");
+        Field field = DispatcherServlet.class.getDeclaredField("context");
         field.setAccessible(true);
-        field.set(dispatcherServlet, handlerFactory);
+        field.set(dispatcherServlet, context);
+        Mockito.when(context.getBean("/airports")).thenReturn(servletHandler);
     }
 
     @Test
     public void whereGetRequestThenRedirectToJSP() throws IOException, ServletException, AirPortDaoException, OperationNotSupportedException {
         dispatcherServlet.doGet(request, response);
-        Mockito.verify(handlerFactory, Mockito.times(1)).handleGetRequest("/airports", request, response);
+        Mockito.verify(context, Mockito.times(1)).getBean("/airports");
     }
 
     @Test
     public void wherePostRequestThenRedirectToJSP() throws IOException, ServletException, AirPortDaoException, OperationNotSupportedException {
         request.setAttribute("jspPath", "TEST");
         dispatcherServlet.doPost(request, response);
-        Mockito.verify(handlerFactory, Mockito.times(1)).handlePostRequest("/airports", request, response);
+        Mockito.verify(context, Mockito.times(1)).getBean("/airports");
     }
 
     @Test
     public void wherePostRequestThenThrowException() throws IOException, ServletException, AirPortDaoException, OperationNotSupportedException {
-        Mockito.doThrow(AirPortDaoException.class).when(handlerFactory).handlePostRequest(Mockito.any(), Mockito.any(), Mockito.any());
+        Mockito.doThrow(AirPortDaoException.class).when(context).getBean(Mockito.anyString());
         dispatcherServlet.doPost(request, response);
     }
 
     @Test
     public void whereGetRequestThenThrowException() throws IOException, ServletException, AirPortDaoException, OperationNotSupportedException {
-        Mockito.doThrow(AirPortDaoException.class).when(handlerFactory).handleGetRequest(Mockito.any(), Mockito.any(), Mockito.any());
+        Mockito.doThrow(AirPortDaoException.class).when(context).getBean(Mockito.anyString());
         dispatcherServlet.doGet(request, response);
     }
 

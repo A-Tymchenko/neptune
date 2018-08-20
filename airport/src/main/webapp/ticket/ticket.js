@@ -46,27 +46,30 @@ function deleteTicket(id){
 function saveTicket() {
     modal.style.display = "none";
     if(actionType == "update"){
-        let row = document.getElementById(updatedTicket.ticketId);
-        let cell = row.cells;
-        let tic = new Object();
-        tic.ticketId = updatedTicket.ticketId;
-        tic.ticketNumber = updatedTicket.ticketNumber = cell[0].innerHTML = document.getElementById("ticketNumber").value;
-        tic.passengerName = updatedTicket.passengerName = cell[1].innerHTML = document.getElementById("passengerName").value;
-        tic.document = updatedTicket.document = cell[2].innerHTML = document.getElementById("document").value;
-        tic.sellingDate = updatedTicket.sellingDate = cell[3].innerHTML = document.getElementById("sellingDate").value.replace("T", " ") + ":00";
-        req("/ticket/update", "ticketId=" + tic.ticketId + "&ticketNumber=" + tic.ticketNumber + "&passengerName=" + tic.passengerName
-            + "&document=" + tic.document + "&sellingDate=" + tic.sellingDate).then(function(response){
-            console.log("ticket: " + tic.ticketId + " updated successfully");
-        });
-        for (let i = 0; i < tickets.length; i++) {
-            let ticket = tickets[i]
-            if (ticket.id == updatedTicket.ticketId) {
-                tickets[i] = updatedTicket;
-            }
-        }
+        updateTicketOnServer();
     }
     if(actionType == "addTicket"){
         saveNewTicket();
+    }
+}
+function updateTicketOnServer() {
+    let row = document.getElementById(updatedTicket.ticketId);
+    let cell = row.cells;
+    let tic = new Object();
+    tic.ticketId = updatedTicket.ticketId;
+    tic.ticketNumber = updatedTicket.ticketNumber = cell[0].innerHTML = document.getElementById("ticketNumber").value;
+    tic.passengerName = updatedTicket.passengerName = cell[1].innerHTML = document.getElementById("passengerName").value;
+    tic.document = updatedTicket.document = cell[2].innerHTML = document.getElementById("document").value;
+    tic.sellingDate = updatedTicket.sellingDate = cell[3].innerHTML = document.getElementById("sellingDate").value.replace("T", " ") + ":00";
+    req("/ticket/update", "ticketId=" + tic.ticketId + "&ticketNumber=" + tic.ticketNumber + "&passengerName=" + tic.passengerName
+        + "&document=" + tic.document + "&sellingDate=" + tic.sellingDate).then(function(response){
+        console.log("ticket: " + tic.ticketId + " updated successfully");
+    });
+    for (let i = 0; i < tickets.length; i++) {
+        let ticket = tickets[i]
+        if (ticket.id == updatedTicket.ticketId) {
+            tickets[i] = updatedTicket;
+        }
     }
 }
 function saveNewTicket(){

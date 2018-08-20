@@ -12,7 +12,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-@Component
+@Component("/ticket/create")
 public class CreateTicketHandler implements ServletHandler {
 
     private final transient AirPortService<Ticket> ticketService;

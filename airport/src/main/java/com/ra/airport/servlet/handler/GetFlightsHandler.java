@@ -16,7 +16,7 @@ import org.springframework.stereotype.Component;
 /**
  * Process /flights user request.
  */
-@Component
+@Component("/flights")
 public class GetFlightsHandler implements ServletHandler {
 
     private final transient FlightService flightService;

@@ -47,28 +47,31 @@
     function saveAirport() {
         modal.style.display = "none";
         if(actionType == "update"){
-            let row = document.getElementById(updatedAirport.id);
-            let cell = row.cells;
-            let air = new Object();
-            air.apId = updatedAirport.id;
-            air.apName = updatedAirport.name = cell[0].innerHTML = document.getElementById("name").value;
-            air.apNum = updatedAirport.num = cell[1].innerHTML = document.getElementById("num").value;
-            air.apType = updatedAirport.type = cell[2].innerHTML = document.getElementById("type").value;
-            air.address = updatedAirport.address = cell[3].innerHTML = document.getElementById("address").value;
-            air.terminalCount = updatedAirport.terminalCount = cell[4].innerHTML = document.getElementById("terminals").value;
-            req("/airport/update", "apId=" + air.apId + "&apName=" + air.apName + "&apNum=" + air.apNum
-                + "&apType=" + air.apType + "&address=" + air.address + "&terminalCount=" + air.terminalCount).then(function(response){
-                console.log("airport: " + air.apId + " updated successfuly");
-            });
-            for (let i = 0; i < airports.length; i++) {
-                        let airport = airports[i]
-                        if (airport.id == updatedAirport.id) {
-                            airports[i] = updatedAirport;
-                        }
-                    }
+            updateAirportOnServer();
         }
         if(actionType == "addAirport"){
             saveNewAirport();
+        }
+    }
+    function updateAirportOnServer() {
+        let row = document.getElementById(updatedAirport.id);
+        let cell = row.cells;
+        let air = new Object();
+        air.apId = updatedAirport.id;
+        air.apName = updatedAirport.name = cell[0].innerHTML = document.getElementById("name").value;
+        air.apNum = updatedAirport.num = cell[1].innerHTML = document.getElementById("num").value;
+        air.apType = updatedAirport.type = cell[2].innerHTML = document.getElementById("type").value;
+        air.address = updatedAirport.address = cell[3].innerHTML = document.getElementById("address").value;
+        air.terminalCount = updatedAirport.terminalCount = cell[4].innerHTML = document.getElementById("terminals").value;
+        req("/airport/update", "apId=" + air.apId + "&apName=" + air.apName + "&apNum=" + air.apNum
+            + "&apType=" + air.apType + "&address=" + air.address + "&terminalCount=" + air.terminalCount).then(function(response){
+            console.log("airport: " + air.apId + " updated successfuly");
+        });
+        for (let i = 0; i < airports.length; i++) {
+            let airport = airports[i]
+            if (airport.id == updatedAirport.id) {
+                airports[i] = updatedAirport;
+            }
         }
     }
     function saveNewAirport(){

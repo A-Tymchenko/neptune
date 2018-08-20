@@ -11,7 +11,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-@Component
+@Component("/airport/create")
 public class CreateAirportHandler implements ServletHandler {
 
     private final transient AirPortService<Airport> airportService;
