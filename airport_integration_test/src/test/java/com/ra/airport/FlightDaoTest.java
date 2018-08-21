@@ -7,9 +7,9 @@ import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Optional;
 import com.ra.airport.config.AirPortConfiguration;
-import com.ra.airport.dao.AirPortDao;
-import com.ra.airport.dao.exception.AirPortDaoException;
-import com.ra.airport.dao.impl.FlightDao;
+import com.ra.airport.repository.AirPortDao;
+import com.ra.airport.repository.exception.AirPortDaoException;
+import com.ra.airport.repository.impl.FlightDao;
 import com.ra.airport.entity.Flight;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -54,7 +54,6 @@ public class FlightDaoTest {
         flight = new Flight();
         flight.setName("Kyiv-Rome");
         flight.setCarrier("Wizz Air");
-        flight.setDuration(LocalTime.of(02, 00, 00));
         flight.setMealOn(true);
         flight.setFare(100.0);
         flight.setDepartureDate(departureDate);
@@ -103,7 +102,6 @@ public class FlightDaoTest {
     private Flight changeFlight(Flight flight) {
         flight.setName("Kyiv-Berlin");
         flight.setCarrier("MAU");
-        flight.setDuration(flight.getDuration().plus(1, ChronoUnit.HOURS));
         flight.setMealOn(false);
         flight.setFare(Double.valueOf(200));
         flight.setDepartureDate(flight.getDepartureDate().plusDays(1));

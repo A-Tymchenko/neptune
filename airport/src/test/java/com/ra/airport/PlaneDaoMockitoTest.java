@@ -1,7 +1,7 @@
 package com.ra.airport;
 
-import com.ra.airport.dao.exception.AirPortDaoException;
-import com.ra.airport.dao.impl.PlaneDao;
+import com.ra.airport.repository.exception.AirPortDaoException;
+import com.ra.airport.repository.impl.PlaneDao;
 import com.ra.airport.entity.Plane;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -12,7 +12,7 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.support.KeyHolder;
 
 
-import static com.ra.airport.dao.exception.ExceptionMessage.*;
+import static com.ra.airport.repository.exception.ExceptionMessage.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.doAnswer;
@@ -116,14 +116,6 @@ public class PlaneDaoMockitoTest {
         when(mockJdbcTemplate.queryForObject(eq(SELECT_PLANE_BY_ID_SQL), any(Object[].class), any(RowMapper.class))).thenReturn(null);
         Optional<Plane> plane = planeDao.getById(Integer.valueOf(1));
         assertEquals(Optional.empty(), plane);
-    }
-
-    @Test
-    public void whenGetByIdNullPassedThenDAOExceptionShouldBeThrown() {
-        Throwable exception =  assertThrows(AirPortDaoException.class,() -> {
-            planeDao.getById(null);
-        });
-        assertEquals(PLANE_ID_CANNOT_BE_NULL.get(), exception.getMessage());
     }
 
     @Test

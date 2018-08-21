@@ -4,7 +4,6 @@ import javax.sql.DataSource;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -18,12 +17,13 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
  * Spring configuration class for DAO layer.
  */
 @PropertySource("classpath:config.properties")
-@ComponentScan("com.ra.airport.dao.impl")
+@ComponentScan("com.ra.airport")
 @Configuration
 public class AirPortConfiguration {
 
     @Autowired
     private transient Environment environment;
+
 
     /**
      * Register {@link DataSource} bean.
@@ -44,6 +44,7 @@ public class AirPortConfiguration {
         config.setJdbcUrl(environment.getProperty("jdbc.url"));
         config.setUsername(environment.getProperty("jdbc.user"));
         config.setPassword(environment.getProperty("jdbc.password"));
+        config.setDriverClassName(environment.getProperty("jdbc.driverClassName"));
         return config;
     }
 

@@ -1,7 +1,7 @@
 package com.ra.airport;
 
-import com.ra.airport.dao.exception.AirPortDaoException;
-import com.ra.airport.dao.impl.FlightDao;
+import com.ra.airport.repository.exception.AirPortDaoException;
+import com.ra.airport.repository.impl.FlightDao;
 import com.ra.airport.entity.Flight;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -18,7 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static com.ra.airport.dao.exception.ExceptionMessage.*;
+import static com.ra.airport.repository.exception.ExceptionMessage.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.doAnswer;
@@ -32,14 +32,12 @@ import static org.mockito.Mockito.eq;
 
 public class FlightDaoMockitoTest {
 
-    private static final String INSERT_FLIGHT_SQL = "INSERT INTO flight " +
-            "(name, carrier, duration, meal_on, fare, departure_date, arrival_date) " +
-            " VALUES(?,?,?,?,?,?,?)";
-    private static final String UPDATE_FLIGHT_SQL = "UPDATE flight SET name = ?, carrier = ?, duration = ?, meal_on = ?, fare = ?, departure_date = ?, arrival_date = ? WHERE flId = ?";
     private static final String SELECT_FLIGHT_BY_ID_SQL = "SELECT * FROM flight WHERE flId = ?";
     private static final String DELETE_FLIGHT_BY_ID_SQL = "DELETE FROM flight WHERE flId = ?";
     private static final String SELECT_LAST_GENERATED_ID_SQL = "SELECT SCOPE_IDENTITY()";
     private static final String SELECT_ALL_FLIGHTS_SQL ="SELECT * FROM flight";
+    private static final String INSERT_FLIGHT_SQL = "INSERT INTO flight (name, carrier, meal_on, fare, departure_date, arrival_date) VALUES(?,?,?,?,?,?)";
+    private static final String UPDATE_FLIGHT_SQL = "UPDATE flight SET name = ?, carrier = ?, meal_on = ?, fare = ?, departure_date = ?, arrival_date = ? WHERE flId = ?";
 
     private FlightDao flightDao;
     private Flight flight;
@@ -121,15 +119,6 @@ public class FlightDaoMockitoTest {
     }
 
     @Test
-    public void whenGetByIdNullPassedThenDAOExceptionShouldBeThrown() {
-        Throwable exception =  assertThrows(AirPortDaoException.class,() -> {
-            flightDao.getById(null);
-        });
-
-        assertEquals(FLIGHT_ID_CANNOT_BE_NULL.get(), exception.getMessage());
-    }
-
-    @Test
     public void whenCreateThrownEmptyResultDataAccessExceptionThenDAOExceptionShouldBeThrownToo() {
         Throwable exception = assertThrows(AirPortDaoException.class, () -> {
             when(mockJdbcTemplate.update(any(PreparedStatementCreator.class), any(KeyHolder.class))).thenThrow(EmptyResultDataAccessException.class);
@@ -187,7 +176,6 @@ public class FlightDaoMockitoTest {
         flight.setFlId(1);
         flight.setName(" ");
         flight.setCarrier(" ");
-        flight.setDuration(LocalTime.NOON);
         flight.setFare(Double.MIN_VALUE);
         flight.setMealOn(true);
         flight.setDepartureDate(LocalDateTime.MIN);
