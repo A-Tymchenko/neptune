@@ -2,6 +2,7 @@ package com.ra.airport.config;
 
 import javax.sql.DataSource;
 
+import com.ra.airport.controller.FlightsController;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,8 +11,11 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.jdbc.datasource.init.DataSourceInitializer;
+import org.springframework.jdbc.datasource.init.ResourceDatabasePopulator;
 
 /**
  * Spring configuration class for DAO layer.
@@ -27,6 +31,7 @@ public class AirPortConfiguration {
 
     /**
      * Register {@link DataSource} bean.
+     *
      * @return data source bean
      */
     @Bean
@@ -36,6 +41,7 @@ public class AirPortConfiguration {
 
     /**
      * Register {@link HikariConfig} bean. Set main properties to it.
+     *
      * @return return config for {@link DataSource} bean
      */
     @Bean
@@ -50,6 +56,7 @@ public class AirPortConfiguration {
 
     /**
      * Register {@link JdbcTemplate} bean.
+     *
      * @return template
      */
     @Bean
@@ -65,5 +72,33 @@ public class AirPortConfiguration {
     @Bean
     public NamedParameterJdbcTemplate namedParameterJdbcTemplate() {
         return new NamedParameterJdbcTemplate(dataSource());
+    }
+
+    /**
+     * Register ResourceDatabasePopulator bean for H2 dataBase to runScript.
+     *
+     * @return dataSource
+     */
+    @Bean
+    public ResourceDatabasePopulator resourceDatabasePopulator() {
+        final ResourceDatabasePopulator resourceDatabasePopulator = new ResourceDatabasePopulator();
+        resourceDatabasePopulator.addScript(new ClassPathResource("sql/create_table_skripts.sql"));
+        resourceDatabasePopulator.addScript(new ClassPathResource("sql/tables_backup(data).sql"));
+        return resourceDatabasePopulator;
+    }
+
+    /**
+     * Register bean for DataSourceInitializer.
+     *
+     * @param dataSource Datasource
+     * @param resourceDatabasePopulator ResourceDatabasePopulator
+     * @return DataSourceInitializer
+     */
+    public DataSourceInitializer dataSourceInitializer(DataSource dataSource, ResourceDatabasePopulator
+            resourceDatabasePopulator) {
+        DataSourceInitializer dataSourceInitializer = new DataSourceInitializer();
+        dataSourceInitializer.setDatabasePopulator(resourceDatabasePopulator);
+        dataSourceInitializer.setDataSource(dataSource);
+        return dataSourceInitializer;
     }
 }
