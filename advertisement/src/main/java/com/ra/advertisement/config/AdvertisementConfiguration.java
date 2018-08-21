@@ -46,3 +46,4 @@ public class AdvertisementConfiguration {
         return dataSource;
     }
 }
+
