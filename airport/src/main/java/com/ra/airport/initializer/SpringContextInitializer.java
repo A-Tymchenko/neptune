@@ -1,8 +1,9 @@
 package com.ra.airport.initializer;
 
+import javax.servlet.ServletContext;
+import javax.servlet.ServletRegistration;
 import com.ra.airport.config.AirPortConfiguration;
 import com.ra.airport.config.AirPortWebConfig;
-import javax.servlet.*;
 import org.springframework.web.WebApplicationInitializer;
 import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
 import org.springframework.web.servlet.DispatcherServlet;

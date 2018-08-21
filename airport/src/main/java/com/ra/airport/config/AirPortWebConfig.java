@@ -15,13 +15,12 @@ import org.springframework.web.servlet.view.InternalResourceViewResolver;
 @WebAppConfiguration
 @EnableWebMvc
 @Configuration
-@ComponentScan("com.ra.airport")
 public class AirPortWebConfig {
 
     @Bean
     public ViewResolver viewResolver() {
         InternalResourceViewResolver viewResolver = new InternalResourceViewResolver();
-        viewResolver.setPrefix("/WEB-INF/views/");
+        viewResolver.setPrefix("/views/");
         viewResolver.setSuffix(".jsp");
         return viewResolver;
     }

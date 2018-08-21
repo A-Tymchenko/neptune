@@ -27,8 +27,11 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.jdbc.datasource.init.DataSourceInitializer;
+import org.springframework.jdbc.datasource.init.ResourceDatabasePopulator;
 
 /**
  * Spring configuration class for DAO layer.
@@ -156,8 +159,31 @@ public class AirPortConfiguration {
         return new HandlerFactory(handlers());
     }
 
+    /**
+     * bean for ResourceDatabasePopulator for H2 dataBase to runScript.
+     *
+     * @return dataSource
+     */
     @Bean
-    public FlightsController flightsController() {
-        return new FlightsController();
+    public ResourceDatabasePopulator resourceDatabasePopulator() {
+        final ResourceDatabasePopulator resourceDatabasePopulator = new ResourceDatabasePopulator();
+        resourceDatabasePopulator.addScript(new ClassPathResource("sql/create_table_skripts.sql"));
+        resourceDatabasePopulator.addScript(new ClassPathResource("sql/tables_backup(data).sql"));
+        return resourceDatabasePopulator;
+    }
+
+    /**
+     * bean for DataSourceInitializer.
+     *
+     * @param dataSource Datasource
+     * @param resourceDatabasePopulator ResourceDatabasePopulator
+     * @return DataSourceInitializer
+     */
+    @Bean
+    public DataSourceInitializer dataSourceInitializer(DataSource dataSource, ResourceDatabasePopulator resourceDatabasePopulator) {
+        DataSourceInitializer dataSourceInitializer = new DataSourceInitializer();
+        dataSourceInitializer.setDatabasePopulator(resourceDatabasePopulator);
+        dataSourceInitializer.setDataSource(dataSource);
+        return dataSourceInitializer;
     }
 }
