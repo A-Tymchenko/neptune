@@ -1,24 +1,7 @@
 package com.ra.airport.config;
 
-import java.util.HashMap;
-import java.util.Map;
-import com.ra.airport.controller.FlightsController;
 import javax.sql.DataSource;
 
-import com.ra.airport.servlet.handler.CreateAirportHandler;
-import com.ra.airport.servlet.handler.CreateFlightHandler;
-import com.ra.airport.servlet.handler.CreatePlaneHandler;
-import com.ra.airport.servlet.handler.DeleteAirportHandler;
-import com.ra.airport.servlet.handler.DeleteFlightHandler;
-import com.ra.airport.servlet.handler.DeletePlaneHandler;
-import com.ra.airport.servlet.handler.GetAirportsHandler;
-import com.ra.airport.servlet.handler.GetFlightsHandler;
-import com.ra.airport.servlet.handler.GetPlanesHandler;
-import com.ra.airport.servlet.handler.ServletHandler;
-import com.ra.airport.servlet.handler.UpdateAirportHandler;
-import com.ra.airport.servlet.handler.UpdateFlightHandler;
-import com.ra.airport.servlet.handler.UpdatePlaneHandler;
-import com.ra.airport.servlet.handler.factory.HandlerFactory;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,11 +10,8 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
-import org.springframework.jdbc.datasource.init.DataSourceInitializer;
-import org.springframework.jdbc.datasource.init.ResourceDatabasePopulator;
 
 /**
  * Spring configuration class for DAO layer.
@@ -44,45 +24,9 @@ public class AirPortConfiguration {
     @Autowired
     private transient Environment environment;
 
-    @Autowired
-    private transient GetFlightsHandler getFlightsHand;
-
-    @Autowired
-    private transient CreateFlightHandler createFlightHand;
-
-    @Autowired
-    private transient DeleteFlightHandler deleteFlightHand;
-
-    @Autowired
-    private transient UpdateFlightHandler updateFlightHand;
-
-    @Autowired
-    private transient GetAirportsHandler airportsHandler;
-
-    @Autowired
-    private transient CreateAirportHandler createAirportHand;
-
-    @Autowired
-    private transient UpdateAirportHandler updateAirportHand;
-
-    @Autowired
-    private transient DeleteAirportHandler deleteAirportHand;
-
-    @Autowired
-    private transient GetPlanesHandler getPlanesHandler;
-
-    @Autowired
-    private transient CreatePlaneHandler createPlaneHand;
-
-    @Autowired
-    private transient UpdatePlaneHandler updatePlaneHand;
-
-    @Autowired
-    private transient DeletePlaneHandler deletePlaneHand;
 
     /**
      * Register {@link DataSource} bean.
-     *
      * @return data source bean
      */
     @Bean
@@ -92,7 +36,6 @@ public class AirPortConfiguration {
 
     /**
      * Register {@link HikariConfig} bean. Set main properties to it.
-     *
      * @return return config for {@link DataSource} bean
      */
     @Bean
@@ -107,7 +50,6 @@ public class AirPortConfiguration {
 
     /**
      * Register {@link JdbcTemplate} bean.
-     *
      * @return template
      */
     @Bean
@@ -123,67 +65,5 @@ public class AirPortConfiguration {
     @Bean
     public NamedParameterJdbcTemplate namedParameterJdbcTemplate() {
         return new NamedParameterJdbcTemplate(dataSource());
-    }
-
-    /**
-     * Register handlers map.
-     * Using by {@link HandlerFactory}.
-     *
-     * @return Map.
-     */
-    @Bean
-    public Map<String, ServletHandler> handlers() {
-        final Map<String, ServletHandler> handlers = new HashMap<>();
-        handlers.put("/flights", getFlightsHand);
-        handlers.put("/flight/create", createFlightHand);
-        handlers.put("/flight/delete", deleteFlightHand);
-        handlers.put("/flight/update", updateFlightHand);
-        handlers.put("/airports", airportsHandler);
-        handlers.put("/airport/create", createAirportHand);
-        handlers.put("/airport/update", updateAirportHand);
-        handlers.put("/airport/delete", deleteAirportHand);
-        handlers.put("/plane/create", createPlaneHand);
-        handlers.put("/plane/update", updatePlaneHand);
-        handlers.put("/plane/delete", deletePlaneHand);
-        handlers.put("/planes", getPlanesHandler);
-        return handlers;
-    }
-
-    /**
-     * Register {@link HandlerFactory} bean.
-     *
-     * @return handlerFactory.
-     */
-    @Bean
-    public HandlerFactory handlerFactory() {
-        return new HandlerFactory(handlers());
-    }
-
-    /**
-     * bean for ResourceDatabasePopulator for H2 dataBase to runScript.
-     *
-     * @return dataSource
-     */
-    @Bean
-    public ResourceDatabasePopulator resourceDatabasePopulator() {
-        final ResourceDatabasePopulator resourceDatabasePopulator = new ResourceDatabasePopulator();
-        resourceDatabasePopulator.addScript(new ClassPathResource("sql/create_table_skripts.sql"));
-        resourceDatabasePopulator.addScript(new ClassPathResource("sql/tables_backup(data).sql"));
-        return resourceDatabasePopulator;
-    }
-
-    /**
-     * bean for DataSourceInitializer.
-     *
-     * @param dataSource Datasource
-     * @param resourceDatabasePopulator ResourceDatabasePopulator
-     * @return DataSourceInitializer
-     */
-    @Bean
-    public DataSourceInitializer dataSourceInitializer(DataSource dataSource, ResourceDatabasePopulator resourceDatabasePopulator) {
-        DataSourceInitializer dataSourceInitializer = new DataSourceInitializer();
-        dataSourceInitializer.setDatabasePopulator(resourceDatabasePopulator);
-        dataSourceInitializer.setDataSource(dataSource);
-        return dataSourceInitializer;
     }
 }

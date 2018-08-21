@@ -12,7 +12,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-@Component
+@Component("/flight/create")
 public class CreateFlightHandler implements ServletHandler {
 
     private final transient FlightService flightService;

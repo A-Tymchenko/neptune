@@ -3,13 +3,9 @@ package com.ra.airport.dto;
 public class PlaneDto {
 
     private Integer planeId;
-
     private String owner;
-
     private String model;
-
     private String type;
-
     private Integer plateNumber;
 
     public Integer getPlaneId() {

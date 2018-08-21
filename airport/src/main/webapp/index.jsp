@@ -1,16 +1,23 @@
-<%--
-  Created by IntelliJ IDEA.
-  User: antonbondar
-  Date: 8/20/18
-  Time: 20:30
-  To change this template use File | Settings | File Templates.
---%>
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<!DOCTYPE HTML>
 <html>
 <head>
-    <title>Title</title>
+    <title>Airport</title>
+<style>
+    <%@include file="airport/style.css"%>
+</style>
 </head>
-<body>
 
-</body>
-</html>
+<body>
+<div class="slider_bg">
+    <div class="wrap">
+        <div class="da-slide">
+            <h2><span>Welcome to </span>Aitport <span>Progect</span></h2>
+            <a href="/airports" class="da-link">Airports</a>
+            <a href="/flights" class="da-link">Flights</a>
+            <a href="/planes" class="da-link">Planes</a>
+            <a href="/tickets" class="da-link">Tickets</a>
+        </div>
+    </div>
+</div>

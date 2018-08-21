@@ -13,6 +13,15 @@ public class Ticket {
     public Ticket() {
     }
 
+    public Ticket(final Integer ticketId, final String ticketNumber, final String passengerName,
+                  final String document, final Timestamp sellingDate) {
+        this.ticketId = ticketId;
+        this.ticketNumber = ticketNumber;
+        this.passengerName = passengerName;
+        this.document = document;
+        this.sellingDate = sellingDate;
+    }
+
     public Integer getTicketId() {
         return ticketId;
     }

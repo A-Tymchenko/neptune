@@ -3,38 +3,37 @@ package com.ra.airport.servlet.handler;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.ra.airport.entity.Airport;
+import com.ra.airport.entity.Ticket;
 import com.ra.airport.repository.exception.AirPortDaoException;
 import com.ra.airport.service.AirPortService;
 import org.apache.logging.log4j.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-@Component("/airport/delete")
-public class DeleteAirportHandler implements ServletHandler {
+@Component("/ticket/delete")
+public class DeleteTicketHandler implements ServletHandler {
 
-    private final transient AirPortService<Airport> airportService;
+    private final transient AirPortService<Ticket> ticketService;
 
     @Autowired
-    public DeleteAirportHandler(final AirPortService<Airport> airportService) {
-        this.airportService = airportService;
+    public DeleteTicketHandler(final AirPortService<Ticket> ticketService) {
+        this.ticketService = ticketService;
     }
 
     @Override
     public void post(final HttpServletRequest request, final HttpServletResponse response) throws AirPortDaoException {
         delete(request, response);
-
     }
 
     @Override
     public void delete(final HttpServletRequest request, final HttpServletResponse response) throws AirPortDaoException {
-        final String airportId = request.getParameter("apId");
-        if (Strings.isNotBlank(airportId)) {
-            final var airport = new Airport();
-            airport.setApId(Integer.parseInt(airportId));
-            airportService.delete(airport);
-            request.setAttribute("airport", airport);
-            request.setAttribute("jspPath", "delete_airport.jsp");
+        final String ticketId = request.getParameter("ticketId");
+        if (Strings.isNotBlank(ticketId)) {
+            final var ticket = new Ticket();
+            ticket.setTicketId(Integer.parseInt(ticketId));
+            ticketService.delete(ticket);
+            request.setAttribute("ticket", ticket);
+            request.setAttribute("jspPath", "delete_ticket.jsp");
         }
     }
 }
