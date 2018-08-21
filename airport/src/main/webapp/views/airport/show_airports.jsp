@@ -18,7 +18,7 @@
                     <th>Name</th>
                     <th>Number</th>
                     <th>Type</th>
-                    <th>Adress</th>
+                    <th>Address</th>
                     <th>Terminal count</th>
                 </tr>
            <c:forEach var="airport" items="${airports}">
