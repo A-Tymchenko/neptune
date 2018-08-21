@@ -2,7 +2,6 @@ package com.ra.airport.config;
 
 import javax.sql.DataSource;
 
-import com.ra.airport.controller.FlightsController;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -81,24 +80,24 @@ public class AirPortConfiguration {
      */
     @Bean
     public ResourceDatabasePopulator resourceDatabasePopulator() {
-        final ResourceDatabasePopulator resourceDatabasePopulator = new ResourceDatabasePopulator();
-        resourceDatabasePopulator.addScript(new ClassPathResource("sql/create_table_skripts.sql"));
-        resourceDatabasePopulator.addScript(new ClassPathResource("sql/tables_backup(data).sql"));
-        return resourceDatabasePopulator;
+        final ResourceDatabasePopulator databasePopulator = new ResourceDatabasePopulator();
+        databasePopulator.addScript(new ClassPathResource("sql/create_table_skripts.sql"));
+        databasePopulator.addScript(new ClassPathResource("sql/tables_backup(data).sql"));
+        return databasePopulator;
     }
 
     /**
      * Register bean for DataSourceInitializer.
      *
      * @param dataSource Datasource
-     * @param resourceDatabasePopulator ResourceDatabasePopulator
+     * @param databasePopulator ResourceDatabasePopulator
      * @return DataSourceInitializer
      */
-    public DataSourceInitializer dataSourceInitializer(DataSource dataSource, ResourceDatabasePopulator
-            resourceDatabasePopulator) {
-        DataSourceInitializer dataSourceInitializer = new DataSourceInitializer();
-        dataSourceInitializer.setDatabasePopulator(resourceDatabasePopulator);
-        dataSourceInitializer.setDataSource(dataSource);
-        return dataSourceInitializer;
+    public DataSourceInitializer dataSourceInitializer(final DataSource dataSource, final ResourceDatabasePopulator
+            databasePopulator) {
+        final DataSourceInitializer sourceInitializer = new DataSourceInitializer();
+        sourceInitializer.setDatabasePopulator(databasePopulator);
+        sourceInitializer.setDataSource(dataSource);
+        return sourceInitializer;
     }
 }

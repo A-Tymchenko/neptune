@@ -42,7 +42,7 @@ ext {
     //persistency libraries
     hibernateVersion = '5.2.10.Final'
     hibernateJpaVersion = '1.0.0.Final'
-    hibernateValidatorVersion = '5.4.1.Final' //6.0.0.Beta2
+    hibernateValidatorVersion = '6.0.12.Final' //6.0.0.Beta2
     atomikosVersion = '4.0.4'
 
     //testing libs
