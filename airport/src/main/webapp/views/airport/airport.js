@@ -43,7 +43,7 @@
             }
         }
         req("/airport", JSON.stringify(airport), "DELETE").then(function (response) {
-            response.statusText;
+            console.log(response);
         })
     }
     function saveAirport() {
@@ -66,7 +66,7 @@
         air.address = updatedAirport.address = cell[3].innerHTML = document.getElementById("address").value;
         air.terminalCount = updatedAirport.terminalCount = cell[4].innerHTML = document.getElementById("terminals").value;
         req("/airport", JSON.stringify(air), "PUT").then(function(response){
-            console.log(response.statusText);
+            console.log(response);
         });
         for (let i = 0; i < airports.length; i++) {
             let airport = airports[i]

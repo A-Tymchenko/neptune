@@ -1,6 +1,7 @@
 package com.ra.airport.config;
 
 import javax.sql.DataSource;
+import javax.validation.Validator;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
@@ -15,6 +16,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.datasource.init.DataSourceInitializer;
 import org.springframework.jdbc.datasource.init.ResourceDatabasePopulator;
+import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 
 /**
  * Spring configuration class for DAO layer.
@@ -71,6 +73,11 @@ public class AirPortConfiguration {
     @Bean
     public NamedParameterJdbcTemplate namedParameterJdbcTemplate() {
         return new NamedParameterJdbcTemplate(dataSource());
+    }
+
+    @Bean
+    public Validator validatorFactory() {
+        return new LocalValidatorFactoryBean();
     }
 
     /**

@@ -270,6 +270,7 @@ project("airport") {
         compile spring.jdbc
         compile spring.test
         compile spring.webmvc
+        compile misc.validation
         testCompile testing.hamcrestCore
     }
 }
