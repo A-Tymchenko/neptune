@@ -22,10 +22,10 @@
                 for (let i = 1; i < rows.length; i++) {
                     let airport = new Object();
                     let cell = rows[i].cells;
-                    airport.id = rows[i].id;
-                    airport.name = cell[0].innerHTML;
-                    airport.num = cell[1].innerHTML;
-                    airport.type = cell[2].innerHTML;
+                    airport.apId = rows[i].id;
+                    airport.apName = cell[0].innerHTML;
+                    airport.apNum = cell[1].innerHTML;
+                    airport.apType = cell[2].innerHTML;
                     airport.address = cell[3].innerHTML;
                     airport.terminalCount = cell[4].innerHTML;
                     airports.push(airport);
@@ -34,14 +34,16 @@
         }
     function deleteAirport(id){
         document.getElementById(id).innerHTML = "";
+        let airport;
         for (let i = 0; i < airports.length; i++) {
-            let airport = airports[i]
-            if (airport.id == id) {
+            airport = airports[i];
+            if (airport.apId == id) {
                 airports.splice(i,1);
+                break;
             }
         }
-        req("/airport/delete", "apId="+id).then(function (response) {
-            console.log("airport: " + id + " deleted successfuly");
+        req("/airport", JSON.stringify(airport), "DELETE").then(function (response) {
+            response.statusText;
         })
     }
     function saveAirport() {
@@ -54,45 +56,43 @@
         }
     }
     function updateAirportOnServer() {
-        let row = document.getElementById(updatedAirport.id);
+        let row = document.getElementById(updatedAirport.apId);
         let cell = row.cells;
         let air = new Object();
-        air.apId = updatedAirport.id;
-        air.apName = updatedAirport.name = cell[0].innerHTML = document.getElementById("name").value;
-        air.apNum = updatedAirport.num = cell[1].innerHTML = document.getElementById("num").value;
-        air.apType = updatedAirport.type = cell[2].innerHTML = document.getElementById("type").value;
+        air.apId = updatedAirport.apId;
+        air.apName = updatedAirport.apName = cell[0].innerHTML = document.getElementById("name").value;
+        air.apNum = updatedAirport.apNum = cell[1].innerHTML = document.getElementById("num").value;
+        air.apType = updatedAirport.apType = cell[2].innerHTML = document.getElementById("type").value;
         air.address = updatedAirport.address = cell[3].innerHTML = document.getElementById("address").value;
         air.terminalCount = updatedAirport.terminalCount = cell[4].innerHTML = document.getElementById("terminals").value;
-        req("/airport/update", "apId=" + air.apId + "&apName=" + air.apName + "&apNum=" + air.apNum
-            + "&apType=" + air.apType + "&address=" + air.address + "&terminalCount=" + air.terminalCount).then(function(response){
-            console.log("airport: " + air.apId + " updated successfuly");
+        req("/airport", JSON.stringify(air), "PUT").then(function(response){
+            console.log(response.statusText);
         });
         for (let i = 0; i < airports.length; i++) {
             let airport = airports[i]
-            if (airport.id == updatedAirport.id) {
+            if (airport.apId == updatedAirport.apId) {
                 airports[i] = updatedAirport;
             }
         }
     }
     function saveNewAirport(){
         let airport = new Object();
-        airport.apId = 1;
         airport.apName = document.getElementById("name").value;
         airport.apNum = parseInt(document.getElementById("num").value);
         airport.apType = document.getElementById("type").value;
         airport.address = document.getElementById("address").value;
         airport.terminalCount = parseInt(document.getElementById("terminals").value);
-        req("/airport/airport", JSON.stringify(airport)).then(function(response){
-            airport.id = response.slice(response.indexOf("id") + 3, response.indexOf(" created"))
+        req("/airport", JSON.stringify(airport), "POST").then(function(response){
+            airport.apId = JSON.parse(response).apId;
                     airports.push(airport);
-                    let row = '<tr id = "' + airport.id + '">' +
-                               '<td>' + airport.name + '</td>' +
-                               '<td>' + airport.num + '</td>' +
-                               '<td>' + airport.type + '</td>' +
+                    let row = '<tr id = "' + airport.apId + '">' +
+                               '<td>' + airport.apName + '</td>' +
+                               '<td>' + airport.apNum + '</td>' +
+                               '<td>' + airport.apType + '</td>' +
                                '<td>' + airport.address + '</td>' +
                                '<td>' + airport.terminalCount + '</td>' +
-                               '<td><button type="button" onclick="deleteAirport(' + airport.id + ')">Delete</button></td>' +
-                               '<td><button type="button" onclick="updateAirport(' + airport.id + ')">Update</button></td>' +
+                               '<td><button type="button" onclick="deleteAirport(' + airport.apId.toString() + ')">Delete</button></td>' +
+                               '<td><button type="button" onclick="updateAirport(' + airport.apId.toString() + ')">Update</button></td>' +
                                '</tr>'
                     document.getElementById("airports").innerHTML = document.getElementById("airports").innerHTML + row;
         });
@@ -103,25 +103,24 @@
         modal.style.display = "block";
         let row = document.getElementById(id);
         let cell = row.cells;
-        updatedAirport.id = id;
-        updatedAirport.name = cell[0].innerHTML;
-        updatedAirport.num = cell[1].innerHTML;
-        updatedAirport.type = cell[2].innerHTML;
+        updatedAirport.apId = id;
+        updatedAirport.apName = cell[0].innerHTML;
+        updatedAirport.apNum = cell[1].innerHTML;
+        updatedAirport.apType = cell[2].innerHTML;
         updatedAirport.address = cell[3].innerHTML;
         updatedAirport.terminalCount = cell[4].innerHTML;
-        document.getElementById("name").value = updatedAirport.name;
-        document.getElementById("num").value = updatedAirport.num;
-        document.getElementById("type").value = updatedAirport.type;
+        document.getElementById("name").value = updatedAirport.apName;
+        document.getElementById("num").value = updatedAirport.apNum;
+        document.getElementById("type").value = updatedAirport.apType;
         document.getElementById("address").value = updatedAirport.address;
         document.getElementById("terminals").value = updatedAirport.terminalCount;
     }
-    function req(url, body)
+    function req(url, body, method)
     {
         return new Promise(function(resolve, reject)
         {
             let req = new XMLHttpRequest();
-            req.open('POST', url, true);
-            req.setRequestHeader("Accept", "application/json");
+            req.open(method, url, true);
             req.setRequestHeader("Content-type", "application/json");
             req.onload = function()
             {
