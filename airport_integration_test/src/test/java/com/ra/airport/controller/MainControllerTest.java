@@ -32,10 +32,9 @@ public class MainControllerTest {
     }
 
     @Test
-    public void findAll_ShouldAddTodoEntriesToModelAndRenderTodoListView() throws Exception {
+    public void whenCallIndexThenIndexJspShoudBeReturned() throws Exception {
         mockMvc.perform(get("/"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("/index"));
-        
     }
 }

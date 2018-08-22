@@ -11,7 +11,7 @@ public class MainController {
      * @return index
      */
     @RequestMapping("/")
-    public String index() {
+    public String getIndex() {
         return "/index";
     }
 }

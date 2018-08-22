@@ -10,17 +10,17 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class MainControllerMockitoTest {
 
     MainController mainController;
-    String pathToJsp;
+    String redirectionPath;
 
     @BeforeEach
     public void init() throws AirPortDaoException {
         MockitoAnnotations.initMocks(this);
         mainController = new MainController();
-        pathToJsp = "/index";
+        redirectionPath = "/index";
     }
 
     @Test
     public void whenCallIndexThenReturnPathToJsp() {
-        assertEquals(mainController.index(), pathToJsp);
+        assertEquals(mainController.getIndex(), redirectionPath);
     }
 }
