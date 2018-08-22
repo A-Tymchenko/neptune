@@ -10,8 +10,11 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.jdbc.datasource.init.DataSourceInitializer;
+import org.springframework.jdbc.datasource.init.ResourceDatabasePopulator;
 
 /**
  * Spring configuration class for DAO layer.
@@ -27,6 +30,7 @@ public class AirPortConfiguration {
 
     /**
      * Register {@link DataSource} bean.
+     *
      * @return data source bean
      */
     @Bean
@@ -36,6 +40,7 @@ public class AirPortConfiguration {
 
     /**
      * Register {@link HikariConfig} bean. Set main properties to it.
+     *
      * @return return config for {@link DataSource} bean
      */
     @Bean
@@ -50,6 +55,7 @@ public class AirPortConfiguration {
 
     /**
      * Register {@link JdbcTemplate} bean.
+     *
      * @return template
      */
     @Bean
@@ -65,5 +71,33 @@ public class AirPortConfiguration {
     @Bean
     public NamedParameterJdbcTemplate namedParameterJdbcTemplate() {
         return new NamedParameterJdbcTemplate(dataSource());
+    }
+
+    /**
+     * Register ResourceDatabasePopulator bean for H2 dataBase to runScript.
+     *
+     * @return dataSource
+     */
+    @Bean
+    public ResourceDatabasePopulator resourceDatabasePopulator() {
+        final ResourceDatabasePopulator databasePopulator = new ResourceDatabasePopulator();
+        databasePopulator.addScript(new ClassPathResource("sql/create_table_skripts.sql"));
+        databasePopulator.addScript(new ClassPathResource("sql/tables_backup(data).sql"));
+        return databasePopulator;
+    }
+
+    /**
+     * Register bean for DataSourceInitializer.
+     *
+     * @param dataSource Datasource
+     * @param databasePopulator ResourceDatabasePopulator
+     * @return DataSourceInitializer
+     */
+    public DataSourceInitializer dataSourceInitializer(final DataSource dataSource, final ResourceDatabasePopulator
+            databasePopulator) {
+        final DataSourceInitializer sourceInitializer = new DataSourceInitializer();
+        sourceInitializer.setDatabasePopulator(databasePopulator);
+        sourceInitializer.setDataSource(dataSource);
+        return sourceInitializer;
     }
 }

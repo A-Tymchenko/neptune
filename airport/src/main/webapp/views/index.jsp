@@ -5,7 +5,7 @@
 <head>
     <title>Airport</title>
 <style>
-    <%@include file="airport/style.css"%>
+    <%@include file="css/style.css"%>
 </style>
 </head>
 

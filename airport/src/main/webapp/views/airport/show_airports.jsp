@@ -18,7 +18,7 @@
                     <th>Name</th>
                     <th>Number</th>
                     <th>Type</th>
-                    <th>Adress</th>
+                    <th>Address</th>
                     <th>Terminal count</th>
                 </tr>
            <c:forEach var="airport" items="${airports}">
@@ -49,9 +49,9 @@
    </div>
 </body>
 <script type="text/javascript">
-    <%@include file="airport/airport.js"%>
+    <%@include file="../airport/airport.js"%>
 </script>
 <style>
-    <%@include file="airport/airport.css"%>
+    <%@include file="../airport/airport.css"%>
 </style>
 </html>
