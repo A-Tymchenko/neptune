@@ -93,6 +93,7 @@ public class AirPortConfiguration {
      * @param databasePopulator ResourceDatabasePopulator
      * @return DataSourceInitializer
      */
+    @Bean
     public DataSourceInitializer dataSourceInitializer(final DataSource dataSource, final ResourceDatabasePopulator
             databasePopulator) {
         final DataSourceInitializer sourceInitializer = new DataSourceInitializer();

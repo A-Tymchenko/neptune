@@ -76,13 +76,13 @@
     }
     function saveNewAirport(){
         let airport = new Object();
-        airport.name = document.getElementById("name").value;
-        airport.num = document.getElementById("num").value;
-        airport.type = document.getElementById("type").value;
+        airport.apId = 1;
+        airport.apName = document.getElementById("name").value;
+        airport.apNum = parseInt(document.getElementById("num").value);
+        airport.apType = document.getElementById("type").value;
         airport.address = document.getElementById("address").value;
-        airport.terminalCount = document.getElementById("terminals").value;
-        req("/airport/create", "apName=" + airport.name + "&apNum=" + airport.num
-            + "&apType=" + airport.type + "&address=" + airport.address + "&terminalCount=" + airport.terminalCount).then(function(response){
+        airport.terminalCount = parseInt(document.getElementById("terminals").value);
+        req("/airport/airport", JSON.stringify(airport)).then(function(response){
             airport.id = response.slice(response.indexOf("id") + 3, response.indexOf(" created"))
                     airports.push(airport);
                     let row = '<tr id = "' + airport.id + '">' +
@@ -121,7 +121,8 @@
         {
             let req = new XMLHttpRequest();
             req.open('POST', url, true);
-            req.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+            req.setRequestHeader("Accept", "application/json");
+            req.setRequestHeader("Content-type", "application/json");
             req.onload = function()
             {
                 if (req.status == 200)
