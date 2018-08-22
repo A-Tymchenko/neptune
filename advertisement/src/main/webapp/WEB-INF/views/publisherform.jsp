@@ -11,20 +11,19 @@
 <body>
 
 <div class="jumbotron text-center">
-    <h1>Device</h1>
+    <h1>Publisher</h1>
     <table class="table">
-        <c:forEach var="result" items="${requestScope.result}">
+        <c:forEach var="resultFour" items="${requestScope.resultFour}">
             <tr>
-                <td><c:out value="${result}"/></td>
+                <td><c:out value="${resultFour}"/></td>
             </tr>
         </c:forEach>
     </table>
 </div>
-
 <div class="container">
     <div class="row">
         <div class="col-lg-8 mx-auto">
-            <form class="form-horizontal" action="/deviceForm" method="post">
+            <form class="form-horizontal" action="/publisherform" method="post" modelAttribute="publisher">
                 <div class="form-group">
                     <div class="col-sm-10">
                     </div>
@@ -36,19 +35,25 @@
                 </div>
                 <div class="form-group">
                     <div class="col-sm-10">
-                        <input type="text" class="form-control" id="model" placeholder="Model"
-                               name="model">
+                        <input type="text" class="form-control" id="address" placeholder="Address"
+                               name="address">
                     </div>
                 </div>
                 <div class="form-group">
                     <div class="col-sm-10">
-                        <input type="text" class="form-control" id="deviceType" placeholder="Device Type"
-                               name="deviceType">
+                        <input type="text" class="form-control" id="telephone" placeholder="Telephone"
+                               name="telephone">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" id="country" placeholder="Country"
+                               name="country">
                     </div>
                 </div>
                 <div class="form-group">
                     <div class="col-sm-offset-2 col-sm-10">
-                        <button type="submit" class="btn btn-default" name="saveEntity" value="saveDevice">Sign in
+                        <button type="submit" class="btn btn-default" name="saveEntity" value="savePublisher">Sign in
                         </button>
                     </div>
                 </div>
@@ -57,7 +62,7 @@
     </div>
 </div>
 <div class="jumbotron text-center">
-    <a href="./alldevices"><h1>Get All Devices</h1></a>
+    <a href="./allpublishers"><h1>Get All Publishers</h1></a>
 </div>
 </body>
 </html>

@@ -11,49 +11,50 @@
 <body>
 
 <div class="jumbotron text-center">
-    <h1>Publisher</h1>
+    <h1>Advertisement</h1>
     <table class="table">
-        <c:forEach var="result" items="${requestScope.result}">
+        <c:forEach var="resultOne" items="${requestScope.resultOne}">
             <tr>
-                <td><c:out value="${result}"/></td>
+                <td><c:out value="${resultOne}"/></td>
             </tr>
         </c:forEach>
     </table>
 </div>
+
 <div class="container">
     <div class="row">
-        <div class="col-lg-8 mx-auto">
-            <form class="form-horizontal" action="/publisherForm" method="post">
+        <div class="col-lg-12 mx-auto">
+            <form class="form-horizontal" action="/advertisementform" method="post" modelAttribute="advertisement">
                 <div class="form-group">
                     <div class="col-sm-10">
                     </div>
                 </div>
                 <div class="form-group">
                     <div class="col-sm-10">
-                        <input type="text" class="form-control" id="name" placeholder="Name" name="name">
+                        <input type="text" class="form-control" id="title" placeholder="Title" name="title">
                     </div>
                 </div>
                 <div class="form-group">
                     <div class="col-sm-10">
-                        <input type="text" class="form-control" id="address" placeholder="Address"
-                               name="address">
+                        <input type="text" class="form-control" id="context" placeholder="Context"
+                               name="context">
                     </div>
                 </div>
                 <div class="form-group">
                     <div class="col-sm-10">
-                        <input type="text" class="form-control" id="telephone" placeholder="Telephone"
-                               name="telephone">
+                        <input type="text" class="form-control" id="imageUrl" placeholder="ImageUrl"
+                               name="imageUrl">
                     </div>
                 </div>
                 <div class="form-group">
                     <div class="col-sm-10">
-                        <input type="text" class="form-control" id="country" placeholder="Country"
-                               name="country">
+                        <input type="text" class="form-control" id="language" placeholder="Language"
+                               name="language">
                     </div>
                 </div>
                 <div class="form-group">
                     <div class="col-sm-offset-2 col-sm-10">
-                        <button type="submit" class="btn btn-default" name="saveEntity" value="savePublisher">Sign in
+                        <button type="submit" class="btn btn-default" name="saveEntity" value="saveAdvert">Sign in
                         </button>
                     </div>
                 </div>
@@ -62,9 +63,7 @@
     </div>
 </div>
 <div class="jumbotron text-center">
-    <a href="./allpublishers"><h1>Get All Publishers</h1></a>
+    <a href="./alladvertisement"><h1>Get All Advertisement</h1></a>
 </div>
 </body>
 </html>
-
-

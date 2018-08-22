@@ -1,10 +1,5 @@
 package com.ra.advertisement.service;
 
-import java.util.*;
-import javax.servlet.http.HttpServletRequest;
-import javax.validation.ConstraintViolation;
-import javax.validation.Validator;
-
 import com.ra.advertisement.dao.ProviderAdvertisementDaoImpl;
 import com.ra.advertisement.dto.ProviderDto;
 import com.ra.advertisement.entity.Provider;
@@ -12,6 +7,10 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.jdbc.core.JdbcTemplate;
+
+import javax.validation.ConstraintViolation;
+import javax.validation.Validator;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Matchers.anyString;
@@ -22,10 +21,10 @@ import static org.mockito.Mockito.when;
 public class ProviderAdvertisementServiceImplTest {
     private static ProviderAdvertisementServiceImpl providerService;
     private static ProviderAdvertisementDaoImpl mockProviderDao;
-    private static HttpServletRequest mockRequest;
     private static BeanValidator beanValidator;
     private static Validator validator;
     private ProviderDto providerDto;
+    private ProviderDto providerDtoCorrect;
     private Provider provider;
     private List<Provider> providerList;
     private static JdbcTemplate mockJdbcTemplate;
@@ -34,7 +33,6 @@ public class ProviderAdvertisementServiceImplTest {
     public static void init() {
         beanValidator = new BeanValidator();
         mockJdbcTemplate = mock(JdbcTemplate.class);
-        mockRequest = mock(HttpServletRequest.class);
         mockProviderDao = new ProviderAdvertisementDaoImpl(mockJdbcTemplate);
         providerService = new ProviderAdvertisementServiceImpl(mockProviderDao, beanValidator);
         mockProviderDao = mock(ProviderAdvertisementDaoImpl.class);
@@ -43,14 +41,11 @@ public class ProviderAdvertisementServiceImplTest {
 
     @BeforeEach
     public void reInitAdvertisementDao() {
-        providerDto = new ProviderDto("Coca Cola", "Lviv", "224518", "Ukraine");
+        providerDto = new ProviderDto("Coca Cola", "Lviv", "text", "Ukraine");
+        providerDtoCorrect = new ProviderDto("Coca Cola", "Lviv", "224518", "Ukraine");
         provider = new Provider(1L, "Coca Cola", "Lviv", "224518", "Ukraine");
         providerList = new ArrayList<>();
         providerList.add(provider);
-        when(mockRequest.getParameter("name")).thenReturn(providerDto.getName());
-        when(mockRequest.getParameter("address")).thenReturn(providerDto.getAddress());
-        when(mockRequest.getParameter("telephone")).thenReturn(providerDto.getTelephone());
-        when(mockRequest.getParameter("country")).thenReturn(providerDto.getCountry());
     }
 
     /**
@@ -60,11 +55,11 @@ public class ProviderAdvertisementServiceImplTest {
      */
     @Test
     public void saveEntityServiceMethodExecutedWithConstraintViolationReturnTrue() {
-        when(mockRequest.getParameter("telephone")).thenReturn("text instead of number");
-        final ProviderDto dto = providerService.provDtoCreator(mockRequest);
-        final Set<ConstraintViolation<ProviderDto>> violations = validator.validate(dto);
-        providerService.saveEntityService(mockRequest);
+        List<String> answers = new ArrayList<>();
+        final Set<ConstraintViolation<ProviderDto>> violations = validator.validate(providerDto);
+        answers = providerService.saveEntityService(providerDto);
         assertTrue(!violations.isEmpty());
+        assertTrue(answers.size() == 1);
     }
 
     /**
@@ -74,14 +69,13 @@ public class ProviderAdvertisementServiceImplTest {
      */
     @Test
     public void saveEntityServiceMethodExecutedWithNoConstraintViolationReturnTrue() {
-        final List<String> allMessages = new ArrayList<>();
-        when(mockRequest.getParameter("telephone")).thenReturn(providerDto.getTelephone());
-        final ProviderDto dto = providerService.provDtoCreator(mockRequest);
-        final Set<ConstraintViolation<ProviderDto>> violations = validator.validate(dto);
-        providerService.saveEntityService(mockRequest);
-        final Provider providerCreated = providerService.provCreator(dto);
-        when(mockProviderDao.create(providerCreated)).thenReturn(provider);
+        List<String> answers = new ArrayList<>();
+        final Set<ConstraintViolation<ProviderDto>> violations = validator.validate(providerDtoCorrect);
+        answers = providerService.saveEntityService(providerDtoCorrect);
+        System.out.println(answers);
         assertTrue(violations.isEmpty());
+        assertTrue(answers.get(0).equals("Object has been saved successfully"));
+
     }
 
     /**
@@ -95,19 +89,6 @@ public class ProviderAdvertisementServiceImplTest {
                 () -> assertEquals(providerCreated.getAddress(), providerDto.getAddress()),
                 () -> assertEquals(providerCreated.getTelephone(), providerDto.getTelephone()),
                 () -> assertEquals(providerCreated.getCountry(), providerDto.getCountry()));
-    }
-
-    /**
-     * Testing method which convert HttpServletRequest into dto object.
-     */
-    @Test
-    public void convertHttpServletRequestIntoDto() {
-        ProviderDto providerDtoCreatedSecond = providerService.provDtoCreator(mockRequest);
-        assertAll("providerDtoCreatedSecond",
-                () -> assertEquals(providerDtoCreatedSecond.getName(), providerDto.getName()),
-                () -> assertEquals(providerDtoCreatedSecond.getAddress(), providerDto.getAddress()),
-                () -> assertEquals(providerDtoCreatedSecond.getTelephone(), providerDto.getTelephone()),
-                () -> assertEquals(providerDtoCreatedSecond.getCountry(), providerDto.getCountry()));
     }
 
     /**

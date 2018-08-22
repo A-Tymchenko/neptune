@@ -15,16 +15,16 @@
 <div class="container">
     <div class="row">
         <div class="col-sm-3">
-            <a href="advertisementform.jsp"><h3>Advertisement</h3></a>
+            <a href="/advertisements"><h3>Advertisement</h3></a>
         </div>
         <div class="col-sm-3">
-            <a href="deviceform.jsp"><h3>Device</h3></a>
+            <a href="/devices"><h3>Device</h3></a>
         </div>
         <div class="col-sm-3">
-            <a href="providerform.jsp"><h3>Provider</h3></a>
+            <a href="/providers"><h3>Provider</h3></a>
         </div>
         <div class="col-sm-3">
-            <a href="publisherform.jsp"><h3>Publisher</h3></a>
+            <a href="/publishers"><h3>Publisher</h3></a>
         </div>
     </div>
 </div>

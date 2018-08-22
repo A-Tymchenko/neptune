@@ -1,10 +1,5 @@
 package com.ra.advertisement.service;
 
-import java.util.*;
-import javax.servlet.http.HttpServletRequest;
-import javax.validation.ConstraintViolation;
-import javax.validation.Validator;
-
 import com.ra.advertisement.dao.AdvertisementAdvertisementDaoImpl;
 import com.ra.advertisement.dto.AdvertisementDto;
 import com.ra.advertisement.entity.Advertisement;
@@ -13,9 +8,11 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.jdbc.core.JdbcTemplate;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import javax.validation.ConstraintViolation;
+import javax.validation.Validator;
+import java.util.*;
+
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -24,10 +21,10 @@ import static org.mockito.Mockito.when;
 public class AdvertisementAdvertisementServiceImplTest {
     private static AdvertisementAdvertisementServiceImpl advertService;
     private static AdvertisementAdvertisementDaoImpl mockAdvertDao;
-    private static HttpServletRequest mockRequest;
     private static BeanValidator beanValidator;
     private static Validator validator;
     private AdvertisementDto advertisementDto;
+    private AdvertisementDto advertisementDtoCorrect;
     private Advertisement advertisement;
     private List<Advertisement> listAdvert;
     private static JdbcTemplate mockJdbcTemplate;
@@ -36,7 +33,6 @@ public class AdvertisementAdvertisementServiceImplTest {
     public static void init() {
         beanValidator = new BeanValidator();
         mockJdbcTemplate = mock(JdbcTemplate.class);
-        mockRequest = mock(HttpServletRequest.class);
         mockAdvertDao = new AdvertisementAdvertisementDaoImpl(mockJdbcTemplate);
         advertService = new AdvertisementAdvertisementServiceImpl(mockAdvertDao, beanValidator);
         mockAdvertDao = mock(AdvertisementAdvertisementDaoImpl.class);
@@ -47,13 +43,12 @@ public class AdvertisementAdvertisementServiceImplTest {
     public void reInitAdvertisementDao() {
         advertisementDto = new AdvertisementDto("Welcome advert", "Welcome to Ukraine",
                 "url", "Ukrainian");
+        advertisementDtoCorrect = new AdvertisementDto("Welcome advert", "Welcome to Ukraine",
+                "https://ithillel.ua/", "Ukrainian");
         advertisement = new Advertisement(1L, "Welcome New advertda", "Welcome to Ukraine",
                 "url", "Ukrainian");
         listAdvert = new ArrayList<>();
         listAdvert.add(advertisement);
-        when(mockRequest.getParameter("title")).thenReturn(advertisementDto.getTitle());
-        when(mockRequest.getParameter("context")).thenReturn(advertisementDto.getContext());
-        when(mockRequest.getParameter("language")).thenReturn(advertisementDto.getLanguage());
     }
 
     /**
@@ -63,11 +58,11 @@ public class AdvertisementAdvertisementServiceImplTest {
      */
     @Test
     public void saveEntityServiceMethodExecutedWithConstraintViolationReturnTrue() {
-        when(mockRequest.getParameter("imageUrl")).thenReturn(advertisementDto.getImageUrl());
-        final AdvertisementDto dto = advertService.advDtoCreator(mockRequest);
-        final Set<ConstraintViolation<AdvertisementDto>> violations = validator.validate(dto);
-        advertService.saveEntityService(mockRequest);
+        List<String> answers = new ArrayList<>();
+        final Set<ConstraintViolation<AdvertisementDto>> violations = validator.validate(advertisementDto);
+        answers = advertService.saveEntityService(advertisementDto);
         assertTrue(!violations.isEmpty());
+        assertTrue(answers.size()==2);
     }
 
     /**
@@ -77,14 +72,11 @@ public class AdvertisementAdvertisementServiceImplTest {
      */
     @Test
     public void saveEntityServiceMethodExecutedWithNoConstraintViolationReturnTrue() {
-        final List<String> allMessages = new ArrayList<>();
-        when(mockRequest.getParameter("imageUrl")).thenReturn("https://ithillel.ua/");
-        final AdvertisementDto dto = advertService.advDtoCreator(mockRequest);
-        final Set<ConstraintViolation<AdvertisementDto>> violations = validator.validate(dto);
-        advertService.saveEntityService(mockRequest);
-        final Advertisement advertisementCreated = advertService.advCreator(dto);
-        when(mockAdvertDao.create(advertisementCreated)).thenReturn(advertisement);
+        List<String> answers = new ArrayList<>();
+        final Set<ConstraintViolation<AdvertisementDto>> violations = validator.validate(advertisementDtoCorrect);
+        answers = advertService.saveEntityService(advertisementDtoCorrect);
         assertTrue(violations.isEmpty());
+        assertTrue(answers.get(0).equals("Object has been saved successfully"));
     }
 
     /**
@@ -98,19 +90,6 @@ public class AdvertisementAdvertisementServiceImplTest {
                 () -> assertEquals(advertisementCreated.getContext(), advertisementDto.getContext()),
                 () -> assertEquals(advertisementCreated.getImageUrl(), advertisementDto.getImageUrl()),
                 () -> assertEquals(advertisementCreated.getLanguage(), advertisementDto.getLanguage()));
-    }
-
-    /**
-     * Testing method which convert HttpServletRequest into dto object.
-     */
-    @Test
-    public void convertHttpServletRequestIntoDto() {
-        AdvertisementDto advertisementDtoCreated = advertService.advDtoCreator(mockRequest);
-        assertAll("advertisementDtoCreated",
-                () -> assertEquals(advertisementDtoCreated.getTitle(), advertisementDto.getTitle()),
-                () -> assertEquals(advertisementDtoCreated.getContext(), advertisementDto.getContext()),
-                () -> assertEquals(advertisementDtoCreated.getImageUrl(), advertisementDto.getImageUrl()),
-                () -> assertEquals(advertisementDtoCreated.getLanguage(), advertisementDto.getLanguage()));
     }
 
     /**

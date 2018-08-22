@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
-import javax.servlet.http.HttpServletRequest;
 import javax.validation.ConstraintViolation;
 import javax.validation.Validator;
 
@@ -15,7 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service("providerService")
-public class ProviderAdvertisementServiceImpl implements AdvertisementService<ProviderDto, Provider> {
+public class ProviderAdvertisementServiceImpl implements AdvertisementService<ProviderDto> {
 
     private final transient ProviderAdvertisementDaoImpl providerDao;
     private static Validator validator;
@@ -33,9 +32,8 @@ public class ProviderAdvertisementServiceImpl implements AdvertisementService<Pr
      * @return entity
      */
     @Override
-    public List<String> saveEntityService(final HttpServletRequest request) {
+    public List<String> saveEntityService(final ProviderDto dto) {
         final List<String> allMessages = new ArrayList<>();
-        final ProviderDto dto = provDtoCreator(request);
         final Set<ConstraintViolation<ProviderDto>> violations = validator.validate(dto);
         if (violations.isEmpty()) {
             final Provider provider = provCreator(dto);
@@ -56,21 +54,6 @@ public class ProviderAdvertisementServiceImpl implements AdvertisementService<Pr
     public List<ProviderDto> getAllEntityService() {
         final List<Provider> providerList = providerDao.getAll();
         final List<ProviderDto> providerDto = mapListEntityIntoDto(providerList);
-        return providerDto;
-    }
-
-    /**
-     * This method maps data from HttpServletRequest request on dto Object.
-     *
-     * @param request HttpServletRequest request
-     * @return dto Object
-     */
-    public ProviderDto provDtoCreator(final HttpServletRequest request) {
-        final ProviderDto providerDto = new ProviderDto();
-        providerDto.setName(request.getParameter("name"));
-        providerDto.setAddress(request.getParameter("address"));
-        providerDto.setTelephone(request.getParameter("telephone"));
-        providerDto.setCountry(request.getParameter("country"));
         return providerDto;
     }
 

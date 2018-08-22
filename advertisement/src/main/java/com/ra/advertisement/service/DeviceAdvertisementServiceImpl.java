@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
-import javax.servlet.http.HttpServletRequest;
 import javax.validation.ConstraintViolation;
 import javax.validation.Validator;
 
@@ -15,7 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service("deviceService")
-public class DeviceAdvertisementServiceImpl implements AdvertisementService<DeviceDto, Device> {
+public class DeviceAdvertisementServiceImpl implements AdvertisementService<DeviceDto> {
 
     private final transient DeviceAdvertisementDaoImpl deviceDao;
     private static Validator validator;
@@ -33,9 +32,8 @@ public class DeviceAdvertisementServiceImpl implements AdvertisementService<Devi
      * @return entity
      */
     @Override
-    public List<String> saveEntityService(final HttpServletRequest request) {
+    public List<String> saveEntityService(final DeviceDto dto) {
         final List<String> allMessages = new ArrayList<>();
-        final DeviceDto dto = devDtoCreator(request);
         final Set<ConstraintViolation<DeviceDto>> violations = validator.validate(dto);
         if (violations.isEmpty()) {
             final Device device = devCreator(dto);
@@ -58,20 +56,6 @@ public class DeviceAdvertisementServiceImpl implements AdvertisementService<Devi
         final List<Device> deviceList = deviceDao.getAll();
         final List<DeviceDto> deviceDto = mapListEntityIntoDto(deviceList);
         return deviceDto;
-    }
-
-    /**
-     * This method maps data from HttpServletRequest request on dto Object.
-     *
-     * @param request HttpServletRequest request
-     * @return dto Object
-     */
-    public DeviceDto devDtoCreator(final HttpServletRequest request) {
-        final DeviceDto devicetDto = new DeviceDto();
-        devicetDto.setName(request.getParameter("name"));
-        devicetDto.setModel(request.getParameter("model"));
-        devicetDto.setDeviceType(request.getParameter("deviceType"));
-        return devicetDto;
     }
 
     /**

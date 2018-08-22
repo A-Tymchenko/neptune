@@ -25,7 +25,7 @@
                     <th scope="col">Country</th>
                 </tr>
                 </thead>
-                <c:forEach var="provider" items="${requestScope.providerdto}">
+                <c:forEach var="provider" items="${allproviders}">
                     <tr>
                         <td><c:out value="${provider.name}"/></td>
                         <td><c:out value="${provider.address}"/></td>

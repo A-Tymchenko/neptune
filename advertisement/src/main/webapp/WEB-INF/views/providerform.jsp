@@ -11,50 +11,49 @@
 <body>
 
 <div class="jumbotron text-center">
-    <h1>Advertisement</h1>
+    <h1>Provider</h1>
     <table class="table">
-        <c:forEach var="result" items="${requestScope.result}">
+        <c:forEach var="resultThree" items="${requestScope.resultThree}">
             <tr>
-                <td><c:out value="${result}"/></td>
+                <td><c:out value="${resultThree}"/></td>
             </tr>
         </c:forEach>
     </table>
 </div>
-
 <div class="container">
     <div class="row">
-        <div class="col-lg-12 mx-auto">
-            <form class="form-horizontal" action="/advertForm" method="post">
+        <div class="col-lg-8 mx-auto">
+            <form class="form-horizontal" action="/providerform" method="post" modelAttribute="provider">
                 <div class="form-group">
                     <div class="col-sm-10">
                     </div>
                 </div>
                 <div class="form-group">
                     <div class="col-sm-10">
-                        <input type="text" class="form-control" id="title" placeholder="Title" name="title">
+                        <input type="text" class="form-control" id="name" placeholder="Name" name="name">
                     </div>
                 </div>
                 <div class="form-group">
                     <div class="col-sm-10">
-                        <input type="text" class="form-control" id="context" placeholder="Context"
-                               name="context">
+                        <input type="text" class="form-control" id="address" placeholder="Address"
+                               name="address">
                     </div>
                 </div>
                 <div class="form-group">
                     <div class="col-sm-10">
-                        <input type="text" class="form-control" id="imageUrl" placeholder="ImageUrl"
-                               name="imageUrl">
+                        <input type="text" class="form-control" id="telephone" placeholder="Telephone"
+                               name="telephone">
                     </div>
                 </div>
                 <div class="form-group">
                     <div class="col-sm-10">
-                        <input type="text" class="form-control" id="language" placeholder="Language"
-                               name="language">
+                        <input type="text" class="form-control" id="country" placeholder="Country"
+                               name="country">
                     </div>
                 </div>
                 <div class="form-group">
                     <div class="col-sm-offset-2 col-sm-10">
-                        <button type="submit" class="btn btn-default" name="saveEntity" value="saveAdvert">Sign in
+                        <button type="submit" class="btn btn-default" name="saveEntity" value="saveProvider">Sign in
                         </button>
                     </div>
                 </div>
@@ -63,7 +62,9 @@
     </div>
 </div>
 <div class="jumbotron text-center">
-    <a href="./alladvertisement"><h1>Get All Advertisement</h1></a>
+    <a href="./allproviders"><h1>Get All Providers</h1></a>
 </div>
 </body>
 </html>
+
+

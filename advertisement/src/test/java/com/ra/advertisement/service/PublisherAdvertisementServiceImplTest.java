@@ -1,10 +1,5 @@
 package com.ra.advertisement.service;
 
-import java.util.*;
-import javax.servlet.http.HttpServletRequest;
-import javax.validation.ConstraintViolation;
-import javax.validation.Validator;
-
 import com.ra.advertisement.dao.PublisherAdvertisementDaoImpl;
 import com.ra.advertisement.dto.PublisherDto;
 import com.ra.advertisement.entity.Publisher;
@@ -12,6 +7,10 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.jdbc.core.JdbcTemplate;
+
+import javax.validation.ConstraintViolation;
+import javax.validation.Validator;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Matchers.anyString;
@@ -22,10 +21,10 @@ import static org.mockito.Mockito.when;
 public class PublisherAdvertisementServiceImplTest {
     private static PublisherAdvertisementServiceImpl publisherService;
     private static PublisherAdvertisementDaoImpl mockPublisherDao;
-    private static HttpServletRequest mockRequest;
     private static BeanValidator beanValidator;
     private static Validator validator;
     private PublisherDto publisherDto;
+    private PublisherDto publisherDtoCorrect;
     private Publisher publisher;
     private List<Publisher> publisherList;
     private static JdbcTemplate mockJdbcTemplate;
@@ -34,7 +33,6 @@ public class PublisherAdvertisementServiceImplTest {
     public static void init() {
         beanValidator = new BeanValidator();
         mockJdbcTemplate = mock(JdbcTemplate.class);
-        mockRequest = mock(HttpServletRequest.class);
         mockPublisherDao = new PublisherAdvertisementDaoImpl(mockJdbcTemplate);
         publisherService = new PublisherAdvertisementServiceImpl(mockPublisherDao, beanValidator);
         mockPublisherDao = mock(PublisherAdvertisementDaoImpl.class);
@@ -43,14 +41,11 @@ public class PublisherAdvertisementServiceImplTest {
 
     @BeforeEach
     public void reInitAdvertisementDao() {
-        publisherDto = new PublisherDto("Coca Cola", "Lviv", "224518", "Ukraine");
+        publisherDto = new PublisherDto("Coca Cola", "Lviv", "text", "Ukraine");
+        publisherDtoCorrect = new PublisherDto("Coca Cola", "Lviv", "224518", "Ukraine");
         publisher = new Publisher(1L, "Coca Cola", "Lviv", "224518", "Ukraine");
         publisherList = new ArrayList<>();
         publisherList.add(publisher);
-        when(mockRequest.getParameter("name")).thenReturn(publisherDto.getName());
-        when(mockRequest.getParameter("address")).thenReturn(publisherDto.getAddress());
-        when(mockRequest.getParameter("telephone")).thenReturn(publisherDto.getTelephone());
-        when(mockRequest.getParameter("country")).thenReturn(publisherDto.getCountry());
     }
 
     /**
@@ -60,11 +55,11 @@ public class PublisherAdvertisementServiceImplTest {
      */
     @Test
     public void saveEntityServiceMethodExecutedWithConstraintViolationReturnTrue() {
-        when(mockRequest.getParameter("telephone")).thenReturn("text instead of number");
-        final PublisherDto dto = publisherService.pubDtoCreator(mockRequest);
-        final Set<ConstraintViolation<PublisherDto>> violations = validator.validate(dto);
-        publisherService.saveEntityService(mockRequest);
+        List<String> answers = new ArrayList<>();
+        final Set<ConstraintViolation<PublisherDto>> violations = validator.validate(publisherDto);
+        answers = publisherService.saveEntityService(publisherDto);
         assertTrue(!violations.isEmpty());
+        assertTrue(answers.size() == 1);
     }
 
     /**
@@ -74,14 +69,11 @@ public class PublisherAdvertisementServiceImplTest {
      */
     @Test
     public void saveEntityServiceMethodExecutedWithNoConstraintViolationReturnTrue() {
-        final List<String> allMessages = new ArrayList<>();
-        when(mockRequest.getParameter("telephone")).thenReturn(publisherDto.getTelephone());
-        final PublisherDto dto = publisherService.pubDtoCreator(mockRequest);
-        final Set<ConstraintViolation<PublisherDto>> violations = validator.validate(dto);
-        publisherService.saveEntityService(mockRequest);
-        final Publisher publisherCreated = publisherService.pubCreator(dto);
-        when(mockPublisherDao.create(publisherCreated)).thenReturn(publisher);
+        List<String> answers = new ArrayList<>();
+        final Set<ConstraintViolation<PublisherDto>> violations = validator.validate(publisherDtoCorrect);
+        answers = publisherService.saveEntityService(publisherDtoCorrect);
         assertTrue(violations.isEmpty());
+        assertTrue(answers.get(0).equals("Object has been saved successfully"));
     }
 
     /**
@@ -95,19 +87,6 @@ public class PublisherAdvertisementServiceImplTest {
                 () -> assertEquals(publisherCreated.getAddress(), publisherDto.getAddress()),
                 () -> assertEquals(publisherCreated.getTelephone(), publisherDto.getTelephone()),
                 () -> assertEquals(publisherCreated.getCountry(), publisherDto.getCountry()));
-    }
-
-    /**
-     * Testing method which convert HttpServletRequest into dto object.
-     */
-    @Test
-    public void convertHttpServletRequestIntoDto() {
-        PublisherDto publisherDtoCreatedSecond = publisherService.pubDtoCreator(mockRequest);
-        assertAll("publisherDtoCreatedSecond",
-                () -> assertEquals(publisherDtoCreatedSecond.getName(), publisherDto.getName()),
-                () -> assertEquals(publisherDtoCreatedSecond.getAddress(), publisherDto.getAddress()),
-                () -> assertEquals(publisherDtoCreatedSecond.getTelephone(), publisherDto.getTelephone()),
-                () -> assertEquals(publisherDtoCreatedSecond.getCountry(), publisherDto.getCountry()));
     }
 
     /**

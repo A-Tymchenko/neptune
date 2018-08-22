@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
-import javax.servlet.http.HttpServletRequest;
 import javax.validation.ConstraintViolation;
 import javax.validation.Validator;
 
@@ -15,7 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service("publisherService")
-public class PublisherAdvertisementServiceImpl implements AdvertisementService<PublisherDto, Publisher> {
+public class PublisherAdvertisementServiceImpl implements AdvertisementService<PublisherDto> {
 
     private final transient PublisherAdvertisementDaoImpl publisherDao;
     private static Validator validator;
@@ -33,9 +32,8 @@ public class PublisherAdvertisementServiceImpl implements AdvertisementService<P
      * @return entity
      */
     @Override
-    public List<String> saveEntityService(final HttpServletRequest request) {
+    public List<String> saveEntityService(final PublisherDto dto) {
         final List<String> allMessages = new ArrayList<>();
-        final PublisherDto dto = pubDtoCreator(request);
         final Set<ConstraintViolation<PublisherDto>> violations = validator.validate(dto);
         if (violations.isEmpty()) {
             final Publisher publisher = pubCreator(dto);
@@ -59,21 +57,6 @@ public class PublisherAdvertisementServiceImpl implements AdvertisementService<P
                 s -> new PublisherDto(s.getName(), s.getAddress(), s.getTelephone(), s.getCountry())
         ).collect(Collectors.toList());
         return publisherDtoList;
-    }
-
-    /**
-     * This method maps data from HttpServletRequest request on dto Object.
-     *
-     * @param request HttpServletRequest request
-     * @return dto Object
-     */
-    public PublisherDto pubDtoCreator(final HttpServletRequest request) {
-        final PublisherDto publisherDto = new PublisherDto();
-        publisherDto.setName(request.getParameter("name"));
-        publisherDto.setAddress(request.getParameter("address"));
-        publisherDto.setTelephone(request.getParameter("telephone"));
-        publisherDto.setCountry(request.getParameter("country"));
-        return publisherDto;
     }
 
     /**

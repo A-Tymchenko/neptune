@@ -11,7 +11,7 @@
 <body>
 
 <div class="jumbotron text-center">
-    <h1>All Advertisements</h1>
+    <h1>All Devices</h1>
 </div>
 <div class="container">
     <div class="row">
@@ -19,18 +19,16 @@
             <table class="table">
                 <thead class="thead-green">
                 <tr>
-                    <th scope="col">Title</th>
-                    <th scope="col">Context</th>
-                    <th scope="col">Image Url</th>
-                    <th scope="col">Language</th>
+                    <th scope="col">Name</th>
+                    <th scope="col">Model</th>
+                    <th scope="col">Device Type</th>
                 </tr>
                 </thead>
-                <c:forEach var="advert" items="${requestScope.advertdto}">
+                <c:forEach var="device" items="${alldevices}">
                     <tr>
-                        <td><c:out value="${advert.title}"/></td>
-                        <td><c:out value="${advert.context}"/></td>
-                        <td><c:out value="${advert.imageUrl}"/></td>
-                        <td><c:out value="${advert.language}"/></td>
+                        <td><c:out value="${device.name}"/></td>
+                        <td><c:out value="${device.model}"/></td>
+                        <td><c:out value="${device.deviceType}"/></td>
                     </tr>
                 </c:forEach>
             </table>

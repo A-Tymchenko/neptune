@@ -11,7 +11,7 @@
 <body>
 
 <div class="jumbotron text-center">
-    <h1>All Devicest</h1>
+    <h1>All Publishers</h1>
 </div>
 <div class="container">
     <div class="row">
@@ -20,15 +20,17 @@
                 <thead class="thead-green">
                 <tr>
                     <th scope="col">Name</th>
-                    <th scope="col">Model</th>
-                    <th scope="col">Device Type</th>
+                    <th scope="col">Address</th>
+                    <th scope="col">Telephone</th>
+                    <th scope="col">Country</th>
                 </tr>
                 </thead>
-                <c:forEach var="device" items="${requestScope.devicedto}">
+                <c:forEach var="publisher" items="${allpublishers}">
                     <tr>
-                        <td><c:out value="${device.name}"/></td>
-                        <td><c:out value="${device.model}"/></td>
-                        <td><c:out value="${device.deviceType}"/></td>
+                        <td><c:out value="${publisher.name}"/></td>
+                        <td><c:out value="${publisher.address}"/></td>
+                        <td><c:out value="${publisher.telephone}"/></td>
+                        <td><c:out value="${publisher.country}"/></td>
                     </tr>
                 </c:forEach>
             </table>

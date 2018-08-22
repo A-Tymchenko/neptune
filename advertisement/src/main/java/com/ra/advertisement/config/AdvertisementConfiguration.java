@@ -9,13 +9,21 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.SimpleDriverDataSource;
+import org.springframework.jdbc.datasource.init.DataSourceInitializer;
+import org.springframework.jdbc.datasource.init.ResourceDatabasePopulator;
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import org.springframework.web.servlet.view.InternalResourceViewResolver;
+import org.springframework.web.servlet.view.JstlView;
 
 @Configuration
+@EnableWebMvc
 @ComponentScan("com.ra.advertisement")
 @PropertySource("classpath:config.properties")
-public class AdvertisementConfiguration {
+public class AdvertisementConfiguration implements WebMvcConfigurer {
 
     @Autowired
     private transient Environment env;
@@ -32,7 +40,7 @@ public class AdvertisementConfiguration {
     }
 
     /**
-     * method creates dataSource for H2 dataBase.
+     * bean for DataSource.
      *
      * @return dataSource
      */
@@ -44,6 +52,47 @@ public class AdvertisementConfiguration {
         dataSource.setUsername(env.getProperty("db.username"));
         dataSource.setPassword(env.getProperty("db.password"));
         return dataSource;
+    }
+
+    /**
+     * bean for ResourceDatabasePopulator for H2 dataBase to runScript.
+     *
+     * @return dataSource
+     */
+    @Bean
+    public ResourceDatabasePopulator resourceDatabasePopulator() {
+        final ResourceDatabasePopulator populator = new ResourceDatabasePopulator();
+        populator.addScript(new ClassPathResource("./advertisement_db.sql"));
+        return populator;
+    }
+
+    /**
+     * bean for DataSourceInitializer.
+     *
+     * @param dataSource Datasource
+     * @param populator  ResourceDatabasePopulator
+     * @return DataSourceInitializer
+     */
+    @Bean
+    public DataSourceInitializer dataSourceInitializer(final DataSource dataSource, final ResourceDatabasePopulator populator) {
+        final DataSourceInitializer initializer = new DataSourceInitializer();
+        initializer.setDatabasePopulator(populator);
+        initializer.setDataSource(dataSource);
+        return initializer;
+    }
+
+    /**
+     * bean for InternalResourceViewResolver.
+     *
+     * @return viewResolver
+     */
+    @Bean
+    public InternalResourceViewResolver internalResourceViewResolver() {
+        final InternalResourceViewResolver bean = new InternalResourceViewResolver();
+        bean.setViewClass(JstlView.class);
+        bean.setPrefix("/WEB-INF/views/");
+        bean.setSuffix(".jsp");
+        return bean;
     }
 }
 

@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
-import javax.servlet.http.HttpServletRequest;
 import javax.validation.ConstraintViolation;
 import javax.validation.Validator;
 
@@ -15,7 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service("advertService")
-public class AdvertisementAdvertisementServiceImpl implements AdvertisementService<AdvertisementDto, Advertisement> {
+public class AdvertisementAdvertisementServiceImpl implements AdvertisementService<AdvertisementDto> {
 
     private final transient AdvertisementAdvertisementDaoImpl advertDao;
     private static Validator validator;
@@ -33,9 +32,8 @@ public class AdvertisementAdvertisementServiceImpl implements AdvertisementServi
      * @return entity
      */
     @Override
-    public List<String> saveEntityService(final HttpServletRequest request) {
+    public List<String> saveEntityService(final AdvertisementDto dto) {
         final List<String> allMessages = new ArrayList<>();
-        final AdvertisementDto dto = advDtoCreator(request);
         final Set<ConstraintViolation<AdvertisementDto>> violations = validator.validate(dto);
         if (violations.isEmpty()) {
             final Advertisement advertisement = advCreator(dto);
@@ -57,21 +55,6 @@ public class AdvertisementAdvertisementServiceImpl implements AdvertisementServi
         final List<Advertisement> advertisementList = advertDao.getAll();
         final List<AdvertisementDto> advertDtoList = mapListEntityIntoDto(advertisementList);
         return advertDtoList;
-    }
-
-    /**
-     * This method maps data from HttpServletRequest request on dto Object.
-     *
-     * @param request HttpServletRequest request
-     * @return dto Object
-     */
-    public AdvertisementDto advDtoCreator(final HttpServletRequest request) {
-        final AdvertisementDto advertisementDto = new AdvertisementDto();
-        advertisementDto.setTitle(request.getParameter("title"));
-        advertisementDto.setContext(request.getParameter("context"));
-        advertisementDto.setImageUrl(request.getParameter("imageUrl"));
-        advertisementDto.setLanguage(request.getParameter("language"));
-        return advertisementDto;
     }
 
     /**
