@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class MainController {
 
     /**
-     * Register bean for DataSourceInitializer.
+     * Return path to index.jsp.
      * @return index
      */
     @RequestMapping("/")
