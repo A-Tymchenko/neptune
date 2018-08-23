@@ -2,6 +2,7 @@ package com.ra.airport.controller;
 
 import java.util.ArrayList;
 import java.util.List;
+import javax.validation.Valid;
 import com.ra.airport.dto.FlightDto;
 import com.ra.airport.entity.Flight;
 import com.ra.airport.repository.exception.AirPortDaoException;
@@ -34,7 +35,7 @@ public class FlightController {
 
 
     @RequestMapping(value = REQUEST_PATH, method = RequestMethod.POST)
-    public ResponseEntity<FlightDto> createFlights(final @RequestBody FlightDto flightDto) throws AirPortDaoException {
+    public ResponseEntity<FlightDto> createFlights(final @Valid @RequestBody FlightDto flightDto) throws AirPortDaoException {
         final var flight = new Flight();
         BeanUtils.copyProperties(flightDto, flight);
         flightDto.setFlId(flightService.create(flight).getFlId());
@@ -42,7 +43,7 @@ public class FlightController {
     }
 
     @RequestMapping(value = REQUEST_PATH, method = RequestMethod.PUT)
-    public ResponseEntity<FlightDto> updateFlight(final @RequestBody FlightDto flightDto) throws AirPortDaoException {
+    public ResponseEntity<FlightDto> updateFlight(final @Valid @RequestBody FlightDto flightDto) throws AirPortDaoException {
         final var flight = new Flight();
         BeanUtils.copyProperties(flightDto, flight);
         flightService.update(flight);
@@ -50,7 +51,7 @@ public class FlightController {
     }
 
     @RequestMapping(value = REQUEST_PATH, method = RequestMethod.DELETE)
-    public boolean deleteFlight(final @RequestBody FlightDto flightDto) throws AirPortDaoException {
+    public boolean deleteFlight(final @Valid @RequestBody FlightDto flightDto) throws AirPortDaoException {
         final var flight = new Flight();
         BeanUtils.copyProperties(flightDto, flight);
         return flightService.delete(flight);

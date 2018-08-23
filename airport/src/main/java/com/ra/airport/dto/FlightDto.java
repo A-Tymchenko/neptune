@@ -1,18 +1,32 @@
 package com.ra.airport.dto;
 
 import java.time.LocalDateTime;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 /**
  * Flight Dto object.
  */
 public class FlightDto {
-
+    
     private Integer flId;
+
+    @NotBlank(message = "Please enter flight name.")
     private String name;
+
+    @NotBlank(message = "Please enter carrier.")
     private String carrier;
+
+    @NotBlank(message = "Departure Date is required.")
     private LocalDateTime departureDate;
+
+    @NotBlank(message = "Arrival Date is required.")
     private LocalDateTime arrivalDate;
+
+    @NotNull
     private Double fare;
+
+    @NotNull
     private Boolean mealOn;
 
     public FlightDto() {

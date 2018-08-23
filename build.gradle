@@ -269,6 +269,10 @@ project("airport") {
         compile spring.jdbc
         compile spring.test
         compile spring.webmvc
+        compile misc.validation
+        compile misc.javaEl
+        compile misc.glassfishEl
+        compile hibernate.validator
         testCompile testing.hamcrestCore
     }
 }
