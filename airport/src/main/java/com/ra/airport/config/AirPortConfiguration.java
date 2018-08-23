@@ -75,6 +75,11 @@ public class AirPortConfiguration {
         return new NamedParameterJdbcTemplate(dataSource());
     }
 
+    /**
+     * Register Validator.
+     *
+     * @return validator
+     */
     @Bean
     public Validator validatorFactory() {
         return new LocalValidatorFactoryBean();

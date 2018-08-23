@@ -1,5 +1,7 @@
 package com.ra.airport.controller;
 
+import javax.validation.Valid;
+
 import com.ra.airport.dto.AirportDTO;
 import com.ra.airport.entity.Airport;
 import com.ra.airport.repository.exception.AirPortDaoException;
@@ -42,7 +44,7 @@ public class AirportController {
      * @return airport/create_airport
      */
     @PostMapping(REQUEST_PATH)
-    public ResponseEntity<Airport> createAirport(final @RequestBody AirportDTO airportDTO) throws AirPortDaoException {
+    public ResponseEntity<Airport> createAirport(@Valid @RequestBody final AirportDTO airportDTO) throws AirPortDaoException {
         final var airport = new Airport();
         BeanUtils.copyProperties(airportDTO, airport);
         return new ResponseEntity<Airport>(service.create(airport), HttpStatus.OK);
@@ -53,7 +55,7 @@ public class AirportController {
      * @return airport/show_airports
      */
     @DeleteMapping(REQUEST_PATH)
-    public ResponseEntity<Boolean> deleteAirport(@RequestBody final AirportDTO airportDTO) throws AirPortDaoException {
+    public ResponseEntity<Boolean> deleteAirport(@Valid @RequestBody final AirportDTO airportDTO) throws AirPortDaoException {
         final var airport = new Airport();
         BeanUtils.copyProperties(airportDTO, airport);
         return new ResponseEntity<Boolean>(service.delete(airport), HttpStatus.OK);
@@ -64,7 +66,7 @@ public class AirportController {
      * @return airport/show_airports
      */
     @PutMapping(REQUEST_PATH)
-    public ResponseEntity<Airport> updateAirport(@RequestBody final AirportDTO airportDTO) throws AirPortDaoException {
+    public ResponseEntity<Airport> updateAirport(@Valid @RequestBody final AirportDTO airportDTO) throws AirPortDaoException {
         final var airport = new Airport();
         BeanUtils.copyProperties(airportDTO, airport);
         return new ResponseEntity<Airport>(service.update(airport), HttpStatus.OK);
