@@ -16,8 +16,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
@@ -48,6 +47,22 @@ public class AirportControllerTest {
         mockMvc.perform(get("/airport"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("airport/show_airports"));
+    }
+
+    @Test
+    public void whenCallDELETEAirportThenIndexJspShoudBeReturned() throws Exception {
+        mockMvc.perform(delete("/airport")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(airportJson))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    public void whenCallPUTAirportThenIndexJspShoudBeReturned() throws Exception {
+        mockMvc.perform(put("/airport")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(airportJson))
+                .andExpect(status().isOk());
     }
 
     @Test

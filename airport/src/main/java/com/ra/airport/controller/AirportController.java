@@ -47,7 +47,7 @@ public class AirportController {
     public ResponseEntity<Airport> createAirport(@Valid @RequestBody final AirportDTO airportDTO) throws AirPortDaoException {
         final var airport = new Airport();
         BeanUtils.copyProperties(airportDTO, airport);
-        return new ResponseEntity<Airport>(service.create(airport), HttpStatus.OK);
+        return new ResponseEntity<>(service.create(airport), HttpStatus.OK);
     }
 
     /**
