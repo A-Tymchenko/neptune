@@ -16,6 +16,9 @@
             modal.style.display = "none";
         }
     }
+    document.getElementById("name").onkeyup = function (ev) {
+        let name = document.getElementById("name");
+    }
     function getAirports() {
             let airports = new Array();
                 let rows = document.getElementsByTagName("table")[0].rows;
