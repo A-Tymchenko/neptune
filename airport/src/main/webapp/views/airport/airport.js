@@ -17,7 +17,79 @@
         }
     }
     document.getElementById("name").onkeyup = function (ev) {
-        let name = document.getElementById("name");
+        let field = document.getElementById("name").value;
+        document.getElementById("vname").innerHTML = "";
+        document.getElementById("saveButton").disabled = false;
+        if (field.length == 0) {
+            document.getElementById("vname").innerHTML = "Name shoud be contains value";
+            document.getElementById("saveButton").disabled = true;
+            return;
+        }
+        if (field.search(/^[A-Za-z]+$/)) {
+            document.getElementById("vname").innerHTML = "Name shoud be contains only letters";
+            document.getElementById("saveButton").disabled = true;
+            return;
+        }
+    }
+    document.getElementById("num").onkeyup = function (ev) {
+        let field = document.getElementById("num").value;
+        document.getElementById("vnum").innerHTML = "";
+        document.getElementById("saveButton").disabled = false;
+        if (field.length == 0) {
+            document.getElementById("vnum").innerHTML = "Num shoud be contains value";
+            document.getElementById("saveButton").disabled = true;
+            return;
+        }
+        if (field.search(/^[0-9]+$/)) {
+            document.getElementById("vnum").innerHTML = "Num shoud be contains only numbers";
+            document.getElementById("saveButton").disabled = true;
+            return;
+        }
+    }
+    document.getElementById("type").onkeyup = function (ev) {
+        let field = document.getElementById("type").value;
+        document.getElementById("vtype").innerHTML = "";
+        document.getElementById("saveButton").disabled = false;
+        if (field.length == 0) {
+            document.getElementById("vtype").innerHTML = "Type shoud be contains value";
+            document.getElementById("saveButton").disabled = true;
+            return;
+        }
+        if (field.search(/^[A-Za-z]+$/)) {
+            document.getElementById("vtype").innerHTML = "Type shoud be contains only letter";
+            document.getElementById("saveButton").disabled = true;
+            return;
+        }
+    }
+    document.getElementById("address").onkeyup = function (ev) {
+        let field = document.getElementById("address").value;
+        document.getElementById("vaddress").innerHTML = "";
+        document.getElementById("saveButton").disabled = false;
+        if (field.length == 0) {
+            document.getElementById("vaddress").innerHTML = "Address shoud be contains value";
+            document.getElementById("saveButton").disabled = true;
+            return;
+        }
+        if (field.search(/^[A-Za-z]+$/)) {
+            document.getElementById("vaddress").innerHTML = "Address shoud be contains only letter";
+            document.getElementById("saveButton").disabled = true;
+            return;
+        }
+    }
+    document.getElementById("terminals").onkeyup = function (ev) {
+        let field = document.getElementById("terminals").value;
+        document.getElementById("vterminals").innerHTML = "";
+        document.getElementById("saveButton").disabled = false;
+        if (field.length == 0) {
+            document.getElementById("vterminals").innerHTML = "Terminals shoud be contains value";
+            document.getElementById("saveButton").disabled = true;
+            return;
+        }
+        if (field.search(/^[A-Za-z]+$/)) {
+            document.getElementById("vterminals").innerHTML = "Terminals shoud be contains only letter";
+            document.getElementById("saveButton").disabled = true;
+            return;
+        }
     }
     function getAirports() {
             let airports = new Array();

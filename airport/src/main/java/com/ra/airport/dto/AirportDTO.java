@@ -9,21 +9,21 @@ public class AirportDTO {
 
     private Integer apId;
     @NotNull
-    @Size(min = 2, max = 30, message = "Name should have atleast 2 characters")
+    @Size(min = LengthHelper.MIN, max = LengthHelper.MAX_LETERS, message = "Name should have atleast 2 characters")
     private String apName;
     @NotNull
-    @Min(1000)
-    @Max(100000)
+    @Min(LengthHelper.MIN)
+    @Max(LengthHelper.MAX_NUMBER)
     private int apNum;
     @NotNull
-    @Size(min = 2, max = 30, message = "Name should have atleast 2 characters")
+    @Size(min = LengthHelper.MIN, max = LengthHelper.MAX_LETERS, message = "Name should have atleast 2 characters")
     private String apType;
     @NotNull
-    @Size(min = 2, max = 100, message = "Name should have atleast 2 characters")
+    @Size(min = LengthHelper.MIN, max = LengthHelper.MAX_LETERS, message = "Name should have atleast 2 characters")
     private String address;
     @NotNull
-    @Min(1)
-    @Max(30)
+    @Min(LengthHelper.MIN)
+    @Max(LengthHelper.MAX_TERMINALS)
     private int terminalCount;
 
     public AirportDTO() {

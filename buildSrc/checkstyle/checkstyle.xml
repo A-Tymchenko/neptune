@@ -769,7 +769,7 @@
                         defined as a constant. By default, -1, 0, 1, and 2 are not considered to be magic numbers.
         Doc ref:        http://checkstyle.sourceforge.net/config_coding.html#MagicNumber
         -->
-        <!--<module name="MagicNumber"/>-->
+        <module name="MagicNumber"/>
 
         <!--
         Description:    The Check finds classes that are designed for extension (subclass creation). Check Doc for details.
