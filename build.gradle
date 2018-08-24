@@ -242,7 +242,9 @@ project("advertisement") {
         compile misc.glassfishEl
         compile hibernate.validator
         testCompile group: 'junit', name: 'junit', version: '4.12'
+        compile 'org.projectlombok:lombok:1.18.2'
     }
+    apply plugin: 'nebula.provided-base'
     apply plugin: 'war'
     war {
         archiveName = 'advertproject.war'

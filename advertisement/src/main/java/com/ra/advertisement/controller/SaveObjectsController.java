@@ -39,7 +39,7 @@ public class SaveObjectsController {
      * @param advertisementDto AdvertisementDto
      * @return modelAndView with the answer
      */
-    @RequestMapping(value = "/advertisementform", method = RequestMethod.POST)
+    @RequestMapping(value = "/saveadvertisement", method = RequestMethod.POST)
     public ModelAndView saveAdvertisement(@ModelAttribute("advertisement") final AdvertisementDto advertisementDto) {
         final ModelAndView modelAndView = new ModelAndView();
         final List<String> answer = advertService.saveEntityService(advertisementDto);
@@ -55,7 +55,7 @@ public class SaveObjectsController {
      * @param deviceDto AdvertisementDto
      * @return modelAndView with the answer
      */
-    @RequestMapping(value = "/deviceform", method = RequestMethod.POST)
+    @RequestMapping(value = "/savedevice", method = RequestMethod.POST)
     public ModelAndView saveDevice(@ModelAttribute("device") final DeviceDto deviceDto) {
         final ModelAndView modelAndView = new ModelAndView();
         final List<String> answer = devService.saveEntityService(deviceDto);
@@ -71,7 +71,7 @@ public class SaveObjectsController {
      * @param providerDto AdvertisementDto
      * @return modelAndView with the answer
      */
-    @RequestMapping(value = "/providerform", method = RequestMethod.POST)
+    @RequestMapping(value = "/saveprovider", method = RequestMethod.POST)
     public ModelAndView saveProvider(@ModelAttribute("provider") final ProviderDto providerDto) {
         final ModelAndView modelAndView = new ModelAndView();
         final List<String> answer = providService.saveEntityService(providerDto);
@@ -87,7 +87,7 @@ public class SaveObjectsController {
      * @param publisherDto AdvertisementDto
      * @return modelAndView with the answer
      */
-    @RequestMapping(value = "/publisherform", method = RequestMethod.POST)
+    @RequestMapping(value = "/savepublisher", method = RequestMethod.POST)
     public ModelAndView savePublisherr(@ModelAttribute("publisher") final PublisherDto publisherDto) {
         final ModelAndView modelAndView = new ModelAndView();
         final List<String> answer = publService.saveEntityService(publisherDto);

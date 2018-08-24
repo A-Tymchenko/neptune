@@ -36,7 +36,7 @@ public class GetAllController {
      *
      * @return modelAndView
      */
-    @RequestMapping(value = "/alladvertisement", method = RequestMethod.GET)
+    @RequestMapping(value = "/alladvertisementget", method = RequestMethod.GET)
     public ModelAndView getAllAdvertisements() {
         final ModelAndView modelAndView = new ModelAndView();
         final List<AdvertisementDto> list = advertService.getAllEntityService();
@@ -50,7 +50,7 @@ public class GetAllController {
      *
      * @return modelAndView
      */
-    @RequestMapping(value = "/alldevices", method = RequestMethod.GET)
+    @RequestMapping(value = "/alldevicesget", method = RequestMethod.GET)
     public ModelAndView getAllDevices() {
         final ModelAndView modelAndView = new ModelAndView();
         final List<DeviceDto> list = devService.getAllEntityService();
@@ -64,7 +64,7 @@ public class GetAllController {
      *
      * @return modelAndView
      */
-    @RequestMapping(value = "/allpublishers", method = RequestMethod.GET)
+    @RequestMapping(value = "/allpublishersget", method = RequestMethod.GET)
     public ModelAndView getAllPublishers() {
         final ModelAndView modelAndView = new ModelAndView();
         final List<PublisherDto> list = publService.getAllEntityService();
@@ -78,7 +78,7 @@ public class GetAllController {
      *
      * @return modelAndView
      */
-    @RequestMapping(value = "/allproviders", method = RequestMethod.GET)
+    @RequestMapping(value = "/allprovidersget", method = RequestMethod.GET)
     public ModelAndView getAllProviders() {
         final ModelAndView modelAndView = new ModelAndView();
         final List<ProviderDto> list = provService.getAllEntityService();

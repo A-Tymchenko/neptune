@@ -23,7 +23,7 @@
 <div class="container">
     <div class="row">
         <div class="col-lg-8 mx-auto">
-            <form class="form-horizontal" action="/providerform" method="post" modelAttribute="provider">
+            <form class="form-horizontal" action="/saveprovider" method="post" modelAttribute="provider">
                 <div class="form-group">
                     <div class="col-sm-10">
                     </div>
@@ -62,7 +62,7 @@
     </div>
 </div>
 <div class="jumbotron text-center">
-    <a href="./allproviders"><h1>Get All Providers</h1></a>
+    <a href="./allprovidersget"><h1>Get All Providers</h1></a>
 </div>
 </body>
 </html>
