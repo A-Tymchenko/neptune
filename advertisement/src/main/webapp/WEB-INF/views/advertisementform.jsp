@@ -24,7 +24,7 @@
 <div class="container">
     <div class="row">
         <div class="col-lg-12 mx-auto">
-            <form class="form-horizontal" action="/saveadvertisement" method="post" modelAttribute="advertisement">
+            <form class="form-horizontal" action="/advertisements" method="post" modelAttribute="advertisement">
                 <div class="form-group">
                     <div class="col-sm-10">
                     </div>
@@ -63,7 +63,7 @@
     </div>
 </div>
 <div class="jumbotron text-center">
-    <a href="./alladvertisementget"><h1>Get All Advertisement</h1></a>
+    <a href="./advertisements"><h1>Get All Advertisement</h1></a>
 </div>
 </body>
 </html>

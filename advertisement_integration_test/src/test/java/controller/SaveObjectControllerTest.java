@@ -1,7 +1,7 @@
 package controller;
 
-import com.ra.advertisement.config.AdvertisementConfiguration;
-import com.ra.advertisement.controller.SaveObjectsController;
+import com.ra.advertisement.config.DataBaseConfiguration;
+import com.ra.advertisement.controller.SaveEntitiesController;
 import com.ra.advertisement.dto.AdvertisementDto;
 import com.ra.advertisement.dto.DeviceDto;
 import com.ra.advertisement.dto.ProviderDto;
@@ -28,7 +28,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebAppConfiguration
-@ContextConfiguration(classes = AdvertisementConfiguration.class)
+@ContextConfiguration(classes = DataBaseConfiguration.class)
 public class SaveObjectControllerTest {
     ResultMatcher ok = MockMvcResultMatchers.status().is(200);
 
@@ -36,7 +36,7 @@ public class SaveObjectControllerTest {
     private WebApplicationContext wac;
 
     @Autowired
-    private SaveObjectsController saveObjectsController;
+    private SaveEntitiesController saveEntitiesController;
 
     private MockMvc mockMvc;
 
@@ -48,38 +48,38 @@ public class SaveObjectControllerTest {
 
     @Test
     public void requestWithAdvertisementFormReturnsStatus200AndCorrespondingVievNameReturnTrue() throws Exception {
-        MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.post("/advertisementform");
+        MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.post("/advertisements");
         this.mockMvc.perform(builder).andExpect(ok).andExpect(model().attributeExists("advertisement"));
         AdvertisementDto advertisementDtoCorrect = new AdvertisementDto("Welcome advert", "Welcome to Ukraine",
                 "https://ithillel.ua/", "Ukrainian");
-        ModelAndView modelAndView = saveObjectsController.saveAdvertisement(advertisementDtoCorrect);
+        ModelAndView modelAndView = saveEntitiesController.saveAdvertisement(advertisementDtoCorrect);
         assertEquals("advertisementform", modelAndView.getViewName());
     }
 
     @Test
     public void requestWithDeviceFormReturnsStatus200AndCorrespondingVievNameReturnTrue() throws Exception {
-        MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.post("/deviceform");
+        MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.post("/devices");
         this.mockMvc.perform(builder).andExpect(ok).andExpect(model().attributeExists("device"));
         DeviceDto deviceDtoCorrect = new DeviceDto("Nokia", "25-10", "Mobile Phone");
-        ModelAndView modelAndView = saveObjectsController.saveDevice(deviceDtoCorrect);
+        ModelAndView modelAndView = saveEntitiesController.saveDevice(deviceDtoCorrect);
         assertEquals("deviceform", modelAndView.getViewName());
     }
 
     @Test
     public void requestWithPublisherFormReturnsStatus200AndCorrespondingVievNameReturnTrue() throws Exception {
-        MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.post("/publisherform");
+        MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.post("/publishers");
         this.mockMvc.perform(builder).andExpect(ok).andExpect(model().attributeExists("publisher"));
         PublisherDto publisherDtoCorrect = new PublisherDto("Coca Cola", "Lviv", "224518", "Ukraine");
-        ModelAndView modelAndView = saveObjectsController.savePublisherr(publisherDtoCorrect);
+        ModelAndView modelAndView = saveEntitiesController.savePublisherr(publisherDtoCorrect);
         assertEquals("publisherform", modelAndView.getViewName());
     }
 
     @Test
     public void requestWithProviderFormReturnsStatus200AndCorrespondingVievNameReturnTrue() throws Exception {
-        MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.post("/providerform");
+        MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.post("/providers");
         this.mockMvc.perform(builder).andExpect(ok).andExpect(model().attributeExists("provider"));
         ProviderDto providerDtoCorrect = new ProviderDto("Coca Cola", "Lviv", "224518", "Ukraine");
-        ModelAndView modelAndView = saveObjectsController.saveProvider(providerDtoCorrect);
+        ModelAndView modelAndView = saveEntitiesController.saveProvider(providerDtoCorrect);
         assertEquals("providerform", modelAndView.getViewName());
     }
 }

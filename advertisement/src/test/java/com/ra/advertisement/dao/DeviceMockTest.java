@@ -25,7 +25,7 @@ import static org.mockito.Mockito.when;
 
 public class DeviceMockTest {
     private static JdbcTemplate mockjdbcTemplate;
-    private static DeviceAdvertisementDaoImpl deviceDao;
+    private static DeviceProjectDaoImpl deviceDao;
     private static final String GET_DEVICE_BY_ID = "SELECT * FROM DEVICES WHERE DEV_ID=?";
     private Device device;
     private Device deviceNoId;
@@ -36,7 +36,7 @@ public class DeviceMockTest {
     @BeforeAll
     public static void init() {
         mockjdbcTemplate = mock(JdbcTemplate.class);
-        deviceDao = new DeviceAdvertisementDaoImpl(mockjdbcTemplate);
+        deviceDao = new DeviceProjectDaoImpl(mockjdbcTemplate);
     }
 
     @BeforeEach

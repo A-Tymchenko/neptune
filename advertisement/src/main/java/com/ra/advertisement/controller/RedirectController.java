@@ -1,8 +1,7 @@
 package com.ra.advertisement.controller;
 
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.servlet.ModelAndView;
 
 @Controller
@@ -10,56 +9,51 @@ public class RedirectController {
 
     /**
      * This method redirects request into advertisementform.jsp page.
+     *
      * @return modelAndView
      */
-    @RequestMapping(value = "/advertisements", method = RequestMethod.GET)
+    @GetMapping("/showadvertisementsform")
     public ModelAndView executeAdvertisement() {
-        final ModelAndView modelAndView = new ModelAndView();
-        modelAndView.setViewName("advertisementform");
-        return modelAndView;
+        return new ModelAndView("advertisementform");
     }
 
     /**
      * This method redirects request into deviceform.jsp page.
+     *
      * @return modelAndView
      */
-    @RequestMapping(value = "/devices", method = RequestMethod.GET)
+    @GetMapping("/showdevicesform")
     public ModelAndView executeDevice() {
-        final ModelAndView modelAndView = new ModelAndView();
-        modelAndView.setViewName("deviceform");
-        return modelAndView;
+        return new ModelAndView("deviceform");
     }
 
     /**
      * This method redirects request into publisherform.jsp page.
+     *
      * @return modelAndView
      */
-    @RequestMapping(value = "/publishers", method = RequestMethod.GET)
+    @GetMapping("/showpublishersform")
     public ModelAndView executePublisher() {
-        final ModelAndView modelAndView = new ModelAndView();
-        modelAndView.setViewName("publisherform");
-        return modelAndView;
+        return new ModelAndView("publisherform");
     }
 
     /**
      * This method redirects request into providerform.jsp page.
+     *
      * @return modelAndView
      */
-    @RequestMapping(value = "/providers", method = RequestMethod.GET)
+    @GetMapping("/showprovidersform")
     public ModelAndView executeProvider() {
-        final ModelAndView modelAndView = new ModelAndView();
-        modelAndView.setViewName("providerform");
-        return modelAndView;
+        return new ModelAndView("providerform");
     }
 
     /**
      * This method redirects request into index.jsp page.
+     *
      * @return modelAndView
      */
-    @RequestMapping(value = "/", method = RequestMethod.GET)
+    @GetMapping("/")
     public ModelAndView getHomePage() {
-        final ModelAndView modelAndView = new ModelAndView();
-        modelAndView.setViewName("index");
-        return modelAndView;
+        return new ModelAndView("index");
     }
 }

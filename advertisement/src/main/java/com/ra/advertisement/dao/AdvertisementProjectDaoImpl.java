@@ -15,7 +15,7 @@ import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Component;
 
 @Component("advertDao")
-public class AdvertisementAdvertisementDaoImpl implements AdvertisementDao<Advertisement> {
+public class AdvertisementProjectDaoImpl implements ProjectDao<Advertisement> {
     private final transient JdbcTemplate jdbcTemplate;
     private final transient KeyHolder keyHolder = new GeneratedKeyHolder();
     private static final String GET_ADVERT_BY_ID = "SELECT * FROM ADVERTISEMENT WHERE AD_ID=?";
@@ -26,7 +26,7 @@ public class AdvertisementAdvertisementDaoImpl implements AdvertisementDao<Adver
     private static final Integer AD_ID = 5;
 
     @Autowired
-    public AdvertisementAdvertisementDaoImpl(final JdbcTemplate jdbcTemplate) {
+    public AdvertisementProjectDaoImpl(final JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
 

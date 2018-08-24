@@ -15,16 +15,16 @@
 <div class="container">
     <div class="row">
         <div class="col-sm-3">
-            <a href="/advertisements"><h3>Advertisement</h3></a>
+            <a href="/showadvertisementsform"><h3>Advertisement</h3></a>
         </div>
         <div class="col-sm-3">
-            <a href="/devices"><h3>Device</h3></a>
+            <a href="/showdevicesform"><h3>Device</h3></a>
         </div>
         <div class="col-sm-3">
-            <a href="/providers"><h3>Provider</h3></a>
+            <a href="/showprovidersform"><h3>Provider</h3></a>
         </div>
         <div class="col-sm-3">
-            <a href="/publishers"><h3>Publisher</h3></a>
+            <a href="/showpublishersform"><h3>Publisher</h3></a>
         </div>
     </div>
 </div>

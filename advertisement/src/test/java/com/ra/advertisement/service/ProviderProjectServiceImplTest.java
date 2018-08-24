@@ -1,6 +1,6 @@
 package com.ra.advertisement.service;
 
-import com.ra.advertisement.dao.ProviderAdvertisementDaoImpl;
+import com.ra.advertisement.dao.ProviderProjectDaoImpl;
 import com.ra.advertisement.dto.ProviderDto;
 import com.ra.advertisement.entity.Provider;
 import org.junit.jupiter.api.BeforeAll;
@@ -18,9 +18,9 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 
-public class ProviderAdvertisementServiceImplTest {
-    private static ProviderAdvertisementServiceImpl providerService;
-    private static ProviderAdvertisementDaoImpl mockProviderDao;
+public class ProviderProjectServiceImplTest {
+    private static ProviderProjectServiceImpl providerService;
+    private static ProviderProjectDaoImpl mockProviderDao;
     private static BeanValidator beanValidator;
     private static Validator validator;
     private ProviderDto providerDto;
@@ -33,9 +33,9 @@ public class ProviderAdvertisementServiceImplTest {
     public static void init() {
         beanValidator = new BeanValidator();
         mockJdbcTemplate = mock(JdbcTemplate.class);
-        mockProviderDao = new ProviderAdvertisementDaoImpl(mockJdbcTemplate);
-        providerService = new ProviderAdvertisementServiceImpl(mockProviderDao, beanValidator);
-        mockProviderDao = mock(ProviderAdvertisementDaoImpl.class);
+        mockProviderDao = new ProviderProjectDaoImpl(mockJdbcTemplate);
+        providerService = new ProviderProjectServiceImpl(mockProviderDao, beanValidator);
+        mockProviderDao = mock(ProviderProjectDaoImpl.class);
         validator = beanValidator.getValidator();
     }
 

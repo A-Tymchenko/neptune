@@ -1,7 +1,7 @@
 package com.ra.advertisement;
 
-import com.ra.advertisement.config.AdvertisementConfiguration;
-import com.ra.advertisement.dao.DeviceAdvertisementDaoImpl;
+import com.ra.advertisement.config.DataBaseConfiguration;
+import com.ra.advertisement.dao.DeviceProjectDaoImpl;
 import com.ra.advertisement.entity.Device;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -16,13 +16,13 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @ExtendWith(SpringExtension.class)
-@ContextConfiguration(classes = {AdvertisementConfiguration.class})
+@ContextConfiguration(classes = {DataBaseConfiguration.class})
 @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = "/advertisement_db.sql")
 @WebAppConfiguration
-class DeviceAdvertisementDaoImplTest {
+class DeviceProjectDaoImplTest {
 
     @Autowired
-    private DeviceAdvertisementDaoImpl deviceDao;
+    private DeviceProjectDaoImpl deviceDao;
 
     private static final Device DEVICE = new Device("Nokia", "25-10", "Mobile Phone");
     private static final Device DEVICE_UPDATE = new Device(1L, "Nokia Update", "25-10 Update",

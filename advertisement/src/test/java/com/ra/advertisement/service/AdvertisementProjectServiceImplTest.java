@@ -1,6 +1,6 @@
 package com.ra.advertisement.service;
 
-import com.ra.advertisement.dao.AdvertisementAdvertisementDaoImpl;
+import com.ra.advertisement.dao.AdvertisementProjectDaoImpl;
 import com.ra.advertisement.dto.AdvertisementDto;
 import com.ra.advertisement.entity.Advertisement;
 import org.junit.jupiter.api.BeforeAll;
@@ -18,9 +18,9 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 
-public class AdvertisementAdvertisementServiceImplTest {
-    private static AdvertisementAdvertisementServiceImpl advertService;
-    private static AdvertisementAdvertisementDaoImpl mockAdvertDao;
+public class AdvertisementProjectServiceImplTest {
+    private static AdvertisementProjectServiceImpl advertService;
+    private static AdvertisementProjectDaoImpl mockAdvertDao;
     private static BeanValidator beanValidator;
     private static Validator validator;
     private AdvertisementDto advertisementDto;
@@ -33,9 +33,9 @@ public class AdvertisementAdvertisementServiceImplTest {
     public static void init() {
         beanValidator = new BeanValidator();
         mockJdbcTemplate = mock(JdbcTemplate.class);
-        mockAdvertDao = new AdvertisementAdvertisementDaoImpl(mockJdbcTemplate);
-        advertService = new AdvertisementAdvertisementServiceImpl(mockAdvertDao, beanValidator);
-        mockAdvertDao = mock(AdvertisementAdvertisementDaoImpl.class);
+        mockAdvertDao = new AdvertisementProjectDaoImpl(mockJdbcTemplate);
+        advertService = new AdvertisementProjectServiceImpl(mockAdvertDao, beanValidator);
+        mockAdvertDao = mock(AdvertisementProjectDaoImpl.class);
         validator = beanValidator.getValidator();
     }
 

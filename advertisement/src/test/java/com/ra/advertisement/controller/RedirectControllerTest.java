@@ -24,7 +24,7 @@ public class RedirectControllerTest {
 
     @Test
     public void requestWithPathAdvertisementsReturnsStatus200AndCorrespondingVievNameReturnTrue() throws Exception {
-        mockMvc.perform(get("/advertisements")).andExpect(status().isOk());
+        mockMvc.perform(get("/showadvertisementsform")).andExpect(status().isOk());
         actual.setViewName("advertisementform");
         ModelAndView result = redirectController.executeAdvertisement();
         assertTrue(actual.getViewName().equals(result.getViewName()));
@@ -32,7 +32,7 @@ public class RedirectControllerTest {
 
     @Test
     public void requestWithPathDevicesReturnsStatus200AndCorrespondingVievNameReturnTrue() throws Exception {
-        mockMvc.perform(get("/devices")).andExpect(status().isOk());
+        mockMvc.perform(get("/showdevicesform")).andExpect(status().isOk());
         actual.setViewName("deviceform");
         ModelAndView result = redirectController.executeDevice();
         assertTrue(actual.getViewName().equals(result.getViewName()));
@@ -40,7 +40,7 @@ public class RedirectControllerTest {
 
     @Test
     public void requestWithPathPublishersReturnsStatus200AndCorrespondingVievNameReturnTrue() throws Exception {
-        mockMvc.perform(get("/publishers")).andExpect(status().isOk());
+        mockMvc.perform(get("/showpublishersform")).andExpect(status().isOk());
         ModelAndView actual = new ModelAndView();
         actual.setViewName("publisherform");
         ModelAndView result = redirectController.executePublisher();
@@ -49,7 +49,7 @@ public class RedirectControllerTest {
 
     @Test
     public void requestWithPathProvidersReturnsStatus200AndCorrespondingVievNameReturnTrue() throws Exception {
-        mockMvc.perform(get("/providers")).andExpect(status().isOk());
+        mockMvc.perform(get("/showprovidersform")).andExpect(status().isOk());
         ModelAndView actual = new ModelAndView();
         actual.setViewName("providerform");
         ModelAndView result = redirectController.executeProvider();

@@ -1,7 +1,7 @@
 package com.ra.advertisement;
 
-import com.ra.advertisement.config.AdvertisementConfiguration;
-import com.ra.advertisement.dao.ProviderAdvertisementDaoImpl;
+import com.ra.advertisement.config.DataBaseConfiguration;
+import com.ra.advertisement.dao.ProviderProjectDaoImpl;
 import com.ra.advertisement.entity.Provider;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -16,13 +16,13 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @ExtendWith(SpringExtension.class)
-@ContextConfiguration(classes = {AdvertisementConfiguration.class})
+@ContextConfiguration(classes = {DataBaseConfiguration.class})
 @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = "/advertisement_db.sql")
 @WebAppConfiguration
-class ProviderAdvertisementDaoImplTest {
+class ProviderProjectDaoImplTest {
 
     @Autowired
-    private ProviderAdvertisementDaoImpl providerDao;
+    private ProviderProjectDaoImpl providerDao;
 
     private static final Provider PROVIDER = new Provider("Coca Cola", "Lviv",
             "22-45-18", "Ukraine");

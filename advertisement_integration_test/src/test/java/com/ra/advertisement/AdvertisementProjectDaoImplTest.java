@@ -1,7 +1,7 @@
 package com.ra.advertisement;
 
-import com.ra.advertisement.config.AdvertisementConfiguration;
-import com.ra.advertisement.dao.AdvertisementAdvertisementDaoImpl;
+import com.ra.advertisement.config.DataBaseConfiguration;
+import com.ra.advertisement.dao.AdvertisementProjectDaoImpl;
 import com.ra.advertisement.entity.Advertisement;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -16,13 +16,13 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @ExtendWith(SpringExtension.class)
-@ContextConfiguration(classes = {AdvertisementConfiguration.class})
+@ContextConfiguration(classes = {DataBaseConfiguration.class})
 @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = "/advertisement_db.sql")
 @WebAppConfiguration
-class AdvertisementAdvertisementDaoImplTest {
+class AdvertisementProjectDaoImplTest {
 
     @Autowired
-    AdvertisementAdvertisementDaoImpl advertisementDao;
+    AdvertisementProjectDaoImpl advertisementDao;
 
     private static final Advertisement ADVERTISEMENT = new Advertisement("AdvertoNE",
             "WELCOME TO UKRAINE", "iMAGE uRL", "English");

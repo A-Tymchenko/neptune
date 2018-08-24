@@ -14,16 +14,12 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.SimpleDriverDataSource;
 import org.springframework.jdbc.datasource.init.DataSourceInitializer;
 import org.springframework.jdbc.datasource.init.ResourceDatabasePopulator;
-import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
-import org.springframework.web.servlet.view.InternalResourceViewResolver;
-import org.springframework.web.servlet.view.JstlView;
 
 @Configuration
-@EnableWebMvc
 @ComponentScan("com.ra.advertisement")
 @PropertySource("classpath:config.properties")
-public class AdvertisementConfiguration implements WebMvcConfigurer {
+public class DataBaseConfiguration implements WebMvcConfigurer {
 
     @Autowired
     private transient Environment env;
@@ -79,20 +75,6 @@ public class AdvertisementConfiguration implements WebMvcConfigurer {
         initializer.setDatabasePopulator(populator);
         initializer.setDataSource(dataSource);
         return initializer;
-    }
-
-    /**
-     * bean for InternalResourceViewResolver.
-     *
-     * @return viewResolver
-     */
-    @Bean
-    public InternalResourceViewResolver internalResourceViewResolver() {
-        final InternalResourceViewResolver bean = new InternalResourceViewResolver();
-        bean.setViewClass(JstlView.class);
-        bean.setPrefix("/WEB-INF/views/");
-        bean.setSuffix(".jsp");
-        return bean;
     }
 }
 

@@ -1,6 +1,6 @@
 package com.ra.advertisement.service;
 
-import com.ra.advertisement.dao.DeviceAdvertisementDaoImpl;
+import com.ra.advertisement.dao.DeviceProjectDaoImpl;
 import com.ra.advertisement.dto.DeviceDto;
 import com.ra.advertisement.entity.Device;
 import org.junit.jupiter.api.BeforeAll;
@@ -17,9 +17,9 @@ import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-public class DeviceAdvertisementServiceImplTest {
-    private static DeviceAdvertisementServiceImpl deviceService;
-    private static DeviceAdvertisementDaoImpl mockDeviceDao;
+public class DeviceProjectServiceImplTest {
+    private static DeviceProjectServiceImpl deviceService;
+    private static DeviceProjectDaoImpl mockDeviceDao;
     private static BeanValidator beanValidator;
     private static Validator validator;
     private DeviceDto deviceDto;
@@ -32,9 +32,9 @@ public class DeviceAdvertisementServiceImplTest {
     public static void init() {
         beanValidator = new BeanValidator();
         mockJdbcTemplate = mock(JdbcTemplate.class);
-        mockDeviceDao = new DeviceAdvertisementDaoImpl(mockJdbcTemplate);
-        deviceService = new DeviceAdvertisementServiceImpl(mockDeviceDao, beanValidator);
-        mockDeviceDao = mock(DeviceAdvertisementDaoImpl.class);
+        mockDeviceDao = new DeviceProjectDaoImpl(mockJdbcTemplate);
+        deviceService = new DeviceProjectServiceImpl(mockDeviceDao, beanValidator);
+        mockDeviceDao = mock(DeviceProjectDaoImpl.class);
         validator = beanValidator.getValidator();
     }
 

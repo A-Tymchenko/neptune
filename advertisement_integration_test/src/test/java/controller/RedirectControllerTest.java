@@ -1,6 +1,6 @@
 package controller;
 
-import com.ra.advertisement.config.AdvertisementConfiguration;
+import com.ra.advertisement.config.DataBaseConfiguration;
 import com.ra.advertisement.controller.RedirectController;
 import org.junit.Before;
 import org.junit.Test;
@@ -23,7 +23,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebAppConfiguration
-@ContextConfiguration(classes = AdvertisementConfiguration.class)
+@ContextConfiguration(classes = DataBaseConfiguration.class)
 public class RedirectControllerTest {
     ResultMatcher ok = MockMvcResultMatchers.status().is(200);
 
@@ -43,7 +43,7 @@ public class RedirectControllerTest {
 
     @Test
     public void requestWithPathAdvertisementsReturnsStatus200AndCorrespondingVievNameReturnTrue() throws Exception {
-        MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.get("/advertisements");
+        MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.get("/showadvertisementsform");
         this.mockMvc.perform(builder).andExpect(ok);
         ModelAndView modelAndView = redirectController.executeAdvertisement();
         assertEquals("advertisementform", modelAndView.getViewName());
@@ -51,7 +51,7 @@ public class RedirectControllerTest {
 
     @Test
     public void requestWithPathDevicesReturnsStatus200AndCorrespondingVievNameReturnTrue() throws Exception {
-        MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.get("/devices");
+        MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.get("/showdevicesform");
         this.mockMvc.perform(builder).andExpect(ok);
         ModelAndView modelAndView = redirectController.executeDevice();
         assertEquals("deviceform", modelAndView.getViewName());
@@ -59,7 +59,7 @@ public class RedirectControllerTest {
 
     @Test
     public void requestWithPathPublishersReturnsStatus200AndCorrespondingVievNameReturnTrue() throws Exception {
-        MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.get("/publishers");
+        MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.get("/showpublishersform");
         this.mockMvc.perform(builder).andExpect(ok);
         ModelAndView modelAndView = redirectController.executePublisher();
         assertEquals("publisherform", modelAndView.getViewName());
@@ -67,7 +67,7 @@ public class RedirectControllerTest {
 
     @Test
     public void requestWithPathProvidersReturnsStatus200AndCorrespondingVievNameReturnTrue() throws Exception {
-        MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.get("/providers");
+        MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.get("/showprovidersform");
         this.mockMvc.perform(builder).andExpect(ok);
         ModelAndView modelAndView = redirectController.executeProvider();
         assertEquals("providerform", modelAndView.getViewName());

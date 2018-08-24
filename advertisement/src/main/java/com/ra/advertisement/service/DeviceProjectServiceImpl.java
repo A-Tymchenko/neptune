@@ -7,21 +7,21 @@ import java.util.stream.Collectors;
 import javax.validation.ConstraintViolation;
 import javax.validation.Validator;
 
-import com.ra.advertisement.dao.DeviceAdvertisementDaoImpl;
+import com.ra.advertisement.dao.DeviceProjectDaoImpl;
 import com.ra.advertisement.dto.DeviceDto;
 import com.ra.advertisement.entity.Device;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service("deviceService")
-public class DeviceAdvertisementServiceImpl implements AdvertisementService<DeviceDto> {
+public class DeviceProjectServiceImpl implements ProjectService<DeviceDto> {
 
-    private final transient DeviceAdvertisementDaoImpl deviceDao;
+    private final transient DeviceProjectDaoImpl deviceDao;
     private static Validator validator;
 
     @Autowired
-    public DeviceAdvertisementServiceImpl(final DeviceAdvertisementDaoImpl deviceDao,
-                                          final BeanValidator beanValidator) {
+    public DeviceProjectServiceImpl(final DeviceProjectDaoImpl deviceDao,
+                                    final BeanValidator beanValidator) {
         this.deviceDao = deviceDao;
         this.validator = beanValidator.getValidator();
     }

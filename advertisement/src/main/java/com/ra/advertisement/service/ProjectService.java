@@ -5,7 +5,7 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 
 @Service("allservice")
-public interface AdvertisementService<T> {
+public interface ProjectService<T> {
     /**
      * Method get dto and save entity int into Data Base and return Entity with id.
      *

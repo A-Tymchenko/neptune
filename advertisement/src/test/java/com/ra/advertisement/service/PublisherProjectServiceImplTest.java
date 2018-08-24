@@ -1,6 +1,6 @@
 package com.ra.advertisement.service;
 
-import com.ra.advertisement.dao.PublisherAdvertisementDaoImpl;
+import com.ra.advertisement.dao.PublisherProjectDaoImpl;
 import com.ra.advertisement.dto.PublisherDto;
 import com.ra.advertisement.entity.Publisher;
 import org.junit.jupiter.api.BeforeAll;
@@ -18,9 +18,9 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 
-public class PublisherAdvertisementServiceImplTest {
-    private static PublisherAdvertisementServiceImpl publisherService;
-    private static PublisherAdvertisementDaoImpl mockPublisherDao;
+public class PublisherProjectServiceImplTest {
+    private static PublisherProjectServiceImpl publisherService;
+    private static PublisherProjectDaoImpl mockPublisherDao;
     private static BeanValidator beanValidator;
     private static Validator validator;
     private PublisherDto publisherDto;
@@ -33,9 +33,9 @@ public class PublisherAdvertisementServiceImplTest {
     public static void init() {
         beanValidator = new BeanValidator();
         mockJdbcTemplate = mock(JdbcTemplate.class);
-        mockPublisherDao = new PublisherAdvertisementDaoImpl(mockJdbcTemplate);
-        publisherService = new PublisherAdvertisementServiceImpl(mockPublisherDao, beanValidator);
-        mockPublisherDao = mock(PublisherAdvertisementDaoImpl.class);
+        mockPublisherDao = new PublisherProjectDaoImpl(mockJdbcTemplate);
+        publisherService = new PublisherProjectServiceImpl(mockPublisherDao, beanValidator);
+        mockPublisherDao = mock(PublisherProjectDaoImpl.class);
         validator = beanValidator.getValidator();
     }
 

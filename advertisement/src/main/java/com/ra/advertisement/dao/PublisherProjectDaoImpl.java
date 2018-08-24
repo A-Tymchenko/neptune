@@ -15,7 +15,7 @@ import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Component;
 
 @Component("publisherDao")
-public class PublisherAdvertisementDaoImpl implements AdvertisementDao<Publisher> {
+public class PublisherProjectDaoImpl implements ProjectDao<Publisher> {
     private final transient JdbcTemplate jdbcTemplate;
     private final transient KeyHolder keyHolder = new GeneratedKeyHolder();
     private static final String GET_PUB_BY_ID = "SELECT * FROM PUBLISHER WHERE PUB_ID=?";
@@ -26,7 +26,7 @@ public class PublisherAdvertisementDaoImpl implements AdvertisementDao<Publisher
     private static final Integer PUB_ID = 5;
 
     @Autowired
-    public PublisherAdvertisementDaoImpl(final JdbcTemplate jdbcTemplate) {
+    public PublisherProjectDaoImpl(final JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
 

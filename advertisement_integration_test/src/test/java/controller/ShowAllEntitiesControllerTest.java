@@ -1,7 +1,7 @@
 package controller;
 
-import com.ra.advertisement.config.AdvertisementConfiguration;
-import com.ra.advertisement.controller.GetAllController;
+import com.ra.advertisement.config.DataBaseConfiguration;
+import com.ra.advertisement.controller.ShowAllEntitiesController;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -23,13 +23,13 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebAppConfiguration
-@ContextConfiguration(classes = AdvertisementConfiguration.class)
-public class GetAllControllerTest {
+@ContextConfiguration(classes = DataBaseConfiguration.class)
+public class ShowAllEntitiesControllerTest {
     @Autowired
     private WebApplicationContext wac;
 
     @Autowired
-    private GetAllController getAllController;
+    private ShowAllEntitiesController showAllEntitiesController;
     private MockMvc mockMvc;
     ResultMatcher ok = MockMvcResultMatchers.status().is(200);
 
@@ -41,33 +41,33 @@ public class GetAllControllerTest {
 
     @Test
     public void requestWithPathAllAdvertisementReturnsStatus200AndCorrespondingVievNameReturnTrue() throws Exception {
-        MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.get("/alladvertisement");
+        MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.get("/advertisements");
         this.mockMvc.perform(builder).andExpect(ok);
-        ModelAndView modelAndView = getAllController.getAllAdvertisements();
-        assertEquals("alladvertisement", modelAndView.getViewName());
+        ModelAndView modelAndView = showAllEntitiesController.getAllAdvertisements();
+        assertEquals("alladvertisements", modelAndView.getViewName());
     }
 
     @Test
     public void requestWithPathAllDevicesReturnsStatus200AndCorrespondingVievNameReturnTrue() throws Exception {
-        MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.get("/alldevices");
+        MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.get("/devices");
         this.mockMvc.perform(builder).andExpect(ok);
-        ModelAndView modelAndView = getAllController.getAllDevices();
+        ModelAndView modelAndView = showAllEntitiesController.getAllDevices();
         assertEquals("alldevices", modelAndView.getViewName());
     }
 
     @Test
     public void requestWithPathAllProvidersReturnsStatus200AndCorrespondingVievNameReturnTrue() throws Exception {
-        MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.get("/allproviders");
+        MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.get("/providers");
         this.mockMvc.perform(builder).andExpect(ok);
-        ModelAndView modelAndView = getAllController.getAllProviders();
+        ModelAndView modelAndView = showAllEntitiesController.getAllProviders();
         assertEquals("allproviders", modelAndView.getViewName());
     }
 
     @Test
     public void requestWithPathAllPublishersReturnsStatus200AndCorrespondingVievNameReturnTrue() throws Exception {
-        MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.get("/allpublishers");
+        MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.get("/publishers");
         this.mockMvc.perform(builder).andExpect(ok);
-        ModelAndView modelAndView = getAllController.getAllPublishers();
+        ModelAndView modelAndView = showAllEntitiesController.getAllPublishers();
         assertEquals("allpublishers", modelAndView.getViewName());
     }
 }

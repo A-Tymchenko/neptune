@@ -25,7 +25,7 @@ import static org.mockito.Mockito.when;
 
 public class PublisherMockTest {
     private static JdbcTemplate mockjdbcTemplate;
-    private static PublisherAdvertisementDaoImpl publisherDao;
+    private static PublisherProjectDaoImpl publisherDao;
     private static final String GET_PUB_BY_ID = "SELECT * FROM PUBLISHER WHERE PUB_ID=?";
     private Publisher publisher;
     private Publisher publisherNoId;
@@ -36,7 +36,7 @@ public class PublisherMockTest {
     @BeforeAll
     public static void init() {
         mockjdbcTemplate = mock(JdbcTemplate.class);
-        publisherDao = new PublisherAdvertisementDaoImpl(mockjdbcTemplate);
+        publisherDao = new PublisherProjectDaoImpl(mockjdbcTemplate);
     }
 
     @BeforeEach

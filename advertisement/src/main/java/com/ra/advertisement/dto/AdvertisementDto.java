@@ -41,5 +41,4 @@ public class AdvertisementDto {
     @Size(min = LengthHelper.MIN, max = LengthHelper.MAX, message = "Language should be longer than 4 and less than 50")
     @NonNull
     private String language;
-
 }

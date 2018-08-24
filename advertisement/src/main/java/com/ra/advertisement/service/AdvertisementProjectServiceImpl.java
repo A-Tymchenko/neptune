@@ -7,21 +7,21 @@ import java.util.stream.Collectors;
 import javax.validation.ConstraintViolation;
 import javax.validation.Validator;
 
-import com.ra.advertisement.dao.AdvertisementAdvertisementDaoImpl;
+import com.ra.advertisement.dao.AdvertisementProjectDaoImpl;
 import com.ra.advertisement.dto.AdvertisementDto;
 import com.ra.advertisement.entity.Advertisement;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service("advertService")
-public class AdvertisementAdvertisementServiceImpl implements AdvertisementService<AdvertisementDto> {
+public class AdvertisementProjectServiceImpl implements ProjectService<AdvertisementDto> {
 
-    private final transient AdvertisementAdvertisementDaoImpl advertDao;
+    private final transient AdvertisementProjectDaoImpl advertDao;
     private static Validator validator;
 
     @Autowired
-    public AdvertisementAdvertisementServiceImpl(final AdvertisementAdvertisementDaoImpl advertDao,
-                                                 final BeanValidator beanValidator) {
+    public AdvertisementProjectServiceImpl(final AdvertisementProjectDaoImpl advertDao,
+                                           final BeanValidator beanValidator) {
         this.advertDao = advertDao;
         this.validator = beanValidator.getValidator();
     }

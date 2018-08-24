@@ -5,7 +5,7 @@ import java.util.List;
 import org.springframework.stereotype.Component;
 
 @Component
-public interface AdvertisementDao<T> {
+public interface ProjectDao<T> {
 
     /**
      * Method save entity with parameters into Data Base.
