@@ -22,23 +22,24 @@ public class AdvertisementDto {
     private Long adId;
 
     @NotEmpty(message = "Title can't be empty")
-    @Size(min = 4, max = 50, message = "Title should be longer than 4 and less than 50")
+    @Size(min = LengthHelper.MIN, max = LengthHelper.MAX, message = "Title should be longer than 4 and less than 50")
     @NonNull
     private String title;
 
     @NotEmpty(message = "Context can't be empty")
-    @Size(min = 4, max = 50, message = "Context should be longer than 4 and less than 50")
+    @Size(min = LengthHelper.MIN, max = LengthHelper.MAX, message = "Context should be longer than 4 and less than 50")
     @NonNull
     private String context;
 
     @NotEmpty(message = "ImageUrl can't be empty")
-    @Size(min = 4, max = 50, message = "ImageUrl should be longer than 4 and less than 50")
+    @Size(min = LengthHelper.MIN, max = LengthHelper.MAX, message = "ImageUrl should be longer than 4 and less than 50")
     @URL(message = "ImageUrl should be Url")
     @NonNull
     private String imageUrl;
 
     @NotEmpty(message = "language can't be empty")
-    @Size(min = 4, max = 50, message = "Language should be longer than 4 and less than 50")
+    @Size(min = LengthHelper.MIN, max = LengthHelper.MAX, message = "Language should be longer than 4 and less than 50")
     @NonNull
     private String language;
+
 }
