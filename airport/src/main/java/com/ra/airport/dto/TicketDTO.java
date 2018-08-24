@@ -1,12 +1,29 @@
 package com.ra.airport.dto;
 
 import java.sql.Timestamp;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+
+import org.springframework.format.annotation.DateTimeFormat;
 
 public class TicketDTO {
+
     private Integer ticketId;
+
+    @NotNull
+    @Size(min = 6, max = 24, message = "Ticket Number should have 6-24 characters")
     private String ticketNumber;
+
+    @NotNull
+    @Size(min = 2, max = 64, message = "Passenger Name should have 2-64 characters")
     private String passengerName;
+
+    @NotNull
+    @Size(min = 6, max = 24, message = "Document should have 6-24 characters")
     private String document;
+
+    @NotNull(message = "Selling Date is empty!")
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     private Timestamp sellingDate;
 
     public TicketDTO() {
