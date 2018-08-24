@@ -117,7 +117,7 @@
                 break;
             }
         }
-        req("/airport", JSON.stringify(airport), "DELETE").then(function (response) {
+        req("/airports", JSON.stringify(airport), "DELETE").then(function (response) {
             console.log(response);
         })
     }
@@ -140,7 +140,7 @@
         air.apType = updatedAirport.apType = cell[2].innerHTML = document.getElementById("type").value;
         air.address = updatedAirport.address = cell[3].innerHTML = document.getElementById("address").value;
         air.terminalCount = updatedAirport.terminalCount = cell[4].innerHTML = document.getElementById("terminals").value;
-        req("/airport", JSON.stringify(air), "PUT").then(function(response){
+        req("/airports", JSON.stringify(air), "PUT").then(function(response){
             console.log(response);
         });
         for (let i = 0; i < airports.length; i++) {
@@ -157,7 +157,7 @@
         airport.apType = document.getElementById("type").value;
         airport.address = document.getElementById("address").value;
         airport.terminalCount = parseInt(document.getElementById("terminals").value);
-        req("/airport", JSON.stringify(airport), "POST").then(function(response){
+        req("/airports", JSON.stringify(airport), "POST").then(function(response){
             airport.apId = JSON.parse(response).apId;
                     airports.push(airport);
                     let row = '<tr id = "' + airport.apId + '">' +

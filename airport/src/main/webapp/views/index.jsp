@@ -14,7 +14,7 @@
     <div class="wrap">
         <div class="da-slide">
             <h2><span>Welcome to </span>Aitport <span>Progect</span></h2>
-            <a href="/airport" class="da-link">Airports</a>
+            <a href="/airports" class="da-link">Airports</a>
             <a href="/flights" class="da-link">Flights</a>
             <a href="/planes" class="da-link">Planes</a>
             <a href="/tickets" class="da-link">Tickets</a>

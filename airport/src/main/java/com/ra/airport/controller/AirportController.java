@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 public class AirportController {
 
     private final transient AirportServiceImpl service;
-    private static final String REQUEST_PATH = "/airport";
+    private static final String REQUEST_PATH = "/airports";
 
     @Autowired
     public AirportController(final AirportServiceImpl service) {

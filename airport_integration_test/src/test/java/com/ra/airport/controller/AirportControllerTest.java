@@ -44,14 +44,14 @@ public class AirportControllerTest {
 
     @Test
     public void whenCallGETAirportThenIndexJspShoudBeReturned() throws Exception {
-        mockMvc.perform(get("/airport"))
+        mockMvc.perform(get("/airports"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("airport/show_airports"));
     }
 
     @Test
     public void whenCallDELETEAirportThenIndexJspShoudBeReturned() throws Exception {
-        mockMvc.perform(delete("/airport")
+        mockMvc.perform(delete("/airports")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(airportJson))
                 .andExpect(status().isOk());
@@ -59,7 +59,7 @@ public class AirportControllerTest {
 
     @Test
     public void whenCallPUTAirportThenIndexJspShoudBeReturned() throws Exception {
-        mockMvc.perform(put("/airport")
+        mockMvc.perform(put("/airports")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(airportJson))
                 .andExpect(status().isOk());
@@ -67,7 +67,7 @@ public class AirportControllerTest {
 
     @Test
     public void whenCallPOSTAirportThenIndexJspShoudBeReturned() throws Exception {
-        mockMvc.perform(post("/airport")
+        mockMvc.perform(post("/airports")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(airportJson))
                 .andExpect(status().isOk());
