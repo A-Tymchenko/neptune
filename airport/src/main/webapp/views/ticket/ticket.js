@@ -23,7 +23,7 @@ function getTickets() {
     for (let i = 1; i < rows.length; i++) {
         let ticket = new Object();
         let cell = rows[i].cells;
-        ticket.ticketId = rows[i].ticketId;
+        ticket.ticketId = rows[i].id;
         ticket.ticketNumber = cell[0].innerHTML;
         ticket.passengerName = cell[1].innerHTML;
         ticket.document = cell[2].innerHTML;
@@ -42,6 +42,7 @@ function deleteTicket(id){
             break;
         }
     }
+    if (ticket.sellingDate.length == 20) ticket.sellingDate = ticket.sellingDate.replace(" ", "T").slice(0, ticket.sellingDate.length - 2);
     req("/tickets", JSON.stringify(ticket), "DELETE").then(function (response) {
         console.log(response);
     })
