@@ -1,8 +1,8 @@
 package com.ra.airport.controller;
 
-import java.util.ArrayList;
 import java.util.List;
 import javax.validation.Valid;
+
 import com.ra.airport.dto.FlightDto;
 import com.ra.airport.entity.Flight;
 import com.ra.airport.repository.exception.AirPortDaoException;
@@ -15,13 +15,10 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 
 /**
  * Controller for CRUD operations with {@link com.ra.airport.entity.Flight} entity.
