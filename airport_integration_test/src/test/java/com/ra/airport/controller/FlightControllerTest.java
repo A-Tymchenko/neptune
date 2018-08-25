@@ -9,9 +9,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 import com.ra.airport.config.AirPortConfiguration;
 import com.ra.airport.config.AirPortWebConfig;
-import com.ra.airport.controller.FlightController;
 import com.ra.airport.dto.FlightDto;
-import org.gradle.internal.impldep.com.google.gson.Gson;
+import com.google.gson.Gson;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -28,11 +27,6 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = {AirPortConfiguration.class, AirPortWebConfig.class})
 @WebAppConfiguration
-@SqlGroup({
-        @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = "classpath:sql/create_table_skripts.sql"),
-        @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = "classpath:sql/tables_backup(data).sql"),
-        @Sql(executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD, scripts = "classpath:sql/remove_table_skripts.sql")
-})
 public class FlightControllerTest {
 
     private static final String DATE_TIME_FORMAT = "yyyy-MM-dd HH:mm:ss";
@@ -40,7 +34,7 @@ public class FlightControllerTest {
     private static final String ARRIVAL_DATE = "2018-06-17 15:16:00";
 
     private MockMvc mockMvc;
-    private FlightDto flightDto;
+    private FlightDto flight;
     private String flightJson;
 
     @Autowired
@@ -50,8 +44,8 @@ public class FlightControllerTest {
     public void beforeTest() {
         this.mockMvc = MockMvcBuilders.standaloneSetup(flightController).build();
         var gson = new Gson();
-        flightDto = createFlightDto();
-        flightJson = gson.toJson(flightDto);
+        flight = createFlight();
+        flightJson = gson.toJson(flight);
     }
 
     @Test
@@ -77,18 +71,18 @@ public class FlightControllerTest {
                 .andExpect(status().isOk());
     }
 
-    private FlightDto createFlightDto() {
+    private FlightDto createFlight() {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern(DATE_TIME_FORMAT);
         LocalDateTime departureDate = LocalDateTime.parse(DEPARTURE_DATE, formatter);
         LocalDateTime arrivalDate = LocalDateTime.parse(ARRIVAL_DATE, formatter);
-        flightDto = new FlightDto();
-        flightDto.setFlId(1);
-        flightDto.setName("Kyiv-Rome");
-        flightDto.setCarrier("Wizz Air");
-        flightDto.setMealOn(true);
-        flightDto.setFare(100.0);
-        //flightDto.setDepartureDate(departureDate);
-        //flightDto.setArrivalDate(arrivalDate);
-        return flightDto;
+        flight = new FlightDto();
+        flight.setFlId(1);
+        flight.setName("Kyiv-Rome");
+        flight.setCarrier("Wizz Air");
+        flight.setMealOn(true);
+        flight.setFare(100.0);
+        flight.setDepartureDate(departureDate);
+        flight.setArrivalDate(arrivalDate);
+        return flight;
     }
 }

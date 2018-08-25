@@ -17,10 +17,8 @@ public class FlightDto {
     @NotBlank(message = "Please enter carrier.")
     private String carrier;
 
-    @NotBlank(message = "Departure Date is required.")
     private LocalDateTime departureDate;
 
-    @NotBlank(message = "Arrival Date is required.")
     private LocalDateTime arrivalDate;
 
     @NotNull

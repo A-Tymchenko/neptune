@@ -35,43 +35,31 @@ public class FlightController {
 
 
     @RequestMapping(value = REQUEST_PATH, method = RequestMethod.POST)
-    public ResponseEntity<FlightDto> createFlights(final @Valid @RequestBody FlightDto flightDto) throws AirPortDaoException {
+    public ResponseEntity<Flight> createFlights(final @Valid @RequestBody FlightDto flightDto) throws AirPortDaoException {
         final var flight = new Flight();
         BeanUtils.copyProperties(flightDto, flight);
-        flightDto.setFlId(flightService.create(flight).getFlId());
-        return new ResponseEntity<>(flightDto, HttpStatus.OK);
+        return new ResponseEntity<>(flightService.create(flight), HttpStatus.OK);
     }
 
     @RequestMapping(value = REQUEST_PATH, method = RequestMethod.PUT)
-    public ResponseEntity<FlightDto> updateFlight(final @Valid @RequestBody FlightDto flightDto) throws AirPortDaoException {
+    public ResponseEntity<Flight> updateFlight(final @Valid @RequestBody FlightDto flightDto) throws AirPortDaoException {
         final var flight = new Flight();
         BeanUtils.copyProperties(flightDto, flight);
-        flightService.update(flight);
-        return new ResponseEntity<>(flightDto, HttpStatus.OK);
+        return new ResponseEntity<>(flightService.update(flight), HttpStatus.OK);
     }
 
     @RequestMapping(value = REQUEST_PATH, method = RequestMethod.DELETE)
-    public boolean deleteFlight(final @Valid @RequestBody FlightDto flightDto) throws AirPortDaoException {
+    public ResponseEntity<Boolean> deleteFlight(final @Valid @RequestBody FlightDto flightDto) throws AirPortDaoException {
         final var flight = new Flight();
         BeanUtils.copyProperties(flightDto, flight);
-        return flightService.delete(flight);
+        return new ResponseEntity<>(flightService.delete(flight), HttpStatus.OK);
     }
     
     @RequestMapping(value = REQUEST_PATH, method = RequestMethod.GET)
     public String getFlights(final Model model) throws AirPortDaoException {
         List<Flight> flights = flightService.getAll();
-        List<FlightDto> flightDtos = new ArrayList<>();
-        for (Flight flight : flights) {
-            flightDtos.add(createFlightDto(flight));
-        }
-        model.addAttribute("flights",flightDtos);
+        model.addAttribute("flights",flights);
 
         return "flight/flights";
-    }
-
-    private FlightDto createFlightDto(Flight flight) {
-        FlightDto flightDto = new FlightDto();
-        BeanUtils.copyProperties(flight, flightDto);
-        return flightDto;
     }
 }
