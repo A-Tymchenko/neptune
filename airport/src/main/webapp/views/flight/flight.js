@@ -25,7 +25,7 @@ document.getElementById("name").onkeyup = function (ev) {
         document.getElementById("saveButton").disabled = true;
         return;
     }
-    if (field.search(/^[A-Za-z]+$/)) {
+    if (field.search(/^[A-Za-z-]+$/)) {
         document.getElementById("vname").innerHTML = "Name shoud be contains only letters";
         document.getElementById("saveButton").disabled = true;
         return;
@@ -103,11 +103,13 @@ function deleteFlight(id){
     let flight;
     for (let i = 0; i < flights.length; i++) {
         flight = flights[i];
-        if (flight.apId == id) {
+        if (flight.flId == id) {
             flights.splice(i,1);
             break;
         }
     }
+    flight.departureDate = flight.departureDate.toString().replace("T", " ") + ":00";
+    flight.arrivalDate = flight.arrivalDate.toString().replace("T", " ") + ":00";
     req("/flights", JSON.stringify(flight), "DELETE").then(function (response) {
         console.log(response);
     })
@@ -132,6 +134,8 @@ function updateFlightOnServer() {
     flt.arrivalDate = updatedFlight.arrivalDate = cell[4].innerHTML = document.getElementById("arrivalDate").value;
     flt.fare = updatedFlight.fare = cell[5].innerHTML = document.getElementById("fare").value;
     flt.mealOn = updatedFlight.mealOn = cell[6].innerHTML = document.getElementById("mealOn").value;
+    flt.departureDate = flt.departureDate.toString().replace("T", " ") + ":00";
+    flt.arrivalDate = flt.arrivalDate.toString().replace("T", " ") + ":00";
     req("/flights", JSON.stringify(flt), "PUT").then(function(response){
         console.log(response);
     });
@@ -150,10 +154,15 @@ function saveNewFlight(){
     flight.arrivalDate = document.getElementById("arrivalDate").value;
     flight.fare = parseInt(document.getElementById("fare").value);
     flight.mealOn = document.getElementById("mealOn").value;
-    req("/flight", JSON.stringify(flight), "POST").then(function(response){
+    flight.departureDate = flight.departureDate.toString().replace("T", " ") + ":00";
+    flight.arrivalDate = flight.arrivalDate.toString().replace("T", " ") + ":00";
+    req("/flights", JSON.stringify(flight), "POST").then(function(response){
         flight.flId = JSON.parse(response).flId;
-        airports.push(flight);
+        flight.departureDate = flight.departureDate.replace(" ", "T").slice(0, flight.departureDate.length - 3)
+        flight.arrivalDate = flight.arrivalDate.replace(" ", "T").slice(0, flight.arrivalDate.length - 3)
+        flights.push(flight);
         let row = '<tr id = "' + flight.flId + '">' +
+            '<td>' + flight.flId + '</td>' +
             '<td>' + flight.name + '</td>' +
             '<td>' + flight.carrier + '</td>' +
             '<td>' + flight.departureDate + '</td>' +
