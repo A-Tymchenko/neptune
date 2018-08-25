@@ -1,6 +1,7 @@
 package com.ra.airport.config;
 
 import javax.sql.DataSource;
+import javax.validation.Validator;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
@@ -15,6 +16,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.datasource.init.DataSourceInitializer;
 import org.springframework.jdbc.datasource.init.ResourceDatabasePopulator;
+import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 
 /**
  * Spring configuration class for DAO layer.
@@ -74,6 +76,16 @@ public class AirPortConfiguration {
     }
 
     /**
+     * Register Validator.
+     *
+     * @return validator
+     */
+    @Bean
+    public Validator validatorFactory() {
+        return new LocalValidatorFactoryBean();
+    }
+
+    /**
      * Register ResourceDatabasePopulator bean for H2 dataBase to runScript.
      *
      * @return dataSource
@@ -93,6 +105,7 @@ public class AirPortConfiguration {
      * @param databasePopulator ResourceDatabasePopulator
      * @return DataSourceInitializer
      */
+    @Bean
     public DataSourceInitializer dataSourceInitializer(final DataSource dataSource, final ResourceDatabasePopulator
             databasePopulator) {
         final DataSourceInitializer sourceInitializer = new DataSourceInitializer();

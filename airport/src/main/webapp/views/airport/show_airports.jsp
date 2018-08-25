@@ -10,7 +10,7 @@
 </head>
 <body>
    <div align="center">
-      <table border="1" cellpadding="5">
+      <table border="1" cellpadding="5" >
            <caption><h2>List of airports</h2></caption>
            <tbody id = "airports">
                 <tr>
@@ -38,12 +38,14 @@
         <caption><div id="addModal" class="modal">
           <div class="modal-content">
             <span class="close">&times;</span>
-            <p>Name: <input type = "text" id = "name"></input></p>
-            <p>Number: <input type = "text" id = "num"></input></p>
-            <p>Type: <input type = "text" id = "type"></input></p>
-            <p>Address: <input type = "text" id = "address"></input></p>
-            <p>Terminals: <input type = "text" id = "terminals"></input></p>
-            <p><button type="button" onclick='saveAirport()'>Save</button></p>
+              <table>
+                  <tr><td>Name:</td><td><input type = "text" id = "name"></input></td><td id="vname" style="color:red"></td></tr>
+                  <tr><td>Number:</td><td><input type = "text" id = "num"></input></td><td id="vnum" style="color:red"></td></tr>
+                  <tr><td>Type:</td><td><input type = "text" id = "type"></input></td><td id="vtype" style="color:red"></td></tr>
+                  <tr><td>Address:</td><td><input type = "text" id = "address"></input></td><td id="vaddress" style="color:red"></td></tr>
+                  <tr><td>Terminals:</td><td><input type = "text" id = "terminals"></input></td><td id="vterminals" style="color:red"></td></tr>
+              </table>
+              <p><button type="button" onclick='saveAirport()' id="saveButton">Save</button></p>
           </div>
         </div></caption>
    </div>
