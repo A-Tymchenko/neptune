@@ -47,7 +47,7 @@ public class FlightController {
     }
 
     @PostMapping
-    public ResponseEntity<Flight> createFlights(final @Valid @RequestBody FlightDto flightDto) throws AirPortDaoException {
+    public ResponseEntity<Flight> createFlight(final @Valid @RequestBody FlightDto flightDto) throws AirPortDaoException {
         final var flight = new Flight();
         BeanUtils.copyProperties(flightDto, flight);
         return new ResponseEntity<>(flightService.create(flight), HttpStatus.OK);
