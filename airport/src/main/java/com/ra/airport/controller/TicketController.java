@@ -17,13 +17,12 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
-@RequestMapping("/tickets")
 public class TicketController {
 
     private final transient TicketService ticketService;
+    private static final String REQUEST_PATH = "/tickets";
 
     @Autowired
     public TicketController(final TicketService ticketService) {
@@ -34,7 +33,7 @@ public class TicketController {
      * ticket/ GET method.
      * @return ticket/show_tickets
      */
-    @GetMapping
+    @GetMapping(REQUEST_PATH)
     public String getTickets(final Model model) throws AirPortDaoException {
         model.addAttribute("tickets", ticketService.getAll());
         return "ticket/show_tickets";
@@ -44,7 +43,7 @@ public class TicketController {
      * ticket/ POST method.
      * @return ticket/create_ticket
      */
-    @PostMapping
+    @PostMapping(REQUEST_PATH)
     public ResponseEntity<Ticket> createTicket(@Valid @RequestBody final TicketDTO ticketDTO) throws AirPortDaoException {
         final var ticket = new Ticket();
         BeanUtils.copyProperties(ticketDTO, ticket);
@@ -55,21 +54,21 @@ public class TicketController {
      * ticket/ DELETE method.
      * @return ticket/show_tickets
      */
-    @DeleteMapping
+    @DeleteMapping(REQUEST_PATH)
     public ResponseEntity<Boolean> deleteTicket(@Valid @RequestBody final TicketDTO ticketDTO) throws AirPortDaoException {
         final var ticket = new Ticket();
         BeanUtils.copyProperties(ticketDTO, ticket);
-        return new ResponseEntity<Boolean>(ticketService.delete(ticket), HttpStatus.OK);
+        return new ResponseEntity<>(ticketService.delete(ticket), HttpStatus.OK);
     }
 
     /**
      * ticket/ PUT method.
      * @return ticket/show_tickets
      */
-    @PutMapping
+    @PutMapping(REQUEST_PATH)
     public ResponseEntity<Ticket> updateTicket(@Valid @RequestBody final TicketDTO ticketDTO) throws AirPortDaoException {
         final var ticket = new Ticket();
         BeanUtils.copyProperties(ticketDTO, ticket);
-        return new ResponseEntity<Ticket>(ticketService.update(ticket), HttpStatus.OK);
+        return new ResponseEntity<>(ticketService.update(ticket), HttpStatus.OK);
     }
 }

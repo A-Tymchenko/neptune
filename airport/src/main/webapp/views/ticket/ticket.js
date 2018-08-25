@@ -4,6 +4,7 @@ var span = document.getElementsByClassName("close")[0];
 var tickets = getTickets();
 var actionType = "update";
 var updatedTicket = new Object();
+var localTimeZone = "+02:00";
 btn.onclick = function() {
     modal.style.display = "block";
     actionType = "addTicket";
@@ -33,14 +34,16 @@ function getTickets() {
 }
 function deleteTicket(id){
     document.getElementById(id).innerHTML = "";
+    let ticket;
     for (let i = 0; i < tickets.length; i++) {
-        let ticket = tickets[i]
+        ticket = tickets[i];
         if (ticket.ticketId == id) {
             tickets.splice(i,1);
+            break;
         }
     }
     req("/tickets", JSON.stringify(ticket), "DELETE").then(function (response) {
-        console.log("ticket: " + id + " deleted successfully");
+        console.log(response);
     })
 }
 function saveTicket() {
@@ -60,8 +63,9 @@ function updateTicketOnServer() {
     tic.ticketNumber = updatedTicket.ticketNumber = cell[0].innerHTML = document.getElementById("ticketNumber").value;
     tic.passengerName = updatedTicket.passengerName = cell[1].innerHTML = document.getElementById("passengerName").value;
     tic.document = updatedTicket.document = cell[2].innerHTML = document.getElementById("document").value;
-    tic.sellingDate = updatedTicket.sellingDate = cell[3].innerHTML = document.getElementById("sellingDate").value.replace("T", " ") + ":00";
-    req("/tickets", JSON.stringify(air), "PUT").then(function(response){
+    tic.sellingDate = updatedTicket.sellingDate = cell[3].innerHTML = document.getElementById("sellingDate").value.replace(" ", "T") + ":00.000" + localTimeZone;
+    // tic.sellingDate = updatedTicket.sellingDate = cell[3].innerHTML = document.getElementById("sellingDate").value;
+    req("/tickets", JSON.stringify(tic), "PUT").then(function(response){
         console.log(response);
     });
     for (let i = 0; i < tickets.length; i++) {
@@ -76,7 +80,7 @@ function saveNewTicket(){
     ticket.ticketNumber = document.getElementById("ticketNumber").value;
     ticket.passengerName = document.getElementById("passengerName").value;
     ticket.document = document.getElementById("document").value;
-    ticket.sellingDate = document.getElementById("sellingDate").value.replace("T", " ") + ":00";
+    ticket.sellingDate = document.getElementById("sellingDate").value.replace(" ", "T") + ":00.000" + localTimeZone;
     req("/tickets", JSON.stringify(ticket), "POST").then(function(response){
         ticket.ticketId = JSON.parse(response).ticketId;
         tickets.push(ticket);
@@ -113,7 +117,7 @@ function req(url, body, method)
     {
         let req = new XMLHttpRequest();
         req.open(method, url, true);
-        req.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+        req.setRequestHeader("Content-type", "application/json");
         req.onload = function()
         {
             if (req.status == 200)

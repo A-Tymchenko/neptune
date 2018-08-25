@@ -11,19 +11,25 @@ public class TicketDTO {
     private Integer ticketId;
 
     @NotNull
-    @Size(min = 6, max = 24, message = "Ticket Number should have 6-24 characters")
+    @Size(min = LengthHelper.MIN_T_NUM,
+            max = LengthHelper.MAX_T_NUM,
+            message = "Ticket Number should have 6-24 characters")
     private String ticketNumber;
 
     @NotNull
-    @Size(min = 2, max = 64, message = "Passenger Name should have 2-64 characters")
+    @Size(min = LengthHelper.MIN_T_PASS_NAME,
+            max = LengthHelper.MAX_T_PASS_NAME,
+            message = "Passenger Name should have 2-64 characters")
     private String passengerName;
 
     @NotNull
-    @Size(min = 6, max = 24, message = "Document should have 6-24 characters")
+    @Size(min = LengthHelper.MIN_T_DOC,
+            max = LengthHelper.MAX_T_DOC,
+            message = "Document should have 6-24 characters")
     private String document;
 
     @NotNull(message = "Selling Date is empty!")
-    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
+    @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private Timestamp sellingDate;
 
     public TicketDTO() {
