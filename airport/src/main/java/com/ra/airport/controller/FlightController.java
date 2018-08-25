@@ -1,8 +1,7 @@
 package com.ra.airport.controller;
 
-import java.util.ArrayList;
-import java.util.List;
 import javax.validation.Valid;
+
 import com.ra.airport.dto.FlightDto;
 import com.ra.airport.entity.Flight;
 import com.ra.airport.repository.exception.AirPortDaoException;
@@ -15,44 +14,58 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 
 /**
  * Controller for CRUD operations with {@link com.ra.airport.entity.Flight} entity.
  */
-
+@RequestMapping("/flights")
 @Controller
-@RequestMapping(value = "/flights")
 public class FlightController {
 
-    private FlightService flightService;
+    private final transient FlightService flightService;
 
     @Autowired
-    public FlightController(FlightService flightService) {
+    public FlightController(final FlightService flightService) {
         this.flightService = flightService;
     }
 
+    /**
+     * Return view of flights.
+     * @param model object
+     * @return path to view
+     * @throws AirPortDaoException dao exception.
+     */
     @GetMapping
     public String getFlights(final Model model) throws AirPortDaoException {
-        List<Flight> flights = flightService.getAll();
-        model.addAttribute("flights",flights);
+        final var flights = flightService.getAll();
+        model.addAttribute("flights", flights);
 
         return "flight/flights";
     }
 
+    /**
+     * Create new {@link com.ra.airport.entity.Flight} entity.
+     * @param flightDto {@link com.ra.airport.dto.FlightDto}
+     * @return {@link ResponseEntity} created entity
+     * @throws AirPortDaoException dao exception.
+     */
     @PostMapping
-    public ResponseEntity<Flight> createFlights(final @Valid @RequestBody FlightDto flightDto) throws AirPortDaoException {
+    public ResponseEntity<Flight> createFlight(final @Valid @RequestBody FlightDto flightDto) throws AirPortDaoException {
         final var flight = new Flight();
         BeanUtils.copyProperties(flightDto, flight);
         return new ResponseEntity<>(flightService.create(flight), HttpStatus.OK);
     }
 
+    /**
+     * Update {@link com.ra.airport.entity.Flight} entity.
+     * @param flightDto {@link com.ra.airport.dto.FlightDto}
+     * @return {@link ResponseEntity} updated entity
+     * @throws AirPortDaoException dao exception.
+     */
     @PutMapping
     public ResponseEntity<Flight> updateFlight(final @Valid @RequestBody FlightDto flightDto) throws AirPortDaoException {
         final var flight = new Flight();
@@ -60,6 +73,12 @@ public class FlightController {
         return new ResponseEntity<>(flightService.update(flight), HttpStatus.OK);
     }
 
+    /**
+     * Delete {@link com.ra.airport.entity.Flight} entity.
+     * @param flightDto {@link com.ra.airport.dto.FlightDto}
+     * @return {@link ResponseEntity} boolean flag
+     * @throws AirPortDaoException dao exception.
+     */
     @DeleteMapping
     public ResponseEntity<Boolean> deleteFlight(final @Valid @RequestBody FlightDto flightDto) throws AirPortDaoException {
         final var flight = new Flight();

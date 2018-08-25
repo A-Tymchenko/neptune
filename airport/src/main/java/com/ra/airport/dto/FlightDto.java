@@ -10,7 +10,7 @@ import javax.validation.constraints.NotNull;
  * Flight Dto object.
  */
 public class FlightDto {
-    
+
     private Integer flId;
 
     @NotBlank(message = "Please enter flight name.")
