@@ -22,7 +22,7 @@ import static org.mockito.Mockito.when;
 
 public class AdvertisementMockTest {
     private static JdbcTemplate mockjdbcTemplate;
-    private static AdvertisementAdvertisementDaoImpl advertisementDao;
+    private static AdvertisementProjectDaoImpl advertisementDao;
     private static final String GET_ADVERT_BY_ID = "SELECT * FROM ADVERTISEMENT WHERE AD_ID=?";
     private Advertisement advertisement;
     private Advertisement advertisementNoId;
@@ -33,7 +33,7 @@ public class AdvertisementMockTest {
     @BeforeAll
     public static void init() {
         mockjdbcTemplate = mock(JdbcTemplate.class);
-        advertisementDao = new AdvertisementAdvertisementDaoImpl(mockjdbcTemplate);
+        advertisementDao = new AdvertisementProjectDaoImpl(mockjdbcTemplate);
     }
 
     @BeforeEach

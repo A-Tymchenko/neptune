@@ -235,12 +235,16 @@ project("advertisement") {
         compile spring.context
         compile spring.jdbc
         compile spring.test
+        compile spring.webmvc
         compile web.servlet
         compile web.jstl
         compile misc.javaEl
         compile misc.glassfishEl
         compile hibernate.validator
+        testCompile group: 'junit', name: 'junit', version: '4.12'
+        compile 'org.projectlombok:lombok:1.18.2'
     }
+    apply plugin: 'nebula.provided-base'
     apply plugin: 'war'
     war {
         archiveName = 'advertproject.war'
@@ -250,6 +254,7 @@ project("advertisement") {
 project("advertisement_integration_test") {
     dependencies {
         compile project(':advertisement')
+        testCompile group: 'junit', name: 'junit', version: '4.12'
     }
 }
 

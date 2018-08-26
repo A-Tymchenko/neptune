@@ -25,7 +25,7 @@ import static org.mockito.Mockito.when;
 
 public class ProviderMockTest {
     private static JdbcTemplate mockjdbcTemplate;
-    private static ProviderAdvertisementDaoImpl providerDao;
+    private static ProviderProjectDaoImpl providerDao;
     private static final String GET_PROV_BY_ID = "SELECT * FROM PROVIDER WHERE PROV_ID=?";
     private Provider provider;
     private Provider providerNoId;
@@ -36,7 +36,7 @@ public class ProviderMockTest {
     @BeforeAll
     public static void init() {
         mockjdbcTemplate = mock(JdbcTemplate.class);
-        providerDao = new ProviderAdvertisementDaoImpl(mockjdbcTemplate);
+        providerDao = new ProviderProjectDaoImpl(mockjdbcTemplate);
     }
 
     @BeforeEach
