@@ -5,18 +5,21 @@ import java.util.Objects;
 public class Plane {
 
     private Integer planeId;
-    private String owner;
+
+    private Integer seatsCount;
+
     private String model;
+
     private String type;
+
     private Integer plateNumber;
-    private static final long serialVersionUID = 1L;
 
     public Plane() {
     }
 
-    public Plane(final Integer planeId, final String owner, final String model, final String type, final int plateNumber) {
+    public Plane(final Integer planeId, final Integer seatsCount, final String model, final String type, final int plateNumber) {
         this.planeId = planeId;
-        this.owner = owner;
+        this.seatsCount = seatsCount;
         this.model = model;
         this.type = type;
         this.plateNumber = plateNumber;
@@ -26,8 +29,8 @@ public class Plane {
         return planeId;
     }
 
-    public String getOwner() {
-        return owner;
+    public Integer getSeatsCount() {
+        return seatsCount;
     }
 
     public String getModel() {
@@ -46,8 +49,8 @@ public class Plane {
         this.planeId = planeId;
     }
 
-    public void setOwner(final String owner) {
-        this.owner = owner;
+    public void setSeatsCount(final Integer seatsCount) {
+        this.seatsCount = seatsCount;
     }
 
     public void setModel(final String model) {
@@ -72,7 +75,7 @@ public class Plane {
         }
         final Plane plane = (Plane) object;
         return Objects.equals(planeId, plane.planeId)
-                && Objects.equals(owner, plane.owner)
+                && Objects.equals(seatsCount, plane.seatsCount)
                 && Objects.equals(model, plane.model)
                 && Objects.equals(type, plane.type)
                 && Objects.equals(plateNumber, plane.plateNumber);
@@ -82,7 +85,7 @@ public class Plane {
     public String toString() {
         return "Plane{"
                 + "planeId=" + planeId
-                + ", owner='" + owner + '\''
+                + ", seatsCount='" + seatsCount + '\''
                 + ", model='" + model + '\''
                 + ", type='" + type + '\''
                 + ", plateNumber=" + plateNumber
@@ -91,7 +94,7 @@ public class Plane {
 
     @Override
     public int hashCode() {
-        return Objects.hash(planeId, owner, model, type, plateNumber);
+        return Objects.hash(planeId, seatsCount, model, type, plateNumber);
     }
 }
 

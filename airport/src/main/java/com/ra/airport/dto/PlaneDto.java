@@ -3,9 +3,13 @@ package com.ra.airport.dto;
 public class PlaneDto {
 
     private Integer planeId;
-    private String owner;
+
+    private Integer seatsCount;
+
     private String model;
+
     private String type;
+
     private Integer plateNumber;
 
     public Integer getPlaneId() {
@@ -16,12 +20,12 @@ public class PlaneDto {
         this.planeId = planeId;
     }
 
-    public String getOwner() {
-        return owner;
+    public Integer getSeatsCount() {
+        return seatsCount;
     }
 
-    public void setOwner(final String owner) {
-        this.owner = owner;
+    public void setSeatsCount(final Integer seatsCount) {
+        this.seatsCount = seatsCount;
     }
 
     public String getModel() {

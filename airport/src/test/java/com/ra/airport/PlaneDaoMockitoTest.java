@@ -26,11 +26,10 @@ import java.util.Optional;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-
 public class PlaneDaoMockitoTest {
 
     private static final String INSERT_PLANE_SQL = "INSERT INTO plane "
-            + "(owner, model, type, platenumber) "
+            + "(seatsCount, model, type, platenumber) "
             + " VALUES(?,?,?,?)";
     private static final String UPDATE_PLANE_SQL = "UPDATE plane ";
     private static final String SELECT_PLANE_BY_ID_SQL = "SELECT * FROM plane WHERE planeId = ?";
@@ -65,7 +64,7 @@ public class PlaneDaoMockitoTest {
         plane.setPlateNumber(2);
         plane.setModel(SPACE);
         plane.setType(SPACE);
-        plane.setOwner(SPACE);
+        plane.setSeatsCount(150);
         return plane;
     }
 

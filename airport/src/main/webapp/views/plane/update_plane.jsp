@@ -8,7 +8,7 @@
 <h1>Update Plane Page</h1>
 <form method="POST" action="${pageContext.request.contextPath}">
     Owner<br>
-    <input type="text" name="owner" value="${plane.getOwner()}"><p/>
+    <input type="text" name="seatsCount" value="${plane.getSeatsCount()}"><p/>
     Model<br>
     <input type="text" name="model" value="${plane.getModel()}"><p/>
     Type<br>

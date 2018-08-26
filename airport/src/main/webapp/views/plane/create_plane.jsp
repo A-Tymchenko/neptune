@@ -8,7 +8,7 @@
 <h1>Create Plane Page</h1>
 <form method="POST" action="${pageContext.request.contextPath}">
     Owner<br>
-    <input type="text" name="owner"><p/>
+    <input type="text" name="seatsCount"><p/>
     Model<br>
     <input type="text" name="model"><p/>
     Type<br>

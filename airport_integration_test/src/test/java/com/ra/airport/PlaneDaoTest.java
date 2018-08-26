@@ -28,8 +28,6 @@ import static org.junit.jupiter.api.Assertions.*;
         @Sql(executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD, scripts = "classpath:sql/remove_table_skripts.sql")
 })
 public class PlaneDaoTest {
-
-    private static final String OWNER = "MAU";
     private static final String MODEL = "Boeing";
     private static final String TYPE = "LargeCarrier";
     private static final Integer PLATE_NUMBER = 13249;
@@ -45,7 +43,7 @@ public class PlaneDaoTest {
 
     private void createPlane()  {
         plane = new Plane();
-        plane.setOwner(OWNER);
+        plane.setSeatsCount(150);
         plane.setModel(MODEL);
         plane.setType(TYPE);
         plane.setPlateNumber(PLATE_NUMBER);
@@ -87,7 +85,7 @@ public class PlaneDaoTest {
     }
 
     private Plane changePlane(Plane plane) {
-        plane.setOwner("Lufthansa");
+        plane.setSeatsCount(100);
         plane.setModel("Hawker");
         plane.setType("smallcarrier");
         plane.setPlateNumber(4567854);
