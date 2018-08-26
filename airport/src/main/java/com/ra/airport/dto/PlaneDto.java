@@ -1,15 +1,22 @@
 package com.ra.airport.dto;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+
 public class PlaneDto {
 
     private Integer planeId;
 
+    @NotNull
     private Integer seatsCount;
 
+    @NotBlank
     private String model;
 
+    @NotBlank
     private String type;
 
+    @NotNull
     private Integer plateNumber;
 
     public Integer getPlaneId() {
