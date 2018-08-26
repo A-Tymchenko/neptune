@@ -1,5 +1,8 @@
 package com.ra.airport.config;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import javax.sql.DataSource;
 import javax.validation.Validator;
 
@@ -31,7 +34,6 @@ public class AirPortConfiguration {
 
     @Autowired
     private transient Environment environment;
-
 
     /**
      * Register {@link DataSource} bean.
@@ -88,16 +90,6 @@ public class AirPortConfiguration {
         return new LocalValidatorFactoryBean();
     }
 
-    @Bean
-    public ObjectMapper objectMapper() {
-
-        ObjectMapper objectMapper = new ObjectMapper();
-        objectMapper.enable(SerializationFeature.INDENT_OUTPUT);
-        objectMapper.registerModule(new JavaTimeModule());
-        objectMapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);;
-        return objectMapper;
-    }
-
     /**
      * Register ResourceDatabasePopulator bean for H2 dataBase to runScript.
      *
@@ -125,5 +117,14 @@ public class AirPortConfiguration {
         sourceInitializer.setDatabasePopulator(databasePopulator);
         sourceInitializer.setDataSource(dataSource);
         return sourceInitializer;
+    }
+
+    @Bean
+    public ObjectMapper objectMapper() {
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.enable(SerializationFeature.INDENT_OUTPUT);
+        objectMapper.registerModule(new JavaTimeModule());
+        objectMapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
+        return objectMapper;
     }
 }

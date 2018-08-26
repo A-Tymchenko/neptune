@@ -7,8 +7,10 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
+import com.google.gson.GsonBuilder;
 import com.ra.airport.config.AirPortConfiguration;
 import com.ra.airport.config.AirPortWebConfig;
+import com.ra.airport.converter.LocalDateTimeJsonConverter;
 import com.ra.airport.dto.FlightDto;
 import com.google.gson.Gson;
 import org.junit.jupiter.api.BeforeEach;
@@ -17,8 +19,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.jdbc.Sql;
-import org.springframework.test.context.jdbc.SqlGroup;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
@@ -43,7 +43,9 @@ public class FlightControllerTest {
     @BeforeEach
     public void beforeTest() {
         this.mockMvc = MockMvcBuilders.standaloneSetup(flightController).build();
-        var gson = new Gson();
+        var gson = new GsonBuilder()
+                .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeJsonConverter())
+				.create();
         flight = createFlight();
         flightJson = gson.toJson(flight);
     }

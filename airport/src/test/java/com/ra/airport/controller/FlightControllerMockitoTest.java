@@ -1,10 +1,8 @@
-package com.ra.flight.controller;
+package com.ra.airport.controller;
 
 import java.time.*;
 import java.time.format.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import com.ra.airport.controller.FlightController;
 import com.ra.airport.dto.FlightDto;
 import com.ra.airport.service.FlightService;
 import com.ra.airport.repository.exception.AirPortDaoException;
