@@ -38,11 +38,16 @@ function deleteTicket(id){
     for (let i = 0; i < tickets.length; i++) {
         ticket = tickets[i];
         if (ticket.ticketId == id) {
+
             tickets.splice(i,1);
             break;
         }
     }
-    if (ticket.sellingDate.length == 20) ticket.sellingDate = ticket.sellingDate.replace(" ", "T").slice(0, ticket.sellingDate.length - 2);
+    if (ticket.sellingDate.length != 0) {
+        ticket.sellingDate = ticket.sellingDate.replace(" ", "T") + "00" + localTimeZone;
+    } else {
+        ticket.sellingDate = "1970-01-01T01:01:01.000+00:00";
+    }
     req("/tickets", JSON.stringify(ticket), "DELETE").then(function (response) {
         console.log(response);
     })
@@ -65,7 +70,6 @@ function updateTicketOnServer() {
     tic.passengerName = updatedTicket.passengerName = cell[1].innerHTML = document.getElementById("passengerName").value;
     tic.document = updatedTicket.document = cell[2].innerHTML = document.getElementById("document").value;
     tic.sellingDate = updatedTicket.sellingDate = cell[3].innerHTML = document.getElementById("sellingDate").value.replace(" ", "T") + ":00.000" + localTimeZone;
-    // tic.sellingDate = updatedTicket.sellingDate = cell[3].innerHTML = document.getElementById("sellingDate").value;
     req("/tickets", JSON.stringify(tic), "PUT").then(function(response){
         console.log(response);
     });
@@ -81,7 +85,9 @@ function saveNewTicket(){
     ticket.ticketNumber = document.getElementById("ticketNumber").value;
     ticket.passengerName = document.getElementById("passengerName").value;
     ticket.document = document.getElementById("document").value;
-    ticket.sellingDate = document.getElementById("sellingDate").value.replace(" ", "T") + ":00.000" + localTimeZone;
+    if (document.getElementById("sellingDate").value != 0) {
+        ticket.sellingDate = document.getElementById("sellingDate").value.replace(" ", "T") + ":00.000" + localTimeZone;
+    }
     req("/tickets", JSON.stringify(ticket), "POST").then(function(response){
         ticket.ticketId = JSON.parse(response).ticketId;
         tickets.push(ticket);

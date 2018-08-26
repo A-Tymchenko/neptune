@@ -4,8 +4,6 @@ import java.sql.Timestamp;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
-import org.springframework.format.annotation.DateTimeFormat;
-
 public class TicketDTO {
 
     private Integer ticketId;
@@ -29,7 +27,6 @@ public class TicketDTO {
     private String document;
 
     @NotNull(message = "Selling Date is empty!")
-    @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private Timestamp sellingDate;
 
     public TicketDTO() {
