@@ -1,11 +1,22 @@
 package com.ra.airport.dto;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+
 public class PlaneDto {
 
     private Integer planeId;
-    private String owner;
+
+    @NotNull
+    private Integer seatsCount;
+
+    @NotBlank
     private String model;
+
+    @NotBlank
     private String type;
+
+    @NotNull
     private Integer plateNumber;
 
     public Integer getPlaneId() {
@@ -16,12 +27,12 @@ public class PlaneDto {
         this.planeId = planeId;
     }
 
-    public String getOwner() {
-        return owner;
+    public Integer getSeatsCount() {
+        return seatsCount;
     }
 
-    public void setOwner(final String owner) {
-        this.owner = owner;
+    public void setSeatsCount(final Integer seatsCount) {
+        this.seatsCount = seatsCount;
     }
 
     public String getModel() {

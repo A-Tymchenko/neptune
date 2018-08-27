@@ -23,7 +23,7 @@ public enum StatementParameter {
     TICKET_SELLING_DATE(4),
     TICKET_ID(5),
 
-    PLANE_OWNER(1),
+    PLANE_SEATS_COUNT(1),
     PLANE_MODEL(2),
     PLANE_TYPE(3),
     PLANE_PLATE_NUMBER(4),
