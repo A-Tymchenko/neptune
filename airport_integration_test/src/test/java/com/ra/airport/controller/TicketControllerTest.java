@@ -44,14 +44,14 @@ class TicketControllerTest {
     }
 
     @Test
-    public void whenCallGETTicketThenIndexJspShouldBeReturned() throws Exception {
+    public void whenCallGETTicketThenTicketsViewShouldBeReturned() throws Exception {
         mockMvc.perform(get("/tickets"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("ticket/show_tickets"));
     }
 
     @Test
-    public void whenCallDELETETicketThenIndexJspShouldBeReturned() throws Exception {
+    public void whenCallDELETETicketThenTrueShouldBeReturned() throws Exception {
         mockMvc.perform(delete("/tickets")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(ticketJson))
@@ -59,7 +59,7 @@ class TicketControllerTest {
     }
 
     @Test
-    public void whenCallPUTTicketThenIndexJspShouldBeReturned() throws Exception {
+    public void whenCallPUTTicketThenTrueShouldBeReturned() throws Exception {
         mockMvc.perform(put("/tickets")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(ticketJson))
@@ -67,7 +67,7 @@ class TicketControllerTest {
     }
 
     @Test
-    public void whenCallPOSTTicketThenIndexJspShouldBeReturned() throws Exception {
+    public void whenCallPOSTTicketThenTrueShouldBeReturned() throws Exception {
         mockMvc.perform(post("/tickets")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(ticketJson))

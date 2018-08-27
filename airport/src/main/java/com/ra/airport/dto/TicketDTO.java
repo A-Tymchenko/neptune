@@ -4,6 +4,8 @@ import java.sql.Timestamp;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 public class TicketDTO {
 
     private Integer ticketId;
@@ -26,7 +28,7 @@ public class TicketDTO {
             message = "Document should have 6-24 characters")
     private String document;
 
-    @NotNull(message = "Selling Date is empty!")
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm", timezone = "Europe/Kiev")
     private Timestamp sellingDate;
 
     public TicketDTO() {
