@@ -17,7 +17,6 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
 import java.sql.Timestamp;
-import java.time.format.DateTimeFormatter;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -53,7 +52,6 @@ class TicketControllerTest {
 
     @Test
     public void whenCallDELETETicketThenIndexJspShouldBeReturned() throws Exception {
-        System.out.println(ticketJson);
         mockMvc.perform(delete("/tickets")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(ticketJson))
