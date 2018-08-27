@@ -1,6 +1,6 @@
 package com.ra.airport.controller;
 
-import com.google.gson.Gson;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ra.airport.config.AirPortConfiguration;
 import com.ra.airport.config.AirPortWebConfig;
 import com.ra.airport.dto.TicketDTO;
@@ -17,6 +17,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
 import java.sql.Timestamp;
+import java.time.format.DateTimeFormatter;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -40,8 +41,7 @@ class TicketControllerTest {
     public void setup() throws Exception {
         this.mockMvc = MockMvcBuilders.standaloneSetup(ticketController).build();
         ticketDTO = initTicketDTO();
-        var gson = new Gson();
-        ticketJson = gson.toJson(ticketDTO);
+        ticketJson = new ObjectMapper().writeValueAsString(ticketDTO);
     }
 
     @Test
@@ -53,6 +53,7 @@ class TicketControllerTest {
 
     @Test
     public void whenCallDELETETicketThenIndexJspShouldBeReturned() throws Exception {
+        System.out.println(ticketJson);
         mockMvc.perform(delete("/tickets")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(ticketJson))
