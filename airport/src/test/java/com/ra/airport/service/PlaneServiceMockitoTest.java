@@ -65,6 +65,6 @@ public class PlaneServiceMockitoTest {
         plane.setPlateNumber(2);
         plane.setModel(SPACE);
         plane.setType(SPACE);
-        plane.setOwner(SPACE);
+        plane.setSeatsCount(150);
     }
 }

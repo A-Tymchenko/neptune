@@ -25,10 +25,10 @@ public class PlaneDao implements AirPortDao<Plane> {
 
     private final transient JdbcTemplate jdbcTemplate;
     private static final String INSERT_PLANE_SQL = "INSERT INTO plane "
-            + "(owner, model, type, platenumber) "
+            + "(seatsCount, model, type, platenumber) "
             + " VALUES(?,?,?,?)";
     private static final String UPDATE_PLANE_SQL = "UPDATE plane "
-            + "SET owner = ?, model = ?, type = ?, platenumber = ?"
+            + "SET seatsCount = ?, model = ?, type = ?, platenumber = ?"
             + "WHERE planeId = ?";
     private static final Logger LOGGER = LogManager.getLogger(PlaneDao.class);
 
@@ -106,7 +106,7 @@ public class PlaneDao implements AirPortDao<Plane> {
     private PreparedStatement createPreparedStatement(final Plane plane, final Connection connection, final String sql)
             throws SQLException {
         final PreparedStatement preparedStatement = connection.prepareStatement(sql);
-        preparedStatement.setString(StatementParameter.PLANE_OWNER.get(), plane.getOwner());
+        preparedStatement.setInt(StatementParameter.PLANE_SEATS_COUNT.get(), plane.getSeatsCount());
         preparedStatement.setString(StatementParameter.PLANE_MODEL.get(), plane.getModel());
         preparedStatement.setString(StatementParameter.PLANE_TYPE.get(), plane.getType());
         preparedStatement.setInt(StatementParameter.PLANE_PLATE_NUMBER.get(), plane.getPlateNumber());
