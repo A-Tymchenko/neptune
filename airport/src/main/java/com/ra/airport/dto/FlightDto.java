@@ -1,6 +1,10 @@
 package com.ra.airport.dto;
 
 import java.time.LocalDateTime;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
 
 /**
  * Flight Dto object.
@@ -8,11 +12,23 @@ import java.time.LocalDateTime;
 public class FlightDto {
 
     private Integer flId;
+
+    @NotBlank(message = "Please enter flight name.")
     private String name;
+
+    @NotBlank(message = "Please enter carrier.")
     private String carrier;
+
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime departureDate;
+
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime arrivalDate;
+
+    @NotNull
     private Double fare;
+
+    @NotNull
     private Boolean mealOn;
 
     public FlightDto() {
