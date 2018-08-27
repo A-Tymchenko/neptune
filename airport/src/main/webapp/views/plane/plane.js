@@ -70,7 +70,7 @@ document.getElementById("plateNumber").onkeyup = function (ev) {
         document.getElementById("saveButton").disabled = true;
         return;
     }
-    if (field.search(/^[A-Za-z]+$/)) {
+    if (field.search(/^[0-9]+$/)) {
         document.getElementById("vplateNumber").innerHTML = "Plate Number shoud be contains only numbers";
         document.getElementById("saveButton").disabled = true;
         return;

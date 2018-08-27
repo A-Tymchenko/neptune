@@ -11,6 +11,7 @@
         <tbody id = "planes">
         <tr>
             <th>Id</th>
+            <th>Seats count</th>
             <th>Model</th>
             <th>Type</th>
             <th>Plate number</th>
@@ -20,6 +21,7 @@
         <c:forEach var="plane" items="${planes}">
             <tr id = "<c:out value="${plane.getPlaneId()}"/>">
                 <td><c:out value="${plane.getPlaneId()}"/></td>
+                <td><c:out value="${plane.getSeatsCount()}"/></td>
                 <td><c:out value="${plane.getModel()}"/></td>
                 <td><c:out value="${plane.getType()}"/></td>
                 <td><c:out value="${plane.getPlateNumber()}"/></td>

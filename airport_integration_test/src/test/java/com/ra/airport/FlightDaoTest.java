@@ -75,7 +75,7 @@ public class FlightDaoTest {
 
     @Test
     public void whenUpdateThenUpdatedFlightShouldBeReturned() throws AirPortDaoException {
-        Optional<Flight> optionalFlight = airPortDao.getById(1);
+        Optional<Flight> optionalFlight = airPortDao.getById(2);
 
         assertNotEquals(Optional.empty(), optionalFlight);
         Flight flight = optionalFlight.get();
