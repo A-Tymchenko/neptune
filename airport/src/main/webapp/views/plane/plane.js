@@ -119,10 +119,10 @@ function updatePlaneOnServer() {
     let cell = row.cells;
     let pln = new Object();
     pln.planeId = updatedPlane.planeId;
-    pln.seatsCount = updatedPlane.seatsCount = cell[0].innerHTML = document.getElementById("seatsCount").value;
-    pln.model = updatedPlane.model = cell[1].innerHTML = document.getElementById("model").value;
-    pln.type = updatedPlane.type = cell[2].innerHTML = document.getElementById("type").value;
-    pln.plateNumber = updatedPlane.plateNumber = cell[3].innerHTML = document.getElementById("plateNumber").value;
+    pln.seatsCount = updatedPlane.seatsCount = cell[1].innerHTML = document.getElementById("seatsCount").value;
+    pln.model = updatedPlane.model = cell[2].innerHTML = document.getElementById("model").value;
+    pln.type = updatedPlane.type = cell[3].innerHTML = document.getElementById("type").value;
+    pln.plateNumber = updatedPlane.plateNumber = cell[4].innerHTML = document.getElementById("plateNumber").value;
     req("/planes", JSON.stringify(pln), "PUT").then(function(response){
         console.log(response);
     });
@@ -143,6 +143,7 @@ function saveNewPlane(){
         plane.planeId = JSON.parse(response).planeId;
         planes.push(plane);
         let row = '<tr id = "' + plane.planeId + '">' +
+            '<td>' + plane.planeId + '</td>' +
             '<td>' + plane.seatsCount + '</td>' +
             '<td>' + plane.model + '</td>' +
             '<td>' + plane.type + '</td>' +
@@ -160,10 +161,10 @@ function updatePlane(id){
     let row = document.getElementById(id);
     let cell = row.cells;
     updatedPlane.planeId = id;
-    updatedPlane.seatsCount = cell[0].innerHTML;
-    updatedPlane.model = cell[1].innerHTML;
-    updatedPlane.type = cell[2].innerHTML;
-    updatedPlane.plateNumber = cell[3].innerHTML;
+    updatedPlane.seatsCount = cell[1].innerHTML;
+    updatedPlane.model = cell[2].innerHTML;
+    updatedPlane.type = cell[3].innerHTML;
+    updatedPlane.plateNumber = cell[4].innerHTML;
     document.getElementById("seatsCount").value = updatedPlane.seatsCount;
     document.getElementById("model").value = updatedPlane.model;
     document.getElementById("type").value = updatedPlane.type;

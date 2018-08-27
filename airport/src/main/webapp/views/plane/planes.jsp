@@ -7,7 +7,7 @@
 <body>
 <div align="center">
     <table border="1" cellpadding="5">
-        <caption><h2>List of flights</h2></caption>
+        <caption><h2>List of planes</h2></caption>
         <tbody id = "planes">
         <tr>
             <th>Id</th>
