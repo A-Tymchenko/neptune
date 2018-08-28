@@ -22,7 +22,7 @@ function getTickets() {
     for (let i = 1; i < rows.length; i++) {
         let ticket = new Object();
         let cell = rows[i].cells;
-        ticket.ticketId = rows[i].ticketId;
+        ticket.ticketId = rows[i].id;
         ticket.ticketNumber = cell[0].innerHTML;
         ticket.passengerName = cell[1].innerHTML;
         ticket.document = cell[2].innerHTML;
@@ -33,14 +33,16 @@ function getTickets() {
 }
 function deleteTicket(id){
     document.getElementById(id).innerHTML = "";
+    let ticket;
     for (let i = 0; i < tickets.length; i++) {
-        let ticket = tickets[i]
+        ticket = tickets[i];
         if (ticket.ticketId == id) {
             tickets.splice(i,1);
+            break;
         }
     }
-    req("/ticket/delete", "ticketId="+id).then(function (response) {
-        console.log("ticket: " + id + " deleted successfully");
+    req("/tickets", JSON.stringify(ticket), "DELETE").then(function (response) {
+        console.log(response);
     })
 }
 function saveTicket() {
@@ -60,10 +62,9 @@ function updateTicketOnServer() {
     tic.ticketNumber = updatedTicket.ticketNumber = cell[0].innerHTML = document.getElementById("ticketNumber").value;
     tic.passengerName = updatedTicket.passengerName = cell[1].innerHTML = document.getElementById("passengerName").value;
     tic.document = updatedTicket.document = cell[2].innerHTML = document.getElementById("document").value;
-    tic.sellingDate = updatedTicket.sellingDate = cell[3].innerHTML = document.getElementById("sellingDate").value.replace("T", " ") + ":00";
-    req("/ticket/update", "ticketId=" + tic.ticketId + "&ticketNumber=" + tic.ticketNumber + "&passengerName=" + tic.passengerName
-        + "&document=" + tic.document + "&sellingDate=" + tic.sellingDate).then(function(response){
-        console.log("ticket: " + tic.ticketId + " updated successfully");
+    tic.sellingDate = updatedTicket.sellingDate = cell[3].innerHTML = document.getElementById("sellingDate").value;
+    req("/tickets", JSON.stringify(tic), "PUT").then(function(response){
+        console.log(response);
     });
     for (let i = 0; i < tickets.length; i++) {
         let ticket = tickets[i]
@@ -77,10 +78,9 @@ function saveNewTicket(){
     ticket.ticketNumber = document.getElementById("ticketNumber").value;
     ticket.passengerName = document.getElementById("passengerName").value;
     ticket.document = document.getElementById("document").value;
-    ticket.sellingDate = document.getElementById("sellingDate").value.replace("T", " ") + ":00";
-    req("/ticket/create", "ticketNumber=" + ticket.ticketNumber + "&passengerName=" + ticket.passengerName
-        + "&document=" + ticket.document + "&sellingDate=" + ticket.sellingDate).then(function(response){
-        ticket.ticketId = response.slice(response.indexOf("id") + 3, response.indexOf(" created"))
+    ticket.sellingDate = document.getElementById("sellingDate").value;
+    req("/tickets", JSON.stringify(ticket), "POST").then(function(response){
+        ticket.ticketId = JSON.parse(response).ticketId;
         tickets.push(ticket);
         let row = '<tr id = "' + ticket.ticketId + '">' +
             '<td>' + ticket.ticketNumber + '</td>' +
@@ -109,13 +109,13 @@ function updateTicket(id){
     document.getElementById("document").value = updatedTicket.document;
     document.getElementById("sellingDate").value = updatedTicket.sellingDate;
 }
-function req(url, body)
+function req(url, body, method)
 {
     return new Promise(function(resolve, reject)
     {
         let req = new XMLHttpRequest();
-        req.open('POST', url, true);
-        req.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+        req.open(method, url, true);
+        req.setRequestHeader("Content-type", "application/json");
         req.onload = function()
         {
             if (req.status == 200)
