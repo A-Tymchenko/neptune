@@ -65,6 +65,10 @@ function updateTicketOnServer() {
     tic.sellingDate = updatedTicket.sellingDate = cell[3].innerHTML = document.getElementById("sellingDate").value;
     req("/tickets", JSON.stringify(tic), "PUT").then(function(response){
         console.log(response);
+        document.getElementById("ticketNumber").value = "";
+        document.getElementById("passengerName").value = "";
+        document.getElementById("document").value = "";
+        document.getElementById("sellingDate").value = "";
     });
     for (let i = 0; i < tickets.length; i++) {
         let ticket = tickets[i]
@@ -91,6 +95,10 @@ function saveNewTicket(){
             '<td><button type="button" onclick="updateTicket(' + ticket.ticketId + ')">Update</button></td>' +
             '</tr>'
         document.getElementById("tickets").innerHTML = document.getElementById("tickets").innerHTML + row;
+        document.getElementById("ticketNumber").value = "";
+        document.getElementById("passengerName").value = "";
+        document.getElementById("document").value = "";
+        document.getElementById("sellingDate").value = "";
     });
 
 }

@@ -125,6 +125,10 @@ function updatePlaneOnServer() {
     pln.plateNumber = updatedPlane.plateNumber = cell[4].innerHTML = document.getElementById("plateNumber").value;
     req("/planes", JSON.stringify(pln), "PUT").then(function(response){
         console.log(response);
+        document.getElementById("seatsCount").value = "";
+        document.getElementById("model").value = "";
+        document.getElementById("type").value = "";
+        document.getElementById("plateNumber").value = "";
     });
     for (let i = 0; i < planes.length; i++) {
         let plane = planes[i]
@@ -152,6 +156,10 @@ function saveNewPlane(){
             '<td><button type="button" onclick="updatePlane(' + plane.planeId.toString() + ')">Update</button></td>' +
             '</tr>'
         document.getElementById("planes").innerHTML = document.getElementById("planes").innerHTML + row;
+        document.getElementById("seatsCount").value = "";
+        document.getElementById("model").value = "";
+        document.getElementById("type").value = "";
+        document.getElementById("plateNumber").value = "";
     });
 
 }

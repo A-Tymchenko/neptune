@@ -54,6 +54,6 @@
     <%@include file="../airport/airport.js"%>
 </script>
 <style>
-    <%@include file="../airport/airport.css"%>
+    <%@include file="../css/main_style.css"%>
 </style>
 </html>

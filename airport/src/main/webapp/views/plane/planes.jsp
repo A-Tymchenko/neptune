@@ -50,6 +50,6 @@
     <%@include file="../plane/plane.js"%>
 </script>
 <style>
-    <%@include file="../plane/plane.css"%>
+    <%@include file="../css/main_style.css"%>
 </style>
 </html>

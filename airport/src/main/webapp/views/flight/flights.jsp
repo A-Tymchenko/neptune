@@ -45,7 +45,7 @@
                 <tr><td>Departure Date:</td><td><input type = "datetime-local" id = "departureDate"></input></td><td id="vdepartureDate" style="color:red"></td></tr>
                 <tr><td>Arrival Date:</td><td><input type = "datetime-local" id = "arrivalDate"></input></td><td id="varrivalDate" style="color:red"></td></tr>
                 <tr><td>Fare:</td><td><input type = "text" id = "fare"></input></td><td id="vfare" style="color:red"></td></tr>
-                <tr><td>Meal On:</td><td><input type = "text" id = "mealOn"></input></td><td id="vmealOn" style="color:red"></td></tr>
+                <tr><td>Meal On:</td><td><input type = "checkbox" id = "mealOn"></input></td><td id="vmealOn" style="color:red"></td></tr>
             </table>
             <p><button type="button" onclick='saveFlight()' id="saveButton">Save</button></p>
         </div>
@@ -56,6 +56,6 @@
     <%@include file="../flight/flight.js"%>
 </script>
 <style>
-    <%@include file="../flight/flight.css"%>
+    <%@include file="../css/main_style.css"%>
 </style>
 </html>

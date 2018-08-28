@@ -142,6 +142,11 @@
         air.terminalCount = updatedAirport.terminalCount = cell[4].innerHTML = document.getElementById("terminals").value;
         req("/airports", JSON.stringify(air), "PUT").then(function(response){
             console.log(response);
+            document.getElementById("name").value = "";
+            document.getElementById("num").value = "";
+            document.getElementById("type").value = "";
+            document.getElementById("address").value = "";
+            document.getElementById("terminals").value = "";
         });
         for (let i = 0; i < airports.length; i++) {
             let airport = airports[i]
@@ -170,6 +175,11 @@
                                '<td><button type="button" onclick="updateAirport(' + airport.apId.toString() + ')">Update</button></td>' +
                                '</tr>'
                     document.getElementById("airports").innerHTML = document.getElementById("airports").innerHTML + row;
+                    document.getElementById("name").value = "";
+                    document.getElementById("num").value = "";
+                    document.getElementById("type").value = "";
+                    document.getElementById("address").value = "";
+                    document.getElementById("terminals").value = "";
         });
 
     }

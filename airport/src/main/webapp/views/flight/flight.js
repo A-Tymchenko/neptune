@@ -133,11 +133,17 @@ function updateFlightOnServer() {
     flt.departureDate = updatedFlight.departureDate = cell[3].innerHTML = document.getElementById("departureDate").value;
     flt.arrivalDate = updatedFlight.arrivalDate = cell[4].innerHTML = document.getElementById("arrivalDate").value;
     flt.fare = updatedFlight.fare = cell[5].innerHTML = document.getElementById("fare").value;
-    flt.mealOn = updatedFlight.mealOn = cell[6].innerHTML = document.getElementById("mealOn").value;
+    flt.mealOn = updatedFlight.mealOn = cell[6].innerHTML = document.getElementById("mealOn").checked;
     flt.departureDate = flt.departureDate.toString().replace("T", " ") + ":00";
     flt.arrivalDate = flt.arrivalDate.toString().replace("T", " ") + ":00";
     req("/flights", JSON.stringify(flt), "PUT").then(function(response){
         console.log(response);
+        document.getElementById("name").value = "";
+        document.getElementById("carrier").value = "";
+        document.getElementById("departureDate").value = "";
+        document.getElementById("arrivalDate").value = "";
+        document.getElementById("fare").value = "";
+        document.getElementById("mealOn").checked = "";
     });
     for (let i = 0; i < flights.length; i++) {
         let flight = flights[i]
@@ -153,7 +159,7 @@ function saveNewFlight(){
     flight.departureDate = document.getElementById("departureDate").value;
     flight.arrivalDate = document.getElementById("arrivalDate").value;
     flight.fare = parseInt(document.getElementById("fare").value);
-    flight.mealOn = document.getElementById("mealOn").value;
+    flight.mealOn = document.getElementById("mealOn").checked;
     flight.departureDate = flight.departureDate.toString().replace("T", " ") + ":00";
     flight.arrivalDate = flight.arrivalDate.toString().replace("T", " ") + ":00";
     req("/flights", JSON.stringify(flight), "POST").then(function(response){
@@ -173,6 +179,12 @@ function saveNewFlight(){
             '<td><button type="button" onclick="updateFlight(' + flight.flId.toString() + ')">Update</button></td>' +
             '</tr>'
         document.getElementById("flights").innerHTML = document.getElementById("flights").innerHTML + row;
+        document.getElementById("name").value = "";
+        document.getElementById("carrier").value = "";
+        document.getElementById("departureDate").value = "";
+        document.getElementById("arrivalDate").value = "";
+        document.getElementById("fare").value = "";
+        document.getElementById("mealOn").checked = "false";
     });
 
 }
@@ -193,7 +205,7 @@ function updateFlight(id){
     document.getElementById("departureDate").value = updatedFlight.departureDate;
     document.getElementById("arrivalDate").value = updatedFlight.arrivalDate;
     document.getElementById("fare").value = updatedFlight.fare;
-    document.getElementById("mealOn").value = updatedFlight.mealOn;
+    document.getElementById("mealOn").checked = updatedFlight.mealOn;
 }
 function req(url, body, method)
 {
