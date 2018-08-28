@@ -3,10 +3,8 @@ package com.ra.airport.controller;
 import javax.validation.Valid;
 
 import com.ra.airport.dto.AirportDTO;
-import com.ra.airport.entity.Airport;
 import com.ra.airport.repository.exception.AirPortDaoException;
 import com.ra.airport.service.AirportServiceImpl;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -44,10 +42,8 @@ public class AirportController {
      * @return airport/create_airport
      */
     @PostMapping(REQUEST_PATH)
-    public ResponseEntity<Airport> createAirport(@Valid @RequestBody final AirportDTO airportDTO) throws AirPortDaoException {
-        final var airport = new Airport();
-        BeanUtils.copyProperties(airportDTO, airport);
-        return new ResponseEntity<>(service.create(airport), HttpStatus.OK);
+    public ResponseEntity<AirportDTO> createAirport(@Valid @RequestBody final AirportDTO airportDTO) throws AirPortDaoException {
+        return new ResponseEntity<>(service.create(airportDTO), HttpStatus.OK);
     }
 
     /**
@@ -56,9 +52,7 @@ public class AirportController {
      */
     @DeleteMapping(REQUEST_PATH)
     public ResponseEntity<Boolean> deleteAirport(@Valid @RequestBody final AirportDTO airportDTO) throws AirPortDaoException {
-        final var airport = new Airport();
-        BeanUtils.copyProperties(airportDTO, airport);
-        return new ResponseEntity<Boolean>(service.delete(airport), HttpStatus.OK);
+        return new ResponseEntity<>(service.delete(airportDTO), HttpStatus.OK);
     }
 
     /**
@@ -66,9 +60,7 @@ public class AirportController {
      * @return airport/show_airports
      */
     @PutMapping(REQUEST_PATH)
-    public ResponseEntity<Airport> updateAirport(@Valid @RequestBody final AirportDTO airportDTO) throws AirPortDaoException {
-        final var airport = new Airport();
-        BeanUtils.copyProperties(airportDTO, airport);
-        return new ResponseEntity<Airport>(service.update(airport), HttpStatus.OK);
+    public ResponseEntity<AirportDTO> updateAirport(@Valid @RequestBody final AirportDTO airportDTO) throws AirPortDaoException {
+        return new ResponseEntity<>(service.update(airportDTO), HttpStatus.OK);
     }
 }

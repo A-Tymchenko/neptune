@@ -41,9 +41,7 @@ public class FlightController {
      */
     @GetMapping
     public String getFlights(final Model model) throws AirPortDaoException {
-        final var flights = flightService.getAll();
-        model.addAttribute("flights", flights);
-
+        model.addAttribute("flights", flightService.getAll());
         return "flight/flights";
     }
 
@@ -54,10 +52,8 @@ public class FlightController {
      * @throws AirPortDaoException dao exception.
      */
     @PostMapping
-    public ResponseEntity<Flight> createFlight(final @Valid @RequestBody FlightDto flightDto) throws AirPortDaoException {
-        final var flight = new Flight();
-        BeanUtils.copyProperties(flightDto, flight);
-        return new ResponseEntity<>(flightService.create(flight), HttpStatus.OK);
+    public ResponseEntity<FlightDto> createFlight(final @Valid @RequestBody FlightDto flightDto) throws AirPortDaoException {
+        return new ResponseEntity<>(flightService.create(flightDto), HttpStatus.OK);
     }
 
     /**
@@ -67,10 +63,8 @@ public class FlightController {
      * @throws AirPortDaoException dao exception.
      */
     @PutMapping
-    public ResponseEntity<Flight> updateFlight(final @Valid @RequestBody FlightDto flightDto) throws AirPortDaoException {
-        final var flight = new Flight();
-        BeanUtils.copyProperties(flightDto, flight);
-        return new ResponseEntity<>(flightService.update(flight), HttpStatus.OK);
+    public ResponseEntity<FlightDto> updateFlight(final @Valid @RequestBody FlightDto flightDto) throws AirPortDaoException {
+        return new ResponseEntity<>(flightService.update(flightDto), HttpStatus.OK);
     }
 
     /**
@@ -81,8 +75,6 @@ public class FlightController {
      */
     @DeleteMapping
     public ResponseEntity<Boolean> deleteFlight(final @Valid @RequestBody FlightDto flightDto) throws AirPortDaoException {
-        final var flight = new Flight();
-        BeanUtils.copyProperties(flightDto, flight);
-        return new ResponseEntity<>(flightService.delete(flight), HttpStatus.OK);
+        return new ResponseEntity<>(flightService.delete(flightDto), HttpStatus.OK);
     }
 }

@@ -1,11 +1,13 @@
 package com.ra.airport.service;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
+import com.ra.airport.dto.FlightDto;
 import com.ra.airport.entity.Flight;
 import com.ra.airport.repository.exception.AirPortDaoException;
 import com.ra.airport.repository.impl.FlightDao;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,7 +16,7 @@ import org.springframework.stereotype.Service;
  * Using {@link com.ra.airport.repository.AirPortDao}.
  */
 @Service
-public class FlightService implements AirPortService<Flight> {
+public class FlightService implements AirPortService<FlightDto> {
 
     private final transient FlightDao flightDao;
 
@@ -24,27 +26,41 @@ public class FlightService implements AirPortService<Flight> {
     }
 
     @Override
-    public Flight create(final Flight flight) throws AirPortDaoException {
-        return flightDao.create(flight);
+    public FlightDto create(final FlightDto flightDTO) throws AirPortDaoException {
+        var flight = new Flight();
+        BeanUtils.copyProperties(flightDTO, flight);
+        flight = flightDao.create(flight);
+        flight.setFlId(flight.getFlId());
+        return flightDTO;
     }
 
     @Override
-    public Flight update(final Flight flight) throws AirPortDaoException {
-        return flightDao.update(flight);
+    public FlightDto update(final FlightDto flightDto) throws AirPortDaoException {
+        var flight = new Flight();
+        BeanUtils.copyProperties(flightDto, flight);
+        flightDao.create(flight);
+        return flightDto;
     }
 
     @Override
-    public boolean delete(final Flight flight) throws AirPortDaoException {
+    public boolean delete(final FlightDto flightDto) throws AirPortDaoException {
+        var flight = new Flight();
+        flight.setFlId(flightDto.getFlId());
         return flightDao.delete(flight);
     }
 
     @Override
-    public Optional<Flight> getById(final int flightId) throws AirPortDaoException {
-        return flightDao.getById(flightId);
+    public List getAll() throws AirPortDaoException {
+        var result = new ArrayList<FlightDto>();
+        for (Flight flight : flightDao.getAll()) {
+            result.add(createFlightDto(flight));
+        }
+        return result;
     }
 
-    @Override
-    public List getAll() throws AirPortDaoException {
-        return flightDao.getAll();
+    private FlightDto createFlightDto(Flight flight) {
+        FlightDto flightDto = new FlightDto();
+        BeanUtils.copyProperties(flight, flightDto);
+        return flightDto;
     }
 }

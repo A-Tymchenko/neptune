@@ -26,38 +26,38 @@ public class PlaneService implements AirPortService<Plane> {
     /**
      * Create entity in DB and return it.
      *
-     * @param plane entity to create
+     * @param dto entity to create
      * @return plane entity
      * @throws AirPortDaoException exception for DAO layer
      */
     @Override
-    public Plane create(final Plane plane) throws AirPortDaoException {
-        return planeDao.create(plane);
+    public Plane create(final Plane dto) throws AirPortDaoException {
+        return planeDao.create(dto);
     }
 
     /**
      * Update entity in DB and return it.
      *
-     * @param plane entity to update
+     * @param dto entity to update
      * @return T entity
      * @throws AirPortDaoException exception for DAO layer
      */
     @Override
-    public Plane update(final Plane plane) throws AirPortDaoException {
-        return planeDao.update(plane);
+    public Plane update(final Plane dto) throws AirPortDaoException {
+        return planeDao.update(dto);
     }
 
     /**
      * Delete plane entity in DB.
      * And return true if operation was successful or false if not.
      *
-     * @param plane entity to delete
+     * @param dto entity to delete
      * @return boolean flag
      * @throws AirPortDaoException exception for DAO layer
      */
     @Override
-    public boolean delete(final Plane plane) throws AirPortDaoException {
-        return planeDao.delete(plane);
+    public boolean delete(final Plane dto) throws AirPortDaoException {
+        return planeDao.delete(dto);
     }
 
     /**

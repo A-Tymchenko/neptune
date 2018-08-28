@@ -24,18 +24,18 @@ public class TicketService implements AirPortService<Ticket> {
     }
 
     @Override
-    public Ticket create(final Ticket entity) throws AirPortDaoException {
-        return ticketDao.create(entity);
+    public Ticket create(final Ticket dto) throws AirPortDaoException {
+        return ticketDao.create(dto);
     }
 
     @Override
-    public Ticket update(final Ticket entity) throws AirPortDaoException {
-        return ticketDao.update(entity);
+    public Ticket update(final Ticket dto) throws AirPortDaoException {
+        return ticketDao.update(dto);
     }
 
     @Override
-    public boolean delete(final Ticket entity) throws AirPortDaoException {
-        return ticketDao.delete(entity);
+    public boolean delete(final Ticket dto) throws AirPortDaoException {
+        return ticketDao.delete(dto);
     }
 
     @Override
