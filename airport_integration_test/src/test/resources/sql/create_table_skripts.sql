@@ -22,7 +22,7 @@ CREATE TABLE IF NOT EXISTS flight (
 
 CREATE TABLE IF NOT EXISTS plane (
   planeId INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-  owner VARCHAR(255),
+  seatsCount INTEGER,
   model VARCHAR(255),
   type VARCHAR(255),
   platenumber INTEGER,

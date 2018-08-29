@@ -1,12 +1,29 @@
 package com.ra.airport.dto;
 
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+
 public class AirportDTO {
 
     private Integer apId;
+    @NotNull
+    @Size(min = LengthHelper.MIN, max = LengthHelper.MAX_LETERS, message = "Name should have atleast 2 characters")
     private String apName;
+    @NotNull
+    @Min(LengthHelper.MIN)
+    @Max(LengthHelper.MAX_NUMBER)
     private int apNum;
+    @NotNull
+    @Size(min = LengthHelper.MIN, max = LengthHelper.MAX_LETERS, message = "Name should have atleast 2 characters")
     private String apType;
+    @NotNull
+    @Size(min = LengthHelper.MIN, max = LengthHelper.MAX_LETERS, message = "Name should have atleast 2 characters")
     private String address;
+    @NotNull
+    @Min(LengthHelper.MIN)
+    @Max(LengthHelper.MAX_TERMINALS)
     private int terminalCount;
 
     public AirportDTO() {

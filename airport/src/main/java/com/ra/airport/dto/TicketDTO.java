@@ -1,12 +1,34 @@
 package com.ra.airport.dto;
 
 import java.sql.Timestamp;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
 
 public class TicketDTO {
+
     private Integer ticketId;
+
+    @NotNull
+    @Size(min = LengthHelper.MIN_T_NUM,
+            max = LengthHelper.MAX_T_NUM,
+            message = "Ticket Number should have 6-24 characters")
     private String ticketNumber;
+
+    @NotNull
+    @Size(min = LengthHelper.MIN_T_PASS_NAME,
+            max = LengthHelper.MAX_T_PASS_NAME,
+            message = "Passenger Name should have 2-64 characters")
     private String passengerName;
+
+    @NotNull
+    @Size(min = LengthHelper.MIN_T_DOC,
+            max = LengthHelper.MAX_T_DOC,
+            message = "Document should have 6-24 characters")
     private String document;
+
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm", timezone = "Europe/Kiev")
     private Timestamp sellingDate;
 
     public TicketDTO() {

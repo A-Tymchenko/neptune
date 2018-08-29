@@ -1,7 +1,6 @@
 package com.ra.airport.service;
 
 import java.util.List;
-import java.util.Optional;
 
 import com.ra.airport.repository.exception.AirPortDaoException;
 
@@ -13,39 +12,30 @@ public interface AirPortService<T> {
 
     /**
      * Create entity in DB and return it.
-     * @param entity entity to create
-     * @return T entity
+     * @param dto dto to create
+     * @return T dto
      * @throws AirPortDaoException exception for DAO layer
      */
-    T create(T entity) throws AirPortDaoException;
+    T create(T dto) throws AirPortDaoException;
 
     /**
      * Update entity in DB and return it.
      *
-     * @param entity entity to update
-     * @return T entity
+     * @param dto dto to update
+     * @return T dto
      * @throws AirPortDaoException exception for DAO layer
      */
-    T update(T entity) throws AirPortDaoException;
+    T update(T dto) throws AirPortDaoException;
 
     /**
      * Delete entity in DB.
      * And return true if operation was successful or false if not.
      *
-     * @param entity entity to delete
+     * @param dto dto to delete
      * @return boolean flag
      * @throws AirPortDaoException exception for DAO layer
      */
-    boolean delete(T entity) throws AirPortDaoException;
-
-    /**
-     * Return entity from DB by id.
-     *
-     * @param entityId entity id
-     * @return T entity
-     * @throws AirPortDaoException exception for DAO layer
-     */
-    Optional<T> getById(int entityId) throws AirPortDaoException;
+    boolean delete(T dto) throws AirPortDaoException;
 
     /**
      * Return all entities from DB by T type.

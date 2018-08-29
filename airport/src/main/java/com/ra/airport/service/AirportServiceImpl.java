@@ -1,16 +1,18 @@
 package com.ra.airport.service;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
+import com.ra.airport.dto.AirportDTO;
 import com.ra.airport.entity.Airport;
 import com.ra.airport.repository.exception.AirPortDaoException;
 import com.ra.airport.repository.impl.AirportDAOImpl;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
-public class AirportServiceImpl implements AirPortService<Airport> {
+public class AirportServiceImpl implements AirPortService<AirportDTO> {
 
     private final transient AirportDAOImpl airportDAO;
 
@@ -20,27 +22,41 @@ public class AirportServiceImpl implements AirPortService<Airport> {
     }
 
     @Override
-    public Airport create(final Airport entity) throws AirPortDaoException {
-        return airportDAO.create(entity);
+    public AirportDTO create(final AirportDTO airportDTO) throws AirPortDaoException {
+        var airport = new Airport();
+        BeanUtils.copyProperties(airportDTO, airport);
+        airport = airportDAO.create(airport);
+        airportDTO.setApId(airport.getApId());
+        return airportDTO;
     }
 
     @Override
-    public Airport update(final Airport entity) throws AirPortDaoException {
-        return airportDAO.update(entity);
+    public AirportDTO update(final AirportDTO airportDTO) throws AirPortDaoException {
+        final var airport = new Airport();
+        BeanUtils.copyProperties(airportDTO, airport);
+        airportDAO.update(airport);
+        return airportDTO;
     }
 
     @Override
-    public boolean delete(final Airport entity) throws AirPortDaoException {
-        return airportDAO.delete(entity);
+    public boolean delete(final AirportDTO airportDTO) throws AirPortDaoException {
+        final var airport = new Airport();
+        airport.setApId(airportDTO.getApId());
+        return airportDAO.delete(airport);
     }
 
     @Override
-    public Optional<Airport> getById(final int entityId) throws AirPortDaoException {
-        return airportDAO.getById(entityId);
+    public List<AirportDTO> getAll() throws AirPortDaoException {
+        final var result = new ArrayList<AirportDTO>();
+        for (final Airport airport : airportDAO.getAll()) {
+            result.add(createAirportDto(airport));
+        }
+        return result;
     }
 
-    @Override
-    public List<Airport> getAll() throws AirPortDaoException {
-        return airportDAO.getAll();
+    private AirportDTO createAirportDto(final Airport airport) {
+        final AirportDTO airportDTO = new AirportDTO();
+        BeanUtils.copyProperties(airport, airportDTO);
+        return airportDTO;
     }
 }

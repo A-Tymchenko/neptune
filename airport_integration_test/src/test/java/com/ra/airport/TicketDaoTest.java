@@ -5,7 +5,7 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.List;
 import java.util.Optional;
-import com.ra.airport.config.AirPortConfiguration;
+import com.ra.airport.config.DataBaseConfiguration;
 import com.ra.airport.repository.exception.AirPortDaoException;
 import com.ra.airport.repository.impl.TicketDao;
 import com.ra.airport.entity.Ticket;
@@ -18,13 +18,16 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.jdbc.SqlGroup;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.test.context.web.WebAppConfiguration;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Tests for {@link TicketDao} class
  */
 @ExtendWith(SpringExtension.class)
-@ContextConfiguration(classes = {AirPortConfiguration.class})
+@WebAppConfiguration
+@ContextConfiguration(classes = {DataBaseConfiguration.class})
 @SqlGroup({
         @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = "classpath:sql/create_table_skripts.sql"),
         @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = "classpath:sql/tables_backup(data).sql"),
