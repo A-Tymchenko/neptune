@@ -7,7 +7,6 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 import org.springframework.web.servlet.ViewResolver;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
@@ -17,7 +16,6 @@ import org.springframework.web.servlet.view.InternalResourceViewResolver;
  * Author: anbo.
  * Date: 19.08.2018
  */
-@WebAppConfiguration
 @EnableWebMvc
 @Configuration
 public class WebMvcConfiguration {
