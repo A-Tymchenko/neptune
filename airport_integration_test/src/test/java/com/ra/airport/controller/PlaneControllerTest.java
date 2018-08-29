@@ -5,7 +5,9 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
-import com.google.gson.Gson;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ra.airport.config.AirPortConfiguration;
 import com.ra.airport.config.AirPortWebConfig;
 import com.ra.airport.dto.PlaneDto;
@@ -33,11 +35,10 @@ public class PlaneControllerTest {
     private PlaneController planeController;
 
     @BeforeEach
-    public void beforeTest() {
+    public void beforeTest() throws JsonProcessingException {
         this.mockMvc = MockMvcBuilders.standaloneSetup(planeController).build();
-        var gson = new Gson();
         plane = createPlane();
-        planeJson = gson.toJson(plane);
+        planeJson = new ObjectMapper().writeValueAsString(plane);
     }
 
     @Test

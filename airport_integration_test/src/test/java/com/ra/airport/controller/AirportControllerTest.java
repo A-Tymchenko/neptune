@@ -1,6 +1,6 @@
 package com.ra.airport.controller;
 
-import com.google.gson.Gson;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ra.airport.config.AirPortConfiguration;
 import com.ra.airport.config.AirPortWebConfig;
 import com.ra.airport.dto.AirportDTO;
@@ -38,8 +38,7 @@ public class AirportControllerTest {
     public void setup() throws Exception {
         this.mockMvc = MockMvcBuilders.standaloneSetup(airportController).build();
         airportDTO = initAirportDTO();
-        var gson = new Gson();
-        airportJson = gson.toJson(airportDTO);
+        airportJson = new ObjectMapper().writeValueAsString(airportDTO);
     }
 
     @Test
