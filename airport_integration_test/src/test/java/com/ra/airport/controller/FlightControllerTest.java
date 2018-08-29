@@ -5,8 +5,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
-import com.ra.airport.config.AirPortConfiguration;
-import com.ra.airport.config.AirPortWebConfig;
+import com.ra.airport.config.DataBaseConfiguration;
+import com.ra.airport.config.WebMvcConfiguration;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -19,7 +19,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 @ExtendWith(SpringExtension.class)
-@ContextConfiguration(classes = {AirPortConfiguration.class, AirPortWebConfig.class})
+@ContextConfiguration(classes = {DataBaseConfiguration.class, WebMvcConfiguration.class})
 @WebAppConfiguration
 public class FlightControllerTest {
 

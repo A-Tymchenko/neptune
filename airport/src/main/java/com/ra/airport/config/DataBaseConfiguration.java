@@ -1,11 +1,7 @@
 package com.ra.airport.config;
 
 import javax.sql.DataSource;
-import javax.validation.Validator;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +15,6 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.datasource.init.DataSourceInitializer;
 import org.springframework.jdbc.datasource.init.ResourceDatabasePopulator;
-import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 
 /**
  * Spring configuration class for DAO layer.
@@ -27,7 +22,7 @@ import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 @PropertySource("classpath:config.properties")
 @ComponentScan("com.ra.airport")
 @Configuration
-public class AirPortConfiguration {
+public class DataBaseConfiguration {
 
     @Autowired
     private transient Environment environment;
@@ -78,16 +73,6 @@ public class AirPortConfiguration {
     }
 
     /**
-     * Register Validator.
-     *
-     * @return validator
-     */
-    @Bean
-    public Validator validatorFactory() {
-        return new LocalValidatorFactoryBean();
-    }
-
-    /**
      * Register ResourceDatabasePopulator bean for H2 dataBase to runScript.
      *
      * @return dataSource
@@ -114,19 +99,5 @@ public class AirPortConfiguration {
         sourceInitializer.setDatabasePopulator(databasePopulator);
         sourceInitializer.setDataSource(dataSource);
         return sourceInitializer;
-    }
-
-    /**
-     * Register {@link ObjectMapper} bean.
-     *
-     * @return return {@link ObjectMapper} bean
-     */
-    @Bean
-    public ObjectMapper objectMapper() {
-        final var objectMapper = new ObjectMapper();
-        objectMapper.enable(SerializationFeature.INDENT_OUTPUT);
-        objectMapper.registerModule(new JavaTimeModule());
-        objectMapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
-        return objectMapper;
     }
 }

@@ -3,7 +3,7 @@ package com.ra.airport;
 import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
-import com.ra.airport.config.AirPortConfiguration;
+import com.ra.airport.config.DataBaseConfiguration;
 import com.ra.airport.repository.AirPortDao;
 import com.ra.airport.repository.exception.AirPortDaoException;
 import com.ra.airport.entity.Plane;
@@ -21,7 +21,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(SpringExtension.class)
 @WebAppConfiguration
-@ContextConfiguration(classes = {AirPortConfiguration.class})
+@ContextConfiguration(classes = {DataBaseConfiguration.class})
 @SqlGroup({
         @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = "classpath:sql/create_table_skripts.sql"),
         @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = "classpath:sql/tables_backup(data).sql"),

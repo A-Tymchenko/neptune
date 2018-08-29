@@ -1,6 +1,6 @@
 package com.ra.airport;
 
-import com.ra.airport.config.AirPortConfiguration;
+import com.ra.airport.config.DataBaseConfiguration;
 import com.ra.airport.repository.exception.AirPortDaoException;
 import com.ra.airport.repository.impl.AirportDAOImpl;
 import com.ra.airport.entity.Airport;
@@ -24,7 +24,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @ExtendWith(SpringExtension.class)
 @WebAppConfiguration
-@ContextConfiguration(classes = {AirPortConfiguration.class})
+@ContextConfiguration(classes = {DataBaseConfiguration.class})
 @SqlGroup({
         @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = "classpath:sql/create_table_skripts.sql"),
         @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = "classpath:sql/tables_backup(data).sql"),

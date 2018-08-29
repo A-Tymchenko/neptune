@@ -1,8 +1,8 @@
 package com.ra.airport.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.ra.airport.config.AirPortConfiguration;
-import com.ra.airport.config.AirPortWebConfig;
+import com.ra.airport.config.DataBaseConfiguration;
+import com.ra.airport.config.WebMvcConfiguration;
 import com.ra.airport.dto.TicketDTO;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -23,7 +23,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
 @ExtendWith(SpringExtension.class)
-@ContextConfiguration(classes = {AirPortConfiguration.class, AirPortWebConfig.class})
+@ContextConfiguration(classes = {DataBaseConfiguration.class, WebMvcConfiguration.class})
 @WebAppConfiguration
 class TicketControllerTest {
 

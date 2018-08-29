@@ -15,12 +15,13 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 
+@RequestMapping("/tickets")
 @Controller
 public class TicketController {
 
     private final transient TicketService ticketService;
-    private static final String REQUEST_PATH = "/tickets";
 
     @Autowired
     public TicketController(final TicketService ticketService) {
@@ -31,7 +32,7 @@ public class TicketController {
      * ticket/ GET method.
      * @return ticket/show_tickets
      */
-    @GetMapping(REQUEST_PATH)
+    @GetMapping
     public String getTickets(final Model model) throws AirPortDaoException {
         model.addAttribute("tickets", ticketService.getAll());
         return "ticket/show_tickets";
@@ -41,7 +42,7 @@ public class TicketController {
      * ticket/ POST method.
      * @return ticket/create_ticket
      */
-    @PostMapping(REQUEST_PATH)
+    @PostMapping
     public ResponseEntity<TicketDTO> createTicket(@Valid @RequestBody final TicketDTO ticketDTO) throws AirPortDaoException {
         return new ResponseEntity<>(ticketService.create(ticketDTO), HttpStatus.OK);
     }
@@ -50,7 +51,7 @@ public class TicketController {
      * ticket/ DELETE method.
      * @return ticket/show_tickets
      */
-    @DeleteMapping(REQUEST_PATH)
+    @DeleteMapping
     public ResponseEntity<Boolean> deleteTicket(@Valid @RequestBody final TicketDTO ticketDTO) throws AirPortDaoException {
         return new ResponseEntity<>(ticketService.delete(ticketDTO), HttpStatus.OK);
     }
@@ -59,7 +60,7 @@ public class TicketController {
      * ticket/ PUT method.
      * @return ticket/show_tickets
      */
-    @PutMapping(REQUEST_PATH)
+    @PutMapping
     public ResponseEntity<TicketDTO> updateTicket(@Valid @RequestBody final TicketDTO ticketDTO) throws AirPortDaoException {
         return new ResponseEntity<>(ticketService.update(ticketDTO), HttpStatus.OK);
     }
