@@ -36,30 +36,30 @@ public class TicketService implements AirPortService<TicketDTO> {
 
     @Override
     public TicketDTO update(final TicketDTO ticketDTO) throws AirPortDaoException {
-        var ticket = new Ticket();
+        final var ticket = new Ticket();
         BeanUtils.copyProperties(ticketDTO, ticket);
-        ticketDao.create(ticket);
+        ticketDao.update(ticket);
         return ticketDTO;
     }
 
     @Override
     public boolean delete(final TicketDTO ticketDTO) throws AirPortDaoException {
-        var ticket = new Ticket();
+        final var ticket = new Ticket();
         ticket.setTicketId(ticketDTO.getTicketId());
         return ticketDao.delete(ticket);
     }
 
     @Override
     public List<TicketDTO> getAll() throws AirPortDaoException {
-        var result = new ArrayList<TicketDTO>();
-        for (Ticket ticket : ticketDao.getAll()) {
+        final var result = new ArrayList<TicketDTO>();
+        for (final Ticket ticket : ticketDao.getAll()) {
             result.add(createTicketDto(ticket));
         }
         return result;
     }
 
-    private TicketDTO createTicketDto(Ticket ticket) {
-        TicketDTO ticketDTO = new TicketDTO();
+    private TicketDTO createTicketDto(final Ticket ticket) {
+        final TicketDTO ticketDTO = new TicketDTO();
         BeanUtils.copyProperties(ticket, ticketDTO);
         return ticketDTO;
     }

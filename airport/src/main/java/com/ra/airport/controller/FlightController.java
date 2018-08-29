@@ -3,10 +3,8 @@ package com.ra.airport.controller;
 import javax.validation.Valid;
 
 import com.ra.airport.dto.FlightDto;
-import com.ra.airport.entity.Flight;
 import com.ra.airport.repository.exception.AirPortDaoException;
 import com.ra.airport.service.FlightService;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

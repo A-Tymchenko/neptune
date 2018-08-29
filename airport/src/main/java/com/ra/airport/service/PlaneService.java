@@ -35,7 +35,7 @@ public class PlaneService implements AirPortService<PlaneDto> {
     @Override
     public PlaneDto create(final PlaneDto planeDto) throws AirPortDaoException {
         var plane = new Plane();
-        BeanUtils.copyProperties(plane, planeDto);
+        BeanUtils.copyProperties(planeDto, plane);
         plane = planeDao.create(plane);
         planeDto.setPlaneId(plane.getPlaneId());
         return planeDto;
@@ -50,9 +50,9 @@ public class PlaneService implements AirPortService<PlaneDto> {
      */
     @Override
     public PlaneDto update(final PlaneDto planeDto) throws AirPortDaoException {
-        var plane = new Plane();
+        final var plane = new Plane();
         BeanUtils.copyProperties(planeDto, plane);
-        planeDao.create(plane);
+        planeDao.update(plane);
         return planeDto;
     }
 
@@ -66,7 +66,7 @@ public class PlaneService implements AirPortService<PlaneDto> {
      */
     @Override
     public boolean delete(final PlaneDto planeDto) throws AirPortDaoException {
-        var plane = new Plane();
+        final var plane = new Plane();
         plane.setPlaneId(planeDto.getPlaneId());
         return planeDao.delete(plane);
     }
@@ -80,15 +80,15 @@ public class PlaneService implements AirPortService<PlaneDto> {
      */
     @Override
     public List<PlaneDto> getAll() throws AirPortDaoException {
-        var result = new ArrayList<PlaneDto>();
-        for (Plane plane : planeDao.getAll()) {
+        final var result = new ArrayList<PlaneDto>();
+        for (final Plane plane : planeDao.getAll()) {
             result.add(createPlaneDto(plane));
         }
         return result;
     }
 
-    private PlaneDto createPlaneDto(Plane plane) {
-        PlaneDto planeDto = new PlaneDto();
+    private PlaneDto createPlaneDto(final Plane plane) {
+        final PlaneDto planeDto = new PlaneDto();
         BeanUtils.copyProperties(plane, planeDto);
         return planeDto;
     }

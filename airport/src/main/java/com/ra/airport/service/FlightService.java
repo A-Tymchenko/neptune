@@ -30,36 +30,36 @@ public class FlightService implements AirPortService<FlightDto> {
         var flight = new Flight();
         BeanUtils.copyProperties(flightDTO, flight);
         flight = flightDao.create(flight);
-        flight.setFlId(flight.getFlId());
+        flightDTO.setFlId(flight.getFlId());
         return flightDTO;
     }
 
     @Override
     public FlightDto update(final FlightDto flightDto) throws AirPortDaoException {
-        var flight = new Flight();
+        final var flight = new Flight();
         BeanUtils.copyProperties(flightDto, flight);
-        flightDao.create(flight);
+        flightDao.update(flight);
         return flightDto;
     }
 
     @Override
     public boolean delete(final FlightDto flightDto) throws AirPortDaoException {
-        var flight = new Flight();
+        final var flight = new Flight();
         flight.setFlId(flightDto.getFlId());
         return flightDao.delete(flight);
     }
 
     @Override
     public List getAll() throws AirPortDaoException {
-        var result = new ArrayList<FlightDto>();
-        for (Flight flight : flightDao.getAll()) {
+        final var result = new ArrayList<FlightDto>();
+        for (final Flight flight : flightDao.getAll()) {
             result.add(createFlightDto(flight));
         }
         return result;
     }
 
-    private FlightDto createFlightDto(Flight flight) {
-        FlightDto flightDto = new FlightDto();
+    private FlightDto createFlightDto(final Flight flight) {
+        final FlightDto flightDto = new FlightDto();
         BeanUtils.copyProperties(flight, flightDto);
         return flightDto;
     }

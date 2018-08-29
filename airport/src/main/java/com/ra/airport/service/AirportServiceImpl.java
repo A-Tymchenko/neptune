@@ -2,7 +2,6 @@ package com.ra.airport.service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import com.ra.airport.dto.AirportDTO;
 import com.ra.airport.entity.Airport;
@@ -33,30 +32,30 @@ public class AirportServiceImpl implements AirPortService<AirportDTO> {
 
     @Override
     public AirportDTO update(final AirportDTO airportDTO) throws AirPortDaoException {
-        var airport = new Airport();
+        final var airport = new Airport();
         BeanUtils.copyProperties(airportDTO, airport);
-        airportDAO.create(airport);
+        airportDAO.update(airport);
         return airportDTO;
     }
 
     @Override
     public boolean delete(final AirportDTO airportDTO) throws AirPortDaoException {
-        var airport = new Airport();
+        final var airport = new Airport();
         airport.setApId(airportDTO.getApId());
         return airportDAO.delete(airport);
     }
 
     @Override
     public List<AirportDTO> getAll() throws AirPortDaoException {
-        var result = new ArrayList<AirportDTO>();
-        for (Airport airport : airportDAO.getAll()) {
+        final var result = new ArrayList<AirportDTO>();
+        for (final Airport airport : airportDAO.getAll()) {
             result.add(createAirportDto(airport));
         }
         return result;
     }
 
-    private AirportDTO createAirportDto(Airport airport) {
-        AirportDTO airportDTO = new AirportDTO();
+    private AirportDTO createAirportDto(final Airport airport) {
+        final AirportDTO airportDTO = new AirportDTO();
         BeanUtils.copyProperties(airport, airportDTO);
         return airportDTO;
     }
