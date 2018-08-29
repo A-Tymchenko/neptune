@@ -6,7 +6,6 @@ import com.ra.airport.dto.PlaneDto;
 import com.ra.airport.entity.Plane;
 import com.ra.airport.repository.exception.AirPortDaoException;
 import com.ra.airport.service.PlaneService;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -41,9 +40,7 @@ public class PlaneController {
      */
     @GetMapping
     public String getPlanes(final Model model) throws AirPortDaoException {
-        final var planes = planeService.getAll();
-        model.addAttribute("planes", planes);
-
+        model.addAttribute("planes", planeService.getAll());
         return "plane/planes";
     }
 
@@ -54,10 +51,8 @@ public class PlaneController {
      * @throws AirPortDaoException dao exception.
      */
     @PostMapping
-    public ResponseEntity<Plane> createPlane(final @Valid @RequestBody PlaneDto planeDto) throws AirPortDaoException {
-        final var plane = new Plane();
-        BeanUtils.copyProperties(planeDto, plane);
-        return new ResponseEntity<>(planeService.create(plane), HttpStatus.OK);
+    public ResponseEntity<PlaneDto> createPlane(final @Valid @RequestBody PlaneDto planeDto) throws AirPortDaoException {
+        return new ResponseEntity<>(planeService.create(planeDto), HttpStatus.OK);
     }
 
     /**
@@ -67,10 +62,8 @@ public class PlaneController {
      * @throws AirPortDaoException dao exception.
      */
     @PutMapping
-    public ResponseEntity<Plane> updatePlane(final @Valid @RequestBody PlaneDto planeDto) throws AirPortDaoException {
-        final var plane = new Plane();
-        BeanUtils.copyProperties(planeDto, plane);
-        return new ResponseEntity<>(planeService.update(plane), HttpStatus.OK);
+    public ResponseEntity<PlaneDto> updatePlane(final @Valid @RequestBody PlaneDto planeDto) throws AirPortDaoException {
+        return new ResponseEntity<>(planeService.update(planeDto), HttpStatus.OK);
     }
 
     /**
@@ -81,8 +74,6 @@ public class PlaneController {
      */
     @DeleteMapping
     public ResponseEntity<Boolean> deletePlane(final @Valid @RequestBody PlaneDto planeDto) throws AirPortDaoException {
-        final var plane = new Plane();
-        BeanUtils.copyProperties(planeDto, plane);
-        return new ResponseEntity<>(planeService.delete(plane), HttpStatus.OK);
+        return new ResponseEntity<>(planeService.delete(planeDto), HttpStatus.OK);
     }
 }

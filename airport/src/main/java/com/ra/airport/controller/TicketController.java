@@ -3,10 +3,8 @@ package com.ra.airport.controller;
 import javax.validation.Valid;
 
 import com.ra.airport.dto.TicketDTO;
-import com.ra.airport.entity.Ticket;
 import com.ra.airport.repository.exception.AirPortDaoException;
 import com.ra.airport.service.TicketService;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -44,10 +42,8 @@ public class TicketController {
      * @return ticket/create_ticket
      */
     @PostMapping(REQUEST_PATH)
-    public ResponseEntity<Ticket> createTicket(@Valid @RequestBody final TicketDTO ticketDTO) throws AirPortDaoException {
-        final var ticket = new Ticket();
-        BeanUtils.copyProperties(ticketDTO, ticket);
-        return new ResponseEntity<>(ticketService.create(ticket), HttpStatus.OK);
+    public ResponseEntity<TicketDTO> createTicket(@Valid @RequestBody final TicketDTO ticketDTO) throws AirPortDaoException {
+        return new ResponseEntity<>(ticketService.create(ticketDTO), HttpStatus.OK);
     }
 
     /**
@@ -56,9 +52,7 @@ public class TicketController {
      */
     @DeleteMapping(REQUEST_PATH)
     public ResponseEntity<Boolean> deleteTicket(@Valid @RequestBody final TicketDTO ticketDTO) throws AirPortDaoException {
-        final var ticket = new Ticket();
-        BeanUtils.copyProperties(ticketDTO, ticket);
-        return new ResponseEntity<>(ticketService.delete(ticket), HttpStatus.OK);
+        return new ResponseEntity<>(ticketService.delete(ticketDTO), HttpStatus.OK);
     }
 
     /**
@@ -66,9 +60,7 @@ public class TicketController {
      * @return ticket/show_tickets
      */
     @PutMapping(REQUEST_PATH)
-    public ResponseEntity<Ticket> updateTicket(@Valid @RequestBody final TicketDTO ticketDTO) throws AirPortDaoException {
-        final var ticket = new Ticket();
-        BeanUtils.copyProperties(ticketDTO, ticket);
-        return new ResponseEntity<>(ticketService.update(ticket), HttpStatus.OK);
+    public ResponseEntity<TicketDTO> updateTicket(@Valid @RequestBody final TicketDTO ticketDTO) throws AirPortDaoException {
+        return new ResponseEntity<>(ticketService.update(ticketDTO), HttpStatus.OK);
     }
 }

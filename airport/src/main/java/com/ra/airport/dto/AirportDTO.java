@@ -26,13 +26,8 @@ public class AirportDTO {
     @Max(LengthHelper.MAX_TERMINALS)
     private int terminalCount;
 
-    public AirportDTO(Integer apId, @NotNull @Size(min = LengthHelper.MIN, max = LengthHelper.MAX_LETERS, message = "Name should have atleast 2 characters") String apName, @NotNull @Min(LengthHelper.MIN) @Max(LengthHelper.MAX_NUMBER) int apNum, @NotNull @Size(min = LengthHelper.MIN, max = LengthHelper.MAX_LETERS, message = "Name should have atleast 2 characters") String apType, @NotNull @Size(min = LengthHelper.MIN, max = LengthHelper.MAX_LETERS, message = "Name should have atleast 2 characters") String address, @NotNull @Min(LengthHelper.MIN) @Max(LengthHelper.MAX_TERMINALS) int terminalCount) {
-        this.apId = apId;
-        this.apName = apName;
-        this.apNum = apNum;
-        this.apType = apType;
-        this.address = address;
-        this.terminalCount = terminalCount;
+    public AirportDTO() {
+
     }
 
     public Integer getApId() {
